@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Dockerを使いMeshbluのIoTプラットフォームをローカルに構築します。GitHubのリポジトリにはDockerfileもあるのですが、開発用に&#96;node_modules&#96;のキャッシュと&#96;docker restart&#96;がやりやすいように少し構成を変更します。最後にMosquittoのコンテナを2つ使いPub&#x2F;Subのテストをしてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Meshblu on Dockerの構築とMosquittoでテスト">
+<meta property="og:url" content="http://masato.github.io/2015/03/17/meshblu-on-docker-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Dockerを使いMeshbluのIoTプラットフォームをローカルに構築します。GitHubのリポジトリにはDockerfileもあるのですが、開発用に&#96;node_modules&#96;のキャッシュと&#96;docker restart&#96;がやりやすいように少し構成を変更します。最後にMosquittoのコンテナを2つ使いPub&#x2F;Subのテストをしてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-03-17T04:20:03.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.765Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="MQTT">
+<meta property="article:tag" content="IoT">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="Meshblu">
+<meta property="article:tag" content="Mosquitto">
+<meta property="article:tag" content="Octoblu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/17/meshblu-on-docker-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Meshblu on Dockerの構築とMosquittoでテスト | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/17/meshblu-on-docker-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Meshblu on Dockerの構築とMosquittoでテスト
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 17 2015 13:20:03" itemprop="dateCreated datePublished" datetime="2015-03-17T13:20:03+09:00">Mar 17 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Dockerを使いMeshbluのIoTプラットフォームをローカルに構築します。GitHubのリポジトリにはDockerfileもあるのですが、開発用に`node_modules`のキャッシュと`docker restart`がやりやすいように少し構成を変更します。最後にMosquittoのコンテナを2つ使いPub/Subのテストをしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Dockerを使い<a href="https://developer.octoblu.com/" target="_blank" rel="noopener">Meshblu</a>のIoTプラットフォームをローカルに構築します。GitHubの<a href="https://github.com/octoblu/meshblu" target="_blank" rel="noopener">リポジトリ</a>には<a href="https://github.com/octoblu/meshblu/blob/master/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>もあるのですが、開発用に<code>node_modules</code>のキャッシュと<code>docker restart</code>がやりやすいように少し構成を変更します。最後に<a href="http://mosquitto.org/" target="_blank" rel="noopener">Mosquitto</a>のコンテナを2つ使いPub/Subのテストをしてみます。</p>
+<a id="more"></a>
+
+<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p><a href="https://github.com/octoblu/meshblu" target="_blank" rel="noopener">Meshblu</a>のリポジトリからcloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/octoblu/meshblu meshblu-dev</span><br><span class="line">$ <span class="built_in">cd</span> meshblu-dev</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><p>最初に<a href="https://github.com/octoblu/meshblu/blob/master/Dockerfile" target="_blank" rel="noopener">リポジトリ</a>から修正したDockefileです。upstreamに頻繁に更新が入るのでディレクトリ構成などあまり変更しないようにしました。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:12.04</span><br><span class="line"></span><br><span class="line">MAINTAINER Skynet https://skynet.im/ &lt;chris+docker@skynet.im&gt;</span><br><span class="line"></span><br><span class="line">RUN apt-get update -y --fix-missing</span><br><span class="line">RUN apt-get install -y python-software-properties</span><br><span class="line">RUN apt-get install -y build-essential</span><br><span class="line">RUN apt-get -y install libzmq-dev libavahi-compat-libdnssd-dev</span><br><span class="line"></span><br><span class="line">RUN add-apt-repository ppa:chris-lea/node.js</span><br><span class="line"></span><br><span class="line">RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">"deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen"</span> | tee -a /etc/apt/sources.list.d/10gen.list</span><br><span class="line">RUN apt-get update -y --fix-missing</span><br><span class="line">RUN apt-get -y install redis-server apt-utils supervisor nodejs</span><br><span class="line">RUN apt-get -y install -o apt::architecture=amd64 mongodb-10gen</span><br><span class="line"></span><br><span class="line">RUN sed -i <span class="string">'s/daemonize yes/daemonize no/g'</span> /etc/redis/redis.conf</span><br><span class="line"></span><br><span class="line"><span class="comment">#ADD . /var/www</span></span><br><span class="line"><span class="comment">#RUN cd /var/www &amp;&amp; npm install</span></span><br><span class="line"></span><br><span class="line">COPY ./package.json /var/www/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">  ln -s /dist/node_modules /var/www/node_modules &amp;&amp; \</span><br><span class="line">  <span class="built_in">cd</span> /var/www &amp;&amp; npm install</span><br><span class="line"></span><br><span class="line"><span class="comment">#ADD ./docker/config.js.docker /var/www/config.js</span></span><br><span class="line"><span class="comment">#ADD ./docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf</span></span><br><span class="line">RUN mkdir /var/<span class="built_in">log</span>/skynet</span><br><span class="line"></span><br><span class="line">EXPOSE 3000 5683 1883</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">"/usr/bin/supervisord"</span>, <span class="string">"-n"</span>, <span class="string">"-c"</span>, <span class="string">"/etc/supervisor/supervisord.conf"</span>]</span><br><span class="line">VOLUME /etc/supervisor/conf.d</span><br><span class="line">COPY . /var/www</span><br></pre></td></tr></table></figure>
+
+<h3 id="不足パッケージの追加"><a href="#不足パッケージの追加" class="headerlink" title="不足パッケージの追加"></a>不足パッケージの追加</h3><p><code>docker build</code>中にエラーが出たので、zmq.hとdns_sd.hをインストールします。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">RUN apt-get -y install libzmq-dev libavahi-compat-libdnssd-dev</span><br></pre></td></tr></table></figure>
+
+<h3 id="node-modulesのシムリンク"><a href="#node-modulesのシムリンク" class="headerlink" title="node_modulesのシムリンク"></a>node_modulesのシムリンク</h3><p>以下の方針でDockerfileを修正します。</p>
+<ul>
+<li><code>node_modules</code>のディレクトリを<code>/dist/node_modules</code>に作成して、アプリケーションディレクトリにはシムリンクを作る</li>
+<li>Dockerfileの最後にCOPYコマンドでキャッシュして、コード変更後にnpmインストールが起きないようにする</li>
+</ul>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#ADD . /var/www</span></span><br><span class="line"><span class="comment">#RUN cd /var/www &amp;&amp; npm install</span></span><br><span class="line"></span><br><span class="line">COPY ./package.json /var/www/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">  ln -s /dist/node_modules /var/www/node_modules &amp;&amp; \</span><br><span class="line">  <span class="built_in">cd</span> /var/www &amp;&amp; npm install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>./dockerの設定ファイルはCOPYしない</li>
+<li>カレントディレクトリのconfig.jsを修正してビルドする</li>
+</ul>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#ADD ./docker/config.js.docker /var/www/config.js</span></span><br><span class="line"><span class="comment">#ADD ./docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>supervisor.confのボリューム作成と、最後にカレントディレクトリをイメージにキャッシュする</li>
+</ul>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">CMD [<span class="string">"/usr/bin/supervisord"</span>, <span class="string">"-n"</span>, <span class="string">"-c"</span>, <span class="string">"/etc/supervisor/supervisord.conf"</span>]</span><br><span class="line">VOLUME /etc/supervisor/conf.d</span><br><span class="line">COPY . /var/www</span><br></pre></td></tr></table></figure>
+
+<h3 id="MQTTのポート追加"><a href="#MQTTのポート追加" class="headerlink" title="MQTTのポート追加"></a>MQTTのポート追加</h3><p>exposeにMQTTの1883ポートを追加します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">EXPOSE 3000 5683 1883</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dockerホストのシムリンク"><a href="#Dockerホストのシムリンク" class="headerlink" title="Dockerホストのシムリンク"></a>Dockerホストのシムリンク</h2><p>前回<a href="/2015/03/13/node-modules-symlinks-in-docker/">node_modulesのシムリンクとボリュームを使って効率化</a>したように、<code>node_modules</code>コンテナ内でのみ有効なシムリンクをDockerホスト上の作業ディレクトリ内に作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ln -s /dist/node_modules ./node_modules</span><br></pre></td></tr></table></figure>
+
+<h2 id="supervisor-conf"><a href="#supervisor-conf" class="headerlink" title="supervisor.conf"></a>supervisor.conf</h2><p>Supervisorの設定ファイルは以下のように修正しました。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/docker/supervisor.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:redis]</span><br><span class="line"><span class="built_in">command</span>=/usr/bin/redis-server /etc/redis/redis.conf</span><br><span class="line">numprocs=1</span><br><span class="line">autostart=<span class="literal">true</span></span><br><span class="line">autorestart=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#[program:mongodb]</span></span><br><span class="line"><span class="comment">#command=/usr/bin/mongod --config /etc/mongodb.conf</span></span><br><span class="line"><span class="comment">#numprocs=1</span></span><br><span class="line"><span class="comment">#autostart=true</span></span><br><span class="line"><span class="comment">#autorestart=true</span></span><br><span class="line"></span><br><span class="line">[program:node]</span><br><span class="line"><span class="comment">#command=/usr/bin/node /var/www/server.js --http --coap</span></span><br><span class="line"><span class="built_in">command</span>=/usr/bin/node /var/www/server.js --http --coap --mqtt</span><br><span class="line">numprocs=1</span><br><span class="line">directory=/var/www/</span><br><span class="line">stdout_logfile=/dev/fd/1</span><br><span class="line">stdout_logfile_maxbytes=0</span><br><span class="line">redirect_stderr=<span class="literal">true</span></span><br><span class="line">autostart=<span class="literal">true</span></span><br><span class="line">autorestart=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MQTT-Serverを起動する"><a href="#MQTT-Serverを起動する" class="headerlink" title="MQTT Serverを起動する"></a>MQTT Serverを起動する</h3><p>server.js起動時に<code>--mqtt</code>フラグを追加してMQTTサーバーを起動します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/docker/supervisor.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:node]</span><br><span class="line"><span class="comment">#command=/usr/bin/node /var/www/server.js --http --coap</span></span><br><span class="line"><span class="built_in">command</span>=/usr/bin/node /var/www/server.js --http  --coap --mqtt</span><br></pre></td></tr></table></figure>
+
+<h3 id="MongoDBは起動しない"><a href="#MongoDBは起動しない" class="headerlink" title="MongoDBは起動しない"></a>MongoDBは起動しない</h3><p>今回はRedisだけ使うのでMongoDBはSupervisorから起動させません。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/meshblu-dev/docker/supervisor.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#[program:mongodb]</span></span><br><span class="line"><span class="comment">#command=/usr/bin/mongod --config /etc/mongodb.conf</span></span><br><span class="line"><span class="comment">#numprocs=1</span></span><br><span class="line"><span class="comment">#autostart=true</span></span><br><span class="line"><span class="comment">#autorestart=true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="config-js"><a href="#config-js" class="headerlink" title="config.js"></a>config.js</h2><p>今回はリポジトリのディレクトリ構成を残す方針です。アプリケーション用にディレクトリを作成しないので、カレントディレクトリに<code>node_modules</code>も配置します。カレントディレクトリごとコンテナの配布ディレクトリにボリュームでアタッチします。<code>docker/config.js.docker</code>でなく<code>./config.js</code>を修正します。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/meshblu-dev/config.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  mongo: &#123;</span></span><br><span class="line"><span class="comment">    databaseUrl: process.env.MONGODB_URI</span></span><br><span class="line"><span class="comment">  &#125;,</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  port: <span class="built_in">parseInt</span>(process.env.PORT) || <span class="number">80</span>,</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  tls: &#123;</span></span><br><span class="line"><span class="comment">    sslPort: parseInt(process.env.SSL_PORT) || 443,</span></span><br><span class="line"><span class="comment">    cert: process.env.SSL_CERT,</span></span><br><span class="line"><span class="comment">    key: process.env.SSL_KEY</span></span><br><span class="line"><span class="comment">  &#125;,</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">...</span><br><span class="line">  mqtt: &#123;</span><br><span class="line">    <span class="comment">//databaseUrl: process.env.MQTT_DATABASE_URI,</span></span><br><span class="line">    port: <span class="built_in">parseInt</span>(process.env.MQTT_PORT),</span><br><span class="line">    skynetPass: process.env.MQTT_PASSWORD</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<h3 id="MongoDBは使わない"><a href="#MongoDBは使わない" class="headerlink" title="MongoDBは使わない"></a>MongoDBは使わない</h3><p>config.mqtt.databaseUrlはコメントアウトするとMondoDBは使われなくなります。Node.jsのコードを読むとMQTTのバックエンドはRedisが設定されていれば優先して使用されているようです。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/meshblu-dev/config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  mongo: &#123;</span></span><br><span class="line"><span class="comment">    databaseUrl: "mongodb://localhost:27017/skynet",</span></span><br><span class="line"><span class="comment">  &#125;,</span></span><br><span class="line"><span class="comment">  */</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="TLS-SSLは保留"><a href="#TLS-SSLは保留" class="headerlink" title="TLS/SSLは保留"></a>TLS/SSLは保留</h3><p>証明書をまだ用意していないのでTLS/SSLの設定はコメントアウトします。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/meshblu-dev/config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">tls: &#123;</span></span><br><span class="line"><span class="comment">  sslPort: parseInt(process.env.SSL_PORT) || 443,</span></span><br><span class="line"><span class="comment">  cert: process.env.SSL_CERT,</span></span><br><span class="line"><span class="comment">  key: process.env.SSL_KEY</span></span><br><span class="line"><span class="comment">&#125;,</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MQTT-Server用にskynetPassなど設定"><a href="#MQTT-Server用にskynetPassなど設定" class="headerlink" title="MQTT Server用にskynetPassなど設定"></a>MQTT Server用にskynetPassなど設定</h3><p>システム内部のメッセージングにskynetユーザーを使っています。そのためMQTTサーバー用にskynetPassの指定は必須です。起動メッセージから送信できなくなりサーバーが起動しません。ランダムパスワードを作成して設定します。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="meta">irb(main):001:0&gt;</span> o = [(<span class="string">'a'</span>..<span class="string">'z'</span>), (<span class="string">'A'</span>..<span class="string">'Z'</span>)].map &#123; <span class="params">|i|</span> i.to_a &#125;.flatten</span><br><span class="line">=&gt; [<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>, <span class="string">"g"</span>, <span class="string">"h"</span>, <span class="string">"i"</span>, <span class="string">"j"</span>, <span class="string">"k"</span>, <span class="string">"l"</span>, <span class="string">"m"</span>, <span class="string">"n"</span>, <span class="string">"o"</span>, <span class="string">"p"</span>, <span class="string">"q"</span>, <span class="string">"r"</span>, <span class="string">"s"</span>, <span class="string">"t"</span>, <span class="string">"u"</span>, <span class="string">"v"</span>, <span class="string">"w"</span>, <span class="string">"x"</span>, <span class="string">"y"</span>, <span class="string">"z"</span>, <span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>, <span class="string">"D"</span>, <span class="string">"E"</span>, <span class="string">"F"</span>, <span class="string">"G"</span>, <span class="string">"H"</span>, <span class="string">"I"</span>, <span class="string">"J"</span>, <span class="string">"K"</span>, <span class="string">"L"</span>, <span class="string">"M"</span>, <span class="string">"N"</span>, <span class="string">"O"</span>, <span class="string">"P"</span>, <span class="string">"Q"</span>, <span class="string">"R"</span>, <span class="string">"S"</span>, <span class="string">"T"</span>, <span class="string">"U"</span>, <span class="string">"V"</span>, <span class="string">"W"</span>, <span class="string">"X"</span>, <span class="string">"Y"</span>, <span class="string">"Z"</span>]</span><br><span class="line"><span class="meta">irb(main):002:0&gt;</span> (<span class="number">0</span>...<span class="number">44</span>).map &#123; o[rand(o.length)] &#125;.join</span><br><span class="line">=&gt; <span class="string">"ZFiLQKSmFmaDgFVrZyTCVwsBUCUpWhdHhjVBoGxNnHaa"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Dockerイメージのビルドと起動"><a href="#Dockerイメージのビルドと起動" class="headerlink" title="Dockerイメージのビルドと起動"></a>Dockerイメージのビルドと起動</h2><p>Dockerイメージをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t meshblu-dev .</span><br></pre></td></tr></table></figure>
+
+<p>環境変数にポート番号やskynetPassを指定します。カレントディレクトリやSupervisorの設定ファイルをボリュームでアタッチして起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -d --name meshblu-dev \</span><br><span class="line">  -p 3000:3000 \</span><br><span class="line">  -p 5683:5683 \</span><br><span class="line">  -p 1883:1883 \</span><br><span class="line">  -e PORT=3000 \</span><br><span class="line">  -e MQTT_PORT=1883 \</span><br><span class="line">  -e MQTT_PASSWORD=ZFiLQKSmFmaDgFVrZyTCVwsBUCUpWhdHhjVBoGxNnHaa \</span><br><span class="line">  -v <span class="variable">$PWD</span>:/var/www \</span><br><span class="line">  -v <span class="variable">$PWD</span>/docker:/etc/supervisor/conf.d \</span><br><span class="line">  meshblu-dev</span><br></pre></td></tr></table></figure>
+
+<p>ログを確認します。HTTP(3000), CoAP(5683), MQTT(1883)のサーバーが起動しました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker logs -f meshblu-dev</span><br><span class="line">...</span><br><span class="line">MM    MM              hh      bb      lll</span><br><span class="line">MMM  MMM   eee   sss  hh      bb      lll uu   uu</span><br><span class="line">MM MM MM ee   e s     hhhhhh  bbbbbb  lll uu   uu</span><br><span class="line">MM    MM eeeee   sss  hh   hh bb   bb lll uu   uu</span><br><span class="line">MM    MM  eeeee     s hh   hh bbbbbb  lll  uuuu u</span><br><span class="line">                 sss</span><br><span class="line">Meshblu (formerly skynet.im) development environment loaded...</span><br><span class="line"></span><br><span class="line">Starting CoAP... <span class="keyword">done</span>.</span><br><span class="line">Starting HTTP/HTTPS... <span class="keyword">done</span>.</span><br><span class="line">...</span><br><span class="line">Starting MQTT... <span class="keyword">done</span>.</span><br><span class="line">CoAP listening at coap://localhost:5683</span><br><span class="line">HTTP listening at http://0.0.0.0:3000</span><br><span class="line">...</span><br><span class="line">MQTT listening at mqtt://0.0.0.0:1883</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>Node.jsファイルなどを修正したら、docker restartで反映ができます</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker restart meshblu-dev</span><br></pre></td></tr></table></figure>
+
+<h2 id="デバイス-ノードの登録と簡単なPub-Sub"><a href="#デバイス-ノードの登録と簡単なPub-Sub" class="headerlink" title="デバイス/ノードの登録と簡単なPub/Sub"></a>デバイス/ノードの登録と簡単なPub/Sub</h2><p>REST APIからMeshbluのステータスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl http://localhost:3000/status</span><br><span class="line">&#123;<span class="string">"meshblu"</span>:<span class="string">"online"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コネクテッドデバイスを用意する前に、ノードとしてDockerコンテナを使いテストします。<a href="http://mosquitto.org/" target="_blank" rel="noopener">Mosquitto</a>のPublishとSubscribe用の2つのコンテナを起動します。</p>
+<h3 id="MQTTノードの登録"><a href="#MQTTノードの登録" class="headerlink" title="MQTTノードの登録"></a>MQTTノードの登録</h3><p>REST APIを使ってノードの登録をします。ボディには任意のkey/valueを登録できます。まず<code>mqtt-pub</code>コンテナの登録をします。戻り値のJSONから<code>uuid</code>と<code>token</code>を取得できます。今後このデバイス/ノードとメッセージをやりとりする場合にはこの<code>uuid</code>と<code>token</code>が必要になります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -d <span class="string">"name=mqtt-pub&amp;type=container"</span> <span class="string">"http://localhost:3000/devices"</span></span><br><span class="line">&#123;<span class="string">"uuid"</span>:<span class="string">"1f3bcae0-cc5b-11e4-80ac-dbe1b8e07fba"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-17T04:07:26.621Z"</span>,<span class="string">"name"</span>:<span class="string">"mqtt-pub"</span>,<span class="string">"type"</span>:<span class="string">"container"</span>,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"token"</span>:<span class="string">"1fc767197e275a3cb79befbf38632e5c7ef8fbec"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>mqtt-sub</code>コンテナも同様に登録します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -d <span class="string">"name=mqtt-sub&amp;type=container"</span> <span class="string">"http://localhost:3000/devices"</span></span><br><span class="line">&#123;<span class="string">"uuid"</span>:<span class="string">"38cc2270-cc5b-11e4-80ac-dbe1b8e07fba"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-17T04:08:09.496Z"</span>,<span class="string">"name"</span>:<span class="string">"mqtt-sub"</span>,<span class="string">"type"</span>:<span class="string">"container"</span>,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"token"</span>:<span class="string">"86efacbbeb28dd56676df710cf4c1e7d2f05f762"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>登録したデバイスを確認します。HTTPヘッダには<code>uuid/token</code>の認証情報が必要です。今回は<code>mqtt-sub</code>のuuidを認証に使いましたが、<code>mqtt-pub</code>のデバイス情報も取得できています。uuidにはオーナーを指定すると所有しているデバイスは操作できるようになるのですが、この辺りは調査中です。プライベートなブローカーなので今のところすべてのデバイスが見えても問題ありません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl <span class="string">"http://localhost:3000/devices"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: 38cc2270-cc5b-11e4-80ac-dbe1b8e07fba"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: 86efacbbeb28dd56676df710cf4c1e7d2f05f762"</span></span><br><span class="line">&#123;<span class="string">"devices"</span>:[&#123;<span class="string">"uuid"</span>:<span class="string">"38cc2270-cc5b-11e4-80ac-dbe1b8e07fba"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-17T04:08:09.496Z"</span>,<span class="string">"name"</span>:<span class="string">"mqtt-sub"</span>,<span class="string">"type"</span>:<span class="string">"container"</span>,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>&#125;,&#123;<span class="string">"uuid"</span>:<span class="string">"1f3bcae0-cc5b-11e4-80ac-dbe1b8e07fba"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-17T04:07:26.621Z"</span>,<span class="string">"name"</span>:<span class="string">"mqtt-pub"</span>,<span class="string">"type"</span>:<span class="string">"container"</span>,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mosquittoコンテナを起動"><a href="#Mosquittoコンテナを起動" class="headerlink" title="Mosquittoコンテナを起動"></a>Mosquittoコンテナを起動</h3><p>Mosquittoのコンテナを2つ起動します。Dockerイメージは<a href="https://registry.hub.docker.com/u/ansi/mosquitto/" target="_blank" rel="noopener">ansi/mosquitto</a>をpullして使います。1つ目は<code>mqtt-pub</code>コンテナです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull ansi/mosquitto</span><br><span class="line">$ docker run --rm --name mqtt-pub -it ansi/mosquitto /bin/bash</span><br><span class="line">root@b0468fe6e67e:/usr/<span class="built_in">local</span>/src/mosquitto-1.3<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>別のシェルを開き、もう一つ<code>mqtt-sub</code>コンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm --name mqtt-sub -it ansi/mosquitto /bin/bash</span><br><span class="line">root@12b53215b59a:/usr/<span class="built_in">local</span>/src/mosquitto-1.3<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>このコンテナは<code>/etc/ld.so.cache</code>が更新されていないようなので<code>mosquitto_sub</code>コマンドを実行するとエラーになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mosquitto_sub: error <span class="keyword">while</span> loading shared libraries: libmosquitto.so.1: cannot open shared object file: No such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>ldconfigを実行して共有ライブラリを変更します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ldconfig</span><br></pre></td></tr></table></figure>
+
+<h3 id="Subscribe-topicはデバイスのuuid"><a href="#Subscribe-topicはデバイスのuuid" class="headerlink" title="Subscribe (topicはデバイスのuuid)"></a>Subscribe (topicはデバイスのuuid)</h3><p>Publish側コンテナ(<code>mqtt-sub</code>)で<code>mosquitto_sub</code>コマンドを実行します。任意のtopicをsubscribeするのではなく、デバイスのuuidのtopicを指定することに注意します。</p>
+<ul>
+<li>host: MeshbluのポートをマップしているDockerホスト</li>
+<li>port: MQTT Serverのポート</li>
+<li>topic: subscribeするデバイスのuuid</li>
+<li>username: subscribeするデバイスのuuid</li>
+<li>password: subscribeするデバイスのtoken</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ MQTT_SUB_UUID=38cc2270-cc5b-11e4-80ac-dbe1b8e07fba</span><br><span class="line">$ MQTT_SUB_PASS=86efacbbeb28dd56676df710cf4c1e7d2f05f762</span><br><span class="line">$ mosquitto_sub -h 10.3.0.230 -p 1883 \</span><br><span class="line">  -t <span class="variable">$MQTT_SUB_UUID</span> \</span><br><span class="line">  -u <span class="variable">$MQTT_SUB_UUID</span> \</span><br><span class="line">  -P <span class="variable">$MQTT_SUB_PASS</span> \</span><br><span class="line">  -d</span><br><span class="line">Client mosqsub/17-12b53215b59a sending CONNECT</span><br><span class="line">Client mosqsub/17-12b53215b59a received CONNACK</span><br><span class="line">Client mosqsub/17-12b53215b59a sending SUBSCRIBE (Mid: 1, Topic: 38cc2270-cc5b-11e4-80ac-dbe1b8e07fba, QoS: 0)</span><br><span class="line">Client mosqsub/17-12b53215b59a received SUBACK</span><br><span class="line">Subscribed (mid: 1): 0</span><br><span class="line">Client mosqsub/17-12b53215b59a sending PINGREQ</span><br><span class="line">Client mosqsub/17-12b53215b59a received PINGRESP</span><br></pre></td></tr></table></figure>
+
+<h3 id="Publish-topicはmessage"><a href="#Publish-topicはmessage" class="headerlink" title="Publish (topicはmessage)"></a>Publish (topicはmessage)</h3><p>Publish側コンテナ(<code>mqtt-pub</code>)で<code>mosquitto_pub</code>コマンドを実行します。メッセージを送信する場合のtopicは<code>message</code>で固定になっています。</p>
+<ul>
+<li>host: MeshbluのポートをマップしているDockerホスト</li>
+<li>port: MQTT Serverのポート</li>
+<li>topic: <code>message</code>で固定</li>
+<li>username: publishするデバイスのuuid</li>
+<li>password: publishするデバイスのtoken</li>
+<li>message: JSON形式のメッセージ、{“devices”: [“xxx”,”yyy”], “payload”: {“aaa”:”bbb”}}</li>
+</ul>
+<p>publishするメッセージはJSON形式でフォーマットが決まっています。<code>devices</code>キーには送信先デバイスのuuidを指定します。Arrayで複数指定も可能です。<code>payload</code>もキーが固定です。これ以外ではメッセージが送信ができないので注意が必要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ MQTT_SUB_UUID=38cc2270-cc5b-11e4-80ac-dbe1b8e07fba</span><br><span class="line">$ MQTT_PUB_UUID=1f3bcae0-cc5b-11e4-80ac-dbe1b8e07fba</span><br><span class="line">$ MQTT_PUB_PASS=1fc767197e275a3cb79befbf38632e5c7ef8fbec</span><br><span class="line">$ mosquitto_pub -h 10.3.0.230 -p 1883 \</span><br><span class="line">  -t message \</span><br><span class="line">  -m <span class="string">'&#123;"devices": "38cc2270-cc5b-11e4-80ac-dbe1b8e07fba", "payload": &#123;"red":"on"&#125;&#125;'</span>\</span><br><span class="line">  -u 1f3bcae0-cc5b-11e4-80ac-dbe1b8e07fba \</span><br><span class="line">  -P 1fc767197e275a3cb79befbf38632e5c7ef8fbec \</span><br><span class="line">  -d</span><br><span class="line">Client mosqpub/19-b0468fe6e67e sending CONNECT</span><br><span class="line">Client mosqpub/19-b0468fe6e67e received CONNACK</span><br><span class="line">Client mosqpub/19-b0468fe6e67e sending PUBLISH (d0, q0, r0, m1, <span class="string">'message'</span>, ... (76 bytes))</span><br><span class="line">Client mosqpub/19-b0468fe6e67e sending DISCONNECT</span><br></pre></td></tr></table></figure>
+
+<h3 id="Subscribe側コンテナでメッセージを受信"><a href="#Subscribe側コンテナでメッセージを受信" class="headerlink" title="Subscribe側コンテナでメッセージを受信"></a>Subscribe側コンテナでメッセージを受信</h3><p>Subscribe側コンテナ(<code>mqtt-sub</code>)にメッセージが届き標準出力します。デバイスのuuidをtopicにしてsubscribeしているのですが、<code>message</code>のtopicにpublishしています。ちょっとわかりずらいですがマルチプロトコルに対応するためこういった仕様になっているようです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">Client mosqsub/17-12b53215b59a received PUBLISH (d0, q0, r0, m0, <span class="string">'38cc2270-cc5b-11e4-80ac-dbe1b8e07fba'</span>, ... (150 bytes))</span><br><span class="line">&#123;<span class="string">"topic"</span>:<span class="string">"message"</span>,<span class="string">"data"</span>:&#123;<span class="string">"devices"</span>:<span class="string">"38cc2270-cc5b-11e4-80ac-dbe1b8e07fba"</span>,<span class="string">"payload"</span>:&#123;<span class="string">"red"</span>:<span class="string">"on"</span>&#125;,<span class="string">"fromUuid"</span>:<span class="string">"1f3bcae0-cc5b-11e4-80ac-dbe1b8e07fba"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MQTT/" rel="tag"># MQTT</a>
+              <a href="/tags/IoT/" rel="tag"># IoT</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/Meshblu/" rel="tag"># Meshblu</a>
+              <a href="/tags/Mosquitto/" rel="tag"># Mosquitto</a>
+              <a href="/tags/Octoblu/" rel="tag"># Octoblu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/16/meshblu-octoblu-introduction/" rel="prev" title="Node.jsでつくるIoT - Part3: OctobluのMeshblu">
+      <i class="fa fa-chevron-left"></i> Node.jsでつくるIoT - Part3: OctobluのMeshblu
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/18/espruino-quick-start/" rel="next" title="EspruinoのQuick Startでボタンを押してLチカする">
+      EspruinoのQuick Startでボタンを押してLチカする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不足パッケージの追加"><span class="nav-number">2.1.</span> <span class="nav-text">不足パッケージの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#node-modulesのシムリンク"><span class="nav-number">2.2.</span> <span class="nav-text">node_modulesのシムリンク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTTのポート追加"><span class="nav-number">2.3.</span> <span class="nav-text">MQTTのポート追加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerホストのシムリンク"><span class="nav-number">3.</span> <span class="nav-text">Dockerホストのシムリンク</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#supervisor-conf"><span class="nav-number">4.</span> <span class="nav-text">supervisor.conf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-Serverを起動する"><span class="nav-number">4.1.</span> <span class="nav-text">MQTT Serverを起動する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBは起動しない"><span class="nav-number">4.2.</span> <span class="nav-text">MongoDBは起動しない</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#config-js"><span class="nav-number">5.</span> <span class="nav-text">config.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBは使わない"><span class="nav-number">5.1.</span> <span class="nav-text">MongoDBは使わない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS-SSLは保留"><span class="nav-number">5.2.</span> <span class="nav-text">TLS&#x2F;SSLは保留</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-Server用にskynetPassなど設定"><span class="nav-number">5.3.</span> <span class="nav-text">MQTT Server用にskynetPassなど設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerイメージのビルドと起動"><span class="nav-number">6.</span> <span class="nav-text">Dockerイメージのビルドと起動</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#デバイス-ノードの登録と簡単なPub-Sub"><span class="nav-number">7.</span> <span class="nav-text">デバイス&#x2F;ノードの登録と簡単なPub&#x2F;Sub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTTノードの登録"><span class="nav-number">7.1.</span> <span class="nav-text">MQTTノードの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mosquittoコンテナを起動"><span class="nav-number">7.2.</span> <span class="nav-text">Mosquittoコンテナを起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscribe-topicはデバイスのuuid"><span class="nav-number">7.3.</span> <span class="nav-text">Subscribe (topicはデバイスのuuid)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publish-topicはmessage"><span class="nav-number">7.4.</span> <span class="nav-text">Publish (topicはmessage)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscribe側コンテナでメッセージを受信"><span class="nav-number">7.5.</span> <span class="nav-text">Subscribe側コンテナでメッセージを受信</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

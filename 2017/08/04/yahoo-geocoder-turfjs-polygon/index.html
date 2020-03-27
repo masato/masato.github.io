@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Yahoo!ジオコーダAPIで住所文字列から座標情報を取得し、Turf.jsを使いポリゴンを計算します。最後にGeoJSONにフォーマットしてgeojson.ioに描画してみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する">
+<meta property="og:url" content="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Yahoo!ジオコーダAPIで住所文字列から座標情報を取得し、Turf.jsを使いポリゴンを計算します。最後にGeoJSONにフォーマットしてgeojson.ioに描画してみます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/circle.png">
+<meta property="og:image" content="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/polygon.png">
+<meta property="article:published_time" content="2017-08-03T22:26:07.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.945Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="geocode">
+<meta property="article:tag" content="YOLP">
+<meta property="article:tag" content="GIS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/circle.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/08/04/yahoo-geocoder-turfjs-polygon/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 4 2017 07:26:07" itemprop="dateCreated datePublished" datetime="2017-08-04T07:26:07+09:00">Aug 4 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Yahoo!ジオコーダAPIで住所文字列から座標情報を取得し、Turf.jsを使いポリゴンを計算します。最後にGeoJSONにフォーマットしてgeojson.ioに描画してみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　<a href="https://developer.yahoo.co.jp/webapi/map/openlocalplatform/v1/geocoder.html" target="_blank" rel="noopener">Yahoo!ジオコーダAPI</a>で住所文字列から座標情報を取得し、<a href="http://turfjs.org/" target="_blank" rel="noopener">Turf.js</a>を使いポリゴンを計算します。最後にGeoJSONにフォーマットして<a href="http://geojson.io/" target="_blank" rel="noopener">geojson.io</a>に描画してみます。</p>
+<a id="more"></a>
+
+<h2 id="GIS-地理情報システム-用語"><a href="#GIS-地理情報システム-用語" class="headerlink" title="GIS(地理情報システム)用語"></a>GIS(地理情報システム)用語</h2><ul>
+<li><a href="http://geojson.org/" target="_blank" rel="noopener">GeoJSON</a></li>
+</ul>
+<p>　地理空間データの標準フォーマットです。<a href="https://www.google.co.jp/maps" target="_blank" rel="noopener">Google Maps</a>や<a href="https://www.mapbox.com/" target="_blank" rel="noopener">Mapbox</a>、<a href="https://www.mapquest.com/" target="_blank" rel="noopener">MapQuest</a>など多くのWeb地図サービスで利用できます。</p>
+<ul>
+<li>座標情報 (Coordinates)<br>経度 (Longitude)、緯度 (Latitude)の順に並びます。</li>
+</ul>
+<p>　以下は<a href="http://www.pasco.co.jp/" target="_blank" rel="noopener">株式会社パスコ</a>による<a href="http://www.pasco.co.jp/recommend/word/word022/" target="_blank" rel="noopener">用語集</a>を参照します。</p>
+<ul>
+<li>ポイント (Point)<blockquote>
+<p>長さや幅のない対象物を指します。<br>地図表示の例としては、信号、山頂点、気象観測点、などがあげられます。</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>ポリゴン (Polygon)<blockquote>
+<p>境界線を表わす線の終点を始点に一致させ、閉領域を作った面など、地図上で一つの地域を表す多辺図形を一般的にポリゴンと呼びます。<br>地図表示の例としては、運動場などがあげられます。</p>
+</blockquote>
+</li>
+</ul>
+<p>　Mapboxではポイントとポリゴンはこのように表現されます。</p>
+<p><img src="/2017/08/04/yahoo-geocoder-turfjs-polygon/circle.png" alt="circle.png"></p>
+<h2 id="Yahoo-ジオコーダAPI"><a href="#Yahoo-ジオコーダAPI" class="headerlink" title="Yahoo!ジオコーダAPI"></a>Yahoo!ジオコーダAPI</h2><p>　<a href="https://developer.yahoo.co.jp/webapi/map/openlocalplatform/v1/geocoder.html" target="_blank" rel="noopener">Yahoo!ジオコーダAPI</a>はYahoo!JAPANが開発している<a href="https://developer.yahoo.co.jp/webapi/map/" target="_blank" rel="noopener">YOLP</a>の地図・地域情報APIの一つです。住所文字列から座標情報(経度、緯度)を取得できます。特に明記はないのですが住所文字列は正規化もしてくれ、<code>1丁目8番1号</code>や<code>１－８－１</code>、<code>１丁目8-1</code>などの揺らぎにもしっかり対応しているようです。</p>
+<p>　最初にYahoo! JAPANのWebサービスを利用するために必要なアプリケーションIDを「<a href="https://www.yahoo-help.jp/app/answers/detail/p/537/a_id/43398" target="_blank" rel="noopener">アプリケーションIDを登録する</a>」を参考にして取得しておきます。</p>
+<h2 id="Turf-js"><a href="#Turf-js" class="headerlink" title="Turf.js"></a>Turf.js</h2><p>　<a href="http://turfjs.org/" target="_blank" rel="noopener">Turf.js</a>は地理空間分析用のJavaScriptライブラリです。たくさんの地理空間分析<a href="http://turfjs.org/docs/" target="_blank" rel="noopener">API</a>が用意されています。<a href="http://turfjs.org/docs/#circle" target="_blank" rel="noopener">circle</a>メソッドを使い座標情報からポリゴンを計算します。</p>
+<h2 id="geojson-io"><a href="#geojson-io" class="headerlink" title="geojson.io"></a>geojson.io</h2><p>　<a href="http://geojson.io/" target="_blank" rel="noopener">geojson.io</a>はブラウザ上で簡単にGeoJSONを編集して地図に描画できるWebサービスです。Mapboxがオープンソースで<a href="https://github.com/mapbox/geojson.io" target="_blank" rel="noopener">開発</a>しています。Node.jsのコードからGeoJSONを出力し<a href="https://github.com/mapbox/geojsonio-cli" target="_blank" rel="noopener">geojsonio-cli</a>を通して使います。</p>
+<h2 id="サンプルプロジェクト"><a href="#サンプルプロジェクト" class="headerlink" title="サンプルプロジェクト"></a>サンプルプロジェクト</h2><p>　package.jsonを用意して<code>npm install</code>します。</p>
+<figure class="highlight json"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"ygeocode-sample"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"ygeocode-sample"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"node index.js | geojsonio"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"@turf/turf"</span>: <span class="string">"^4.6.1"</span>,</span><br><span class="line">    <span class="attr">"geojsonio-cli"</span>: <span class="string">"^0.2.3"</span>,</span><br><span class="line">    <span class="attr">"request"</span>: <span class="string">"^2.81.0"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　簡単なNode.jsのスクリプトを書きます。変数は環境に応じて変更してください。</p>
+<ul>
+<li><p>appId<br>Yahoo! JAPANのWebサービスのアプリケーションID</p>
+</li>
+<li><p>query<br>ポリゴンを計算する住所文字列、サンプルはヤフオクドームの住所</p>
+</li>
+</ul>
+<p>　以下の<a href="http://turfjs.org/docs/#circle" target="_blank" rel="noopener">circle</a>メソッドの引数はドキュメントに詳細な説明があります。</p>
+<ul>
+<li><p>radius<br>ポリゴンの半径</p>
+</li>
+<li><p>steps<br>ポリゴンを描画するステップ数</p>
+</li>
+<li><p>units<br>半径の単位</p>
+</li>
+</ul>
+<figure class="highlight js"><figcaption><span>index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> request = <span class="built_in">require</span>(<span class="string">'request'</span>);</span><br><span class="line"><span class="keyword">const</span> turf = <span class="built_in">require</span>(<span class="string">'@turf/turf'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> baseUrl = <span class="string">'https://map.yahooapis.jp/geocode/V1/geoCoder'</span>;</span><br><span class="line"><span class="keyword">const</span> appId = <span class="string">'&lt;YOUR APP ID&gt;'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> query = <span class="string">'福岡市中央区地行浜2丁目2番2号'</span>;</span><br><span class="line"><span class="keyword">const</span> radius = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> steps = <span class="number">60</span>;</span><br><span class="line"><span class="keyword">const</span> units = <span class="string">'kilometers'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> qs = &#123; <span class="attr">appid</span>:appId,</span><br><span class="line">             query:query,</span><br><span class="line">             output:<span class="string">'json'</span>&#125;;</span><br><span class="line"></span><br><span class="line">request.get(&#123; <span class="attr">url</span>:baseUrl, <span class="attr">qs</span>:qs, <span class="attr">json</span>:<span class="literal">true</span> &#125;, (err, response, body) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> features = body.Feature;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (features.length &lt; <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> feature = features[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">const</span> feature = features[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">const</span> address = feature.Property.Address;</span><br><span class="line">  <span class="keyword">const</span> coord = feature.Geometry.Coordinates.split(<span class="string">','</span>);</span><br><span class="line">  <span class="keyword">const</span> center = &#123; <span class="attr">type</span>:<span class="string">'Feature'</span>,</span><br><span class="line">                   properties: &#123;&#125;,</span><br><span class="line">                   geometry: &#123;</span><br><span class="line">                     coordinates: coord.map(<span class="function">(<span class="params">v</span>) =&gt;</span> <span class="built_in">parseFloat</span>(v)),</span><br><span class="line">                     type: <span class="string">'Point'</span></span><br><span class="line">                   &#125;</span><br><span class="line">                 &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> properties = &#123; <span class="attr">address</span>:address &#125;;</span><br><span class="line">  <span class="keyword">const</span> polygon = turf.circle(center, radius, steps, units, properties);</span><br><span class="line">  <span class="keyword">const</span> geojson = &#123;</span><br><span class="line">    type: <span class="string">'FeatureCollection'</span>,</span><br><span class="line">    features: [center, polygon]</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(geojson));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>　プログラムを実行するとFeatureCollectionタイプのGeoJSONが出力されます。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"type"</span>:<span class="string">"FeatureCollection"</span>,<span class="attr">"features"</span>:[&#123;<span class="attr">"type"</span>:<span class="string">"Feature"</span>,<span class="attr">"properties"</span>:&#123;&#125;,<span class="attr">"geometry"</span>:&#123;<span class="attr">"coordinates"</span>:[<span class="number">130.36213488</span>,<span class="number">33.59540143</span>],<span class="attr">"type"</span>:<span class="string">"Point"</span>&#125;&#125;,&#123;<span class="attr">"type"</span>:<span class="string">"Feature"</span>,<span class="attr">"properties"</span>:&#123;<span class="attr">"address"</span>:<span class="string">"福岡県福岡市中央区地行浜2丁目2-2"</span>&#125;,<span class="attr">"geometry"</span>:&#123;<span class="attr">"type"</span>:<span class="string">"Polygon"</span>,<span class="attr">"coordinates"</span>:[[[<span class="number">130.36213488</span>,<span class="number">33.60439182377266</span>],[<span class="number">130.36326319720803</span>,<span class="number">33.60434256833447</span>],[<span class="number">130.36437914850492</span>,<span class="number">33.60419534184053</span>],[<span class="number">130.36547050363063</span>,<span class="number">33.60395175783102</span>],[<span class="number">130.36652530213368</span>,<span class="number">33.60361448586572</span>],[<span class="number">130.3675319845582</span>,<span class="number">33.603187222240585</span>],[<span class="number">130.3684795192171</span>,<span class="number">33.602674649443514</span>],[<span class="number">130.36935752315605</span>,<span class="number">33.60208238479515</span>],[<span class="number">130.37015637598037</span>,<span class="number">33.60141691884032</span>],[<span class="number">130.3708673252925</span>,<span class="number">33.600685544167646</span>],[<span class="number">130.37148258258514</span>,<span class="number">33.59989627544021</span>],[<span class="number">130.3719954085387</span>,<span class="number">33.59905776151671</span>],[<span class="number">130.37240018679</span>,<span class="number">33.598179190628684</span>],[<span class="number">130.37269248536725</span>,<span class="number">33.5972701896556</span>],[<span class="number">130.37286910512242</span>,<span class="number">33.596340718603905</span>],[<span class="number">130.3729281146359</span>,<span class="number">33.59540096144804</span>],[<span class="number">130.37286887121738</span>,<span class="number">33.59446121453118</span>],[<span class="number">130.37269202777998</span>,<span class="number">33.593531773748936</span>],[<span class="number">130.3723995255192</span>,<span class="number">33.59262282175287</span>],[<span class="number">130.3719945724851</span>,<span class="number">33.59174431640888</span>],[<span class="number">130.3714816082883</span>,<span class="number">33.59090588173187</span>],[<span class="number">130.37086625533385</span>,<span class="number">33.59011670248989</span>],[<span class="number">130.3701552571223</span>,<span class="number">33.5893854236307</span>],[<span class="number">130.36935640429795</span>,<span class="number">33.58872005562991</span>],[<span class="number">130.36847844925842</span>,<span class="number">33.58812788679505</span>],[<span class="number">130.3675310102614</span>,<span class="number">33.58761540348344</span>],[<span class="number">130.36652446608005</span>,<span class="number">33.58718821910479</span>],[<span class="number">130.36546984235983</span>,<span class="number">33.586851012683525</span>],[<span class="number">130.36437869091762</span>,<span class="number">33.58660747765104</span>],[<span class="number">130.363262963303</span>,<span class="number">33.58646028142657</span>],[<span class="number">130.36213488</span>,<span class="number">33.58641103622736</span>],[<span class="number">130.36100679669704</span>,<span class="number">33.58646028142657</span>],[<span class="number">130.3598910690824</span>,<span class="number">33.58660747765104</span>],[<span class="number">130.3587999176402</span>,<span class="number">33.586851012683525</span>],[<span class="number">130.35774529391998</span>,<span class="number">33.58718821910479</span>],[<span class="number">130.35673874973867</span>,<span class="number">33.58761540348344</span>],[<span class="number">130.3557913107416</span>,<span class="number">33.58812788679505</span>],[<span class="number">130.35491335570208</span>,<span class="number">33.58872005562991</span>],[<span class="number">130.35411450287774</span>,<span class="number">33.5893854236307</span>],[<span class="number">130.35340350466618</span>,<span class="number">33.59011670248989</span>],[<span class="number">130.35278815171174</span>,<span class="number">33.59090588173187</span>],[<span class="number">130.35227518751492</span>,<span class="number">33.59174431640888</span>],[<span class="number">130.35187023448083</span>,<span class="number">33.59262282175287</span>],[<span class="number">130.35157773222005</span>,<span class="number">33.593531773748936</span>],[<span class="number">130.35140088878265</span>,<span class="number">33.59446121453118</span>],[<span class="number">130.35134164536413</span>,<span class="number">33.59540096144804</span>],[<span class="number">130.3514006548776</span>,<span class="number">33.596340718603905</span>],[<span class="number">130.35157727463277</span>,<span class="number">33.5972701896556</span>],[<span class="number">130.35186957321002</span>,<span class="number">33.598179190628684</span>],[<span class="number">130.35227435146135</span>,<span class="number">33.59905776151671</span>],[<span class="number">130.35278717741488</span>,<span class="number">33.59989627544021</span>],[<span class="number">130.35340243470753</span>,<span class="number">33.600685544167646</span>],[<span class="number">130.35411338401966</span>,<span class="number">33.60141691884032</span>],[<span class="number">130.35491223684397</span>,<span class="number">33.60208238479515</span>],[<span class="number">130.35579024078297</span>,<span class="number">33.602674649443514</span>],[<span class="number">130.35673777544181</span>,<span class="number">33.603187222240585</span>],[<span class="number">130.35774445786635</span>,<span class="number">33.60361448586572</span>],[<span class="number">130.3587992563694</span>,<span class="number">33.60395175783102</span>],[<span class="number">130.3598906114951</span>,<span class="number">33.60419534184053</span>],[<span class="number">130.361006562792</span>,<span class="number">33.60434256833447</span>],[<span class="number">130.36213488</span>,<span class="number">33.60439182377266</span>]]]&#125;&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　GeoJSONを<a href="http://geojson.io/" target="_blank" rel="noopener">geojson.io</a>のエディタに貼り付けるか、<a href="https://github.com/mapbox/geojsonio-cli" target="_blank" rel="noopener">geojsonio-cli</a>にパイプするブラウザでgeojson.ioのページが直接開きます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br></pre></td></tr></table></figure>
+
+<p>　ヤフオクドームのポイントを中心に半径500メートルのポリンゴンが描画されました。</p>
+<p><img src="/2017/08/04/yahoo-geocoder-turfjs-polygon/polygon.png" alt="polygon.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/geocode/" rel="tag"># geocode</a>
+              <a href="/tags/YOLP/" rel="tag"># YOLP</a>
+              <a href="/tags/GIS/" rel="tag"># GIS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/02/kafka-treasuredata-bridge-docker-compose/" rel="prev" title="KafkaからTreasure DataにブリッジするDocker Compose">
+      <i class="fa fa-chevron-left"></i> KafkaからTreasure DataにブリッジするDocker Compose
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/04/emacs-eclim-java/" rel="next" title="EclimでJavaもEmacsからコーディングする">
+      EclimでJavaもEmacsからコーディングする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GIS-地理情報システム-用語"><span class="nav-number">1.</span> <span class="nav-text">GIS(地理情報システム)用語</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Yahoo-ジオコーダAPI"><span class="nav-number">2.</span> <span class="nav-text">Yahoo!ジオコーダAPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Turf-js"><span class="nav-number">3.</span> <span class="nav-text">Turf.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#geojson-io"><span class="nav-number">4.</span> <span class="nav-text">geojson.io</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#サンプルプロジェクト"><span class="nav-number">5.</span> <span class="nav-text">サンプルプロジェクト</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

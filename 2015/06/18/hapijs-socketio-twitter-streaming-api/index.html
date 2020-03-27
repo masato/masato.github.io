@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Hapi.jsとSocket.IOの練習として、前回はSocket.IOサーバー側でsetIntervalの5秒間隔でダミーのメッセージをemitするサンプルを作りました。今回はもう少し実践的にTwitter Streaming APIのPOST statuses&#x2F;filterから指定したキーワードをリアルタイム検索してブラウザへ表示するサンプルにしてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hapi.js with Socket.IO - Part2: twitからTwitter Streaming APIを使う">
+<meta property="og:url" content="http://masato.github.io/2015/06/18/hapijs-socketio-twitter-streaming-api/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Hapi.jsとSocket.IOの練習として、前回はSocket.IOサーバー側でsetIntervalの5秒間隔でダミーのメッセージをemitするサンプルを作りました。今回はもう少し実践的にTwitter Streaming APIのPOST statuses&#x2F;filterから指定したキーワードをリアルタイム検索してブラウザへ表示するサンプルにしてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/06/18/hapijs-socketio-twitter-streaming-api/tweet-stream.png">
+<meta property="article:published_time" content="2015-06-18T09:36:50.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.665Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Twitter">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="SocketIO">
+<meta property="article:tag" content="twit">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/06/18/hapijs-socketio-twitter-streaming-api/tweet-stream.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/18/hapijs-socketio-twitter-streaming-api/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Hapi.js with Socket.IO - Part2: twitからTwitter Streaming APIを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/18/hapijs-socketio-twitter-streaming-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hapi.js with Socket.IO - Part2: twitからTwitter Streaming APIを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 18 2015 18:36:50" itemprop="dateCreated datePublished" datetime="2015-06-18T18:36:50+09:00">Jun 18 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Hapi.jsとSocket.IOの練習として、前回はSocket.IOサーバー側でsetIntervalの5秒間隔でダミーのメッセージをemitするサンプルを作りました。今回はもう少し実践的にTwitter Streaming APIのPOST statuses/filterから指定したキーワードをリアルタイム検索してブラウザへ表示するサンプルにしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>と<a href="/2015/06/14/hapijs-socketio/">Socket.IOの練習</a>として、前回はSocket.IOサーバー側でsetIntervalの5秒間隔でダミーのメッセージをemitするサンプルを作りました。今回はもう少し実践的にTwitter Streaming APIの<a href="https://dev.twitter.com/streaming/reference/post/statuses/filter" target="_blank" rel="noopener">POST statuses/filter</a>から指定したキーワードをリアルタイム検索してブラウザへ表示するサンプルにしてみます。</p>
+<a id="more"></a>
+
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>適当なディレクトリにプロジェクトを作成します。リポジトリは<a href="https://github.com/masato/docker-hapi-twitter" target="_blank" rel="noopener">こちら</a>です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ~/node_apps/docker-hapi-twitter</span><br><span class="line">$ tree -aL 2</span><br><span class="line">.</span><br><span class="line">├── .dockerignore</span><br><span class="line">├── .env</span><br><span class="line">├── .gitignore</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── app.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">├── package.json</span><br><span class="line">└── templates</span><br><span class="line">    └── index.html</span><br></pre></td></tr></table></figure>
+
+<h3 id="app-js"><a href="#app-js" class="headerlink" title="app.js"></a>app.js</h3><p>app.jsがエントリポイントです。通常のHTTPサーバーとSocket.IOサーバーの2つをラベルを付けて起動しています。Socket.IOサーバーの方はプラグインとして<code>twitter.js</code>ファイルに実装しました。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#39;user strict&#39;;</span><br><span class="line"></span><br><span class="line">var Hapi &#x3D; require(&#39;hapi&#39;),</span><br><span class="line">    server &#x3D; new Hapi.Server(),</span><br><span class="line">    Path &#x3D; require(&#39;path&#39;);</span><br><span class="line">require(&#39;dotenv&#39;).load();</span><br><span class="line"></span><br><span class="line">server.connection(&#123; port: process.env.API_PORT, labels: [&#39;api&#39;] &#125;);</span><br><span class="line">server.connection(&#123; port: process.env.SOCKETIO_PORT, labels: [&#39;twitter&#39;] &#125;);</span><br><span class="line"></span><br><span class="line">server.views(&#123;</span><br><span class="line">    engines: &#123;</span><br><span class="line">        html: require(&#39;handlebars&#39;)</span><br><span class="line">    &#125;,</span><br><span class="line">    path: Path.join(__dirname, &#39;templates&#39;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.select(&#39;api&#39;).route(&#123;</span><br><span class="line">    method: &#39;GET&#39;,</span><br><span class="line">    path: &#39;&#x2F;&#39;,</span><br><span class="line">    handler: function (request, reply) &#123;</span><br><span class="line">        reply.view(&#39;index&#39;,</span><br><span class="line">                   &#123; socketio_host: (process.env.PUBLIC_IP+&#39;:&#39;</span><br><span class="line">                                     +process.env.SOCKETIO_PORT)&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.register(require(&#39;.&#x2F;twitter&#39;), function(err) &#123;</span><br><span class="line">    if(err) throw err;</span><br><span class="line">    server.start();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="twitter-js"><a href="#twitter-js" class="headerlink" title="twitter.js"></a>twitter.js</h3><p>Twitter APIの認証情報やSocket.IOのポート番号などは<a href="https://www.npmjs.com/package/dotenv" target="_blank" rel="noopener">dotenv</a>が管理する<code>.env</code>ファイルに定義します。<code>.env.default</code>をリネームして使います。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PUBLIC_IP&#x3D;</span><br><span class="line">SOCKETIO_PORT&#x3D;8088</span><br><span class="line">API_PORT&#x3D;8000</span><br><span class="line">TWITTER_KEY&#x3D;</span><br><span class="line">TWITTER_SECRET&#x3D;</span><br><span class="line">TWITTER_TOKEN&#x3D;</span><br><span class="line">TWITTER_TOKEN_SECRET&#x3D;</span><br></pre></td></tr></table></figure>
+
+<p>twitter.jsにhapiのプラグインとしてTwitter Streaming APIの<a href="https://dev.twitter.com/streaming/reference/post/statuses/filter" target="_blank" rel="noopener">POST statuses/filter</a>を実装していきます。Node.jsのTwitter用パッケージはいくつかありますが、<a href="https://github.com/ttezel/twit" target="_blank" rel="noopener">twit</a>がきにいっています。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var Twit &#x3D; require(&#39;twit&#39;),</span><br><span class="line">    moment &#x3D; require(&#39;moment-timezone&#39;),</span><br><span class="line">    _ &#x3D; require(&#39;lodash&#39;),</span><br><span class="line">    colors &#x3D; require(&#39;colors&#39;);</span><br><span class="line"></span><br><span class="line">var T &#x3D; new Twit(&#123;</span><br><span class="line">    consumer_key: process.env.TWITTER_KEY,</span><br><span class="line">    consumer_secret: process.env.TWITTER_SECRET,</span><br><span class="line">    access_token: process.env.TWITTER_TOKEN,</span><br><span class="line">    access_token_secret: process.env.TWITTER_TOKEN_SECRET</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">function formatDate(created_date)&#123;</span><br><span class="line">    return moment(new Date(created_date)).tz(&quot;Asia&#x2F;Tokyo&quot;).format();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function createUrl(screen_name,id_str)&#123;</span><br><span class="line">    return &#39;https:&#x2F;&#x2F;twitter.com&#x2F;&#39;+screen_name+&#39;&#x2F;status&#x2F;&#39;+id_str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function pluckPath(data,path,key,suffix) &#123;</span><br><span class="line">    return _.pluck(_.get(data,path),key)</span><br><span class="line">            .map(function(x) &#123;return suffix+x&#125;)</span><br><span class="line">            .toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function extractData(s) &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">        id: s.id_str,</span><br><span class="line">        url: createUrl(s.user.screen_name,s.id_str),</span><br><span class="line">        profile_image_url: s.user.profile_image_url,</span><br><span class="line">        created_at: formatDate(s.created_at),</span><br><span class="line">        lang: s.lang,</span><br><span class="line">        name: s.user.name,</span><br><span class="line">        screen_name: s.user.screen_name,</span><br><span class="line">        user_url: s.user.url || &#39;&#39;,</span><br><span class="line">        text: s.text,</span><br><span class="line">        source: s.source,</span><br><span class="line">        expanded_url: _.get(s,&#39;entities.urls[0].expanded_url&#39;,&#39;&#39;),</span><br><span class="line">        hashtags: pluckPath(s,&#39;entities.hashtags&#39;,&#39;text&#39;,&quot;#&quot;),</span><br><span class="line">        user_mentions: pluckPath(s,&#39;entities.user_mentions&#39;,&#39;screen_name&#39;,&quot;@&quot;),</span><br><span class="line">        retweeted_status: s.retweeted_status ? true : false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function prettyPrint(tweet) &#123;</span><br><span class="line">    console.log(&#39;tweet: &#39;.magenta.bold + tweet.text);</span><br><span class="line">    console.log(&#39;by:&#39;.green + &#39; @&#39; + tweet.screen_name);</span><br><span class="line">    console.log(&#39;date:&#39;.cyan + &#39; &#39; + tweet.created_at);</span><br><span class="line">    console.log(&#39;--------------------------------------------------------------------------------&#39;.yellow);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exports.register &#x3D; function(server,options,next) &#123;</span><br><span class="line"></span><br><span class="line">    var io &#x3D; require(&#39;socket.io&#39;)(server.select(&#39;twitter&#39;).listener),</span><br><span class="line">        track &#x3D; &#39;babymetal&#39;,</span><br><span class="line">        stream &#x3D; null,</span><br><span class="line">        users &#x3D; [];</span><br><span class="line"></span><br><span class="line">    io.sockets.on(&#39;connection&#39;, function(socket) &#123;</span><br><span class="line"></span><br><span class="line">        if(!_.includes(users, socket.id)) &#123;</span><br><span class="line">            users.push(socket.id);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        var con_msg &#x3D; socket.id + &#39; connected, now: &#39; + users.length; </span><br><span class="line">        console.log(con_msg);</span><br><span class="line">        socket.emit(&#39;connected&#39;, con_msg);</span><br><span class="line"></span><br><span class="line">        socket.on(&#39;disconnect&#39;, function() &#123;</span><br><span class="line">            _.pull(users, socket.id);</span><br><span class="line">            var discon_msg &#x3D; socket.id + &#39; disconnected, now: &#39; + users.length; </span><br><span class="line">            console.log(discon_msg);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        socket.on(&#39;start stream&#39;, function() &#123;</span><br><span class="line">            console.log(socket.id + &#39; start twitter stream&#39;);</span><br><span class="line">            if (stream &#x3D;&#x3D;&#x3D; null) &#123;</span><br><span class="line">                stream &#x3D;  T.stream(&#39;statuses&#x2F;filter&#39;,</span><br><span class="line">                                   &#123;track: track,</span><br><span class="line">                                    language: &#39;ja&#39;&#125;);</span><br><span class="line">            &#125;;</span><br><span class="line">            stream.on(&#39;tweet&#39;, function(tweet) &#123;</span><br><span class="line">                if(users.length &gt; 0) &#123;</span><br><span class="line">                    var data &#x3D; extractData(tweet);</span><br><span class="line">                    prettyPrint(data);</span><br><span class="line">                    socket.emit(&#39;new tweet&#39;, data);</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    stream.stop();</span><br><span class="line">                    stream &#x3D; null;</span><br><span class="line">                    console.log(&#39;stop twitter stream&#39;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    next();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">exports.register.attributes &#x3D; &#123;</span><br><span class="line">    name: &#39;hapi-twitter&#39;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="簡単な仕様"><a href="#簡単な仕様" class="headerlink" title="簡単な仕様"></a>簡単な仕様</h3><p>Node.jsとSocket.IO、Twitter Streaming APIの使い方は以下を参考にしてなるべく効率的なリスナーの使い方にしています。</p>
+<ul>
+<li><a href="http://ikertxu.tumblr.com/post/56686134143/node-js-socket-io-and-the-twitter-streaming-api" target="_blank" rel="noopener">Node.js, Socket.io and the Twitter Streaming API in Heroku</a></li>
+<li><a href="http://blog.safe.com/2014/03/twitter-stream-api-map/" target="_blank" rel="noopener">Using the Twitter Stream API to Visualize Tweets on Google Maps</a></li>
+</ul>
+<p>簡単な仕様を作りました。</p>
+<ul>
+<li>ブラウザからSocket.IOの接続が来てからTwitterのストリームを開始する</li>
+<li>接続しているSocket.IOのクライアントがなくなったらTwitterのストリームは閉じる</li>
+</ul>
+<h3 id="次回はクライアントをReagentで"><a href="#次回はクライアントをReagentで" class="headerlink" title="次回はクライアントをReagentで"></a>次回はクライアントをReagentで</h3><p>キーワードは固定で<code>babymetal</code>にしています。Socket.IOサーバーができたので、次回はキーワードを画面から入力できるようなフォームを<a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>と<a href="http://holmsand.github.io/reagent/" target="_blank" rel="noopener">Reagent</a>で作成する予定です。最終的にはClojureとClojureScriptのフルスタックにしたいです。</p>
+<h3 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h3><p>index.htmlは<a href="http://handlebarsjs.com/" target="_blank" rel="noopener">Handlebars</a>をテンプレートに使いました。Socket.IOの1.0から<code>socket.io.js</code>のクライアントは<a href="http://cdnjs.com/libraries/socket.io" target="_blank" rel="noopener">cdnjs</a>で配布されるようになりました。今回はhapiがサーバーを複数起動できることの確認のためSocket.IOサーバーのポートをHandlebarsに<code></code>を渡してURLを作成します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;ja&quot;&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;utf-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;tweet&lt;&#x2F;title&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;&#x2F;&#x2F;ajax.googleapis.com&#x2F;ajax&#x2F;libs&#x2F;jquery&#x2F;2.1.4&#x2F;jquery.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;http:&#x2F;&#x2F;&#123;&#123;socketio_host&#125;&#125;&#x2F;socket.io&#x2F;socket.io.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      $(function() &#123;</span><br><span class="line">        if(io !&#x3D;&#x3D; undefined) &#123;</span><br><span class="line">          var socket &#x3D; io.connect(&quot;http:&#x2F;&#x2F;&#123;&#123;socketio_host&#125;&#125;&quot;);</span><br><span class="line">          socket.on(&quot;connected&quot;, function(msg) &#123;</span><br><span class="line">            console.log(msg);</span><br><span class="line">            socket.emit(&quot;start stream&quot;);</span><br><span class="line">          &#125;);</span><br><span class="line">          socket.on(&quot;new tweet&quot;, function(tweet)&#123;</span><br><span class="line">            console.log(tweet);</span><br><span class="line">            var img &#x3D; &#39;&lt;img src&#x3D;&quot;&#39; + tweet.profile_image_url + &#39;&quot; width&#x3D;&quot;48&quot; height&#x3D;&quot;48&quot; &#x2F;&gt;&#39;;</span><br><span class="line">            var tweetEl &#x3D; </span><br><span class="line">              &#39;&lt;div&gt;&#39;</span><br><span class="line">              + &#39;&lt;a href&#x3D;&quot;&#39; + tweet.url + &#39;&quot; target&#x3D;&quot;_blank&quot;&gt;&#39; + img + &#39;&lt;&#x2F;a&gt;&#39;</span><br><span class="line">              + &#39;&lt;span style&#x3D;&quot;padding-left:15px&quot;&gt;&#39; + tweet.name + &#39; @&#39; + tweet.screen_name</span><br><span class="line">              + &#39; - &#39; + tweet.created_at</span><br><span class="line">              + &#39;&lt;&#x2F;span&gt;&#39;</span><br><span class="line">              + &#39;&lt;p&gt;&#39; + tweet.text  + &#39;&lt;&#x2F;p&gt;&#39;</span><br><span class="line">              + &#39;&lt;&#x2F;div&gt;&#39;;</span><br><span class="line">            $(&quot;#tweets&quot;).prepend(tweetEl);</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;div id&#x3D;&quot;tweets&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ブラウザで確認"><a href="#ブラウザで確認" class="headerlink" title="ブラウザで確認"></a>ブラウザで確認</h2><p>Docker Composeでサーバーを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-hapi-twitter</span><br><span class="line">$ docker-compose up</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザでhapiのHTTPサーバーのURLを開くとSocket.IOクライアントがサーバーと接続を始めます。</p>
+<p><a href="http://xxx.xxx.xxx.xxx:8000/" target="_blank" rel="noopener">http://xxx.xxx.xxx.xxx:8000/</a></p>
+<p>ストリームで取得したtweetは少しだけ整形して<code>#tweets</code>のdivにprependします。tweetのテキスト本文と、ユーザープロファイルのイメージ、tweetのURL、ユーザー名など表示します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var tweetEl &#x3D; </span><br><span class="line">  &#39;&lt;div&gt;&#39;</span><br><span class="line">  + &#39;&lt;a href&#x3D;&quot;&#39; + tweet.url + &#39;&quot; target&#x3D;&quot;_blank&quot;&gt;&#39; + img + &#39;&lt;&#x2F;a&gt;&#39;</span><br><span class="line">  + &#39;&lt;span style&#x3D;&quot;padding-left:15px&quot;&gt;&#39; + tweet.name + &#39; @&#39; + tweet.screen_name</span><br><span class="line">  + &#39; - &#39; + tweet.created_at</span><br><span class="line">  + &#39;&lt;&#x2F;span&gt;&#39;</span><br><span class="line">  + &#39;&lt;p&gt;&#39; + tweet.text  + &#39;&lt;&#x2F;p&gt;&#39;</span><br><span class="line">  + &#39;&lt;&#x2F;div&gt;&#39;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2015/06/18/hapijs-socketio-twitter-streaming-api/tweet-stream.png" alt="tweet-stream.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Twitter/" rel="tag"># Twitter</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/SocketIO/" rel="tag"># SocketIO</a>
+              <a href="/tags/twit/" rel="tag"># twit</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/17/cloud9-on-idcf-hexo-next/" rel="prev" title="Cloud9 on Docker - Part2: HexoブログをGitHub Pagesにデプロイする">
+      <i class="fa fa-chevron-left"></i> Cloud9 on Docker - Part2: HexoブログをGitHub Pagesにデプロイする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/19/reagent-client-server-connection/" rel="next" title="Reagent入門 - Part3: クライアントとサーバーの通信パターン">
+      Reagent入門 - Part3: クライアントとサーバーの通信パターン <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#app-js"><span class="nav-number">1.1.</span> <span class="nav-text">app.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#twitter-js"><span class="nav-number">1.2.</span> <span class="nav-text">twitter.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#簡単な仕様"><span class="nav-number">1.3.</span> <span class="nav-text">簡単な仕様</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#次回はクライアントをReagentで"><span class="nav-number">1.4.</span> <span class="nav-text">次回はクライアントをReagentで</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html"><span class="nav-number">1.5.</span> <span class="nav-text">index.html</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ブラウザで確認"><span class="nav-number">2.</span> <span class="nav-text">ブラウザで確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

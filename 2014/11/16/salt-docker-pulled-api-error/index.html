@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="After python-pip works correctly in a Salt cluster, I face yet another problem. This time salt.states.dockerio doesn&#39;t work. An error occured when I use docker.pulled state, a message tells that clien">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Salt docker.pulled state causes an APIError">
+<meta property="og:url" content="http://masato.github.io/2014/11/16/salt-docker-pulled-api-error/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="After python-pip works correctly in a Salt cluster, I face yet another problem. This time salt.states.dockerio doesn&#39;t work. An error occured when I use docker.pulled state, a message tells that clien">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-11-16T03:44:13.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.893Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Salt">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="do-release-upgrade">
+<meta property="article:tag" content="docker-py">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/11/16/salt-docker-pulled-api-error/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Salt docker.pulled state causes an APIError | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/11/16/salt-docker-pulled-api-error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Salt docker.pulled state causes an APIError
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Nov 16 2014 12:44:13" itemprop="dateCreated datePublished" datetime="2014-11-16T12:44:13+09:00">Nov 16 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">After python-pip works correctly in a Salt cluster, I face yet another problem. This time salt.states.dockerio doesn't work. An error occured when I use docker.pulled state, a message tells that client and server don't have same version (client  1.15, server 1.14). It seems that this is also Ubuntu upgrade related problems.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>After <code>python-pip</code> works correctly in a Salt cluster, I face yet another problem. This time <code>salt.states.dockerio</code> doesn’t work. An error occured when I use <code>docker.pulled</code> state, a message tells that client and server don’t have same version (client : 1.15, server: 1.14). It seems that this is also Ubuntu upgrade related problems.</p>
+<a id="more"></a>
+
+<h3 id="client-and-server-don’t-have-same-version"><a href="#client-and-server-don’t-have-same-version" class="headerlink" title="client and server don’t have same version"></a>client and server don’t have same version</h3><p>A <code>docker.pulled</code> state causes an error because docker api versions are not same.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo salt <span class="string">'minion1*'</span> state.highstate</span><br><span class="line">...</span><br><span class="line">----------</span><br><span class="line">          ID: jpetazzo/nsenter</span><br><span class="line">    Function: docker.pulled</span><br><span class="line">      Result: False</span><br><span class="line">     Comment: An exception occurred <span class="keyword">in</span> this state: Traceback (most recent call last):</span><br><span class="line">                File <span class="string">"/usr/lib/pymodules/python2.7/salt/state.py"</span>, line 1379, <span class="keyword">in</span> call</span><br><span class="line">                  **cdata[<span class="string">'kwargs'</span>])</span><br><span class="line">                File <span class="string">"/usr/lib/pymodules/python2.7/salt/states/dockerio.py"</span>, line 253, <span class="keyword">in</span> pulled</span><br><span class="line">                  returned = pull(name, tag=tag)</span><br><span class="line">                File <span class="string">"/usr/lib/pymodules/python2.7/salt/modules/dockerio.py"</span>, line 1646, <span class="keyword">in</span> pull</span><br><span class="line">                  client = _get_client()</span><br><span class="line">                File <span class="string">"/usr/lib/pymodules/python2.7/salt/modules/dockerio.py"</span>, line 273, <span class="keyword">in</span> _get_client</span><br><span class="line">                  client._version = client.version()[<span class="string">'ApiVersion'</span>]</span><br><span class="line">                File <span class="string">"/usr/local/lib/python2.7/dist-packages/docker/client.py"</span>, line 1011, <span class="keyword">in</span> version</span><br><span class="line">                  <span class="built_in">return</span> self._result(self._get(self._url(<span class="string">"/version"</span>)), True)</span><br><span class="line">                File <span class="string">"/usr/local/lib/python2.7/dist-packages/docker/client.py"</span>, line 93, <span class="keyword">in</span> _result</span><br><span class="line">                  self._raise_for_status(response)</span><br><span class="line">                File <span class="string">"/usr/local/lib/python2.7/dist-packages/docker/client.py"</span>, line 89, <span class="keyword">in</span> _raise_for_status</span><br><span class="line">                  raise errors.APIError(e, response, explanation=explanation)</span><br><span class="line">              APIError: 404 Client Error: Not Found (<span class="string">"client and server don't have same version (client : 1.15, server: 1.14)"</span>)</span><br><span class="line">     Changes:</span><br><span class="line">----------</span><br><span class="line">          ID: nsenter-container</span><br><span class="line">    Function: docker.installed</span><br><span class="line">        Name: nsenter</span><br><span class="line">      Result: False</span><br><span class="line">     Comment: image <span class="string">"jpetazzo/nsenter"</span> does not exist</span><br><span class="line">     Changes:</span><br></pre></td></tr></table></figure>
+
+<p>I use a <a href="http://docs.saltstack.com/en/latest/ref/states/all/salt.states.pkg.html#salt.states.pkg.latest" target="_blank" rel="noopener">pkg.latest</a> state ensuring lxc-docker package is always latest. It seems that there is no problem.</p>
+<figure class="highlight yml"><figcaption><span>/srv/salt/docker/init.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">include:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">common</span></span><br><span class="line"></span><br><span class="line"><span class="attr">python-pip:</span></span><br><span class="line">  <span class="attr">cmd:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">run</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">cwd :</span> <span class="string">/</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">easy_install</span> <span class="string">--script-dir=/usr/bin</span> <span class="string">-U</span> <span class="string">pip</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">reload_modules:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker-py:</span></span><br><span class="line">  <span class="attr">pip.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">pkg-core</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">cmd:</span> <span class="string">python-pip</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker-dependencies:</span></span><br><span class="line">  <span class="attr">pkg.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">pkgs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">iptables</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ca-certificates</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">lxc</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker-repo:</span></span><br><span class="line">  <span class="attr">pkgrepo.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">humanname:</span> <span class="string">Docker</span> <span class="string">Repo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">deb</span> <span class="string">https://get.docker.io/ubuntu</span> <span class="string">docker</span> <span class="string">main</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">key_url:</span> <span class="string">https://get.docker.io/gpg</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkgrepo:</span> <span class="string">docker-repo</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">pkg-core</span></span><br><span class="line"></span><br><span class="line"><span class="attr">lxc-docker:</span></span><br><span class="line">  <span class="attr">pkg.latest:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">docker-dependencies</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker:</span></span><br><span class="line">  <span class="string">service.running</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jpetazzo/nsenter:</span></span><br><span class="line">  <span class="attr">docker.pulled:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">jpetazzo/nsenter:latest</span></span><br><span class="line"></span><br><span class="line"><span class="attr">nsenter-container:</span></span><br><span class="line">  <span class="attr">docker.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nsenter</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">jpetazzo/nsenter</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/bin:</span> <span class="string">/target</span></span><br><span class="line"></span><br><span class="line"><span class="string">/usr/local/bin/nse:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://docker/nse</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">775</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker-is-not-updated"><a href="#Docker-is-not-updated" class="headerlink" title="Docker is not updated"></a>Docker is not updated</h3><p>I realized that lxc-docker package was not updated after hit <code>docker version</code> command to a problematic minion. </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo salt <span class="string">'minion1.*'</span> cmd.run <span class="string">'docker version'</span></span><br><span class="line">minion2.cs29dcloud.internal:</span><br><span class="line">    Client version: 1.2.0</span><br><span class="line">    Client API version: 1.14</span><br><span class="line">    Go version (client): go1.3.1</span><br><span class="line">    Git commit (client): fa7b24f</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.2.0</span><br><span class="line">    Server API version: 1.14</span><br><span class="line">    Go version (server): go1.3.1</span><br><span class="line">    Git commit (server): fa7b24f</span><br></pre></td></tr></table></figure>
+
+<p>Then I logged in to this minion and upgrade packages manually. Unfortunately, it said that everything was updated.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+
+<h3 id="apt-sources-list-is-disabled-after-upgraded-to-14-04"><a href="#apt-sources-list-is-disabled-after-upgraded-to-14-04" class="headerlink" title="apt sources.list is disabled after upgraded to 14.04"></a>apt sources.list is disabled after upgraded to 14.04</h3><p>I checked an apt sources.list and found that docker repository was disabled when I executed <code>do-release-upgrade</code> to 14.04.</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">cat</span> /etc/apt/sources.<span class="keyword">list</span>.d/docker.<span class="keyword">list</span></span><br><span class="line"># <span class="keyword">deb</span> http://<span class="built_in">get</span>.docker.io/ubuntu docker main # disabled <span class="keyword">on</span> upgrade <span class="keyword">to</span> trusty</span><br></pre></td></tr></table></figure>
+
+<p>Finally, a lxc-docker is updated and server API version has same 1.15 version with docker-py.</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo salt-call pkg.refresh_db</span><br><span class="line">$ docker version</span><br><span class="line">Client version: 1.3.1</span><br><span class="line">Client API version: 1.15</span><br><span class="line">Go version (client): go1.3.3</span><br><span class="line">Git commit (client): 4e9bbfa</span><br><span class="line">OS/Arch (client): linux/amd64</span><br><span class="line">Server version: 1.3.1</span><br><span class="line">Server API version: 1.15</span><br><span class="line">Go version (server): go1.3.3</span><br><span class="line">Git commit (server): 4e9bbfa</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Salt/" rel="tag"># Salt</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/do-release-upgrade/" rel="tag"># do-release-upgrade</a>
+              <a href="/tags/docker-py/" rel="tag"># docker-py</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/11/16/salt-pip-installed-unavailable/" rel="prev" title="State pip.installed found in sls xxx is unavailable">
+      <i class="fa fa-chevron-left"></i> State pip.installed found in sls xxx is unavailable
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/11/17/salt-on-idcf-cloud-install/" rel="next" title="Salt on IDCF クラウド - Part1: インストールとGrain">
+      Salt on IDCF クラウド - Part1: インストールとGrain <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#client-and-server-don’t-have-same-version"><span class="nav-number">1.</span> <span class="nav-text">client and server don’t have same version</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-is-not-updated"><span class="nav-number">2.</span> <span class="nav-text">Docker is not updated</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apt-sources-list-is-disabled-after-upgraded-to-14-04"><span class="nav-number">3.</span> <span class="nav-text">apt sources.list is disabled after upgraded to 14.04</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Raspberry Pi 3からSensorTagの環境データを取得します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 1: Raspberry Pi 3">
+<meta property="og:url" content="http://masato.github.io/2017/07/27/sensortag-kafka-python-spark-streaming-1/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Raspberry Pi 3からSensorTagの環境データを取得します。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-07-27T04:15:19.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.895Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Kafka">
+<meta property="article:tag" content="SensorTag">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Spark">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2017/07/27/sensortag-kafka-python-spark-streaming-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 1: Raspberry Pi 3 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/07/27/sensortag-kafka-python-spark-streaming-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 1: Raspberry Pi 3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 27 2017 13:15:19" itemprop="dateCreated datePublished" datetime="2017-07-27T13:15:19+09:00">Jul 27 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Raspberry Pi 3からSensorTagの環境データを取得します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　このシリーズではRaspberry Pi 3からSensorTagの環境データを取得します。その後にKafkaを経由したSpark Streamingでウィンド分析するPythonのコードを書いてみます。<br>　<br>　Raspberry Pi 3のセットアップ方法は多くの<a href="https://masato.github.io/2017/01/29/eclipse-iot-kura-install/">サンプル</a>があります。ここでは簡単にSensorTagの環境データを取得するための準備をします。</p>
+<a id="more"></a>
+
+<h2 id="用意するもの"><a href="#用意するもの" class="headerlink" title="用意するもの"></a>用意するもの</h2><p>　Raspberry Pi 3はWi-FiとBluetoothを内蔵しています。ドングルが不要になり用意するものが減りました。この例ではUSB-A端子がある古いMacBook Pro (macOS Sierra 10.12.6)を開発用端末に使っています。Raspberry Pi 3とEthernet接続する周辺機器を用意します。
+　</p>
+<ul>
+<li><a href="https://www.amazon.co.jp/dp/B00LVH885U" target="_blank" rel="noopener">USB2.0 有線LANアダプタ</a></li>
+<li><a href="https://www.amazon.co.jp/dp/B008RVY7K8/" target="_blank" rel="noopener">Ethernetケーブル</a></li>
+</ul>
+<p>　テキサスインスツルメンツのSensorTagはRaspberry Pi 3とBluetooth接続して温度や湿度といった環境データを簡単に取得することができます。
+　</p>
+<ul>
+<li><a href="http://www.tij.co.jp/tool/jp/TIDC-CC2650STK-SENSORTAG" target="_blank" rel="noopener">CC2650</a></li>
+</ul>
+<h2 id="macOSでRaspbian-Liteイメージを焼く"><a href="#macOSでRaspbian-Liteイメージを焼く" class="headerlink" title="macOSでRaspbian Liteイメージを焼く"></a>macOSでRaspbian Liteイメージを焼く</h2><p>　オフィシャルの<a href="https://www.raspberrypi.org/documentation/installation/installing-images/mac.md" target="_blank" rel="noopener">Installing operating system images on Mac OS</a>の手順に従います。SDカードのデバイス名を確認してunmountします。この例では/dev/disk2です。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ diskutil list</span><br><span class="line"><span class="built_in">..</span>.</span><br><span class="line">/dev/disk2 (internal, physical):</span><br><span class="line">   #:                      <span class="built_in"> TYPE </span>NAME                    SIZE       IDENTIFIER</span><br><span class="line">   0:     FDisk_partition_scheme                        <span class="number">*15</span>.6 GB    disk2</span><br><span class="line">   1:             Windows_FAT_32 <span class="literal">NO</span> NAME                 15.6 GB    disk2s1</span><br><span class="line"></span><br><span class="line">$ diskutil unmountDisk /dev/disk2</span><br></pre></td></tr></table></figure>
+
+<p>　Raspbian Jessie Liteを<a href="https://www.raspberrypi.org/downloads/raspbian/" target="_blank" rel="noopener">ダウンロード</a>してSDカードに焼きます。SSHの有効化も忘れずに行います。</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">$ cd ~/Downloads</span><br><span class="line">$ wget http://director.downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite<span class="string">-2017</span><span class="string">-07</span><span class="string">-05</span>/2017<span class="string">-07</span><span class="string">-05</span>-raspbian-jessie-lite.zip</span><br><span class="line">$ unzip 2017<span class="string">-07</span><span class="string">-05</span>-raspbian-jessie-lite.zip</span><br><span class="line">$ sudo dd bs=1m if=2017<span class="string">-07</span><span class="string">-05</span>-raspbian-jessie-lite.img of=/dev/rdisk2</span><br><span class="line">$ touch /Volumes/boot/ssh</span><br><span class="line">$ diskutil unmountDisk /dev/disk2</span><br></pre></td></tr></table></figure>
+
+<h3 id="mDNSでSSH接続する"><a href="#mDNSでSSH接続する" class="headerlink" title="mDNSでSSH接続する"></a>mDNSでSSH接続する</h3><p>　macOSはRaspberry Pi 3とEthernetケーブル接続をして簡単にSSHできます。デフォルトでは以下のユーザーが設定されています。</p>
+<ul>
+<li>username: pi</li>
+<li>password: raspberry</li>
+</ul>
+<figure class="highlight julia"><table><tr><td class="code"><pre><span class="line">$ ssh <span class="literal">pi</span><span class="meta">@raspberrypi</span>.<span class="keyword">local</span></span><br></pre></td></tr></table></figure>
+
+<p>　macOSの公開鍵をRaspberry Pi 3の`~/.ssh/authorized_keys’にコピーします。</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="symbol">$</span> mkdir -p -m <span class="number">700</span> ~/.ssh</span><br><span class="line"><span class="symbol">$</span> cat &lt;&lt; EOF &gt; ~/.ssh/authorized_keys</span><br><span class="line"><span class="function"><span class="title">ssh</span></span>-rsa AAAA...</span><br><span class="line">EOF</span><br><span class="line"><span class="symbol">$</span> chmod <span class="number">600</span> ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>　ログインし直します。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">exit</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="無線LAN"><a href="#無線LAN" class="headerlink" title="無線LAN"></a>無線LAN</h3><p>　無線LANのアクセスポイント(ESSID)を設定してネットワークを再起動します。<code>ping</code>からインターネット接続を確認します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">'wpa_passphrase [ESSID] [パスワード] &gt;&gt; /etc/wpa_supplicant/wpa_supplicant.conf'</span></span><br><span class="line">$ sudo ifdown wlan0</span><br><span class="line">$ sudo ifup wlan0</span><br><span class="line">$<span class="built_in"> ping </span>-c 1 www.yahoo.co.jp</span><br></pre></td></tr></table></figure>
+
+<h3 id="raspi-config"><a href="#raspi-config" class="headerlink" title="raspi-config"></a>raspi-config</h3><p>　<code>raspi-config</code>でパスワードとタイムゾーンを変更します。</p>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line">$ sudo raspi-<span class="built_in">config</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1 Change User Password</li>
+<li>4 Localisation Options<ul>
+<li>I2 Change Timezone</li>
+<li>Asia &gt; Tokyo</li>
+</ul>
+</li>
+</ul>
+<h3 id="apt-get"><a href="#apt-get" class="headerlink" title="apt-get"></a>apt-get</h3><p>　日本のミラーサイトに変更してパッケージを最新にします。ファイルを編集するためにvimをインストールします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo sed -i<span class="string">".bak"</span> -e <span class="string">"s/mirrordirector.raspbian.org/ftp.jaist.ac.jp/g"</span> /etc/apt/sources.list</span><br><span class="line">$ sudo apt-<span class="builtin-name">get</span> update &amp;&amp; sudo apt-<span class="builtin-name">get</span> dist-upgrade -y</span><br><span class="line">$ sudo apt-<span class="builtin-name">get</span> install vim -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="BluetoothとSensorTag"><a href="#BluetoothとSensorTag" class="headerlink" title="BluetoothとSensorTag"></a>BluetoothとSensorTag</h2><p>　SensorTagの電源を入れてRaspberry Pi 3からスキャンします。BDアドレスを確認します。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ sudo hcitool lescan</span><br><span class="line">...</span><br><span class="line"><span class="string">B0:</span><span class="string">B4:</span><span class="number">48</span>:<span class="string">BE:</span><span class="number">5</span><span class="string">E:</span><span class="number">00</span> CC2650 SensorTag</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="gatttool"><a href="#gatttool" class="headerlink" title="gatttool"></a>gatttool</h3><p>　<code>gatttool</code>コマンドのインタラクティブモードで確認したBDアドレスのSensorTagに接続します。</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">$ gatttool -b B0:B4:48:BE:5E:00 --interactive</span><br><span class="line">[<span class="string">B0:B4:48:BE:5E:00</span>][<span class="symbol">LE</span>]&gt; connect</span><br><span class="line">Attempting to connect to B0:B4:48:BE:5E:00</span><br><span class="line">Connection successful</span><br><span class="line">[<span class="string">B0:B4:48:BE:5E:00</span>][<span class="symbol">LE</span>]&gt;</span><br></pre></td></tr></table></figure>
+
+<p>　<a href="http://blog.livedoor.jp/sce_info3-craft/archives/8932936.html" target="_blank" rel="noopener">Raspberry PiでTI製センサータグ(CC2650)の値を取得してみる</a>を参考にしてセンサーの値を取得します。</p>
+<ul>
+<li>0x24(config)に01を書いて有効にする</li>
+<li>0x21からバイトを取得する</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">[<span class="string">B0:B4:48:BE:5E:00</span>][<span class="symbol">LE</span>]&gt; char-write-cmd 0x24 01</span><br><span class="line">[<span class="string">B0:B4:48:BE:5E:00</span>][<span class="symbol">LE</span>]&gt; char-read-hnd 0x21</span><br><span class="line">Characteristic value/descriptor: 94 0b f0 0d</span><br></pre></td></tr></table></figure>
+
+<p>　4バイトの値が得られます。<a href="http://processors.wiki.ti.com/index.php/SensorTag_User_Guide#IR_Temperature_Sensor" target="_blank" rel="noopener">SensorTag User Guide</a>によると順番に以下のデータになります。</p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">ObjLSB ObjMSB AmbLSB AmbMSB</span></span><br></pre></td></tr></table></figure>
+
+<p>　Python REPLから取得した4バイトを摂氏に変換して周辺温度と物体温度を出力します。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>raw_data = <span class="string">'94 0b f0 0d'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>rval = raw_data.split()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>obj_temp = int(rval[<span class="number">1</span>] + rval[<span class="number">0</span>], <span class="number">16</span>) / <span class="number">4</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>amb_temp = int(rval[<span class="number">3</span>] + rval[<span class="number">2</span>], <span class="number">16</span>) / <span class="number">4</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>obj_temp_celcius = obj_temp * <span class="number">0.03125</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>amb_temp_celcius = amb_temp * <span class="number">0.03125</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(<span class="string">"周囲温度 : &#123;:.2f&#125; ℃"</span>.format(amb_temp_celcius))</span><br><span class="line">周囲温度 : <span class="number">27.88</span> ℃</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(<span class="string">"物体温度 : &#123;:.2f&#125; ℃"</span>.format(obj_temp_celcius))</span><br><span class="line">物体温度 : <span class="number">23.16</span> ℃</span><br></pre></td></tr></table></figure>
+
+<h3 id="bluepyのsensortagコマンド"><a href="#bluepyのsensortagコマンド" class="headerlink" title="bluepyのsensortagコマンド"></a>bluepyのsensortagコマンド</h3><p>　PythonからBluetooth LEのデバイスを操作するために<a href="https://github.com/IanHarvey/bluepy.git" target="_blank" rel="noopener">bluepy</a>をインストールします。</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get <span class="keyword">install</span> python-pip libglib2.<span class="number">0</span>-dev -y</span><br><span class="line">$ sudo pip <span class="keyword">install</span> bluepy</span><br></pre></td></tr></table></figure>
+
+<p>　<code>sensortag</code>コマンドが使えるようになります。<code>-T</code>フラグを付けBDアドレスを引数に実行します。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ sensortag -T <span class="string">B0:</span><span class="string">B4:</span><span class="number">48</span>:<span class="string">BE:</span><span class="number">5</span><span class="string">E:</span><span class="number">00</span></span><br></pre></td></tr></table></figure>
+
+<p>　<code>-T</code>フラグを指定すると周囲温度、物体温度の順番に取得できます。</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">Connecting</span> <span class="selector-tag">to</span> <span class="selector-tag">B0</span><span class="selector-pseudo">:B4</span><span class="selector-pseudo">:48</span><span class="selector-pseudo">:BE</span><span class="selector-pseudo">:5E</span><span class="selector-pseudo">:00</span></span><br><span class="line">(<span class="string">'Temp: '</span>, (<span class="number">28.34375</span>, <span class="number">24.25</span>))</span><br><span class="line">(<span class="string">'Temp: '</span>, (<span class="number">28.375</span>, <span class="number">23.28125</span>))</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="SensorTag"><a href="#SensorTag" class="headerlink" title="SensorTag"></a>SensorTag</h3><p>　周囲温度(ambient)と物体温度(object)、湿度(humidy)を取得するPythonのスクリプトを書きます。</p>
+<figure class="highlight python"><figcaption><span>~/python_apps/temp.py </span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> bluepy.sensortag <span class="keyword">import</span> SensorTag</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    argvs = sys.argv</span><br><span class="line">    argc = len(argvs)</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>):</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Usage: # python &#123;0&#125; bd_address'</span>.format(argvs[<span class="number">0</span>])</span><br><span class="line">        quit()</span><br><span class="line">    host = argvs[<span class="number">1</span>]</span><br><span class="line">    print(<span class="string">'Connecting to '</span> + host)</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">5.0</span></span><br><span class="line">    count = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">    tag = SensorTag(host)</span><br><span class="line"></span><br><span class="line">    tag.IRtemperature.enable()</span><br><span class="line">    tag.humidity.enable()</span><br><span class="line"></span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">    counter = <span class="number">0</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        counter += <span class="number">1</span></span><br><span class="line">        tAmb, tObj = tag.IRtemperature.read()</span><br><span class="line"></span><br><span class="line">        print(<span class="string">"温度: 周囲: &#123;0:.2f&#125;, 物体: &#123;1:.2f&#125;"</span>.format(tAmb, tObj) )</span><br><span class="line">        humidy, RH = tag.humidity.read()</span><br><span class="line">        print(<span class="string">"湿度: humidy: &#123;0:.2f&#125;, RH: &#123;1:.2f&#125;"</span>.format(humidy, RH))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> counter &gt;= count:</span><br><span class="line">           <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        tag.waitForNotifications(timeout)</span><br><span class="line"></span><br><span class="line">    tag.disconnect()</span><br><span class="line">    <span class="keyword">del</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+
+<p>　SensorTagのBDアドレスを引数にスクリプトを実行します。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ python temp.py <span class="string">B0:</span><span class="string">B4:</span><span class="number">48</span>:<span class="string">BE:</span><span class="number">5</span><span class="string">E:</span><span class="number">00</span></span><br></pre></td></tr></table></figure>
+
+<p>　5秒間隔で3回計測した結果を出力します。エアコンが効いてきたので快適になりました。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">Connecting</span> <span class="string">to</span> <span class="string">B0:B4:48:BE:5E:00</span></span><br><span class="line"><span class="string">温度:</span> <span class="string">周囲:</span> <span class="number">25.03</span><span class="string">,</span> <span class="string">物体:</span> <span class="number">19.94</span></span><br><span class="line"><span class="string">湿度:</span> <span class="attr">humidy:</span> <span class="number">25.25</span><span class="string">,</span> <span class="attr">RH:</span> <span class="number">69.47</span></span><br><span class="line"><span class="string">温度:</span> <span class="string">周囲:</span> <span class="number">25.06</span><span class="string">,</span> <span class="string">物体:</span> <span class="number">20.69</span></span><br><span class="line"><span class="string">湿度:</span> <span class="attr">humidy:</span> <span class="number">25.25</span><span class="string">,</span> <span class="attr">RH:</span> <span class="number">69.37</span></span><br><span class="line"><span class="string">温度:</span> <span class="string">周囲:</span> <span class="number">25.06</span><span class="string">,</span> <span class="string">物体:</span> <span class="number">20.69</span></span><br><span class="line"><span class="string">湿度:</span> <span class="attr">humidy:</span> <span class="number">25.25</span><span class="string">,</span> <span class="attr">RH:</span> <span class="number">69.37</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+              <a href="/tags/SensorTag/" rel="tag"># SensorTag</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/02/06/eclipse-iot-hello-world/" rel="prev" title="Eclipse IoT の紹介 - Part3: Eclipse KuraでOSGiのHello World">
+      <i class="fa fa-chevron-left"></i> Eclipse IoT の紹介 - Part3: Eclipse KuraでOSGiのHello World
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/07/28/sensortag-kafka-python-spark-streaming-2/" rel="next" title="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 2: KafkaとLandoop">
+      PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 2: KafkaとLandoop <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用意するもの"><span class="nav-number">1.</span> <span class="nav-text">用意するもの</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#macOSでRaspbian-Liteイメージを焼く"><span class="nav-number">2.</span> <span class="nav-text">macOSでRaspbian Liteイメージを焼く</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mDNSでSSH接続する"><span class="nav-number">2.1.</span> <span class="nav-text">mDNSでSSH接続する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#無線LAN"><span class="nav-number">2.2.</span> <span class="nav-text">無線LAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#raspi-config"><span class="nav-number">2.3.</span> <span class="nav-text">raspi-config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apt-get"><span class="nav-number">2.4.</span> <span class="nav-text">apt-get</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BluetoothとSensorTag"><span class="nav-number">3.</span> <span class="nav-text">BluetoothとSensorTag</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gatttool"><span class="nav-number">3.1.</span> <span class="nav-text">gatttool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bluepyのsensortagコマンド"><span class="nav-number">3.2.</span> <span class="nav-text">bluepyのsensortagコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SensorTag"><span class="nav-number">3.3.</span> <span class="nav-text">SensorTag</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

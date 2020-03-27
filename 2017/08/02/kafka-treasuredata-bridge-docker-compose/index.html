@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="td-agentコンテナとKafka Consumerコンテナを使いKafkaからTreasure DataへブリッジするDocker Composeサービスを起動します。別のポストではPySpark Streamingのウィンドウ集計した結果をKafkaのトピックに出力するコードを書きました。このストリーム処理はデータパイプラインの前処理やエンリッチメントに相当します。後続にビッグデータのバッチ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KafkaからTreasure DataにブリッジするDocker Compose">
+<meta property="og:url" content="http://masato.github.io/2017/08/02/kafka-treasuredata-bridge-docker-compose/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="td-agentコンテナとKafka Consumerコンテナを使いKafkaからTreasure DataへブリッジするDocker Composeサービスを起動します。別のポストではPySpark Streamingのウィンドウ集計した結果をKafkaのトピックに出力するコードを書きました。このストリーム処理はデータパイプラインの前処理やエンリッチメントに相当します。後続にビッグデータのバッチ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/08/02/kafka-treasuredata-bridge-docker-compose/treasuredata.png">
+<meta property="article:published_time" content="2017-08-02T03:24:03.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.722Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="TreasureData">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/08/02/kafka-treasuredata-bridge-docker-compose/treasuredata.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/08/02/kafka-treasuredata-bridge-docker-compose/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>KafkaからTreasure DataにブリッジするDocker Compose | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/08/02/kafka-treasuredata-bridge-docker-compose/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          KafkaからTreasure DataにブリッジするDocker Compose
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 2 2017 12:24:03" itemprop="dateCreated datePublished" datetime="2017-08-02T12:24:03+09:00">Aug 2 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">td-agentコンテナとKafka Consumerコンテナを使いKafkaからTreasure DataへブリッジするDocker Composeサービスを起動します。別のポストではPySpark Streamingのウィンドウ集計した結果をKafkaのトピックに出力するコードを書きました。このストリーム処理はデータパイプラインの前処理やエンリッチメントに相当します。後続にビッグデータのバッチ処理を想定してTreasure Dataに保存します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　td-agentコンテナとKafka Consumerコンテナを使いKafkaから<a href="https://www.treasuredata.co.jp/" target="_blank" rel="noopener">Treasure Data</a>へブリッジするDocker Composeサービスを起動します。<a href="https://masato.github.io/2017/08/02/sensortag-kafka-python-spark-streaming-6/">別のポスト</a>ではPySpark Streamingのウィンドウ集計した結果をKafkaのトピックに出力するコードを書きました。このストリーム処理はデータパイプラインの前処理やエンリッチメントに相当します。後続にビッグデータのバッチ処理を想定してTreasure Dataに保存します。</p>
+<a id="more"></a>
+
+
+<h2 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h2><p>　最初に今回作成するプロジェクトのディレクトリ構成です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree -a</span><br><span class="line">.</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── .env</span><br><span class="line">├── .gitignore</span><br><span class="line">├── kafka-bridge</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   ├── fluentd-consumer.properties</span><br><span class="line">│   └── log4j.properties</span><br><span class="line">└── td-agent2</span><br><span class="line">    ├── Dockerfile</span><br><span class="line">    └── td-agent.conf</span><br><span class="line"></span><br><span class="line">2 directories, 9 files</span><br></pre></td></tr></table></figure>
+
+<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>　td-agentとKafka ConsumerサービスはそれぞれDockefileを書いてビルドします。Kafkaは<a href="https://hub.docker.com/r/landoop/fast-data-dev/" target="_blank" rel="noopener">landoop/fast-data-dev</a>を利用します。<a href="https://www.confluent.io/product/confluent-open-source/" target="_blank" rel="noopener">Confluent Open Source</a>を同梱しているためKafkaとZooKeeperも起動します。</p>
+<figure class="highlight yaml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka-stack:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FORWARDLOGS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">RUNTESTS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ADV_HOST=&lt;仮想マシンのパブリックIPアドレス&gt;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3030</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9092</span><span class="string">:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8081</span><span class="string">:8081</span></span><br><span class="line">  <span class="attr">td-agent2:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./td-agent2</span></span><br><span class="line">    <span class="attr">env_file:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./.env</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">24224</span><span class="string">:24224</span></span><br><span class="line">  <span class="attr">kafka-bridge:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">./kafka-bridge</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">td-agent</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="env"><a href="#env" class="headerlink" title=".env"></a>.env</h3><p>　Treasure Dataの接続情報は環境変数ファイルの<code>.env</code>に記述しDocker Composeから読み込みます。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TD_API_KEY&#x3D;&lt;YOUR API KEY&gt;</span><br><span class="line">TD_ENDPOINT&#x3D;&lt;TD ENDPOINT&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="td-agent2"><a href="#td-agent2" class="headerlink" title="td-agent2"></a>td-agent2</h2><p>　td-agentのDockerイメージを作成します。</p>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>　<a href="https://docs.treasuredata.com/articles/td-agent" target="_blank" rel="noopener">Overview of Server-Side Agent (td-agent)</a>のインストール手順に従います。<a href="https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh" target="_blank" rel="noopener">install-ubuntu-xenial-td-agent2.sh</a>の中ではsudoも必要です。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:xenial</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo curl -y</span><br><span class="line">RUN curl -L https:&#x2F;&#x2F;toolbelt.treasuredata.com&#x2F;sh&#x2F;install-ubuntu-xenial-td-agent2.sh | sh</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;apt&#x2F;lists&#x2F;* &#x2F;tmp&#x2F;* &#x2F;var&#x2F;tmp&#x2F;*</span><br><span class="line"></span><br><span class="line">ADD td-agent.conf &#x2F;etc&#x2F;td-agent&#x2F;</span><br><span class="line">EXPOSE 24224</span><br><span class="line">CMD [&quot;&#x2F;usr&#x2F;sbin&#x2F;td-agent&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="td-agent-conf"><a href="#td-agent-conf" class="headerlink" title="td-agent.conf"></a>td-agent.conf</h3><p>　td-agent.confは環境変数を<a href="https://docs.fluentd.org/v0.12/articles/faq#how-can-i-use-environment-variables-to-configure-parameters-dynamically" target="_blank" rel="noopener">参照</a>することができます。Treasure Dataへの接続情報を<code>.env</code>ファイルから取得します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;match td.*.*&gt;</span><br><span class="line">  @type tdlog</span><br><span class="line">  endpoint &quot;#&#123;ENV[&#39;TD_ENDPOINT&#39;]&#125;&quot;</span><br><span class="line">  apikey &quot;#&#123;ENV[&#39;TD_API_KEY&#39;]&#125;&quot;</span><br><span class="line">  auto_create_table</span><br><span class="line">  buffer_type file</span><br><span class="line">  buffer_path &#x2F;var&#x2F;log&#x2F;td-agent&#x2F;buffer&#x2F;td</span><br><span class="line">  use_ssl true</span><br><span class="line">  num_threads 8</span><br><span class="line">&lt;&#x2F;match&gt;</span><br><span class="line"></span><br><span class="line">&lt;source&gt;</span><br><span class="line">  @type forward</span><br><span class="line">&lt;&#x2F;source&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="kafka-fluentd-consumer"><a href="#kafka-fluentd-consumer" class="headerlink" title="kafka-fluentd-consumer"></a>kafka-fluentd-consumer</h2><p>　KafkaからTreasure Dataへのブリッジには<a href="https://github.com/treasure-data/kafka-fluentd-consumer" target="_blank" rel="noopener">kafka-fluentd-consumer</a>のJarを利用します。</p>
+<h3 id="Dockerfile-1"><a href="#Dockerfile-1" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p> コンパイル済の<a href="https://github.com/treasure-data/kafka-fluentd-consumer/releases/download/v0.3.1/kafka-fluentd-consumer-0.3.1-all.jar" target="_blank" rel="noopener">kafka-fluentd-consumer-0.3.1-all.jar</a>をダウンロードします。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM java:8-jre</span><br><span class="line">ARG KAFKA_FLUENTD_CONSUMER_VERSION&#x3D;0.3.1</span><br><span class="line"></span><br><span class="line">WORKDIR &#x2F;app</span><br><span class="line"></span><br><span class="line">RUN wget -q -O kafka-fluentd-consumer-all.jar https:&#x2F;&#x2F;github.com&#x2F;treasure-data&#x2F;kafka-fluentd-consumer&#x2F;releases&#x2F;download&#x2F;v$KAFKA_FLUENTD_CONSUMER_VERSION&#x2F;kafka-fluentd-consumer-$KAFKA_FLUENTD_CONSUMER_VERSION-all.jar</span><br><span class="line"></span><br><span class="line">ADD log4j.properties .</span><br><span class="line">ADD fluentd-consumer.properties .</span><br><span class="line"></span><br><span class="line">CMD [&quot;java&quot;, &quot;-Dlog4j.configuration&#x3D;file:&#x2F;&#x2F;&#x2F;app&#x2F;log4j.properties&quot;, &quot;-jar&quot;, &quot;kafka-fluentd-consumer-all.jar&quot;, &quot;fluentd-consumer.properties&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="fluentd-consumer-properties"><a href="#fluentd-consumer-properties" class="headerlink" title="fluentd-consumer.properties"></a>fluentd-consumer.properties</h3><p>　<a href="https://github.com/treasure-data/kafka-fluentd-consumer/blob/master/config/fluentd-consumer.properties" target="_blank" rel="noopener">デフォルト</a>の設定から以下を変更します。<code>fluentd.connect</code>と<code>zookeeper.connect</code>はdocker-compose.ymlを使う場合はそれぞれサービス名を指定します。</p>
+<ul>
+<li>fluentd.connect=&lt;td-agentのホスト名&gt;:24224</li>
+<li>fluentd.tag.prefix=td.&lt;データベース名&gt;.</li>
+<li>fluentd.consumer.topics=&lt;トピック名&gt;</li>
+<li>zookeeper.connect=&lt;ZooKeeperのホスト名&gt;:2181</li>
+<li>group.id=&lt;コンシューマグループ名&gt;</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Fluentd instance destinations.</span><br><span class="line">fluentd.connect&#x3D;td-agent2:24224</span><br><span class="line"></span><br><span class="line"># Dynamic event tag with topic name. </span><br><span class="line">fluentd.tag.prefix&#x3D;td.sensortag_dev.</span><br><span class="line"></span><br><span class="line"># Consumed topics. </span><br><span class="line">fluentd.consumer.topics&#x3D;sensortag-sink</span><br><span class="line"></span><br><span class="line"># The number of threads per consumer streams</span><br><span class="line">fluentd.consumer.threads&#x3D;1</span><br><span class="line"></span><br><span class="line"># The path for backup un-flushed events during shutdown.</span><br><span class="line">fluentd.consumer.backup.dir&#x3D;&#x2F;tmp&#x2F;fluentd-consumer-backup&#x2F;</span><br><span class="line"></span><br><span class="line"># Kafka Consumer related parameters</span><br><span class="line">zookeeper.connect&#x3D;kafka-stack:2181</span><br><span class="line">group.id&#x3D;my-sensortag-sink-group</span><br><span class="line">zookeeper.session.timeout.ms&#x3D;400</span><br><span class="line">zookeeper.sync.time.ms&#x3D;200</span><br><span class="line">auto.commit.interval.ms&#x3D;1000</span><br></pre></td></tr></table></figure>
+
+<h3 id="log4j-properties"><a href="#log4j-properties" class="headerlink" title="log4j.properties"></a>log4j.properties</h3><p>　<a href="https://github.com/treasure-data/kafka-fluentd-consumer/blob/master/config/log4j.properties" target="_blank" rel="noopener">log4j.properties</a>はデフォルトのまま使います。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># log4j logging configuration.</span><br><span class="line"># This is based on Pinterest&#39;s secor</span><br><span class="line"></span><br><span class="line"># root logger.</span><br><span class="line">log4j.rootLogger&#x3D;DEBUG, ROLLINGFILE</span><br><span class="line"></span><br><span class="line">log4j.appender.ROLLINGFILE &#x3D; org.apache.log4j.RollingFileAppender</span><br><span class="line">log4j.appender.ROLLINGFILE.Threshold&#x3D;INFO</span><br><span class="line">log4j.appender.ROLLINGFILE.File&#x3D;&#x2F;tmp&#x2F;fluentd-consumer.log</span><br><span class="line"># keep log files up to 1G</span><br><span class="line">log4j.appender.ROLLINGFILE.MaxFileSize&#x3D;20MB</span><br><span class="line">log4j.appender.ROLLINGFILE.MaxBackupIndex&#x3D;50</span><br><span class="line">log4j.appender.ROLLINGFILE.layout&#x3D;org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.ROLLINGFILE.layout.ConversionPattern&#x3D;%d&#123;ISO8601&#125; [%t] (%C:%L) %-5p %m%n</span><br></pre></td></tr></table></figure>
+
+<h2 id="動作確認"><a href="#動作確認" class="headerlink" title="動作確認"></a>動作確認</h2><p>　Docker Composeのサービスを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>　td-agentのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose <span class="built_in">exec</span> td-agent2 td-agent --version</span><br><span class="line">td-agent 0.12.35</span><br></pre></td></tr></table></figure>
+
+<p>　Spark Streamingを使ったウィンドウ集計の<a href="https://masato.github.io/2017/08/02/sensortag-kafka-python-spark-streaming-6/">サンプル</a>のように<code>fluentd.consumer.topics</code>に指定したtopicへJSONフォーマットでデータを送信します。</p>
+<p>　テストとして<code>kafka-console-producer</code>から直接JSONを送信してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose <span class="built_in">exec</span> kafka-stack kafka-console-producer \</span><br><span class="line">    --broker-list localhost:9092 \</span><br><span class="line">    --topic sensortag-sink</span><br></pre></td></tr></table></figure>
+
+<p>　コマンドを実行後の待機状態でJSON文字列を入力します。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"bid"</span>: <span class="string">"B0:B4:48:BD:DA:03"</span>, <span class="attr">"time"</span>: <span class="number">1501654353</span>, <span class="attr">"humidity"</span>: <span class="number">27.152099609375</span>, <span class="attr">"objecttemp"</span>: <span class="number">21.6875</span>, <span class="attr">"ambient"</span>: <span class="number">27.09375</span>, <span class="attr">"rh"</span>: <span class="number">78.4423828125</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　td-agentはファイルバッファを作成してデフォルトでは5分間隔でTreasure Dataへデータがアップロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose <span class="built_in">exec</span> td-agent2 ls /var/<span class="built_in">log</span>/td-agent/buffer</span><br><span class="line">td.sensortag_dev.sensortag_sink.b555bf24951c65554.log</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/08/02/kafka-treasuredata-bridge-docker-compose/treasuredata.png" alt="treasuredata.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TreasureData/" rel="tag"># TreasureData</a>
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/02/sensortag-kafka-python-spark-streaming-6/" rel="prev" title="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 6: JupyterからPySpark Streamingのウィンドウ集計をする">
+      <i class="fa fa-chevron-left"></i> PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 6: JupyterからPySpark Streamingのウィンドウ集計をする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/04/yahoo-geocoder-turfjs-polygon/" rel="next" title="Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する">
+      Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose"><span class="nav-number">1.</span> <span class="nav-text">Docker Compose</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">1.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#env"><span class="nav-number">1.2.</span> <span class="nav-text">.env</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#td-agent2"><span class="nav-number">2.</span> <span class="nav-text">td-agent2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#td-agent-conf"><span class="nav-number">2.2.</span> <span class="nav-text">td-agent.conf</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka-fluentd-consumer"><span class="nav-number">3.</span> <span class="nav-text">kafka-fluentd-consumer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile-1"><span class="nav-number">3.1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fluentd-consumer-properties"><span class="nav-number">3.2.</span> <span class="nav-text">fluentd-consumer.properties</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#log4j-properties"><span class="nav-number">3.3.</span> <span class="nav-text">log4j.properties</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#動作確認"><span class="nav-number">4.</span> <span class="nav-text">動作確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Getting Startedで作成したプロジェクトにactionhero-tutorialを読みながらチュートリアルを実行していきます。写経していたらチュートリアルの翻訳みたいになりました。技術翻訳は楽しい作業なので気分転換になります。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="actionhero.js入門 - Part2: チュートリアル (アクションの作成)">
+<meta property="og:url" content="http://masato.github.io/2015/06/21/actionherojs-tutorial/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Getting Startedで作成したプロジェクトにactionhero-tutorialを読みながらチュートリアルを実行していきます。写経していたらチュートリアルの翻訳みたいになりました。技術翻訳は楽しい作業なので気分転換になります。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-06-21T12:41:14.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.534Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="actionherojs">
+<meta property="article:tag" content="API">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="async">
+<meta property="article:tag" content="DockerCompose">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/21/actionherojs-tutorial/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>actionhero.js入門 - Part2: チュートリアル (アクションの作成) | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/21/actionherojs-tutorial/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          actionhero.js入門 - Part2: チュートリアル (アクションの作成)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 21 2015 21:41:14" itemprop="dateCreated datePublished" datetime="2015-06-21T21:41:14+09:00">Jun 21 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Getting Startedで作成したプロジェクトにactionhero-tutorialを読みながらチュートリアルを実行していきます。写経していたらチュートリアルの翻訳みたいになりました。技術翻訳は楽しい作業なので気分転換になります。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/06/20/actionherojs-install/">Getting Started</a>で作成したプロジェクトに<a href="https://github.com/evantahler/actionhero-tutorial" target="_blank" rel="noopener">actionhero-tutorial</a>を読みながらチュートリアルを実行していきます。写経していたらチュートリアルの翻訳みたいになりました。技術翻訳は楽しい作業なので気分転換になります。</p>
+<a id="more"></a>
+
+<h2 id="プロジェクトの準備"><a href="#プロジェクトの準備" class="headerlink" title="プロジェクトの準備"></a>プロジェクトの準備</h2><p>今回の作業はこちらの<a href="https://github.com/masato/docker-actionhero/tree/actions" target="_blank" rel="noopener">リポジトリ</a>にpushしています。</p>
+<h3 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h3><p><a href="/2015/06/20/actionherojs-install/">前回</a>作成したプロジェクトに移動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker_actionhero</span><br></pre></td></tr></table></figure>
+
+<p>雛形のpackage.jsonをblog用に編集します。</p>
+<figure class="highlight"><figcaption><span>~/node_apps/docker_actionhero/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line"> &#123;</span><br><span class="line">  <span class="attr">"author"</span>      : <span class="string">"Masato Shimizu &lt;ma6ato@gmail.com&gt;"</span>,</span><br><span class="line">  <span class="attr">"name"</span>        : <span class="string">"my-blog"</span>,</span><br><span class="line">  <span class="attr">"description"</span> : <span class="string">"my blog project"</span>,</span><br><span class="line">  <span class="attr">"version"</span>     : <span class="string">"0.0.1"</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>プロジェクトをここでコミットしておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git init</span><br><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'first commit'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="チュートリアルのRedisとasync"><a href="#チュートリアルのRedisとasync" class="headerlink" title="チュートリアルのRedisとasync"></a>チュートリアルのRedisとasync</h3><p><a href="/2015/06/20/actionherojs-install/">Getting Started</a>の<a href="https://github.com/evantahler/actionhero-tutorial/" target="_blank" rel="noopener">リポジトリ</a>とジェネレートされるコードに差分がありますが、ジェネレートに自分で写経したコードを使っていきます。</p>
+<p>actionheroのコードは<a href="http://loopback.io/" target="_blank" rel="noopener">LoopBack</a>のようなオートマジックはないので結構がりがりと書きますが、Express<br>でスクラッチから書くよりは安全です。Redisをデータストアに使うサンプルとしても勉強になります。asyncもRedisもちょっとしたデータモデルを設計するとすぐに複雑になります。</p>
+<p>またイニシャライザやアクションのコードは<a href="https://github.com/caolan/async" target="_blank" rel="noopener">async</a>で書きます。チュートリアルasyncの実践にもなります。</p>
+<h3 id="Redisのリンク"><a href="#Redisのリンク" class="headerlink" title="Redisのリンク"></a>Redisのリンク</h3><p>アプリの構成管理はDocker Composeを使います。serverサービスでサーバーを起動します。</p>
+<figure class="highlight yaml"><figcaption><span>~/node_apps/docker-actionhero/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span>  <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">masato/actionhero</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">REDIS_HOST=redisdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8089</span><span class="string">:8080</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis:redisdb</span></span><br><span class="line"><span class="attr">actionhero:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["./node_modules/.bin/actionhero"]</span></span><br><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["npm"]</span></span><br><span class="line"><span class="attr">bash:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["bash"]</span></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./redis:/data</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line"><span class="attr">rediscli:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis</span></span><br></pre></td></tr></table></figure>
+
+<p>serverサービスとredisサービスのリンクしているので、environmentに<code>redis</code>を指定しても動作しそうに見えます。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">REDIS_HOST=redis</span></span><br><span class="line"><span class="attr">links:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">redis</span></span><br></pre></td></tr></table></figure>
+
+<p>なぜか以下のようなエラーが発生してしまいます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server_1 | 2015-06-22 20:45:03 - emerg: Redis Error (client): Error: Redis connection to tcp://172.17.6.22:6379 failed - connect ENOENT</span><br></pre></td></tr></table></figure>
+
+<p>サービス名にエイリアスを作成するとRedisに接続できるようになりました。<code>REDIS_*</code>の環境変数が何か問題を起こしているようです。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">REDIS_HOST=redisdb</span></span><br><span class="line"><span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">8089</span><span class="string">:8080</span></span><br><span class="line"><span class="attr">links:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">redis:redisdb</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="docker-composeのエイリアスの作成"><a href="#docker-composeのエイリアスの作成" class="headerlink" title="docker-composeのエイリアスの作成"></a>docker-composeのエイリアスの作成</h3><p>Docker Composeを使いワンショットでサービスを実行するコマンドがノイズになってきたのでエイリアスを書きます。</p>
+<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> actionhero=<span class="string">'docker-compose run --rm actionhero'</span></span><br></pre></td></tr></table></figure>
+
+<p><code>~/.bashrc</code>を再読込して<code>actionhero</code>のエイリアスをテストします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br><span class="line">$ actionhero <span class="built_in">help</span></span><br><span class="line">info: actionhero &gt;&gt; <span class="built_in">help</span></span><br><span class="line">info: actionhero - a node.js API framework <span class="keyword">for</span> both tcp sockets, web sockets, and http clients.</span><br><span class="line"></span><br><span class="line">Binary options:</span><br><span class="line">* <span class="built_in">help</span> (default)</span><br><span class="line">* start</span><br><span class="line">* startCluster</span><br><span class="line">* generate</span><br><span class="line">* generateAction</span><br><span class="line">* generateTask</span><br><span class="line">* generateInitializer</span><br><span class="line">* generateServer</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="イニシャライザ"><a href="#イニシャライザ" class="headerlink" title="イニシャライザ"></a>イニシャライザ</h2><h3 id="blog"><a href="#blog" class="headerlink" title="blog"></a>blog</h3><p>このセクションでは<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/blog.js" target="_blank" rel="noopener">initializers/blog.js</a>を作成します。ドキュメントは<a href="http://actionherojs.com/docs/core/initializers.html" target="_blank" rel="noopener">Initializers</a>を参照します。</p>
+<p>イニシャライザにはアプリの共通コードを書きます。データベースに接続するモデルやミドルウェアなどです。ここで作成したクラスはapiオブジェクトに追加して使います。例をあげると<code>api.mysql</code>や<code>api.game</code>はアクションやタスクのスコープで利用することができます。別の方法ではサーバーを起動したとき<code>_start</code>メソッド内でコードを実行することもできます。</p>
+<p>今回はblogを構築しているので、最初に投稿やコメントの保存場所が必要です。actionheroでは最初からRedisが<code>api.redis.client</code>を通して使えるのでさっそくデータを保存してみます。<code>blog</code>イニシャライザを新規作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-actionhero</span><br><span class="line">$ actionhero generateInitializer --name=blog</span><br><span class="line">info: actionhero &gt;&gt; generateInitializer</span><br><span class="line">info:  - wrote file <span class="string">'/app/initializers/blog.js'</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/app/initializers/blog.js</code>にblogの共通関数を定義します。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-actionhero/initializers/blog.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    loadPriority:  <span class="number">1000</span>,</span><br><span class="line">    startPriority: <span class="number">1000</span>,</span><br><span class="line">    stopPriority:  <span class="number">1000</span>,</span><br><span class="line"></span><br><span class="line">    initialize: <span class="function"><span class="keyword">function</span>(<span class="params">api, next</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> redis = api.redis.client;</span><br><span class="line">        api.blog = &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// constants</span></span><br><span class="line">            separator: <span class="string">";"</span>,</span><br><span class="line">            postPrefix: <span class="string">"posts"</span>,</span><br><span class="line">            commentPrefix: <span class="string">"comments:"</span>,</span><br><span class="line"></span><br><span class="line">            <span class="comment">// posts</span></span><br><span class="line">            postAdd: <span class="function"><span class="keyword">function</span>(<span class="params">userName, title, content, next</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">var</span> key = <span class="keyword">this</span>.buildTitleKey(userName, title);</span><br><span class="line">                <span class="keyword">var</span> data = &#123;</span><br><span class="line">                    content: content,</span><br><span class="line">                    title: title,</span><br><span class="line">                    userName: userName,</span><br><span class="line">                    createdAt: <span class="keyword">new</span> <span class="built_in">Date</span>().getTime(),</span><br><span class="line">                    updatedAt: <span class="keyword">new</span> <span class="built_in">Date</span>().getTime(),</span><br><span class="line">                &#125;;</span><br><span class="line">                redis.hmset(key, data, <span class="function"><span class="keyword">function</span>(<span class="params">error</span>)</span>&#123;</span><br><span class="line">                    next(error);</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;,</span><br><span class="line">...            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>コードの補足説明です。</p>
+<ul>
+<li><code>posts</code>はRedisのHash型です。contentといくつかのmeta dataを持ちます。</li>
+<li><code>comments</code>もRedisのHash型です。comment毎のkeyを持ちます。</li>
+<li>すべて非同期関数を作成します。asyncの慣例として常に`callback(error,data0)を返します。</li>
+<li>このレイヤーでは認証やバリデーションは気にしません。</li>
+</ul>
+<h3 id="ユーザーと認証"><a href="#ユーザーと認証" class="headerlink" title="ユーザーと認証"></a>ユーザーと認証</h3><p>このセクションでは<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/users.js" target="_blank" rel="noopener">initializers/users.js</a>と<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/package.json" target="_blank" rel="noopener">package.json</a>を作成します。</p>
+<p>blogは通常ユーザー認証が必要です。先ほどと同様にコマンドを実行してinitializerを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ actionhero generateInitializer --name=users</span><br><span class="line">info: actionhero &gt;&gt; generateInitializer</span><br><span class="line">info:  - wrote file <span class="string">'/app/initializers/users.js'</span></span><br></pre></td></tr></table></figure>
+
+<p><code>initializers/users.js</code>は以下のように作成されました。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-actionhero/initializers/users.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> crypto = <span class="built_in">require</span>(<span class="string">'crypto'</span>);</span><br><span class="line"><span class="keyword">var</span> salt = <span class="string">"asdjkafhjewiovnjksdv"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    loadPriority:  <span class="number">1000</span>,</span><br><span class="line">    startPriority: <span class="number">1000</span>,</span><br><span class="line">    stopPriority:  <span class="number">1000</span>,</span><br><span class="line"></span><br><span class="line">    initialize: <span class="function"><span class="keyword">function</span>(<span class="params">api, next</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> redis = api.redis.client;</span><br><span class="line">        api.users = &#123;</span><br><span class="line">            <span class="comment">// constants</span></span><br><span class="line">            usersHash: <span class="string">"users"</span>,</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// methods</span></span><br><span class="line">            add: <span class="function"><span class="keyword">function</span>(<span class="params">userName, password, next</span>)</span>&#123;</span><br><span class="line">                <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">                redis.hget(self.usersHash, userName, <span class="function"><span class="keyword">function</span>(<span class="params">error, data</span>)</span>&#123;</span><br><span class="line">                    <span class="keyword">if</span>(error)&#123;</span><br><span class="line">                        next(error);</span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(data)&#123;</span><br><span class="line">                        next(<span class="string">"userName already exists"</span>);</span><br><span class="line">                    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                        self.cryptPassword(password, <span class="function"><span class="keyword">function</span>(<span class="params">error, hashedPassword</span>)</span>&#123;</span><br><span class="line">                            <span class="keyword">if</span>(error)&#123;</span><br><span class="line">                                next(error);</span><br><span class="line">                            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                                <span class="keyword">var</span> data = &#123;</span><br><span class="line">                                    userName: userName,</span><br><span class="line">                                    hashedPassword: hashedPassword,</span><br><span class="line">                                    createdAt: <span class="keyword">new</span> <span class="built_in">Date</span>().getTime(),</span><br><span class="line">                                &#125;;</span><br><span class="line">                                redis.hset(self.usersHash, userName, <span class="built_in">JSON</span>.stringify(data), <span class="function"><span class="keyword">function</span>(<span class="params">error</span>)</span>&#123;</span><br><span class="line">                                    next(error);</span><br><span class="line">                                &#125;);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;,</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>いくつか注意事項です。</p>
+<ul>
+<li>先ほどと同様にデータは全てRedisのHash型に保存します。</li>
+<li><code>user</code>を削除したときは関連する<code>posts</code>と<code>comments</code>も削除する必要があります。</li>
+<li>md5だけを使って<code>user</code>のパスワードをハッシュ化します。プロダクションではよりセキュアな方法を選択すべきで、たとえば<a href="https://github.com/ncb000gt/node.bcrypt.js/" target="_blank" rel="noopener">BCrypt</a>などを使います。</li>
+</ul>
+<h3 id="ミドルウェアのpublicとprivateなアクション"><a href="#ミドルウェアのpublicとprivateなアクション" class="headerlink" title="ミドルウェアのpublicとprivateなアクション"></a>ミドルウェアのpublicとprivateなアクション</h3><p>次に<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/initializers/middleware.js" target="_blank" rel="noopener">initializers/middleware.js</a>を作成します。ドキュメントは<a href="http://actionherojs.com/docs/core/middleware.html" target="_blank" rel="noopener">Middleware</a>です。</p>
+<p>上記のステップで<code>api.users.authenticate</code>メソッドを作成しましたがまだ使っていません。このメソッドは明らかに保護が必要なメソッドです。ポストを追加したりユーザーを削除したりするメソッドも同様です。ここには何らかのセーフガードを導入する必要があります。</p>
+<p>actionheroではラップして<code>users</code>の全てのイニシャライザのメソッドはアクション内で利用します。さっそくミドルウェアを作成してアクションに追加してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ actionhero generateInitializer --name=middleware</span><br><span class="line">info: actionhero &gt;&gt; generateInitializer</span><br><span class="line">info:  - wrote file <span class="string">'/app/initializers/middleware.js'</span></span><br></pre></td></tr></table></figure>
+
+<p>actionheroでは関数の配列をアクションの前後で実行することができます。今回必要なのは事前チェックでアクションを実行してよいか判断する関数です。この関数からアクション自体にアクセスもできます。データベースのコネクションも使えます。ミドルウェアは<code>authenticated = true</code>をアクションの定義に追加すると有効になって実行されます。ミドルウェア側では<code>api.actions.addPreProcessor(authenticationMiddleware)</code>のようにしてアクションに追加します。</p>
+<h2 id="アクションの作成"><a href="#アクションの作成" class="headerlink" title="アクションの作成"></a>アクションの作成</h2><p>このセクションでは<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/actions/users.js" target="_blank" rel="noopener">actions/users.js</a>と<a href="https://github.com/evantahler/actionhero-tutorial/blob/master/actions/blog.js" target="_blank" rel="noopener">actions/blog.js</a>を作成します。ドキュメントは<a href="http://actionherojs.com/docs/core/actions.html" target="_blank" rel="noopener">Actions</a>です。</p>
+<p><code>posts</code>イニシャライザにgetter/setterなどヘルパー関数を定義しました。この関数はアクション内で使います。1つのファイルに複数のアクションを定義します。<code>comments</code>を使うアクションと<code>posts</code>を使うアクションを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ actionhero generateAction --name=users</span><br><span class="line">$ actionhero generateAction --name=blog</span><br></pre></td></tr></table></figure>
+
+<p>アクションに<code>authenticated = true</code>を追加して必要なセキュリティ機能を有効にします。</p>
+<h2 id="テスト"><a href="#テスト" class="headerlink" title="テスト"></a>テスト</h2><p>Docker Composeからserverサービスをupします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up server</span><br><span class="line">Recreating dockeractionhero_redis_1...</span><br><span class="line">Creating dockeractionhero_server_1...</span><br><span class="line">Attaching to dockeractionhero_server_1</span><br><span class="line">server_1 |</span><br><span class="line">server_1 | &gt; my-blog@0.0.1 start /app</span><br><span class="line">server_1 | &gt; actionhero start</span><br><span class="line">server_1 |</span><br><span class="line">server_1 | info: actionhero &gt;&gt; start</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - notice: *** starting actionhero ***</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - notice: pid: 15</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - notice: server ID: 172.17.6.72</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - info: ensuring the existence of the chatRoom: defaultRoom</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - info: ensuring the existence of the chatRoom: anotherRoom</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - info: actionhero member 172.17.6.72 has joined the cluster</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - notice: starting server: web</span><br><span class="line">server_1 | 2015-06-22 21:42:31 - notice: starting server: websocket</span><br><span class="line">server_1 | 2015-06-22 21:42:32 - notice: environment: development</span><br><span class="line">server_1 | 2015-06-22 21:42:32 - notice: *** Server Started @ 2015-06-22 21:42:32 ***</span><br></pre></td></tr></table></figure>
+
+<h3 id="ユーザーの追加"><a href="#ユーザーの追加" class="headerlink" title="ユーザーの追加"></a>ユーザーの追加</h3><p>ユーザーの登録をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"password=password"</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/userAdd"</span></span><br></pre></td></tr></table></figure>
+
+<p>以下のレスポンスが返ります。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">9</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434977027506</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"137e30e7478dac9cd57c13b4bc91a62eb1b14d2b-b67044b1-93fc-4541-9f87-8299f1b8704a"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"137e30e7478dac9cd57c13b4bc91a62eb1b14d2b"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"password"</span>: <span class="string">"password"</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"userAdd"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ログは以下のように出力されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">server_1 | 2015-06-22 21:43:47 - info: [ action @ web ] to=172.17.42.1, action=userAdd, params=&#123;<span class="string">"userName"</span>:<span class="string">"evan"</span>,<span class="string">"password"</span>:<span class="string">"password"</span>,<span class="string">"action"</span>:<span class="string">"userAdd"</span>,<span class="string">"apiVersion"</span>:1&#125;, duration=3</span><br></pre></td></tr></table></figure>
+
+<p>Redisのレコードを確認してみます。Hash型のusersにレコードが作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm  rediscli bash -c <span class="string">'redis-cli -h $REDIS_PORT_6379_TCP_ADDR'</span></span><br><span class="line">172.17.6.28:6379&gt; keys <span class="string">"*"</span></span><br><span class="line">172.17.6.71:6379&gt; keys <span class="string">"*"</span></span><br><span class="line">1) <span class="string">"actionhero:chatRoom:rooms"</span></span><br><span class="line">2) <span class="string">"actionhero:stats"</span></span><br><span class="line">3) <span class="string">"users"</span></span><br><span class="line">172.17.6.71:6379&gt; <span class="built_in">type</span> <span class="string">"users"</span></span><br><span class="line"><span class="built_in">hash</span></span><br><span class="line">172.17.6.71:6379&gt; hgetall <span class="string">"users"</span></span><br><span class="line">1) <span class="string">"evan"</span></span><br><span class="line">2) <span class="string">"&#123;\"userName\":\"evan\",\"hashedPassword\":\"8c0efc73baa95ec0b43f2f9c6515e3a7\",\"createdAt\":1434977027504&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ログイン"><a href="#ログイン" class="headerlink" title="ログイン"></a>ログイン</h3><p>ログインをしてみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"password=password"</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/authenticate"</span></span><br></pre></td></tr></table></figure>
+
+<p>以下のレスポンスが返ります。<code>&quot;authenticated&quot;: true</code>が出力されて成功しました。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"authenticated"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434977341898</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"98a942efd4527a03678ce104adc6d9d9d89cd35b-018bde25-ebfa-420a-8c68-714f3749a473"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"98a942efd4527a03678ce104adc6d9d9d89cd35b"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"password"</span>: <span class="string">"password"</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"authenticate"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="投稿する"><a href="#投稿する" class="headerlink" title="投稿する"></a>投稿する</h3><p>blogに投稿してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"password=password"</span> \</span><br><span class="line">  -d <span class="string">"title=first-post"</span> \</span><br><span class="line">  -d <span class="string">"content=My%20first%20post.%20%20Yay."</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/postAdd"</span></span><br></pre></td></tr></table></figure>
+
+<p>以下のレスポンスが返ります。特に成功を示す値は返らないようです。エラーになっていないので成功しているようです。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434978106847</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"e66f4f3ff7b52631513053f2c93c268153d0f591-315a8670-8dc4-4101-b520-81501da95e48"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"e66f4f3ff7b52631513053f2c93c268153d0f591"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"password"</span>: <span class="string">"password"</span>,</span><br><span class="line">      <span class="attr">"title"</span>: <span class="string">"first-post"</span>,</span><br><span class="line">      <span class="attr">"content"</span>: <span class="string">"My first post.  Yay."</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"postAdd"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Redisには<code>&quot;posts;evan;first-post&quot;</code>のキーでHash型のレコードが作成されました。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">172.17.6.71:6379&gt; keys <span class="string">"*"</span></span><br><span class="line">1) <span class="string">"actionhero:chatRoom:rooms"</span></span><br><span class="line">2) <span class="string">"posts;evan;first-post"</span></span><br><span class="line">3) <span class="string">"actionhero:stats"</span></span><br><span class="line">4) <span class="string">"users"</span></span><br><span class="line">172.17.6.71:6379&gt;<span class="built_in"> type </span><span class="string">"posts;evan;first-post"</span></span><br><span class="line">hash</span><br><span class="line">172.17.6.71:6379&gt; hgetall <span class="string">"posts;evan;first-post"</span></span><br><span class="line"> 1) <span class="string">"content"</span></span><br><span class="line"> 2) <span class="string">"My first post.  Yay."</span></span><br><span class="line"> 3) <span class="string">"title"</span></span><br><span class="line"> 4) <span class="string">"first-post"</span></span><br><span class="line"> 5) <span class="string">"userName"</span></span><br><span class="line"> 6) <span class="string">"evan"</span></span><br><span class="line"> 7) <span class="string">"createdAt"</span></span><br><span class="line"> 8) <span class="string">"1434978106846"</span></span><br><span class="line"> 9) <span class="string">"updatedAt"</span></span><br><span class="line">10) <span class="string">"1434978106846"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="投稿を取得する"><a href="#投稿を取得する" class="headerlink" title="投稿を取得する"></a>投稿を取得する</h3><p>認証があるので投稿はPOSTメソッドで取得します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"title=first-post"</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/postView"</span></span><br></pre></td></tr></table></figure>
+
+<p>レスポンスは以下です。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"post"</span>: &#123;</span><br><span class="line">    <span class="attr">"content"</span>: <span class="string">"My first post.  Yay."</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"first-post"</span>,</span><br><span class="line">    <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">    <span class="attr">"createdAt"</span>: <span class="string">"1434978106846"</span>,</span><br><span class="line">    <span class="attr">"updatedAt"</span>: <span class="string">"1434978106846"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434978387670</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"138ec5166fe759881affdc39c99e3cfde8164898-86704c11-8001-41c6-badc-83a06243ee5d"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"138ec5166fe759881affdc39c99e3cfde8164898"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"title"</span>: <span class="string">"first-post"</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"postView"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="コメントを追加する"><a href="#コメントを追加する" class="headerlink" title="コメントを追加する"></a>コメントを追加する</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"title=first-post"</span> \</span><br><span class="line">  -d <span class="string">"comment=cool%20post"</span> \</span><br><span class="line">  -d <span class="string">"commenterName=someoneElse"</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/commentAdd"</span></span><br></pre></td></tr></table></figure>
+
+<p>以下のレスポンスが返ります。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434978527198</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"854e96b72fa0341efb5b408af852a6d210a83e31-0466bf62-a83b-4f9a-b431-b7543baa6f05"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"854e96b72fa0341efb5b408af852a6d210a83e31"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"title"</span>: <span class="string">"first-post"</span>,</span><br><span class="line">      <span class="attr">"comment"</span>: <span class="string">"cool post"</span>,</span><br><span class="line">      <span class="attr">"commenterName"</span>: <span class="string">"someoneElse"</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"commentAdd"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Redisに<code>&quot;comments:;evan;first-post&quot;</code>のキーでHash型のレコードが作成されました。コメントはJSONの文字列が保存されています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">172.17.6.71:6379&gt; keys <span class="string">"*"</span></span><br><span class="line">1) <span class="string">"actionhero:stats"</span></span><br><span class="line">2) <span class="string">"users"</span></span><br><span class="line">3) <span class="string">"actionhero:chatRoom:rooms"</span></span><br><span class="line">4) <span class="string">"posts;evan;first-post"</span></span><br><span class="line">5) <span class="string">"comments:;evan;first-post"</span></span><br><span class="line">172.17.6.71:6379&gt; <span class="built_in">type</span> <span class="string">"comments:;evan;first-post"</span></span><br><span class="line"><span class="built_in">hash</span></span><br><span class="line">172.17.6.71:6379&gt; hgetall <span class="string">"comments:;evan;first-post"</span></span><br><span class="line">1) <span class="string">"someoneElse1434978527197"</span></span><br><span class="line">2) <span class="string">"&#123;\"comment\":\"cool post\",\"createdAt\":1434978527197,\"commentId\":\"someoneElse1434978527197\"&#125;"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="コメントを見る"><a href="#コメントを見る" class="headerlink" title="コメントを見る"></a>コメントを見る</h3><p>コメントも認証が入るのでPOSTで取得します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  -d <span class="string">"userName=evan"</span> \</span><br><span class="line">  -d <span class="string">"title=first-post"</span> \</span><br><span class="line">  <span class="string">"http://localhost:8089/api/commentsView"</span></span><br></pre></td></tr></table></figure>
+
+<p>レスポンスのJSONからコメントを取得するときは、<code>comments</code>のキーで取得します。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"comments"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"comment"</span>: <span class="string">"cool post"</span>,</span><br><span class="line">      <span class="attr">"createdAt"</span>: <span class="number">1434978527197</span>,</span><br><span class="line">      <span class="attr">"commentId"</span>: <span class="string">"someoneElse1434978527197"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"serverInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"serverName"</span>: <span class="string">"actionhero API"</span>,</span><br><span class="line">    <span class="attr">"apiVersion"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"requestDuration"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"currentTime"</span>: <span class="number">1434978785461</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"requesterInformation"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"9fff33d8178275b64e168c1cc26bf7e1e9fb3bd8-df377114-716b-4558-9dc0-385f40a7efb4"</span>,</span><br><span class="line">    <span class="attr">"fingerprint"</span>: <span class="string">"9fff33d8178275b64e168c1cc26bf7e1e9fb3bd8"</span>,</span><br><span class="line">    <span class="attr">"remoteIP"</span>: <span class="string">"172.17.42.1"</span>,</span><br><span class="line">    <span class="attr">"receivedParams"</span>: &#123;</span><br><span class="line">      <span class="attr">"userName"</span>: <span class="string">"evan"</span>,</span><br><span class="line">      <span class="attr">"title"</span>: <span class="string">"first-post"</span>,</span><br><span class="line">      <span class="attr">"action"</span>: <span class="string">"commentsView"</span>,</span><br><span class="line">      <span class="attr">"apiVersion"</span>: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>テストも通ったのでコミットしておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add .</span><br><span class="line">$ git commit -m <span class="string">'actions created'</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/actionherojs/" rel="tag"># actionherojs</a>
+              <a href="/tags/API/" rel="tag"># API</a>
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+              <a href="/tags/async/" rel="tag"># async</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/20/actionherojs-install/" rel="prev" title="actionhero.js入門 - Part1: Getting Started">
+      <i class="fa fa-chevron-left"></i> actionhero.js入門 - Part1: Getting Started
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/22/reagent-form-bootstrap/" rel="next" title="Reagent入門 - Part4: SPAとフォームの要件">
+      Reagent入門 - Part4: SPAとフォームの要件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの準備"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクト"><span class="nav-number">1.1.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#チュートリアルのRedisとasync"><span class="nav-number">1.2.</span> <span class="nav-text">チュートリアルのRedisとasync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redisのリンク"><span class="nav-number">1.3.</span> <span class="nav-text">Redisのリンク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-composeのエイリアスの作成"><span class="nav-number">1.4.</span> <span class="nav-text">docker-composeのエイリアスの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#イニシャライザ"><span class="nav-number">2.</span> <span class="nav-text">イニシャライザ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog"><span class="nav-number">2.1.</span> <span class="nav-text">blog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ユーザーと認証"><span class="nav-number">2.2.</span> <span class="nav-text">ユーザーと認証</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ミドルウェアのpublicとprivateなアクション"><span class="nav-number">2.3.</span> <span class="nav-text">ミドルウェアのpublicとprivateなアクション</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#アクションの作成"><span class="nav-number">3.</span> <span class="nav-text">アクションの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#テスト"><span class="nav-number">4.</span> <span class="nav-text">テスト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ユーザーの追加"><span class="nav-number">4.1.</span> <span class="nav-text">ユーザーの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ログイン"><span class="nav-number">4.2.</span> <span class="nav-text">ログイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#投稿する"><span class="nav-number">4.3.</span> <span class="nav-text">投稿する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#投稿を取得する"><span class="nav-number">4.4.</span> <span class="nav-text">投稿を取得する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コメントを追加する"><span class="nav-number">4.5.</span> <span class="nav-text">コメントを追加する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コメントを見る"><span class="nav-number">4.6.</span> <span class="nav-text">コメントを見る</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前回はDashingをインストールして同梱されているダッシュボードを表示するところまで確認しました。Treasure Data Serviceのデータベースに貯めたデータをダッシュボードに表示することがこのシリーズの目標です。次はTreasure Dataへのサインアップと、開発環境へtoolbeltのインストールをします。今回はtdコマンドを使い簡単なクエリ実行までしてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DashingとTreasure Data - Part2: Treasure Data Toolbeltのセットアップ">
+<meta property="og:url" content="http://masato.github.io/2014/05/30/dashing-treasuredata-td/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="前回はDashingをインストールして同梱されているダッシュボードを表示するところまで確認しました。Treasure Data Serviceのデータベースに貯めたデータをダッシュボードに表示することがこのシリーズの目標です。次はTreasure Dataへのサインアップと、開発環境へtoolbeltのインストールをします。今回はtdコマンドを使い簡単なクエリ実行までしてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-29T15:52:41.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.579Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="AnalyticSandbox">
+<meta property="article:tag" content="TreasureData">
+<meta property="article:tag" content="Putty">
+<meta property="article:tag" content="Dashing">
+<meta property="article:tag" content="DockerEnv">
+<meta property="article:tag" content="rbenv">
+<meta property="article:tag" content="byobu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/05/30/dashing-treasuredata-td/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DashingとTreasure Data - Part2: Treasure Data Toolbeltのセットアップ | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/05/30/dashing-treasuredata-td/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DashingとTreasure Data - Part2: Treasure Data Toolbeltのセットアップ
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 30 2014 00:52:41" itemprop="dateCreated datePublished" datetime="2014-05-30T00:52:41+09:00">May 30 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">前回はDashingをインストールして同梱されているダッシュボードを表示するところまで確認しました。Treasure Data Serviceのデータベースに貯めたデータをダッシュボードに表示することがこのシリーズの目標です。次はTreasure Dataへのサインアップと、開発環境へtoolbeltのインストールをします。今回はtdコマンドを使い簡単なクエリ実行までしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/05/27/dashing-treasuredata-install/">Part1</a>はDashingをインストールして同梱されているダッシュボードを表示するところまで確認しました。<br><code>Treasure Data Service</code>のデータベースに貯めたデータをダッシュボードに表示することがこのシリーズの目標です。<br>次は<code>Treasure Data</code>へのサインアップと、開発環境へtoolbeltのインストールをします。今回はtdコマンドを使い簡単なクエリ実行までしてみます。</p>
+<a id="more"></a>
+
+
+<h2 id="Treasure-Data-Serviceの無料サインアップ"><a href="#Treasure-Data-Serviceの無料サインアップ" class="headerlink" title="Treasure Data Serviceの無料サインアップ"></a>Treasure Data Serviceの無料サインアップ</h2><p><code>Treasure Data Service</code><a href="http://www.treasuredata.com/jp/products/try-it-now.php" target="_blank" rel="noopener">無料版のサインアップ</a>ができるので、すぐに試してみることができます。</p>
+<h2 id="Puttyの確認"><a href="#Puttyの確認" class="headerlink" title="Puttyの確認"></a>Puttyの確認</h2><p>複数のPCからPuttyを使っていますが、たまにbyobuのF2キーで新しいウィンドウが開かなくなりました。<br>あらためて設定を確認します。</p>
+<ul>
+<li>「接続」 -&gt; 「データ」 -&gt; 「端末タイプを表す文字列」 -&gt; 「 xterm 」</li>
+<li>「端末」 -&gt; 「キーボード」 -&gt; 「ファンクションキーとキーパッド」 -&gt; 「Xterm R6」</li>
+</ul>
+<h2 id="Docker開発環境の準備"><a href="#Docker開発環境の準備" class="headerlink" title="Docker開発環境の準備"></a>Docker開発環境の準備</h2><p>いつものようにssh-agentに鍵を追加します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/private_key</span><br></pre></td></tr></table></figure>
+
+<p>コンテナを起動します。Thinサーバーのポートは、Dockerホストへは3031でバインドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ~/docker_apps/phusion/</span><br><span class="line">$ docker run -t -i -p 3031:3030 -v ~/docker_apps/workspaces/dashing:/root/sinatra_apps masato/baseimage:1.0 /sbin/my_init /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>byobuを起動してEmacsで便利に使えるように設定します。</p>
+<ul>
+<li>byobu-config -&gt; エスケープシーケンスの変更 -&gt; ctrl + t</li>
+<li>byobu-config -&gt; ステータス通知の切り替え -&gt; logo(off), ip_address(on)</li>
+<li>byobu-ctrl-a -&gt; (2) Emacs mode</li>
+<li>byobu-select-backend -&gt; tmux</li>
+</ul>
+<h2 id="Treasure-Data-Toolbelt-のインストール"><a href="#Treasure-Data-Toolbelt-のインストール" class="headerlink" title="Treasure Data Toolbelt のインストール"></a>Treasure Data Toolbelt のインストール</h2><p><code>Treasure Data Service</code>をコンソールから利用するたのコマンドラインツールをインストールします。<br><a href="http://toolbelt.treasuredata.com/" target="_blank" rel="noopener">Treasure Data toolbelt</a>からLinuxのアイコンをクリックします。</p>
+<p><a href="http://docs.treasuredata.com/articles/installing-the-cli" target="_blank" rel="noopener">インストールガイド</a>のページから、Ubuntuのセクションに従います。</p>
+<p>インストールコマンドを実行すると、tdコマンドが使えるようになります。</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ curl -L http://toolbelt.treasuredata.<span class="keyword">com</span>/<span class="keyword">sh</span>/install-ubuntu-precise.<span class="keyword">sh</span> | <span class="keyword">sh</span></span><br><span class="line">$ td <span class="keyword">help</span></span><br><span class="line">Additional commands, <span class="built_in">type</span> <span class="string">"td help COMMAND"</span> <span class="keyword">for</span> more detail<span class="variable">s:</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">help</span>:<span class="keyword">all</span>                                   # Show usage of <span class="keyword">all</span> commands</span><br><span class="line">  <span class="keyword">help</span> <span class="symbol">&lt;command&gt;</span>                             # Show usage of <span class="keyword">a</span> <span class="keyword">command</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="tdコマンドを使う"><a href="#tdコマンドを使う" class="headerlink" title="tdコマンドを使う"></a>tdコマンドを使う</h3><p>最初にtdコマンドが使えるようにアカウントのセットアップをします。<br>サインアップで入力した、EmailとPasswordを入力します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td account -f</span><br><span class="line">Enter your Treasure Data credentials.</span><br><span class="line">Email: ma6ato@gmail.com</span><br><span class="line">Password (typing will be hidden):</span><br><span class="line">Authenticated successfully.</span><br><span class="line">Use <span class="string">'td db:create &lt;db_name&gt;'</span> to create a database.</span><br></pre></td></tr></table></figure>
+
+<p>あとでRubyのプログラムから利用するapikeyを確認します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ td apikey:show</span><br><span class="line">xxx</span><br><span class="line">$ cat ~/.td/td.conf</span><br><span class="line">[account]</span><br><span class="line"> <span class="built_in"> user </span>= ma6ato@gmail.com</span><br><span class="line">  apikey = xxx</span><br></pre></td></tr></table></figure>
+
+<h3 id="サンプルデータベースの作成"><a href="#サンプルデータベースの作成" class="headerlink" title="サンプルデータベースの作成"></a>サンプルデータベースの作成</h3><p>データベースを作成します。アカウントのセットアップをしたときにガイドに表示されました。<br>ここでは、testdbと名前をつけます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td db:create testdb</span><br><span class="line">Database <span class="string">'testdb'</span> is created.</span><br><span class="line">Use <span class="string">'td table:create testdb &lt;table_name&gt;'</span> to create a table.</span><br><span class="line">$ td db:list</span><br><span class="line">+--------+-------+</span><br><span class="line">| Name   | Count |</span><br><span class="line">+--------+-------+</span><br><span class="line">| testdb | 0     |</span><br><span class="line">+--------+-------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span></span><br></pre></td></tr></table></figure>
+
+<p>www_accessという名前で、testdbにテーブルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td table:create testdb www_access</span><br><span class="line">Table <span class="string">'testdb.www_access'</span> is created.</span><br><span class="line">$ td table:list</span><br><span class="line">+----------+------------+------+-------+--------+-------------+--------------------+--------+</span><br><span class="line">| Database | Table      | Type | Count | Size   | Last import | Last <span class="built_in">log</span> timestamp | Schema |</span><br><span class="line">+----------+------------+------+-------+--------+-------------+--------------------+--------+</span><br><span class="line">| testdb   | www_access | <span class="built_in">log</span>  | 0     | 0.0 GB |             |                    |        |</span><br><span class="line">+----------+------------+------+-------+--------+-------------+--------------------+--------+</span><br><span class="line">1 row <span class="keyword">in</span> <span class="built_in">set</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="サンプルテーブルの作成"><a href="#サンプルテーブルの作成" class="headerlink" title="サンプルテーブルの作成"></a>サンプルテーブルの作成</h3><p>まだ<code>Treasure Data Service</code>へデータを保存していないので、サンプルテーブルを作って動作確認します。<br>サンプル用の5000レコードのJSONファイルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td sample:apache</span><br><span class="line">Create apache.json with 5000 records whose time is</span><br><span class="line">from 2014-05-29 20:54:12 +0900 to 2014-05-30 14:46:42 +0900.</span><br><span class="line">Use <span class="string">'td table:import &lt;db&gt; &lt;table&gt; --json apache.json'</span> to import this file.</span><br><span class="line">$ tail -1 apache.json</span><br><span class="line">&#123;<span class="string">"host"</span>:<span class="string">"200.129.205.208"</span>,<span class="string">"user"</span>:<span class="string">"-"</span>,<span class="string">"method"</span>:<span class="string">"GET"</span>,<span class="string">"path"</span>:<span class="string">"/category/electronics"</span>,<span class="string">"code"</span>:200,<span class="string">"referer"</span>:<span class="string">"-"</span>,<span class="string">"size"</span>:62,<span class="string">"agent"</span>:<span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11"</span>,<span class="string">"time"</span>:1401364535&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先ほど作成したテーブルにJSONデータをインポートします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td table:import testdb www_access --json apache.json</span><br><span class="line">importing apache.json...</span><br><span class="line">  uploading 117354 bytes...</span><br><span class="line">  imported 5000 entries from apache.json.</span><br><span class="line"><span class="keyword">done</span>.</span><br></pre></td></tr></table></figure>
+
+<h3 id="サンプルクエリ"><a href="#サンプルクエリ" class="headerlink" title="サンプルクエリ"></a>サンプルクエリ</h3><p>プロジェクトの作成</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/sinatra_apps/sql</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p><code>Treasure Data Service</code>はスキーマレスなデータベースが特徴で、先ほどインポートしたJSONファイルから<br>事前のスキーマ定義が不要で、自動的にスキーマを作成してデータを保存できます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ td table:show testdb www_access</span><br><span class="line">Name      : testdb.www_access</span><br><span class="line">Type      : <span class="built_in">log</span></span><br><span class="line">Count     : 5000</span><br><span class="line">Schema    : (</span><br><span class="line">    host:string</span><br><span class="line">    path:string</span><br><span class="line">    method:string</span><br><span class="line">    referer:string</span><br><span class="line">    code:long</span><br><span class="line">    agent:string</span><br><span class="line">    user:string</span><br><span class="line">    size:long</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>どのようなカラムがあるか確認できたので、</p>
+<figure class="highlight sql"><figcaption><span>~/sinatra_apps/sql/sample.sql</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> TD_TIME_FORMAT(<span class="built_in">time</span>, <span class="string">'yyyy-MM-dd'</span>, <span class="string">'JST'</span>) <span class="keyword">AS</span> <span class="keyword">day</span></span><br><span class="line">     , <span class="keyword">COUNT</span>(<span class="number">1</span>) <span class="keyword">AS</span> cnt</span><br><span class="line">  <span class="keyword">FROM</span> www_access</span><br><span class="line"> <span class="keyword">GROUP</span> <span class="keyword">BY</span> TD_TIME_FORMAT(<span class="built_in">time</span>, <span class="string">'yyyy-MM-dd'</span>, <span class="string">'JST'</span>)</span><br><span class="line"> <span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="keyword">day</span> <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<p>sample.sqlのクエリを実行してみます。無料プランなのでクエリに時間がかかりますが、バッチ実行なら使えそうです。</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">$ td query -w -d testdb -q sample.sql</span><br><span class="line">...</span><br><span class="line"><span class="code">  Time taken: 52.585 seconds</span></span><br><span class="line">Status     : success</span><br><span class="line">Result     :</span><br><span class="line"><span class="code">+------------+</span>------+</span><br><span class="line">| day        | cnt  |</span><br><span class="line"><span class="code">+------------+</span>------+</span><br><span class="line">| 2014-05-30 | 4350 |</span><br><span class="line">| 2014-05-29 | 650  |</span><br><span class="line"><span class="code">+------------+</span>------+</span><br><span class="line">2 rows in set</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>Treasure Data Service</code>が利用できるようになりました。セットアップはインストールコマンドがあるのでとても簡単です。<br>td-agentが使うRuby実行環境も、<code>/usr/lib/fluent/ruby</code>へインストールされるので、システムワイドに影響がなくて安心です。</p>
+<p>次回はDashingで実際にジョブを書いてみようと思います。<br>このジョブでは、<code>Treasure Data Service</code>にクエリして、ダッシュボードのウィジェトを定期的に更新する予定です。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AnalyticSandbox/" rel="tag"># AnalyticSandbox</a>
+              <a href="/tags/TreasureData/" rel="tag"># TreasureData</a>
+              <a href="/tags/Putty/" rel="tag"># Putty</a>
+              <a href="/tags/Dashing/" rel="tag"># Dashing</a>
+              <a href="/tags/DockerEnv/" rel="tag"># DockerEnv</a>
+              <a href="/tags/rbenv/" rel="tag"># rbenv</a>
+              <a href="/tags/byobu/" rel="tag"># byobu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/05/30/idcf-storage-nodejs-s3-sync-part2/" rel="prev" title="IDCFオブジェクトストレージをNode.jsのs3-syncから使う - Part2">
+      <i class="fa fa-chevron-left"></i> IDCFオブジェクトストレージをNode.jsのs3-syncから使う - Part2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/05/31/dashing-treasuredata-td-job/" rel="next" title="DashingとTreasure Data - Part3: Rubyのtd-clientを使う">
+      DashingとTreasure Data - Part3: Rubyのtd-clientを使う <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Treasure-Data-Serviceの無料サインアップ"><span class="nav-number">1.</span> <span class="nav-text">Treasure Data Serviceの無料サインアップ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Puttyの確認"><span class="nav-number">2.</span> <span class="nav-text">Puttyの確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker開発環境の準備"><span class="nav-number">3.</span> <span class="nav-text">Docker開発環境の準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Treasure-Data-Toolbelt-のインストール"><span class="nav-number">4.</span> <span class="nav-text">Treasure Data Toolbelt のインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tdコマンドを使う"><span class="nav-number">4.1.</span> <span class="nav-text">tdコマンドを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルデータベースの作成"><span class="nav-number">4.2.</span> <span class="nav-text">サンプルデータベースの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルテーブルの作成"><span class="nav-number">4.3.</span> <span class="nav-text">サンプルテーブルの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルクエリ"><span class="nav-number">4.4.</span> <span class="nav-text">サンプルクエリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">4.5.</span> <span class="nav-text">まとめ</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

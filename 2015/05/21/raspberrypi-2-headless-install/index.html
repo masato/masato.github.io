@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Raspberry Pi Model Bが壊れてしまったので新しくRaspberry Pi 2を購入しました。T-Cobblerを間違えて配線してしまったら電源が入らなくなりました。最近不安定だったのでそろそろ買い換え時期だったかも知れません。Model Bで作業していた環境を最初から設定していきます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Raspberry Pi 2とセンサーデータで遊ぶための初期設定">
+<meta property="og:url" content="http://masato.github.io/2015/05/21/raspberrypi-2-headless-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Raspberry Pi Model Bが壊れてしまったので新しくRaspberry Pi 2を購入しました。T-Cobblerを間違えて配線してしまったら電源が入らなくなりました。最近不安定だったのでそろそろ買い換え時期だったかも知れません。Model Bで作業していた環境を最初から設定していきます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-05-21T04:40:43.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.843Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="RaspberryPi">
+<meta property="article:tag" content="DHT11">
+<meta property="article:tag" content="センサー">
+<meta property="article:tag" content="Lチカ">
+<meta property="article:tag" content="DS18B20">
+<meta property="article:tag" content="RaspberryPi2">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/05/21/raspberrypi-2-headless-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Raspberry Pi 2とセンサーデータで遊ぶための初期設定 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/05/21/raspberrypi-2-headless-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Raspberry Pi 2とセンサーデータで遊ぶための初期設定
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 21 2015 13:40:43" itemprop="dateCreated datePublished" datetime="2015-05-21T13:40:43+09:00">May 21 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Raspberry Pi Model Bが壊れてしまったので新しくRaspberry Pi 2を購入しました。T-Cobblerを間違えて配線してしまったら電源が入らなくなりました。最近不安定だったのでそろそろ買い換え時期だったかも知れません。Model Bで作業していた環境を最初から設定していきます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Raspberry Pi Model Bが壊れてしまったので新しくRaspberry Pi 2を購入しました。T-Cobblerを間違えて配線してしまったら電源が入らなくなりました。最近不安定だったのでそろそろ買い換え時期だったかも知れません。Model Bで作業していた環境を最初から設定していきます。</p>
+<a id="more"></a>
+
+<h2 id="USB-TTLシリアル変換ケーブル"><a href="#USB-TTLシリアル変換ケーブル" class="headerlink" title="USB-TTLシリアル変換ケーブル"></a>USB-TTLシリアル変換ケーブル</h2><p><a href="http://www.amazon.co.jp/gp/product/B00L8SP7U6" target="_blank" rel="noopener">PL2303HX内蔵USB-Serial変換ケーブル</a>を使ってOSXとRaspberry Pi 2を接続します。<a href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable?view=all" target="_blank" rel="noopener">Software Installation (Mac)</a>を参考にしてGPIOピンにつなぎます。</p>
+<ul>
+<li>VCC 赤 (USB-TTL) -&gt; 5V  P2  (Raspberry Pi)</li>
+<li>GND 黒 (USB-TTL) -&gt; GND P6  (Raspberry Pi)</li>
+<li>RXD 白 (USB-TTL) -&gt; TXD GPIO14 P8  (Raspberry Pi)</li>
+<li>TXD 緑 (USB-TTL) -&gt; RXD GPIO15 P10 (Raspberry Pi)</li>
+</ul>
+<p>OSXからScreenでターミナル接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ screen /dev/cu.usbserial 115200</span><br></pre></td></tr></table></figure>
+
+<h2 id="無線LAN"><a href="#無線LAN" class="headerlink" title="無線LAN"></a>無線LAN</h2><p>無線LANのUSBドングルは<a href="http://www.amazon.co.jp/dp/B003NSAMW2" target="_blank" rel="noopener">BUFFALO WLI-UC-GNM</a>を使います。SSIDステルスモードの環境なので<code>scan_ssid=1</code>が必要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">'wpa_passphrase &#123;ssid&#125; &#123;passphrase&#125; &gt;&gt; /etc/wpa_supplicant/wpa_supplicant.conf'</span></span><br><span class="line">$ sudo vi /etc/wpa_supplicant/wpa_supplicant.conf</span><br><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line">network=&#123;</span><br><span class="line">        scan_ssid=1</span><br><span class="line">        ssid=<span class="string">"xxx"</span></span><br><span class="line">        proto=WPA2</span><br><span class="line">        key_mgmt=WPA-PSK</span><br><span class="line">        psk=xxxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/network/interfaces</code>を編集します。ローミングは不要なので<code>wpa-roam</code>の箇所は<code>wpa-conf</code>にする必要があります。</p>
+<figure class="highlight bash"><figcaption><span>/etc/network/interfaces</span></figcaption><table><tr><td class="code"><pre><span class="line">auto lo</span><br><span class="line"></span><br><span class="line">iface lo inet loopback</span><br><span class="line">iface eth0 inet dhcp</span><br><span class="line"></span><br><span class="line">auto wlan0</span><br><span class="line">allow-hotplug wlan0</span><br><span class="line">iface wlan0 inet dhcp</span><br><span class="line">wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf</span><br><span class="line">iface default inet dhcp</span><br></pre></td></tr></table></figure>
+
+<p>wlan0を再起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ifdown wlan0</span><br><span class="line">$ sudo ifup wlan0</span><br></pre></td></tr></table></figure>
+
+<p>IPアドレスの確認をして、pingで名前解決もできるようになりました。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$<span class="built_in"> ip </span>addr show wlan0</span><br><span class="line">$<span class="built_in"> ping </span>-c 1 www.yahoo.co.jp</span><br><span class="line">PING www.g.yahoo.co.jp (183.79.197.250) 56(84) bytes of data.</span><br><span class="line">64 bytes <span class="keyword">from</span> 183.79.197.250: <span class="attribute">icmp_req</span>=1 <span class="attribute">ttl</span>=51 <span class="attribute">time</span>=15.7 ms</span><br><span class="line"></span><br><span class="line">--- www.g.yahoo.co.jp<span class="built_in"> ping </span>statistics ---</span><br><span class="line">1 packets transmitted, 1 received, 0% packet loss, time 0ms</span><br><span class="line">rtt min/avg/max/mdev = 15.718/15.718/15.718/0.000 ms</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="raspi-configの初期設定"><a href="#raspi-configの初期設定" class="headerlink" title="raspi-configの初期設定"></a>raspi-configの初期設定</h2><p>raspi-configをroot権限で実行して、Raspberry Pi 2の初期設定をしていきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo raspi-config</span><br></pre></td></tr></table></figure>
+
+<p>以下の箇所だけ最低限変更しておきます。</p>
+<ul>
+<li>Expand Filesystem &gt; Select</li>
+<li>Internationalisation Options &gt; Change Locale &gt; ja_JP.UTF-8 &gt; Default</li>
+<li>Internationalisation Options &gt; Change Timezone &gt; Asia &gt; Tokyo</li>
+</ul>
+<p>再起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>再起動後にファイルシステムがリサイズされました。ようやくパッケージをインストールする準備ができました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">ファイルシス   サイズ  使用  残り 使用% マウント位置</span><br><span class="line">rootfs            15G  2.4G   12G   18% /</span><br><span class="line">/dev/root         15G  2.4G   12G   18% /</span><br><span class="line">devtmpfs         460M     0  460M    0% /dev</span><br><span class="line">tmpfs             93M  228K   93M    1% /run</span><br><span class="line">tmpfs            5.0M     0  5.0M    0% /run/lock</span><br><span class="line">tmpfs            186M     0  186M    0% /run/shm</span><br><span class="line">/dev/mmcblk0p1    56M   15M   42M   26% /boot</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="ファームウェアの更新"><a href="#ファームウェアの更新" class="headerlink" title="ファームウェアの更新"></a>ファームウェアの更新</h2><p>最初にカーネルの初期状態を確認します。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ cat /proc/version</span><br><span class="line">Linux version <span class="number">3.18</span><span class="number">.7</span>-v7+ (<span class="symbol">dc4@</span>dc4-XPS13<span class="number">-9333</span>) (gcc version <span class="number">4.8</span><span class="number">.3</span> <span class="number">20140303</span> (prerelease) (crosstool-NG linaro<span class="number">-1.13</span><span class="number">.1</span>+bzr2650 - Linaro GCC <span class="number">2014.03</span>) ) #<span class="number">755</span> SMP PREEMPT Thu Feb <span class="number">12</span> <span class="number">17</span>:<span class="number">20</span>:<span class="number">48</span> GMT <span class="number">2015</span></span><br></pre></td></tr></table></figure>
+
+<p>パッケージの更新とアップグレードをします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+
+<p>apt-getではカーネルは変わらないのでファームウェアの更新をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo rpi-update</span><br><span class="line">...</span><br><span class="line"> *** A reboot is needed to activate the new firmware</span><br></pre></td></tr></table></figure>
+
+<p>再起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>ファームウェアを更新してカーネルのバージョンが<code>3.18.13-v7+</code>にあがりました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.18.13-v7+ (dc4@dc4-XPS13-9333) (gcc version 4.8.3 20140303 (prerelease) (crosstool-NG linaro-1.13.1+bzr2650 - Linaro GCC 2014.03) ) <span class="comment">#785 SMP PREEMPT Mon May 18 17:53:02 BST 2015</span></span><br></pre></td></tr></table></figure>
+<h2 id="その他設定"><a href="#その他設定" class="headerlink" title="その他設定"></a>その他設定</h2><h3 id="vim"><a href="#vim" class="headerlink" title="vim"></a>vim</h3><p>エディタはvimを使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install vim</span><br><span class="line">$ mkdir ~/tmp</span><br></pre></td></tr></table></figure>
+
+<p>バックアップを作らない設定だけします。</p>
+<figure class="highlight bash"><figcaption><span>~/.vimrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">set</span> backupdir=~/tmp</span><br></pre></td></tr></table></figure>
+
+<h3 id="時間合わせ"><a href="#時間合わせ" class="headerlink" title="時間合わせ"></a>時間合わせ</h3><p>NTPサーバーを日本のサーバーに設定します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/ntp.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#server 0.debian.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 1.debian.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 2.debian.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 3.debian.pool.ntp.org iburst</span></span><br><span class="line">pool ntp.nict.jp iburst</span><br></pre></td></tr></table></figure>
+
+<p>ntpdの再起動をして時間あわせをします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo /etc/init.d/ntp restart</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>Raspberry Pi 2でセンサーデータを取得する場合はPythonを使うことが多いです。Pythonの開発環境をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install python-dev</span><br><span class="line">$ curl https://bootstrap.pypa.io/get-pip.py -o - | sudo python</span><br><span class="line">$ pip -V</span><br><span class="line">pip 6.1.1 from /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages (python 2.7)</span><br></pre></td></tr></table></figure>
+
+<h2 id="I2Cをつかう"><a href="#I2Cをつかう" class="headerlink" title="I2Cをつかう"></a>I2Cをつかう</h2><p><a href="http://ja.wikipedia.org/wiki/I2C" target="_blank" rel="noopener">I2C</a>のバスを有効にします。最初に必要なパッケージをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install python-smbus i2c-tools</span><br></pre></td></tr></table></figure>
+
+<p>raspi-configを実行してI2Cサポートを有効にします。</p>
+<ul>
+<li>Advanced Options &gt; I2C</li>
+</ul>
+<p>再起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>piユーザーでもi2cデバイスを操作できるようにi2cグループを追加します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo adduser pi i2c</span><br></pre></td></tr></table></figure>
+
+<p>カーネルが3.18 以上の場合は<code>/boot/config.txt</code>に以下の設定が入ります。</p>
+<figure class="highlight bash"><figcaption><span>/boot/config.txt</span></figcaption><table><tr><td class="code"><pre><span class="line">dtparam=i2c_arm=on</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/modules</code>にI2Cを有効にする設定を追記します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/modules</span></figcaption><table><tr><td class="code"><pre><span class="line">snd-bcm2835</span><br><span class="line"></span><br><span class="line">i2c-bcm2708 </span><br><span class="line">i2c-dev</span><br></pre></td></tr></table></figure>
+
+<p>lsmodでi2c_devとi2c_bcm2708が表示されるとI2Cが有効になっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsmod</span><br><span class="line">Module                  Size  Used by</span><br><span class="line">ctr                     3709  2</span><br><span class="line">ccm                     7771  2</span><br><span class="line">i2c_dev                 6027  0</span><br><span class="line">snd_bcm2835            18365  0</span><br><span class="line">snd_pcm                73475  1 snd_bcm2835</span><br><span class="line">snd_seq                53078  0</span><br><span class="line">snd_seq_device          5628  1 snd_seq</span><br><span class="line">snd_timer              17784  2 snd_pcm,snd_seq</span><br><span class="line">snd                    51038  5 snd_bcm2835,snd_timer,snd_pcm,snd_seq,snd_seq_device</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="DHT11で温度を計測する"><a href="#DHT11で温度を計測する" class="headerlink" title="DHT11で温度を計測する"></a>DHT11で温度を計測する</h3><p>I2Cの温度湿度センサーモジュールは<a href="http://www.aitendo.com/product/10186" target="_blank" rel="noopener">DHT11</a>の完成品を使います。Pythonのパッケージは<a href="https://github.com/adafruit/Adafruit_Python_DHT" target="_blank" rel="noopener">Adafruit_Python_DHT</a>をインストールします。Adafruit-Raspberry-Pi-Python-Codeの<a href="https://github.com/adafruit/Adafruit-Raspberry-Pi-PythonCode/blob/master/Adafruit_DHT_Driver_Python/DEPRECATED.txt" target="_blank" rel="noopener">Adafruit_DHT_Driver_Python</a>はDEPRECATEDになっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/python_apps</span><br><span class="line">$ <span class="built_in">cd</span> <span class="variable">$_</span></span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/adafruit/Adafruit_Python_DHT.git</span><br><span class="line">$ <span class="built_in">cd</span> Adafruit_Python_DHT</span><br><span class="line">$ sudo python setup.py install</span><br></pre></td></tr></table></figure>
+
+<p>ブレッドボード配線をします。DHT11は完成品なので3pinになっています。</p>
+<ul>
+<li>DATA (DHT11) -&gt; GPIO4 P7 (Raspberry Pi)</li>
+<li>VCC  (DHT11) -&gt; 3.3v  P1 (Raspberry Pi)</li>
+<li>GND  (DHT11) -&gt; GND   P9 (Raspberry Pi)</li>
+</ul>
+<p>Adafruit_Python_DHTのサンプルプログラムを実行して温度を計測します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/python_apps/Adafruit_Python_DHT/examples</span><br><span class="line">$ sudo ./AdafruitDHT.py 11 4</span><br><span class="line">Temp=28.0*C  Humidity=34.0%</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-Wireをつかう"><a href="#1-Wireをつかう" class="headerlink" title="1-Wireをつかう"></a>1-Wireをつかう</h2><p><a href="http://ja.wikipedia.org/wiki/1-Wire" target="_blank" rel="noopener">1-Wire</a>のバスを有効にするために<code>/boot/config.txt</code>に以下を追記します。</p>
+<figure class="highlight bash"><figcaption><span>/boot/config.txt</span></figcaption><table><tr><td class="code"><pre><span class="line">dtparam=i2c_arm=on</span><br><span class="line">dtoverlay=w1-gpio-pullup,gpiopin=4</span><br></pre></td></tr></table></figure>
+
+<p>再起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>再起動後にw1-gpioとw1-thermのカーネルモジュールをロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo modprobe w1-gpio</span><br><span class="line">$ sudo modprobe w1-therm</span><br></pre></td></tr></table></figure>
+
+<h3 id="DS18B20で温度を計測する"><a href="#DS18B20で温度を計測する" class="headerlink" title="DS18B20で温度を計測する"></a>DS18B20で温度を計測する</h3><p>1-Wire用のセンサーは完成品の<a href="http://www.aitendo.com/product/10812" target="_blank" rel="noopener">1820-3PL</a>を使います。</p>
+<p>カーネルモジュールをロードすると/sys/bus/w1/devicesディレクトリが作成されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/bus/w1/devices</span><br><span class="line">$ ls</span><br><span class="line">00-800000000000  w1_bus_master1</span><br></pre></td></tr></table></figure>
+
+<p>ブレッドボード配線をします。完成品なので3pinになっています。</p>
+<ul>
+<li><code>+</code> (DS18B20) -&gt; 3.3V  P1 (Raspberry Pi)</li>
+<li><code>S</code> (DS18B20) -&gt; GPIO4 P7 (Raspberry Pi)</li>
+<li><code>-</code> (DS18B20) -&gt; GND   P9 (Raspberry Pi)</li>
+</ul>
+<p>配線後に<code>28-</code>で始まる値は温度センサーのデバイスIDのディレクトリができます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/bus/w1/devices</span><br><span class="line">$ ls</span><br><span class="line">00-200000000000  28-0314626a2cff  w1_bus_master1</span><br></pre></td></tr></table></figure>
+
+<p><code>28-</code>のディレクトリに移動してw1_slaveを読み込み温度を計測します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> 28-0314626a2cff</span><br><span class="line">$ cat w1_slave</span><br><span class="line">c4 01 55 00 7f ff 0c 10 06 : crc=06 YES</span><br><span class="line">c4 01 55 00 7f ff 0c 10 06 t=28250</span><br><span class="line">$ cat w1_slave</span><br><span class="line">c5 01 55 00 7f ff 0c 10 45 : crc=45 YES</span><br><span class="line">c5 01 55 00 7f ff 0c 10 45 t=28312</span><br></pre></td></tr></table></figure>
+
+<h2 id="GPIOでLチカする"><a href="#GPIOでLチカする" class="headerlink" title="GPIOでLチカする"></a>GPIOでLチカする</h2><p><a href="http://wiringpi.com/" target="_blank" rel="noopener">WiringPi</a>と<a href="https://pypi.python.org/pypi/RPi.GPIO" target="_blank" rel="noopener">RPi.GPIO</a>のパッケージをそれぞれインストールしてGPIOを使い定番のLチカをしてみます。</p>
+<h3 id="WiringPi"><a href="#WiringPi" class="headerlink" title="WiringPi"></a>WiringPi</h3><p>GPIOを使うためC言語のモジュールの<a href="http://wiringpi.com/" target="_blank" rel="noopener">WiringPi</a>をビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span></span><br><span class="line">$ git <span class="built_in">clone</span> git://git.drogon.net/wiringPi</span><br><span class="line">$ <span class="built_in">cd</span> wiringPi</span><br><span class="line">$ ./build</span><br></pre></td></tr></table></figure>
+
+<p>gpioコマンドを実行してGPIOの番号確認します。ピンアサインはよく忘れるので一覧で表示されて便利です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gpio readall</span><br><span class="line">+-----+-----+---------+------+---+---Pi 2---+---+------+---------+-----+-----+</span><br><span class="line"> | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |</span><br><span class="line"> +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+</span><br><span class="line"> |     |     |    3.3v |      |   |  1 || 2  |   |      | 5v      |     |     |</span><br><span class="line"> |   2 |   8 |   SDA.1 | ALT0 | 1 |  3 || 4  |   |      | 5V      |     |     |</span><br><span class="line"> |   3 |   9 |   SCL.1 | ALT0 | 1 |  5 || 6  |   |      | 0v      |     |     |</span><br><span class="line"> |   4 |   7 | GPIO. 7 |   IN | 1 |  7 || 8  | 0 | ALT0 | TxD     | 15  | 14  |</span><br><span class="line"> |     |     |      0v |      |   |  9 || 10 | 1 | ALT0 | RxD     | 16  | 15  |</span><br><span class="line"> |  17 |   0 | GPIO. 0 |   IN | 0 | 11 || 12 | 0 | IN   | GPIO. 1 | 1   | 18  |</span><br><span class="line"> |  27 |   2 | GPIO. 2 |   IN | 0 | 13 || 14 |   |      | 0v      |     |     |</span><br><span class="line"> |  22 |   3 | GPIO. 3 |   IN | 0 | 15 || 16 | 0 | IN   | GPIO. 4 | 4   | 23  |</span><br><span class="line"> |     |     |    3.3v |      |   | 17 || 18 | 0 | IN   | GPIO. 5 | 5   | 24  |</span><br><span class="line"> |  10 |  12 |    MOSI |   IN | 0 | 19 || 20 |   |      | 0v      |     |     |</span><br><span class="line"> |   9 |  13 |    MISO |   IN | 0 | 21 || 22 | 0 | IN   | GPIO. 6 | 6   | 25  |</span><br><span class="line"> |  11 |  14 |    SCLK |   IN | 0 | 23 || 24 | 1 | IN   | CE0     | 10  | 8   |</span><br><span class="line"> |     |     |      0v |      |   | 25 || 26 | 1 | IN   | CE1     | 11  | 7   |</span><br><span class="line"> |   0 |  30 |   SDA.0 |   IN | 1 | 27 || 28 | 1 | IN   | SCL.0   | 31  | 1   |</span><br><span class="line"> |   5 |  21 | GPIO.21 |  OUT | 1 | 29 || 30 |   |      | 0v      |     |     |</span><br><span class="line"> |   6 |  22 | GPIO.22 |   IN | 1 | 31 || 32 | 0 | IN   | GPIO.26 | 26  | 12  |</span><br><span class="line"> |  13 |  23 | GPIO.23 |   IN | 0 | 33 || 34 |   |      | 0v      |     |     |</span><br><span class="line"> |  19 |  24 | GPIO.24 |   IN | 0 | 35 || 36 | 0 | IN   | GPIO.27 | 27  | 16  |</span><br><span class="line"> |  26 |  25 | GPIO.25 |   IN | 0 | 37 || 38 | 0 | IN   | GPIO.28 | 28  | 20  |</span><br><span class="line"> |     |     |      0v |      |   | 39 || 40 | 0 | IN   | GPIO.29 | 29  | 21  |</span><br><span class="line"> +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+</span><br><span class="line"> | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |</span><br><span class="line"> +-----+-----+---------+------+---+---Pi 2---+---+------+---------+-----+-----+</span><br></pre></td></tr></table></figure>
+
+<p>ブレッドボード配線をします。LEDのアノードは<code>GPIO 17</code>につなぎます。</p>
+<ul>
+<li>アノード (LED)                   -&gt; GPIO17 P11 (Raspberry Pi)</li>
+<li>カソード (LED) -&gt; 抵抗器1K(茶黒赤) -&gt; GND P14    (Raspberry Pi)</li>
+</ul>
+<p>GPIO-17を出力にします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gpio -g mode 17 out</span><br></pre></td></tr></table></figure>
+
+<p>LEDを点灯します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gpio -g write 17 1</span><br></pre></td></tr></table></figure>
+
+<p>LEDを消灯します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gpio -g write 17 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="RPi-GPIO"><a href="#RPi-GPIO" class="headerlink" title="RPi.GPIO"></a>RPi.GPIO</h3><p><a href="https://pypi.python.org/pypi/RPi.GPIO" target="_blank" rel="noopener">RPi.GPIO</a>のdebパッケージのpython-rpi.gpioはRaspberry Pi 2にインストール済みでした。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install python-rpi.gpio</span><br><span class="line">パッケージリストを読み込んでいます... 完了</span><br><span class="line">依存関係ツリーを作成しています</span><br><span class="line">状態情報を読み取っています... 完了</span><br><span class="line">python-rpi.gpio はすでに最新バージョンです。</span><br><span class="line">アップグレード: 0 個、新規インストール: 0 個、削除: 0 個、保留: 4 個。</span><br></pre></td></tr></table></figure>
+
+<p>LチカをするPythonのプログラムを書きます。ブレッドボード配線はWiringPiのときと同じで<code>GPIO 17</code>を使います。</p>
+<figure class="highlight python"><figcaption><span>~/python_apps/led_blink.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> RPi.GPIO <span class="keyword">as</span> GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">COUNT = <span class="number">3</span></span><br><span class="line">PIN = <span class="number">11</span></span><br><span class="line">GPIO.setmode(GPIO.BOARD)</span><br><span class="line">GPIO.setup(PIN,GPIO.OUT)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> xrange(COUNT):</span><br><span class="line">    GPIO.output(PIN,<span class="literal">True</span>)</span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line">    GPIO.output(PIN,<span class="literal">False</span>)</span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+
+<p>GPIOの制御はroot権限で実行します。LEDを3回点滅してプログラムは終了します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod u+x led_blink.py</span><br><span class="line">$ sudo ./led_blink.py</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RaspberryPi/" rel="tag"># RaspberryPi</a>
+              <a href="/tags/DHT11/" rel="tag"># DHT11</a>
+              <a href="/tags/%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC/" rel="tag"># センサー</a>
+              <a href="/tags/L%E3%83%81%E3%82%AB/" rel="tag"># Lチカ</a>
+              <a href="/tags/DS18B20/" rel="tag"># DS18B20</a>
+              <a href="/tags/RaspberryPi2/" rel="tag"># RaspberryPi2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/05/20/reagent-framework-template/" rel="prev" title="ReactとReagentのためのClojureScriptのリソース">
+      <i class="fa fa-chevron-left"></i> ReactとReagentのためのClojureScriptのリソース
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/05/22/reagent-tutorials-static-mock/" rel="next" title="Reagent入門 - Part1: コンポーネントのモックを作る">
+      Reagent入門 - Part1: コンポーネントのモックを作る <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#USB-TTLシリアル変換ケーブル"><span class="nav-number">1.</span> <span class="nav-text">USB-TTLシリアル変換ケーブル</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#無線LAN"><span class="nav-number">2.</span> <span class="nav-text">無線LAN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raspi-configの初期設定"><span class="nav-number">3.</span> <span class="nav-text">raspi-configの初期設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ファームウェアの更新"><span class="nav-number">4.</span> <span class="nav-text">ファームウェアの更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#その他設定"><span class="nav-number">5.</span> <span class="nav-text">その他設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim"><span class="nav-number">5.1.</span> <span class="nav-text">vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#時間合わせ"><span class="nav-number">5.2.</span> <span class="nav-text">時間合わせ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python"><span class="nav-number">6.</span> <span class="nav-text">Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I2Cをつかう"><span class="nav-number">7.</span> <span class="nav-text">I2Cをつかう</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DHT11で温度を計測する"><span class="nav-number">7.1.</span> <span class="nav-text">DHT11で温度を計測する</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Wireをつかう"><span class="nav-number">8.</span> <span class="nav-text">1-Wireをつかう</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DS18B20で温度を計測する"><span class="nav-number">8.1.</span> <span class="nav-text">DS18B20で温度を計測する</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIOでLチカする"><span class="nav-number">9.</span> <span class="nav-text">GPIOでLチカする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WiringPi"><span class="nav-number">9.1.</span> <span class="nav-text">WiringPi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RPi-GPIO"><span class="nav-number">9.2.</span> <span class="nav-text">RPi.GPIO</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

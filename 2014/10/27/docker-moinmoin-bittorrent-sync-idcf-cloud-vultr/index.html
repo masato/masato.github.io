@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="I&#39;m making plans to migrate my MoinMoin from Sakura VPS to Vultr. I could mostly done those preparations. One of the remaining works is to backup MoinMoin pages data and sync data between multi-clouds">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoinMoin in Production on CoreOS - Part10: BitTorrent Sync between IDCF Cloud and Vultr">
+<meta property="og:url" content="http://masato.github.io/2014/10/27/docker-moinmoin-bittorrent-sync-idcf-cloud-vultr/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="I&#39;m making plans to migrate my MoinMoin from Sakura VPS to Vultr. I could mostly done those preparations. One of the remaining works is to backup MoinMoin pages data and sync data between multi-clouds">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-10-27T13:08:35.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.595Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="MoinMoin">
+<meta property="article:tag" content="IDCFCloud">
+<meta property="article:tag" content="fleet">
+<meta property="article:tag" content="Vultr">
+<meta property="article:tag" content="BitTorrentSync">
+<meta property="article:tag" content="DataVolumeContainer">
+<meta property="article:tag" content="DropboxUploader">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/10/27/docker-moinmoin-bittorrent-sync-idcf-cloud-vultr/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MoinMoin in Production on CoreOS - Part10: BitTorrent Sync between IDCF Cloud and Vultr | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/10/27/docker-moinmoin-bittorrent-sync-idcf-cloud-vultr/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MoinMoin in Production on CoreOS - Part10: BitTorrent Sync between IDCF Cloud and Vultr
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 27 2014 22:08:35" itemprop="dateCreated datePublished" datetime="2014-10-27T22:08:35+09:00">Oct 27 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">I'm making plans to migrate my MoinMoin from Sakura VPS to Vultr. I could mostly done those preparations. One of the remaining works is to backup MoinMoin pages data and sync data between multi-clouds. I decited to use a syncing technology of BitTorrent Sync following a CenturyLink Labs tutorial. My first goal is to sync data between Vultr and IDCF Cloud both are sit on CoreOS.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>I’m making plans to migrate my MoinMoin from Sakura VPS to Vultr. I could mostly done those preparations. One of the remaining works is to backup MoinMoin pages data and sync data between multi-clouds. I decited to use a syncing technology of <a href="http://www.getsync.com/" target="_blank" rel="noopener">BitTorrent Sync</a> following a <a href="http://www.centurylinklabs.com/persistent-distributed-filesystems-in-docker-without-nfs-or-gluster/" target="_blank" rel="noopener">CenturyLink Labs tutorial</a>. My first goal is to sync data between Vultr and IDCF Cloud both are sit on CoreOS.</p>
+<a id="more"></a>
+
+<h3 id="1st-IDCF-cloud-instance-using-DropboxUploader"><a href="#1st-IDCF-cloud-instance-using-DropboxUploader" class="headerlink" title="1st IDCF cloud instance using DropboxUploader"></a>1st IDCF cloud instance using DropboxUploader</h3><p>The first thing to do is to run a BitTorrent Sync client container from <a href="https://registry.hub.docker.com/u/ctlc/btsync/" target="_blank" rel="noopener">ctlc/btsync</a> image. After finihsed running a container, it is provided a secret key to use in all of the sync containers. The secret key can be got via a <code>docker logs</code> command.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -d --name moin-btsync ctlc/btsync</span><br><span class="line">$ docker logs moin-btsync</span><br><span class="line">Starting btsync with secret: xxx</span><br></pre></td></tr></table></figure>
+
+<p>I write a command file using <a href="https://github.com/andreafabrizi/Dropbox-Uploader" target="_blank" rel="noopener">DropboxUploader</a>. In this script, I download the latest backuped MoinMoin archive from Dropbox and untar to BitTorrent Sync directory.</p>
+<figure class="highlight bash"><figcaption><span>~/bin/moin-update</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line">BACKUP_DIR=moin_backup</span><br><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">LATEST_FILE=$(dropbox_uploader.sh list /<span class="variable">$BACKUP_DIR</span>  | tail -n +2 | awk <span class="string">'&#123;print $3&#125;'</span> | sort -nr | head -1)</span><br><span class="line">dropbox_uploader.sh download /<span class="variable">$BACKUP_DIR</span>/<span class="variable">$LATEST_FILE</span></span><br><span class="line">docker run -it --rm --volumes-from moin-btsync ubuntu rm -fr /data/*</span><br><span class="line">docker run --rm --volumes-from moin-btsync -v $(<span class="built_in">pwd</span>):/backup ubuntu tar zxvf /backup/<span class="variable">$LATEST_FILE</span> --strip-components=1 -C /data</span><br><span class="line">rm /tmp/<span class="variable">$LATEST_FILE</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2nd-Vultr-instance-via-moin-service"><a href="#2nd-Vultr-instance-via-moin-service" class="headerlink" title="2nd Vultr instance via moin@.service"></a>2nd Vultr instance via moin@.service</h3><p>Another BitTorrent Sync container is deployed to Vulter via fleet unit file. I change data volume container for MoinMoin from my own image to ctlc/btsync image.</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moin/moin@.service</span></figcaption><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=MoinMoin Service</span><br><span class="line">Requires=docker.service</span><br><span class="line">After=docker.service</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">TimeoutStartSec=0</span><br><span class="line">ExecStartPre=-/usr/bin/docker <span class="built_in">kill</span> %p%i</span><br><span class="line">ExecStartPre=-/usr/bin/docker rm %p%i</span><br><span class="line"></span><br><span class="line">ExecStartPre=/bin/bash -c <span class="string">'/usr/bin/docker start moin-vol || /usr/bin/docker run -d --name moin-vol ctlc/btsync xxx'</span></span><br><span class="line">ExecStartPre=/usr/bin/docker pull xxx.ngrok.com/moin</span><br><span class="line"></span><br><span class="line">ExecStart=/usr/bin/docker run --name %p%i --volumes-from moin-vol -p 80:80 -p 443:443 xxx.ngrok.com/moin</span><br><span class="line">ExecStop=/usr/bin/docker stop %p%i</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">[X-Fleet]</span><br><span class="line">X-Conflicts=%p@*.service</span><br><span class="line">MachineMetadata=role=moin</span><br></pre></td></tr></table></figure>
+
+<p>I revise the Dockerfile as data volume to <code>/data</code> directory adjusting to <code>ctlc/btsync</code> container. In addition, this version of Nginx is configured with SSL, although using s self-signed  certificate.</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moin/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">ENV HOME /root</span><br><span class="line">ENV WORKDIR /root</span><br><span class="line"></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">    apt-get update &amp;&amp; \</span><br><span class="line">    DEBIAN_FRONTEND=noninteractive apt-get install -qy language-pack-ja</span><br><span class="line"></span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN locale-gen <span class="variable">$LANG</span> &amp;&amp; update-locale <span class="variable">$LANG</span> &amp;&amp; \</span><br><span class="line">    ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">  apt-get install -qy nginx uwsgi uwsgi-plugin-python python wget unzip openssl</span><br><span class="line"><span class="comment">## OpenSSL</span></span><br><span class="line">RUN <span class="built_in">cd</span> /etc/ssl \</span><br><span class="line"> &amp;&amp; openssl genrsa -out ssl.key 4096 \</span><br><span class="line"> &amp;&amp; openssl req -new -batch -key ssl.key -out ssl.csr \</span><br><span class="line"> &amp;&amp; openssl x509 -req -days 3650 -<span class="keyword">in</span> ssl.csr -signkey ssl.key -out ssl.crt</span><br><span class="line">ADD nginx.conf /etc/nginx/sites-available/default</span><br><span class="line">RUN wget http://static.moinmo.in/files/moin-1.9.7.tar.gz -P /tmp &amp;&amp; \</span><br><span class="line">    tar xzf /tmp/moin-1.9.7.tar.gz -C /tmp &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /tmp/moin-1.9.7 &amp;&amp; \</span><br><span class="line">    python setup.py install --force --prefix=/usr/<span class="built_in">local</span> &amp;&amp; \</span><br><span class="line">    sed -e <span class="string">'/sitename/s/Untitled //'</span> \</span><br><span class="line">        -e <span class="string">'/page_front_page.*Front/s/#\(page_front_page\)/\1/'</span> \</span><br><span class="line">        -e <span class="string">'/superuser/ &#123; s/#\(superuser\)/\1/; s/YourName/ScottTiger/ &#125;'</span> \</span><br><span class="line">        -e <span class="string">'/page_front_page/s/#u/u/'</span> \</span><br><span class="line">        -e <span class="string">'/acl_rights_before/s/.*/    acl_rights_default = u"ScottTiger:read,write,delete,revert,admin"\n&amp;/'</span>\</span><br><span class="line">        -e <span class="string">'/theme_default/s/modernized/europython/'</span> \</span><br><span class="line">        -e <span class="string">'/theme_default/s/.*/    tz_offset = 9.0\n&amp;/'</span> \</span><br><span class="line">       /usr/<span class="built_in">local</span>/share/moin/config/wikiconfig.py &gt; \</span><br><span class="line">       /usr/<span class="built_in">local</span>/share/moin/wikiconfig.py &amp;&amp; \</span><br><span class="line">       chown -Rh www-data. /usr/<span class="built_in">local</span>/share/moin/data \</span><br><span class="line">                           /usr/<span class="built_in">local</span>/share/moin/underlay &amp;&amp; \</span><br><span class="line">    wget https://bitbucket.org/thesheep/moin-europython/get/3995afe116b0.zip -P /tmp &amp;&amp; \</span><br><span class="line">    unzip /tmp/3995afe116b0.zip -d /tmp &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /tmp/thesheep* &amp;&amp; \</span><br><span class="line">    cp europython.py /usr/<span class="built_in">local</span>/share/moin/data/plugin/theme &amp;&amp; \</span><br><span class="line">    mkdir /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython &amp;&amp; \</span><br><span class="line">    cp -R css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython &amp;&amp; \</span><br><span class="line">    cp -R img /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython</span><br><span class="line">ADD screen.css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython/css/screen.css</span><br><span class="line">ADD common.css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython/css/common.css</span><br><span class="line">ADD user /usr/<span class="built_in">local</span>/share/moin/data/user/1338720549.58.37773</span><br><span class="line">ADD run.sh /run.sh</span><br><span class="line">RUN mkdir /data &amp;&amp; chown www-data:www-data /data &amp;&amp; \</span><br><span class="line">    mv /usr/<span class="built_in">local</span>/share/moin/data/pages /usr/<span class="built_in">local</span>/share/moin/data/pages.orig &amp;&amp; \</span><br><span class="line">    ln -s /data /usr/<span class="built_in">local</span>/share/moin/data/pages</span><br><span class="line">VOLUME [<span class="string">"/data"</span>]</span><br><span class="line">CMD [<span class="string">"/bin/bash"</span>, <span class="string">"/run.sh"</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<p>And the <code>run.sh</code> is revised also. In the first place of this script, the symlinked <code>/data</code> directory’s ownership is changed to <code>www-data</code>. </p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moin/run.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">chown -R www-data:www-data /data</span><br><span class="line">uwsgi --uid www-data \</span><br><span class="line">    -s /tmp/moin.sock \</span><br><span class="line">    --plugins python \</span><br><span class="line">    --pidfile /var/run/uwsgi-moinmoin.pid \</span><br><span class="line">    --wsgi-file server/moin.wsgi \</span><br><span class="line">    -M -p 4 \</span><br><span class="line">    --<span class="built_in">chdir</span> /usr/<span class="built_in">local</span>/share/moin \</span><br><span class="line">    --python-path /usr/<span class="built_in">local</span>/share/moin \</span><br><span class="line">    --harakiri 30 \</span><br><span class="line">    --die-on-term \</span><br><span class="line">    --daemonize /var/<span class="built_in">log</span>/uwsgi/app/moinmoin.log</span><br><span class="line">nginx -g <span class="string">'daemon off;'</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/MoinMoin/" rel="tag"># MoinMoin</a>
+              <a href="/tags/IDCFCloud/" rel="tag"># IDCFCloud</a>
+              <a href="/tags/fleet/" rel="tag"># fleet</a>
+              <a href="/tags/Vultr/" rel="tag"># Vultr</a>
+              <a href="/tags/BitTorrentSync/" rel="tag"># BitTorrentSync</a>
+              <a href="/tags/DataVolumeContainer/" rel="tag"># DataVolumeContainer</a>
+              <a href="/tags/DropboxUploader/" rel="tag"># DropboxUploader</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/10/26/docker-moinmoin-coreos-vultr/" rel="prev" title="MoinMoin in Production on CoreOS - Part9: Booting with iPXE on Vultr">
+      <i class="fa fa-chevron-left"></i> MoinMoin in Production on CoreOS - Part9: Booting with iPXE on Vultr
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/10/28/google-drive-cli-coreos-install/" rel="next" title="Installing Google Drive CLI on CoreOS">
+      Installing Google Drive CLI on CoreOS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1st-IDCF-cloud-instance-using-DropboxUploader"><span class="nav-number">1.</span> <span class="nav-text">1st IDCF cloud instance using DropboxUploader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2nd-Vultr-instance-via-moin-service"><span class="nav-number">2.</span> <span class="nav-text">2nd Vultr instance via moin@.service</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

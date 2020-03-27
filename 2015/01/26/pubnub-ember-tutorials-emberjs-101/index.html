@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="PubNubはConnected Devices用のリアルタイムアプリを構築するためBaaSです。リアルタイムメッセージに強いので、FirebaseやRealtime.co、SyncanoといったBaaSに近い感じです。今回はWebブラウザをクライアントにして、Ember.jsのSDKを使ったチュートリアルを進めていきます。AngularJSよりEmber.jsの方が昔から好きなのでコードを書いて">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PubNubとEmber.jsのチュートリアル - Part1: Ember.js 101">
+<meta property="og:url" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="PubNubはConnected Devices用のリアルタイムアプリを構築するためBaaSです。リアルタイムメッセージに強いので、FirebaseやRealtime.co、SyncanoといったBaaSに近い感じです。今回はWebブラウザをクライアントにして、Ember.jsのSDKを使ったチュートリアルを進めていきます。AngularJSよりEmber.jsの方が昔から好きなのでコードを書いて">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/storage-is-not-enabled.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/features-storage.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/enable-storage-feature.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/storage-is-enabled.png">
+<meta property="article:published_time" content="2015-01-26T14:10:43.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.826Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="PubNub">
+<meta property="article:tag" content="Emberjs">
+<meta property="article:tag" content="Bower">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/storage-is-not-enabled.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>PubNubとEmber.jsのチュートリアル - Part1: Ember.js 101 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/01/26/pubnub-ember-tutorials-emberjs-101/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PubNubとEmber.jsのチュートリアル - Part1: Ember.js 101
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 26 2015 23:10:43" itemprop="dateCreated datePublished" datetime="2015-01-26T23:10:43+09:00">Jan 26 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">PubNubはConnected Devices用のリアルタイムアプリを構築するためBaaSです。リアルタイムメッセージに強いので、FirebaseやRealtime.co、SyncanoといったBaaSに近い感じです。今回はWebブラウザをクライアントにして、Ember.jsのSDKを使ったチュートリアルを進めていきます。AngularJSよりEmber.jsの方が昔から好きなのでコードを書いていて楽しいです。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://www.pubnub.com/" target="_blank" rel="noopener">PubNub</a>はConnected Devices用のリアルタイムアプリを構築するためBaaSです。リアルタイムメッセージに強いので、<a href="http://www.firebase.com/" target="_blank" rel="noopener">Firebase</a>や<a href="http://www.realtime.co/" target="_blank" rel="noopener">Realtime.co</a>、<a href="http://www.syncano.com/" target="_blank" rel="noopener">Syncano</a>といったBaaSに近い感じです。今回はWebブラウザをクライアントにして、<a href="https://github.com/pubnub/pubnub-ember/" target="_blank" rel="noopener">Ember.jsのSDK</a>を使ったチュートリアルを進めていきます。AngularJSより<a href="http://emberjs.com/" target="_blank" rel="noopener">Ember.js</a>の方が昔から好きなのでコードを書いていて楽しいです。</p>
+<a id="more"></a>
+
+<h2 id="PubNubの特徴"><a href="#PubNubの特徴" class="headerlink" title="PubNubの特徴"></a>PubNubの特徴</h2><h3 id="Data-Stream-Network"><a href="#Data-Stream-Network" class="headerlink" title="Data Stream Network"></a>Data Stream Network</h3><p>世界中にデータセンターがありスケールするData Stream Networkを持っているのが特徴です。信頼性が高く、レイテンシの低いリアルタイムメッセージのためのCDNに近いようです。データセンターがダウンしても、トラフィックは他のデータセンターに迂回されるためユーザーは気づかないそうです。</p>
+<h3 id="豊富なSDK"><a href="#豊富なSDK" class="headerlink" title="豊富なSDK"></a>豊富なSDK</h3><p><a href="http://www.pubnub.com/developers/" target="_blank" rel="noopener">SDKが豊富</a>で60種類以上あります。IoTデバイス向けには<a href="https://github.com/pubnub/arduino" target="_blank" rel="noopener">Arduino</a>や<a href="https://github.com/pubnub/c" target="_blank" rel="noopener">Raspberry Pi</a>などの他にも、<a href="https://github.com/pubnub/mbed" target="_blank" rel="noopener">mbed</a>や<a href="https://github.com/pubnub/kinoma" target="_blank" rel="noopener">Kinoma Create</a>のSDKも揃っています。</p>
+<h2 id="Ember-js-101"><a href="#Ember-js-101" class="headerlink" title="Ember.js 101"></a>Ember.js 101</h2><p>PubNubのブログに投稿されている、<a href="http://www.pubnub.com/blog/emberjs-101-from-zero-to-ember-in-pubnub-seconds/" target="_blank" rel="noopener">Ember.js 101: From Zero to Ember in PubNub Seconds</a>のチュートリアルを進めていきます。</p>
+<h3 id="Docker開発環境"><a href="#Docker開発環境" class="headerlink" title="Docker開発環境"></a>Docker開発環境</h3><p>Node.jsのDocker開発環境を使います。Bowerが必要なので<a href="https://registry.hub.docker.com/u/dockerfile/nodejs-bower-gulp/" target="_blank" rel="noopener">dockerfile/nodejs-bower-gulp</a>のイメージを使います。テスト用のため使い捨てのコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull dockerfile/nodejs-bower-gulp</span><br><span class="line">$ docker run -it --rm dockerfile/nodejs-bower-gulp</span><br></pre></td></tr></table></figure>
+
+<p>Node.jsとnpmのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">v0.10.35</span><br><span class="line">$ npm -v</span><br><span class="line">2.2.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ember-js-SDKのインストール"><a href="#Ember-js-SDKのインストール" class="headerlink" title="Ember.js SDKのインストール"></a>Ember.js SDKのインストール</h3><p>パッケージマネージャのBowerを使い<a href="https://github.com/pubnub/pubnub-ember/" target="_blank" rel="noopener">pubnub-ember</a>をインストールします。このDockerコンテナはrootユーザーでログインしているので、<code>--allow-root</code>フラグを付けます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ bower install pubnub-ember --allow-root</span><br><span class="line">bower not-cached    git://github.com/pubnub/pubnub-ember.git<span class="comment">#*</span></span><br><span class="line">bower resolve       git://github.com/pubnub/pubnub-ember.git<span class="comment">#*</span></span><br><span class="line">bower download      https://github.com/pubnub/pubnub-ember/archive/v0.1.0-beta.1.tar.gz</span><br><span class="line">bower extract       pubnub-ember<span class="comment">#* archive.tar.gz</span></span><br><span class="line">bower resolved      git://github.com/pubnub/pubnub-ember.git<span class="comment">#0.1.0-beta.1</span></span><br><span class="line">bower install       pubnub-ember<span class="comment">#0.1.0-beta.1</span></span><br><span class="line"></span><br><span class="line">pubnub-ember<span class="comment">#0.1.0-beta.1 bower_components/pubnub-ember</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="チャットアプリの作成"><a href="#チャットアプリの作成" class="headerlink" title="チャットアプリの作成"></a>チャットアプリの作成</h2><h3 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h3><p>最初に今回作成するチャットアプリのindex.htmlです。オリジナルは<a href="https://github.com/pubnub/pubnub-ember/blob/master/site/examples/chat/index.html" target="_blank" rel="noopener">GitHubのリポジトリ</a>にあります。Ember.jsのバージョンやDEPRECATEDになったコードなど、若干修正しています。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!doctype html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;http:&#x2F;&#x2F;code.jquery.com&#x2F;jquery-1.11.2.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;http:&#x2F;&#x2F;cdn.pubnub.com&#x2F;pubnub.min.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;http:&#x2F;&#x2F;builds.handlebarsjs.com.s3.amazonaws.com&#x2F;handlebars-v2.0.0.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;http:&#x2F;&#x2F;builds.emberjs.com&#x2F;release&#x2F;ember.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script src&#x3D;&quot;bower_components&#x2F;pubnub-ember&#x2F;lib&#x2F;pubnub-ember.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">    &lt;link rel&#x3D;&quot;stylesheet&quot; href&#x3D;&quot;&#x2F;&#x2F;netdna.bootstrapcdn.com&#x2F;bootstrap&#x2F;3.3.2&#x2F;css&#x2F;bootstrap.min.css&quot;&gt;</span><br><span class="line">  &lt;&#x2F;head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;script type&#x3D;&quot;text&#x2F;x-handlebars&quot; data-template-name&#x3D;&quot;application&quot;&gt;</span><br><span class="line">      &lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">        &lt;h4&gt;Online Users&lt;&#x2F;h4&gt;</span><br><span class="line">        &lt;ul&gt;</span><br><span class="line">        &amp;#123;&amp;#123; #each user in users &#125;&#125;</span><br><span class="line">          &lt;li&gt;&amp;#123;&amp;#123; user &#125;&#125;&lt;&#x2F;li&gt;</span><br><span class="line">        &amp;#123;&amp;#123; &#x2F;each &#125;&#125;</span><br><span class="line">        &lt;&#x2F;ul&gt;</span><br><span class="line">        &lt;br &#x2F;&gt;</span><br><span class="line">        &lt;h4&gt;Chat History(&amp;#123;&amp;#123; messages.length &#125;&#125;)&lt;&#x2F;h4&gt;</span><br><span class="line">        &lt;form&gt;</span><br><span class="line">          &amp;#123;&amp;#123;input type&#x3D;&quot;text&quot; value&#x3D;new_message placeholder&#x3D;&quot;Enter a message&quot;&#125;&#125;          </span><br><span class="line">          &lt;input type&#x3D;&quot;submit&quot; &amp;#123;&amp;#123;action &#39;publish&#39;&#125;&#125; &#x2F;&gt;</span><br><span class="line">        &lt;&#x2F;form&gt;</span><br><span class="line">        &lt;br &#x2F;&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;well&quot;&gt;</span><br><span class="line">          &lt;ul&gt;</span><br><span class="line">          &amp;#123;&amp;#123; #each message in messages &#125;&#125;</span><br><span class="line">            &lt;li&gt;&amp;#123;&amp;#123; message &#125;&#125;&lt;&#x2F;li&gt;</span><br><span class="line">          &amp;#123;&amp;#123; &#x2F;each &#125;&#125;</span><br><span class="line">          &lt;&#x2F;ul&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">      &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      window.Mini &#x3D; Ember.Application.create();</span><br><span class="line">      var user_id &#x3D; &quot;User &quot; + Math.round(Math.random() * 1000);</span><br><span class="line"></span><br><span class="line">      Mini.PubNub &#x3D; PubNubEmber.extend(&#123;</span><br><span class="line">        cfg: &#123;</span><br><span class="line">          subscribe_key: &#39;xxx&#39;,</span><br><span class="line">          publish_key: &#39;xxx&#39;,</span><br><span class="line">          uuid: user_id</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      Mini.ApplicationController &#x3D; Ember.Controller.extend(&#123;</span><br><span class="line">        needs: [&#39;pubnub:main&#39;],</span><br><span class="line">        channel: &#39;The EmberJS Channel&#39;,</span><br><span class="line">        new_message: &#39;&#39;,</span><br><span class="line">        user_id: user_id,</span><br><span class="line">        messages: Ember.ArrayProxy.create(&#123;content: Ember.A([&#39;Welcome to The EmberJS Channel&#39;]) &#125;),</span><br><span class="line">        users: Ember.ArrayProxy.create(&#123;content: Ember.A([]) &#125;),</span><br><span class="line">        init: function() &#123;</span><br><span class="line">          var pn &#x3D; this.get(&#39;pubnub&#39;);</span><br><span class="line">          var chan &#x3D; this.get(&#39;channel&#39;);</span><br><span class="line">          var self &#x3D; this;</span><br><span class="line"></span><br><span class="line">          &#x2F;&#x2F; Subscribe to the Channel</span><br><span class="line">          pn.emSubscribe(&#123; channel: chan &#125;);</span><br><span class="line"></span><br><span class="line">          &#x2F;&#x2F; Register for message events</span><br><span class="line">          pn.on(pn.emMsgEv(chan), function(payload)&#123;</span><br><span class="line">            self.get(&#39;messages&#39;).pushObject(payload.message);</span><br><span class="line">          &#125;);</span><br><span class="line"></span><br><span class="line">          &#x2F;&#x2F; Register for presence events</span><br><span class="line">          pn.on(pn.emPrsEv(chan), function(payload)&#123;</span><br><span class="line">            self.get(&#39;users&#39;).set(&#39;content&#39;, pn.emListPresence(chan));</span><br><span class="line">          &#125;);</span><br><span class="line"></span><br><span class="line">          &#x2F;&#x2F; Pre-Populate the user list (optional)</span><br><span class="line">          pn.emHereNow(&#123; channel: chan &#125;);</span><br><span class="line"></span><br><span class="line">          &#x2F;&#x2F; Populate messae history (optional)</span><br><span class="line">          pn.emHistory(&#123;</span><br><span class="line">            channel: chan,</span><br><span class="line">            count: 500</span><br><span class="line">          &#125;);</span><br><span class="line">        &#125;,</span><br><span class="line">        actions: &#123;</span><br><span class="line">          &#x2F;&#x2F; set up an Ember Action to publish a message</span><br><span class="line">          publish: function()&#123;</span><br><span class="line">            this.get(&#39;pubnub&#39;).emPublish(&#123;</span><br><span class="line">              channel: this.get(&#39;channel&#39;),</span><br><span class="line">              message: &quot;[&quot; + this.get(&#39;user_id&#39;) + &quot;] &quot; + this.get(&#39;new_message&#39;)</span><br><span class="line">            &#125;);</span><br><span class="line">            this.set(&#39;new_message&#39;,&#39;&#39;);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &lt;&#x2F;script&gt;</span><br><span class="line">  &lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="headerのscriptタグ"><a href="#headerのscriptタグ" class="headerlink" title="headerのscriptタグ"></a>headerのscriptタグ</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    &lt;script src&#x3D;&quot;bower_components&#x2F;pubnub-ember&#x2F;lib&#x2F;pubnub-ember.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>bower_components/pubnub-ember/pubnub-ember.js</code>は bower installでインストールしたディレクトリです。</p>
+<h3 id="Handlebarsテンプレート"><a href="#Handlebarsテンプレート" class="headerlink" title="Handlebarsテンプレート"></a>Handlebarsテンプレート</h3><p>Ember.jsのテンプレートは<a href="http://handlebarsjs.com/" target="_blank" rel="noopener">Handlebars</a>が統合されています。今回のテンプレートはindex.htmlのscriptタグの中にインラインで記述しています。</p>
+<figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/x-handlebars"</span> <span class="attr">data-template-name</span>=<span class="string">"application"</span>&gt;</span></span><br><span class="line"><span class="javascript">      &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">h4</span>&gt;</span>Online Users<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>#each user in users&#125;&#125;</span></span></span><br><span class="line"><span class="handlebars"><span class="xml">          <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>user&#125;&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>/each&#125;&#125;</span></span></span><br><span class="line">...</span><br><span class="line"><span class="handlebars"><span class="xml">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="PubNubEmberサービスの作成"><a href="#PubNubEmberサービスの作成" class="headerlink" title="PubNubEmberサービスの作成"></a>PubNubEmberサービスの作成</h3><p>PubNub Developer Portalにログインして、アカウントに紐付いたsubscribe_keyとpublish_keyを確認して記述します。</p>
+<figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="built_in">window</span>.Mini = Ember.Application.create();</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> user_id = <span class="string">"User "</span> + <span class="built_in">Math</span>.round(<span class="built_in">Math</span>.random() * <span class="number">1000</span>);</span></span><br><span class="line">  Mini.PubNub = PubNubEmber.extend(&#123;</span><br><span class="line">    cfg: &#123;</span><br><span class="line"><span class="actionscript">      subscribe_key: <span class="string">'xxx'</span>,</span></span><br><span class="line"><span class="actionscript">      publish_key: <span class="string">'xxx'</span>,</span></span><br><span class="line">      uuid: user_id</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="ApplicationControllerの作成"><a href="#ApplicationControllerの作成" class="headerlink" title="ApplicationControllerの作成"></a>ApplicationControllerの作成</h3><p>Ember.js controllerオブジェクトにアプリケーションロジックを記述していきます。コントローラーにはビューで使用するコレクションなどの変数や関数を定義します。コレクションに使っているArrayProxyクラスは予め用意されています。プロパティに変化があると、ビューに自動的に反映してくれます。</p>
+<h3 id="ApplicationControllerのinit関数"><a href="#ApplicationControllerのinit関数" class="headerlink" title="ApplicationControllerのinit関数"></a>ApplicationControllerのinit関数</h3><p>イベントリスナーの登録と、イベントハンドラ関数の定義の簡単な説明です。</p>
+<ul>
+<li><p>emSubscribe関数</p>
+<ul>
+<li>アプリ用のsubscriptionチャンネルを作成する</li>
+<li>channel名はEmber.Controller.extendの最初で定義している</li>
+</ul>
+</li>
+<li><p>emMsgEv関数</p>
+<ul>
+<li>messageイベントハンドラをイベントにバインドする</li>
+<li>PubNub Ember.jsライブラリはチャンネルから受信したイベントを Ember.jsのイベントに変換してくれる</li>
+<li>messageを受信したら、controllerのmessagesコレクションにpushする</li>
+</ul>
+</li>
+<li><p>emPrsEv関数</p>
+<ul>
+<li>presenseイベントに、イベントリスナを登録する</li>
+<li>コントローラーのusersコレクションを動的にアップデートする</li>
+</ul>
+</li>
+<li><p>emHereNow関数</p>
+<ul>
+<li>presenceイベントをfireする</li>
+<li>登録したpresenceイベントハンドラよって処理される</li>
+</ul>
+</li>
+<li><p>emHistory関数</p>
+<ul>
+<li>messageイベントをfireする</li>
+<li>登録したmessaegsイベントハンドラによって処理される</li>
+</ul>
+</li>
+</ul>
+<h2 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h2><h3 id="local-web-serverの起動"><a href="#local-web-serverの起動" class="headerlink" title="local-web-serverの起動"></a>local-web-serverの起動</h3><p><a href="https://www.npmjs.com/package/local-web-server" target="_blank" rel="noopener">local-web-server</a>はNode.js製の開発用HTTPサーバーです。local-web-serverを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install -g <span class="built_in">local</span>-web-server</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザで確認します。</p>
+<p><a href="http://172.17.4.110:8000" target="_blank" rel="noopener">http://172.17.4.110:8000</a></p>
+<p><img src="/2015/01/26/pubnub-ember-tutorials-emberjs-101/storage-is-not-enabled.png" alt="storage-is-not-enabled.png"></p>
+<p>画面にメッセージが表示されていますが、Storage &amp; Playbackサービスが有効になっていないので、フォームをsubmitしてもメッセージは保存されません。</p>
+<h3 id="Storage-amp-Playbackサービスを有効にする"><a href="#Storage-amp-Playbackサービスを有効にする" class="headerlink" title="Storage &amp; Playbackサービスを有効にする"></a>Storage &amp; Playbackサービスを有効にする</h3><p>PubNub Developer Portalにログインして、FreaturesからStorage &amp; Playbackのセクションに移動します。</p>
+<p><img src="/2015/01/26/pubnub-ember-tutorials-emberjs-101/features-storage.png" alt="features-storage.png"></p>
+<p>addボタンを押して有効にします。</p>
+<p><img src="/2015/01/26/pubnub-ember-tutorials-emberjs-101/enable-storage-feature.png" alt="enable-storage-feature.png"></p>
+<p><a href="http://www.pubnub.com/pricing/" target="_blank" rel="noopener">料金表</a>によると、FREEプランの30日トライアルは1日分のメッセージを保存してくれるそうです。</p>
+<p>画面からsubmitしたメッセージはブラウザをリフレッシュしても消えずに、Storageに保存されました。</p>
+<p><img src="/2015/01/26/pubnub-ember-tutorials-emberjs-101/storage-is-enabled.png" alt="storage-is-enabled.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/PubNub/" rel="tag"># PubNub</a>
+              <a href="/tags/Emberjs/" rel="tag"># Emberjs</a>
+              <a href="/tags/Bower/" rel="tag"># Bower</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/01/25/beagleboneblack-sensortag-ble-iot-resources/" rel="prev" title="Node.jsでつくるIoT - Part2: Beagle Bone BlackとSensorTagとBLE">
+      <i class="fa fa-chevron-left"></i> Node.jsでつくるIoT - Part2: Beagle Bone BlackとSensorTagとBLE
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/01/27/beagleboneblack-debian/" rel="next" title="BeagleBone Blackのファームウェアを入れ直す - Part1: Debian 7.5とWindows7作業環境">
+      BeagleBone Blackのファームウェアを入れ直す - Part1: Debian 7.5とWindows7作業環境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PubNubの特徴"><span class="nav-number">1.</span> <span class="nav-text">PubNubの特徴</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Stream-Network"><span class="nav-number">1.1.</span> <span class="nav-text">Data Stream Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#豊富なSDK"><span class="nav-number">1.2.</span> <span class="nav-text">豊富なSDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ember-js-101"><span class="nav-number">2.</span> <span class="nav-text">Ember.js 101</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker開発環境"><span class="nav-number">2.1.</span> <span class="nav-text">Docker開発環境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ember-js-SDKのインストール"><span class="nav-number">2.2.</span> <span class="nav-text">Ember.js SDKのインストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#チャットアプリの作成"><span class="nav-number">3.</span> <span class="nav-text">チャットアプリの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html"><span class="nav-number">3.1.</span> <span class="nav-text">index.html</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#headerのscriptタグ"><span class="nav-number">3.2.</span> <span class="nav-text">headerのscriptタグ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Handlebarsテンプレート"><span class="nav-number">3.3.</span> <span class="nav-text">Handlebarsテンプレート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PubNubEmberサービスの作成"><span class="nav-number">3.4.</span> <span class="nav-text">PubNubEmberサービスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApplicationControllerの作成"><span class="nav-number">3.5.</span> <span class="nav-text">ApplicationControllerの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApplicationControllerのinit関数"><span class="nav-number">3.6.</span> <span class="nav-text">ApplicationControllerのinit関数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#確認"><span class="nav-number">4.</span> <span class="nav-text">確認</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#local-web-serverの起動"><span class="nav-number">4.1.</span> <span class="nav-text">local-web-serverの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Storage-amp-Playbackサービスを有効にする"><span class="nav-number">4.2.</span> <span class="nav-text">Storage &amp; Playbackサービスを有効にする</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

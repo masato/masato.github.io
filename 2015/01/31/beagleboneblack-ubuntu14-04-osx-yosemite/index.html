@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="いままでWindwos7をBeagleBone BlackのUSB-Ethernetネットワーク共有環境にして作業していました。OSXからも同様にUSBケーブルを接続して、SSHログインとインターネット接続を確認してみます。OSXのバージョンはYosemiteの10.10.1です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeagleBone Blackのファームウェアを入れ直す - Part4: SDカードのUbuntu14.04.1とOSXを接続する">
+<meta property="og:url" content="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="いままでWindwos7をBeagleBone BlackのUSB-Ethernetネットワーク共有環境にして作業していました。OSXからも同様にUSBケーブルを接続して、SSHログインとインターネット接続を確認してみます。OSXのバージョンはYosemiteの10.10.1です。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/osx-network.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/network-share.png">
+<meta property="article:published_time" content="2015-01-31T12:21:02.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.552Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="BeagleBoneBlack">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Linux-ARM">
+<meta property="article:tag" content="OSX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/osx-network.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeagleBone Blackのファームウェアを入れ直す - Part4: SDカードのUbuntu14.04.1とOSXを接続する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeagleBone Blackのファームウェアを入れ直す - Part4: SDカードのUbuntu14.04.1とOSXを接続する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 31 2015 21:21:02" itemprop="dateCreated datePublished" datetime="2015-01-31T21:21:02+09:00">Jan 31 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">いままでWindwos7をBeagleBone BlackのUSB-Ethernetネットワーク共有環境にして作業していました。OSXからも同様にUSBケーブルを接続して、SSHログインとインターネット接続を確認してみます。OSXのバージョンはYosemiteの10.10.1です。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>これまでWindwos7をBeagleBone BlackのUSB-Ethernetネットワーク共有環境にして作業していました。OSXからも同様にUSBケーブルを接続して、SSHログインとインターネット接続を確認してみます。OSXのバージョンはYosemiteの10.10.1です。</p>
+<a id="more"></a>
+
+<h2 id="OSXにドライバをインストール"><a href="#OSXにドライバをインストール" class="headerlink" title="OSXにドライバをインストール"></a>OSXにドライバをインストール</h2><p>OSXの場合もWindowsと同様に<a href="http://beagleboard.org/getting-started" target="_blank" rel="noopener">Getting Started</a>を読みながらBeagleBone Blackと接続するためのドライバをインストールします。OSXの場合はNetworkドライバとSerialドライバの2つをインストールします。</p>
+<h3 id="Networkドライバ"><a href="#Networkドライバ" class="headerlink" title="Networkドライバ"></a>Networkドライバ</h3><p><a href="http://beagleboard.org/getting-started" target="_blank" rel="noopener">Getting Started</a>のOSXのリンクから、<a href="http://beagleboard.org/static/Drivers/MacOSX/RNDIS/HoRNDIS.pkg" target="_blank" rel="noopener">HoRNDIS.pkg</a>をダウンロードしてインストールします。インターネット接続使うUSBテザリングのドライバです。</p>
+<h3 id="USB-シリアル変換ドライバ"><a href="#USB-シリアル変換ドライバ" class="headerlink" title="USB-シリアル変換ドライバ"></a>USB-シリアル変換ドライバ</h3><p><a href="http://beagleboard.org/static/Drivers/MacOSX/FTDI/EnergiaFTDIDrivers2.2.18.pkg" target="_blank" rel="noopener">EnergiaFTDIDrivers2.2.18.pkg</a>をダウンロードします。pkgはダブルクリックでなく、右クリックで開きます。</p>
+<h2 id="ネットワーク設定"><a href="#ネットワーク設定" class="headerlink" title="ネットワーク設定"></a>ネットワーク設定</h2><h3 id="USBケーブルで接続"><a href="#USBケーブルで接続" class="headerlink" title="USBケーブルで接続"></a>USBケーブルで接続</h3><p>ドライバをインストールしたら、BeagleBone BlackとOSXをUSBケーブルで接続します。コントロールパネルのネットワークを開いて接続を確認します。</p>
+<p><img src="/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/osx-network.png" alt="osx_network.png"></p>
+<h3 id="共有設定"><a href="#共有設定" class="headerlink" title="共有設定"></a>共有設定</h3><p>コントロールパネルの共有設定を開き、BeagleBone Blackのネットワークと共有設定をします。</p>
+<ul>
+<li>コントロールパネル &gt; 共有</li>
+<li>共有する接続経路: Wi-Fi</li>
+<li>相手のコンピュータが使用するポート: BeagleBoneBlack</li>
+</ul>
+<p>左ペインの<code>インターネット共有</code>にチェックを入れます。</p>
+<p><img src="/2015/01/31/beagleboneblack-ubuntu14-04-osx-yosemite/network-share.png" alt="network-share.png"></p>
+<h2 id="SSH接続"><a href="#SSH接続" class="headerlink" title="SSH接続"></a>SSH接続</h2><h3 id="OSXのネットワーク確認"><a href="#OSXのネットワーク確認" class="headerlink" title="OSXのネットワーク確認"></a>OSXのネットワーク確認</h3><p>OSXで共有設定をすると<code>bridge100</code>のネットワークが作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ifconfig</span><br><span class="line">...</span><br><span class="line">bridge100: flags=8863&lt;UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST&gt; mtu 1500</span><br><span class="line">        options=3&lt;RXCSUM,TXCSUM&gt;</span><br><span class="line">        ether 3e:15:c2:3d:d3:64</span><br><span class="line">        inet 192.168.2.1 netmask 0xffffff00 broadcast 192.168.2.255</span><br><span class="line">        inet6 fe80::3c15:c2ff:fe3d:d364%bridge100 prefixlen 64 scopeid 0xb</span><br><span class="line">        Configuration:</span><br><span class="line">                id 0:0:0:0:0:0 priority 0 hellotime 0 fwddelay 0</span><br><span class="line">                maxage 0 holdcnt 0 proto stp maxaddr 100 timeout 1200</span><br><span class="line">                root id 0:0:0:0:0:0 priority 0 ifcost 0 port 0</span><br><span class="line">                ipfilter disabled flags 0x2</span><br><span class="line">        member: en5 flags=3&lt;LEARNING,DISCOVER&gt;</span><br><span class="line">                ifmaxaddr 0 port 10 priority 0 path cost 0</span><br><span class="line">        nd6 options=1&lt;PERFORMNUD&gt;</span><br><span class="line">        media: autoselect</span><br><span class="line">        status: active</span><br></pre></td></tr></table></figure>
+
+<p>OSXでネットワークの共有設定をする場合、サブネットは<code>192.168.2/24</code>になっています。</p>
+<figure class="highlight xml"><figcaption><span>/etc/bootpd.plist</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>dhcp_router<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">string</span>&gt;</span>192.168.2.1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>interface<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">string</span>&gt;</span>bridge100<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">...</span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>name<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">string</span>&gt;</span>192.168.2/24<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>net_address<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">string</span>&gt;</span>192.168.2.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>net_mask<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">string</span>&gt;</span>255.255.255.0<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">truetruetrue<span class="tag">&lt;<span class="name">key</span>&gt;</span>net_range<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="BeagleBone-Blackのネットワーク確認"><a href="#BeagleBone-Blackのネットワーク確認" class="headerlink" title="BeagleBone Blackのネットワーク確認"></a>BeagleBone Blackのネットワーク確認</h3><p>WindowsのPuttyからUSB-シリアル接続をして、dhclientを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo dhclient -v</span><br><span class="line">Internet Systems Consortium DHCP Client 4.2.4</span><br><span class="line">Copyright 2004-2012 Internet Systems Consortium.</span><br><span class="line">All rights reserved.</span><br><span class="line">For info, please visit https://www.isc.org/software/dhcp/</span><br><span class="line"></span><br><span class="line">Listening on LPF/usb0/02:e9:fb:f0:0b:f0</span><br><span class="line">Sending on   LPF/usb0/02:e9:fb:f0:0b:f0</span><br><span class="line">Sending on   Socket/fallback</span><br><span class="line">DHCPREQUEST of 192.168.2.9 on usb0 to 255.255.255.255 port 67 (xid=0x137b281b)</span><br><span class="line">DHCPACK of 192.168.2.9 from 192.168.2.1</span><br><span class="line">RTNETLINK answers: File exists</span><br><span class="line">bound to 192.168.2.9 -- renewal <span class="keyword">in</span> 42520 seconds.</span><br></pre></td></tr></table></figure>
+
+<p>ルーティングを確認すると、サブネットが変更されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         192.168.2.1     0.0.0.0         UG    0      0        0 usb0</span><br><span class="line">192.168.2.0     0.0.0.0         255.255.255.0   U     0      0        0 usb0</span><br></pre></td></tr></table></figure>
+
+<p>OSXのターミナルからBeagleBone BlackにSSH接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh debian@192.168.2.2</span><br><span class="line">Ubuntu 14.04.1 LTS</span><br><span class="line"></span><br><span class="line">rcn-ee.net console Ubuntu Image 2015-01-06</span><br><span class="line"></span><br><span class="line">Support/FAQ: http://elinux.org/BeagleBoardUbuntu</span><br><span class="line"></span><br><span class="line">default username:password is [ubuntu:temppwd]</span><br><span class="line"></span><br><span class="line">ubuntu@192.168.2.2<span class="string">'s password:</span></span><br><span class="line"><span class="string">Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.14.31-ti-r49 armv7l)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>usb0</code>ネットワークを確認します。OSXの<code>bridge100</code>と同じネットワークになっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ip addr show usb0</span><br><span class="line">5: usb0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 2e:3d:e9:00:de:ca brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.2.2/24 brd 192.168.2.255 scope global usb0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::2c3d:e9ff:fe00:deca/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">BeagleBone BlackからOSXのUSB-Ethernet接続を経由して、名前解決とインターネットに接続ができるようになりました。</span><br></pre></td></tr></table></figure>
+<p>$ ping -c 3 <a href="http://www.yahoo.co.jp" target="_blank" rel="noopener">www.yahoo.co.jp</a><br>PING <a href="http://www.g.yahoo.co.jp" target="_blank" rel="noopener">www.g.yahoo.co.jp</a> (183.79.235.148) 56(84) bytes of data.<br>64 bytes from 183.79.235.148: icmp_seq=1 ttl=52 time=18.1 ms<br>…</p>
+<pre><code></code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BeagleBoneBlack/" rel="tag"># BeagleBoneBlack</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/Linux-ARM/" rel="tag"># Linux-ARM</a>
+              <a href="/tags/OSX/" rel="tag"># OSX</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/01/30/beagleboneblack-ubuntu14-04-wlan/" rel="prev" title="BeagleBone Blackのファームウェアを入れ直す - Part3: SDカードのUbuntu14.04.1の無線LAN設定">
+      <i class="fa fa-chevron-left"></i> BeagleBone Blackのファームウェアを入れ直す - Part3: SDカードのUbuntu14.04.1の無線LAN設定
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/02/01/beagleboneblack-ubuntu14-04-windows7/" rel="next" title="BeagleBone Blackのファームウェアを入れ直す - Part5: SDカードのUbuntu14.04.1とWindows7を接続する">
+      BeagleBone Blackのファームウェアを入れ直す - Part5: SDカードのUbuntu14.04.1とWindows7を接続する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSXにドライバをインストール"><span class="nav-number">1.</span> <span class="nav-text">OSXにドライバをインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Networkドライバ"><span class="nav-number">1.1.</span> <span class="nav-text">Networkドライバ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-シリアル変換ドライバ"><span class="nav-number">1.2.</span> <span class="nav-text">USB-シリアル変換ドライバ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ネットワーク設定"><span class="nav-number">2.</span> <span class="nav-text">ネットワーク設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#USBケーブルで接続"><span class="nav-number">2.1.</span> <span class="nav-text">USBケーブルで接続</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共有設定"><span class="nav-number">2.2.</span> <span class="nav-text">共有設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH接続"><span class="nav-number">3.</span> <span class="nav-text">SSH接続</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSXのネットワーク確認"><span class="nav-number">3.1.</span> <span class="nav-text">OSXのネットワーク確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BeagleBone-Blackのネットワーク確認"><span class="nav-number">3.2.</span> <span class="nav-text">BeagleBone Blackのネットワーク確認</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

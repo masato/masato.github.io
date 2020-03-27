@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Part1でRStudio Serverをインストールしたのに続いて、IPython Notebook環境を構築します。マルチユーザー環境だと、ipython-hydraがありますが理解できていないので、rootユーザーで動かすことにします。IACSのコースでは、IPython Notebookの環境構築にAnacondaを使っているので参考にします。AnacondaはPythonでデータ分析環境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerでデータ分析環境 - Part2: AnacondaでIPython Notebookをインストール">
+<meta property="og:url" content="http://masato.github.io/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Part1でRStudio Serverをインストールしたのに続いて、IPython Notebook環境を構築します。マルチユーザー環境だと、ipython-hydraがありますが理解できていないので、rootユーザーで動かすことにします。IACSのコースでは、IPython Notebookの環境構築にAnacondaを使っているので参考にします。AnacondaはPythonでデータ分析環境">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/ipython-notebook.png">
+<meta property="article:published_time" content="2014-07-11T14:20:11.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.580Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="AnalyticSandbox">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="runit">
+<meta property="article:tag" content="IPythonNotebook">
+<meta property="article:tag" content="R">
+<meta property="article:tag" content="Anaconda">
+<meta property="article:tag" content="nbserver">
+<meta property="article:tag" content="Druid">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/ipython-notebook.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dockerでデータ分析環境 - Part2: AnacondaでIPython Notebookをインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerでデータ分析環境 - Part2: AnacondaでIPython Notebookをインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 11 2014 23:20:11" itemprop="dateCreated datePublished" datetime="2014-07-11T23:20:11+09:00">Jul 11 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Part1でRStudio Serverをインストールしたのに続いて、IPython Notebook環境を構築します。マルチユーザー環境だと、ipython-hydraがありますが理解できていないので、rootユーザーで動かすことにします。IACSのコースでは、IPython Notebookの環境構築にAnacondaを使っているので参考にします。AnacondaはPythonでデータ分析環境を構築する場合に必要なパッケージがたくさん入っているので、まとめてインストールできます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>インストールの手順を間違えていたので更新しました。Nginx+SSLのリバースプロキシを使うと、MathJaxのインストールがCDNからできないようです。事前にローカルにインストールするようにしました。</p>
+<ul>
+<li><code>Update 2014-08-10</code>: <a href="/2014/08/10/docker-analytic-sandbox-ipython-notebook-deploy/">Dockerでデータ分析環境 - Part7: Ubuntu14.04のDockerにIPython Notebookをデプロイ</a></li>
+</ul>
+<p><a href="/2014/07/09/docker-analytic-sandbox-rstudio-server/">Part1</a>で<code>RStudio Server</code>をインストールしたのに続いて、<code>IPython Notebook</code>環境を構築します。<br>マルチユーザー環境だと、<a href="https://github.com/cni/ipython-hydra" target="_blank" rel="noopener">ipython-hydra</a>がありますが理解できていないので、rootユーザーで動かすことにします。</p>
+<p><a href="http://iacs-courses.seas.harvard.edu/courses/am207/blog/installing-python.html" target="_blank" rel="noopener">IACS</a>のコースでは、<code>IPython Notebook</code>の環境構築に<a href="https://store.continuum.io/cshop/anaconda/" target="_blank" rel="noopener">Anaconda</a>を使っているので参考にします。<br>AnacondaはPythonでデータ分析環境を構築する場合に必要なパッケージがたくさん入っているので、まとめてインストールできます。</p>
+<a id="more"></a>
+
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p><a href="https://registry.hub.docker.com/u/phusion/baseimage/" target="_blank" rel="noopener">phusion/baseimage</a>を使います。<br>昨日の<code>RStudio Server</code>用のDockerfileに追加します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/rstudio-server/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.11</span><br><span class="line"></span><br><span class="line">ENV HOME /root</span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD mykey.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line"><span class="comment">## Development Environment</span></span><br><span class="line">ENV EDITOR vim</span><br><span class="line">RUN update-alternatives --<span class="built_in">set</span> editor /usr/bin/vim.basic</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y git wget curl unzip</span><br><span class="line"></span><br><span class="line"><span class="comment">## Install R</span></span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/'</span> &gt; /etc/apt/sources.list.d/r.list &amp;&amp; \</span><br><span class="line">    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9 &amp;&amp; \</span><br><span class="line">    apt-get update</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y r-base</span><br><span class="line"></span><br><span class="line"><span class="comment">## RStudio Server</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y gdebi-core libapparmor1 libcurl4-openssl-dev</span><br><span class="line">RUN wget http://download2.rstudio.org/rstudio-server-0.98.953-amd64.deb &amp;&amp; \</span><br><span class="line">    gdebi -n rstudio-server-0.98.953-amd64.deb &amp;&amp; \</span><br><span class="line">    rm rstudio-server-*-amd64.deb</span><br><span class="line">RUN useradd -m rstudio &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"rstudio:rstudio"</span> | chpasswd</span><br><span class="line"></span><br><span class="line"><span class="comment">## Anaconda</span></span><br><span class="line">RUN wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.0.1-Linux-x86_64.sh -P /root \</span><br><span class="line">  &amp;&amp; yes | bash /root/Anaconda-2.0.1-Linux-x86_64.sh</span><br><span class="line"></span><br><span class="line">RUN . /root/.bashrc &amp;&amp; ipython profile create default \</span><br><span class="line">  &amp;&amp; mkdir /notebook</span><br><span class="line"></span><br><span class="line">ADD sv /etc/service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker's init system.</span></span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<h3 id="runitの設定ファイル"><a href="#runitの設定ファイル" class="headerlink" title="runitの設定ファイル"></a>runitの設定ファイル</h3><p>Anacondaではipythonなど実行ファイルは、<code>/y/bin/</code>にインストールされます。</p>
+<p>これはyesコマンドでパイプしていることが原因でした。rootで<code>Anaconda-2.0.1-Linux-x86_64.sh -b</code>のように<code>-b</code>フラグをつけて実行すると<code>/root/anaconda/</code>ディレクトリにインストールされます。</p>
+<ul>
+<li><code>Update 2014-08-10</code>: <a href="/2014/08/10/docker-analytic-sandbox-ipython-notebook-deploy/">Dockerでデータ分析環境 - Part7: Ubuntu14.04のDockerにIPython Notebookをデプロイ</a></li>
+</ul>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/rstudio-server/sv/ipython/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /y/bin/ipython notebook --no-browser --profile nbserver --pylab=inline --ip=0.0.0.0 --port 8080 --notebook-dir=/notebook</span><br></pre></td></tr></table></figure>
+
+<p>svlogdを使ったログの設定です。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/rstudio-server/sv/rstudio-server/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="イメージの-build-と-run"><a href="#イメージの-build-と-run" class="headerlink" title="イメージの build と run"></a>イメージの build と run</h3><p>イメージをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/rstudio-server</span><br><span class="line">$ docker build -t masato/rstudio-server .</span><br></pre></td></tr></table></figure>
+
+<p>コンテナを起動します。SSHと<code>RStudio Server</code>のポートをエクスポーズします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -t -p 1022:22 -p 8788:8787 -p 8088:8080 masato/rstudio-server  /sbin/my_init bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="ブラウザで確認"><a href="#ブラウザで確認" class="headerlink" title="ブラウザで確認"></a>ブラウザで確認</h3><p>Dockerホストからブラウザを開いて、<code>IPython Notebook</code>を使ってみます。</p>
+<img src="/2014/07/11/docker-analytic-sandbox-anaconda-ipython-notebook/ipython-notebook.png" class="center">
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>RStudio Server</code>に追加して、マルチユーザー機能はまだ課題ですが、<code>IPython Notebook</code>も使えるようになりました。<br>次はPostgreSQLの環境を用意しようと思います。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AnalyticSandbox/" rel="tag"># AnalyticSandbox</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/runit/" rel="tag"># runit</a>
+              <a href="/tags/IPythonNotebook/" rel="tag"># IPythonNotebook</a>
+              <a href="/tags/R/" rel="tag"># R</a>
+              <a href="/tags/Anaconda/" rel="tag"># Anaconda</a>
+              <a href="/tags/nbserver/" rel="tag"># nbserver</a>
+              <a href="/tags/Druid/" rel="tag"># Druid</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/07/10/idcf-coreos-cluster-discovery/" rel="prev" title="IDCFクラウドにCoreOSクラスタを構築する - Part2: CoreOSのディスカバリ">
+      <i class="fa fa-chevron-left"></i> IDCFクラウドにCoreOSクラスタを構築する - Part2: CoreOSのディスカバリ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/07/12/docker-analytic-sandbox-postgresql/" rel="next" title="Dockerでデータ分析環境 - Part3: PostgreSQLとボリューム">
+      Dockerでデータ分析環境 - Part3: PostgreSQLとボリューム <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runitの設定ファイル"><span class="nav-number">2.</span> <span class="nav-text">runitの設定ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#イメージの-build-と-run"><span class="nav-number">3.</span> <span class="nav-text">イメージの build と run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ブラウザで確認"><span class="nav-number">4.</span> <span class="nav-text">ブラウザで確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

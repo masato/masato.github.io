@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Using Buildpacksによると、Deisはデプロイするアプリの言語を検知して適切なBuildpackを適用してくれそうです。Java, Ruby, Python, Node.js, Scala, Go, DartのBuildpackがバンドルされているので、私の使い方のは十分です。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deis in IDCFクラウド - Part3: GoとDartのBuildpack">
+<meta property="og:url" content="http://masato.github.io/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Using Buildpacksによると、Deisはデプロイするアプリの言語を検知して適切なBuildpackを適用してくれそうです。Java, Ruby, Python, Node.js, Scala, Go, DartのBuildpackがバンドルされているので、私の使い方のは十分です。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/hello-dart.png">
+<meta property="article:published_time" content="2014-08-15T15:50:06.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.580Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="Dart">
+<meta property="article:tag" content="Deis">
+<meta property="article:tag" content="Buildpack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/hello-dart.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Deis in IDCFクラウド - Part3: GoとDartのBuildpack | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Deis in IDCFクラウド - Part3: GoとDartのBuildpack
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 16 2014 00:50:06" itemprop="dateCreated datePublished" datetime="2014-08-16T00:50:06+09:00">Aug 16 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Using Buildpacksによると、Deisはデプロイするアプリの言語を検知して適切なBuildpackを適用してくれそうです。Java, Ruby, Python, Node.js, Scala, Go, DartのBuildpackがバンドルされているので、私の使い方のは十分です。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://docs.deis.io/en/latest/developer/using-buildpacks/" target="_blank" rel="noopener">Using Buildpacks</a>によると、Deisはデプロイするアプリの言語を検知して適切なBuildpackを適用してくれそうです。<br>Java, Ruby, Python, Node.js, Scala, Go, DartのBuildpackがバンドルされているので、私の使い方のは十分です。</p>
+<a id="more"></a>
+
+
+<h3 id="Deisにログイン"><a href="#Deisにログイン" class="headerlink" title="Deisにログイン"></a>Deisにログイン</h3><p>最初にDeisにログインします。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ deis login <span class="string">http:</span><span class="comment">//deis.210.140.16.229.xip.io --username=masato</span></span><br><span class="line"><span class="string">password:</span></span><br><span class="line">Logged <span class="keyword">in</span> <span class="keyword">as</span> masato</span><br></pre></td></tr></table></figure>
+
+<h3 id="Goアプリのデプロイ"><a href="#Goアプリのデプロイ" class="headerlink" title="Goアプリのデプロイ"></a>Goアプリのデプロイ</h3><p><a href="https://github.com/deis/example-go" target="_blank" rel="noopener">example-go</a>のサンプルを利用してみます。<br><code>git clone</code>します。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p ~/deis_apps</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> !$</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/deis/example-go.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> example-go</span></span><br></pre></td></tr></table></figure>
+
+<p>Deisのリポジトリを作成します。</p>
+<figure class="highlight plain"><figcaption><span>create</span></figcaption><table><tr><td class="code"><pre><span class="line">list of known hosts.</span><br><span class="line">Git remote deis added</span><br></pre></td></tr></table></figure>
+
+<p><code>git push</code>すると、ちゃんと<code>Go app detected</code>してくれました。これは便利便利。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">git</span> <span class="string">push</span> <span class="string">deis</span> <span class="string">master</span></span><br><span class="line"><span class="attr">Warning:</span> <span class="string">Permanently</span> <span class="string">added</span> <span class="string">'[deis.210.140.16.229.xip.io]:2222,[210.140.16.229]:2222'</span> <span class="string">(ECDSA)</span> <span class="string">to</span> <span class="string">the</span> <span class="string">list</span> <span class="string">of</span> <span class="string">known</span> <span class="string">hosts.</span></span><br><span class="line"><span class="attr">Counting objects:</span> <span class="number">28</span><span class="string">,</span> <span class="string">done.</span></span><br><span class="line"><span class="string">Delta</span> <span class="string">compression</span> <span class="string">using</span> <span class="string">up</span> <span class="string">to</span> <span class="number">4</span> <span class="string">threads.</span></span><br><span class="line"><span class="attr">Compressing objects:</span> <span class="number">100</span><span class="string">%</span> <span class="string">(23/23),</span> <span class="string">done.</span></span><br><span class="line"><span class="attr">Writing objects:</span> <span class="number">100</span><span class="string">%</span> <span class="string">(28/28),</span> <span class="number">10.04</span> <span class="string">KiB</span> <span class="string">|</span> <span class="number">0</span> <span class="string">bytes/s,</span> <span class="string">done.</span></span><br><span class="line"><span class="string">Total</span> <span class="number">28</span> <span class="string">(delta</span> <span class="number">7</span><span class="string">),</span> <span class="string">reused</span> <span class="number">0</span> <span class="string">(delta</span> <span class="number">0</span><span class="string">)</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Go</span> <span class="string">app</span> <span class="string">detected</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Installing</span> <span class="string">go1.2.2...</span> <span class="string">done</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="attr">Running:</span> <span class="string">godep</span> <span class="string">go</span> <span class="string">install</span> <span class="string">-tags</span> <span class="string">heroku</span> <span class="string">./...</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Discovering</span> <span class="string">process</span> <span class="string">types</span></span><br><span class="line">       <span class="string">Procfile</span> <span class="string">declares</span> <span class="string">types</span> <span class="string">-&gt;</span> <span class="string">web</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Compiled</span> <span class="string">slug</span> <span class="string">size</span> <span class="string">is</span> <span class="number">1.</span><span class="string">7M</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">Building</span> <span class="string">Docker</span> <span class="string">image</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Sending</span> <span class="string">build</span> <span class="string">context</span> <span class="string">to</span> <span class="string">Docker</span> <span class="string">daemon</span> <span class="number">1.796</span> <span class="string">MB</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Sending</span> <span class="string">build</span> <span class="string">context</span> <span class="string">to</span> <span class="string">Docker</span> <span class="string">daemon</span></span><br><span class="line"><span class="attr">remote: Step 0 :</span> <span class="string">FROM</span> <span class="string">deis/slugrunner</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">f607bc8783a5</span></span><br><span class="line"><span class="attr">remote: Step 1 :</span> <span class="string">RUN</span> <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">/app</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">Running</span> <span class="string">in</span> <span class="string">1a56be7a172d</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">99dcadb46001</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">1a56be7a172d</span></span><br><span class="line"><span class="attr">remote: Step 2 :</span> <span class="string">ADD</span> <span class="string">slug.tgz</span> <span class="string">/app</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">8955dea5200c</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">b9c3e991bdc3</span></span><br><span class="line"><span class="attr">remote: Step 3 :</span> <span class="string">ENTRYPOINT</span> <span class="string">["/runner/init"]</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">Running</span> <span class="string">in</span> <span class="string">0bd7c94686b3</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">6e401be0aeb2</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">0bd7c94686b3</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Successfully</span> <span class="string">built</span> <span class="string">6e401be0aeb2</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">Pushing</span> <span class="string">image</span> <span class="string">to</span> <span class="string">private</span> <span class="string">registry</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">Launching...</span> <span class="string">done,</span> <span class="string">v2</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">timely-zoologer</span> <span class="string">deployed</span> <span class="string">to</span> <span class="string">Deis</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">http://timely-zoologer.deis.210.140.16.229.xip.io</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">To</span> <span class="string">learn</span> <span class="string">more,</span> <span class="string">use</span> <span class="string">`deis</span> <span class="string">help`</span> <span class="string">or</span> <span class="string">visit</span> <span class="string">http://deis.io</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="string">To</span> <span class="string">ssh://git@deis.210.140.16.229.xip.io:2222/timely-zoologer.git</span></span><br><span class="line"> <span class="string">*</span> <span class="string">[new</span> <span class="string">branch]</span>      <span class="string">master</span> <span class="string">-&gt;</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<p>curlで確認します。おなじみの<code>Powered by Deis</code>です。</p>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line">$ curl -s http:<span class="comment">//timely-zoologer.deis.210.140.16.229.xip.io</span></span><br><span class="line">Powered <span class="keyword">by</span> Deis</span><br></pre></td></tr></table></figure>
+
+<h3 id="Dartアプリのデプロイ"><a href="#Dartアプリのデプロイ" class="headerlink" title="Dartアプリのデプロイ"></a>Dartアプリのデプロイ</h3><p>これは予想以上に楽しいです。気をよくしてDartアプリもデプロイします。</p>
+<p>Dartのbuildpackは、<a href="https://github.com/igrigorik/heroku-buildpack-dart" target="_blank" rel="noopener">heroku-buildpack-dart</a></p>
+<p><a href="https://github.com/deis/example-dart" target="_blank" rel="noopener">example-dart</a>のサンプルを利用してみます。<br><code>git clone</code>します。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/deis_apps</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/deis/example-dart</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> example-dart</span></span><br></pre></td></tr></table></figure>
+
+<p>Deisにリモートリポジトリを作成します。</p>
+<figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">$ deis <span class="keyword">create</span></span><br><span class="line">list of <span class="keyword">known</span> hosts.</span><br><span class="line">Git remote deis added</span><br></pre></td></tr></table></figure>
+
+<p>Goと同じように<code>git push</code>したのですが、エラーになってしまいました。<br><code>Dart app detected</code>してくれましたが、<code>DART_SDK_URL</code>の指定が必要のようです。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ git push deis master</span><br><span class="line">Counting objects: <span class="number">508</span>, done.</span><br><span class="line">Delta compression using up to <span class="number">4</span> threads.</span><br><span class="line">Compressing objects: <span class="number">100</span>% (<span class="number">445</span>/<span class="number">445</span>), done.</span><br><span class="line">Writing objects: <span class="number">100</span>% (<span class="number">508</span>/<span class="number">508</span>), <span class="number">9.31</span> MiB | <span class="number">0</span> bytes/s, done.</span><br><span class="line">Total <span class="number">508</span> (delta <span class="number">33</span>), reused <span class="number">508</span> (delta <span class="number">33</span>)</span><br><span class="line">-----&gt; Dart app detected</span><br><span class="line">-----&gt; ENV_DIR <span class="keyword">is</span></span><br><span class="line">-----&gt; Welcome, <span class="keyword">this</span> machine <span class="keyword">is</span>: Linux <span class="number">32f</span>ca63289f8 <span class="number">3.15</span><span class="number">.8</span>+ #<span class="number">2</span> SMP Thu Aug <span class="number">7</span> <span class="number">19</span>:<span class="number">50</span>:<span class="number">25</span> UTC <span class="number">2014</span> x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line">       ERROR: you must specify DART_SDK_URL to a Dart SDK <span class="keyword">for</span> Linux. See README <span class="keyword">for</span> <span class="keyword">this</span> buildpack.</span><br><span class="line">remote: Slugbuilder returned error code</span><br><span class="line">To ssh:<span class="comment">//git@deis.210.140.16.229.xip.io:2222/jiggly-quadrant.git</span></span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
+
+<p><code>DART_SDK_URL</code>を指定すると設定が始まります。</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">$ deis config:set DART<span class="emphasis">_SDK_</span>URL=https://github.com/selkhateeb/heroku-vagrant-dart-build/releases/download/latest/dart-sdk.tar</span><br><span class="line">Creating config... done, v4</span><br><span class="line"></span><br><span class="line"><span class="section">=== jiggly-quadrant</span></span><br><span class="line">DART<span class="emphasis">_SDK_</span>URL: https://github.com/selkhateeb/heroku-vagrant-dart-build/releases/download/latest/dart-sdk.tar</span><br></pre></td></tr></table></figure>
+
+<p>deisリポジトリをdestroyしてから再作成します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ deis destroy <span class="attribute">--app</span>=jiggly-quadrant <span class="attribute">--confirm</span>=jiggly-quadrant</span><br><span class="line">Destroying jiggly-quadrant<span class="built_in">..</span>. done <span class="keyword">in</span> 0s</span><br><span class="line">Git remote deis removed</span><br><span class="line">$ deis create</span><br><span class="line">$ deis config:<span class="builtin-name">set</span> <span class="attribute">DART_SDK_URL</span>=https://github.com/selkhateeb/heroku-vagrant-dart-build/releases/download/latest/dart-sdk.tar</span><br></pre></td></tr></table></figure>
+
+<p>再度<code>git push</code>します。<code>Dart app detected</code>の後に先ほどしていたURLからSDKをダウンロードしてくれます。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ git push deis master</span><br><span class="line">Counting objects: <span class="number">508</span>, done.</span><br><span class="line">Delta compression using up to <span class="number">4</span> threads.</span><br><span class="line">Compressing objects: <span class="number">100</span>% (<span class="number">445</span>/<span class="number">445</span>), done.</span><br><span class="line">Writing objects: <span class="number">100</span>% (<span class="number">508</span>/<span class="number">508</span>), <span class="number">9.31</span> MiB | <span class="number">0</span> bytes/s, done.</span><br><span class="line">Total <span class="number">508</span> (delta <span class="number">33</span>), reused <span class="number">508</span> (delta <span class="number">33</span>)</span><br><span class="line">-----&gt; Dart app detected</span><br><span class="line">-----&gt; ENV_DIR <span class="keyword">is</span></span><br><span class="line">-----&gt; Welcome, <span class="keyword">this</span> machine <span class="keyword">is</span>: Linux e9781e1a46c6 <span class="number">3.15</span><span class="number">.8</span>+ #<span class="number">2</span> SMP Thu Aug <span class="number">7</span> <span class="number">19</span>:<span class="number">50</span>:<span class="number">25</span> UTC <span class="number">2014</span> x86_64 x86_64 x86_64 GNU/Linux</span><br><span class="line">-----&gt; Installing Dart VM via URL https:<span class="comment">//github.com/selkhateeb/heroku-vagrant-dart-build/releases/download/latest/dart-sdk.tar</span></span><br><span class="line">remote:   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">remote:                                  Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">remote: <span class="number">100</span>   <span class="number">341</span>  <span class="number">100</span>   <span class="number">341</span>    <span class="number">0</span>     <span class="number">0</span>    <span class="number">434</span>      <span class="number">0</span> --:--:-- --:--:-- --:--:--   <span class="number">434</span></span><br><span class="line">remote: <span class="number">100</span> <span class="number">11.5</span>M  <span class="number">100</span> <span class="number">11.5</span>M    <span class="number">0</span>     <span class="number">0</span>  <span class="number">1491</span>k      <span class="number">0</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">07</span>  <span class="number">0</span>:<span class="number">00</span>:<span class="number">07</span> --:--:-- <span class="number">2498</span>k</span><br><span class="line">-----&gt; Copy Dart binaries to app root</span><br><span class="line">-----&gt; Dart cmd found at -rwxr-xr-x <span class="number">1</span> root root <span class="number">11468640</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">05</span> /app/dart-sdk/bin/dart</span><br><span class="line">remote: Dart VM version: <span class="number">1.3</span><span class="number">.0</span> (Tue Apr <span class="number">15</span> <span class="number">03</span>:<span class="number">03</span>:<span class="number">20</span> <span class="number">2014</span>) on <span class="string">"linux_x64"</span></span><br><span class="line">-----&gt; Dart reports version:</span><br><span class="line">       *** Found pubspec.yaml <span class="keyword">in</span> /tmp/build/.</span><br><span class="line">       *** Running pub <span class="keyword">get</span></span><br><span class="line">       Pub <span class="number">1.3</span><span class="number">.0</span></span><br><span class="line">       Resolving dependencies... (<span class="number">3.2</span>s)</span><br><span class="line">       Downloading http_server <span class="number">0.9</span><span class="number">.3</span>...</span><br><span class="line">       Downloading browser <span class="number">0.10</span><span class="number">.0</span>+<span class="number">2.</span>..</span><br><span class="line">       Downloading mime <span class="number">0.9</span><span class="number">.0</span>+<span class="number">3.</span>..</span><br><span class="line">       Downloading path <span class="number">1.3</span><span class="number">.0</span>...</span><br><span class="line">       Got dependencies!</span><br><span class="line">       *** Running pub build</span><br><span class="line">       Building with <span class="string">"pub build"</span></span><br><span class="line">       Loading source assets... (<span class="number">0.4</span>s)</span><br><span class="line">       Building basic_http_server... (<span class="number">0.1</span>s)</span><br><span class="line">       [Info <span class="keyword">from</span> Dart2JS]:</span><br><span class="line">       Compiling basic_http_server|web/index.dart...</span><br><span class="line">       [Info <span class="keyword">from</span> Dart2JS]:</span><br><span class="line">       Took <span class="number">0</span>:<span class="number">00</span>:<span class="number">05.727261</span> to compile basic_http_server|web/index.dart.</span><br><span class="line">       Built <span class="number">5</span> files to <span class="string">"build"</span>.</span><br><span class="line">       total</span><br><span class="line">-----&gt; Discovering process types</span><br><span class="line">       Procfile declares types -&gt; web</span><br><span class="line">-----&gt; Compiled slug size <span class="keyword">is</span> <span class="number">12</span>M</span><br><span class="line">remote: Step <span class="number">0</span> : FROM deis/slugrunner</span><br><span class="line">remote:  ---&gt; f607bc8783a5</span><br><span class="line">remote: Step <span class="number">1</span> : RUN mkdir -p /app</span><br><span class="line">remote:  ---&gt; Running <span class="keyword">in</span> <span class="number">5e0</span>be8d4b848</span><br><span class="line">remote:  ---&gt; cafc89cb74e2</span><br><span class="line">remote: Removing <span class="built_in">int</span>ermediate container <span class="number">5e0</span>be8d4b848</span><br><span class="line">remote: Step <span class="number">2</span> : ADD slug.tgz /app</span><br><span class="line">remote:  ---&gt; <span class="number">09</span>bff1aad3aa</span><br><span class="line">remote: Removing <span class="built_in">int</span>ermediate container <span class="number">18670</span>a84972e</span><br><span class="line">remote: Step <span class="number">3</span> : ENTRYPOINT [<span class="string">"/runner/init"</span>]</span><br><span class="line">remote:  ---&gt; Running <span class="keyword">in</span> c73010bda870</span><br><span class="line">remote:  ---&gt; <span class="number">3f</span>2a306f6b77</span><br><span class="line">remote: Removing <span class="built_in">int</span>ermediate container c73010bda870</span><br><span class="line">remote: Successfully built <span class="number">3f</span>2a306f6b77</span><br><span class="line">remote: -----&gt; Pushing image to <span class="keyword">private</span> registry</span><br><span class="line">remote:</span><br><span class="line">remote:        Launching... done, v3</span><br><span class="line">remote:</span><br><span class="line">remote: -----&gt; madras-keypunch deployed to Deis</span><br><span class="line">remote:        http:<span class="comment">//madras-keypunch.deis.210.140.16.229.xip.io</span></span><br><span class="line">remote:</span><br><span class="line">remote:        To learn more, use `deis help` <span class="keyword">or</span> visit http:<span class="comment">//deis.io</span></span><br><span class="line">remote:</span><br><span class="line">To ssh:<span class="comment">//git@deis.210.140.16.229.xip.io:2222/madras-keypunch.git</span></span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
+
+<p>ログに表示されたURLにcurlで確認しますが、何も表示されません。</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="symbol">$</span> curl -s http:<span class="comment">//madras-keypunch.deis.210.140.16.229.xip.io</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Dartアプリのでバッグ"><a href="#Dartアプリのでバッグ" class="headerlink" title="Dartアプリのでバッグ"></a>Dartアプリのでバッグ</h3><p>fleetctlからSSH接続してデバッグします。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ fleetctl ssh madras-keypunch_v3.web<span class="number">.1</span>.service</span><br></pre></td></tr></table></figure>
+
+<p><code>CONTAINER ID</code>を確認します。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                                   COMMAND                CREATED             STATUS              PORTS                           NAMES</span><br><span class="line">bd81c5db48a1        <span class="number">10.1</span><span class="number">.2</span><span class="number">.34</span>:<span class="number">5000</span>/madras-keypunch:latest   /runner/init start w   <span class="number">22</span> minutes ago      Up <span class="number">22</span> minutes       <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">49155</span>-&gt;<span class="number">5000</span>/tcp         madras-keypunch_v3.web<span class="number">.1</span></span><br></pre></td></tr></table></figure>
+
+<p>nsenterでコンテナにアタッチします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ nse bd81c5db48a1</span><br><span class="line">groups: cannot <span class="builtin-name">find</span> name <span class="keyword">for</span><span class="built_in"> group </span>ID 11</span><br><span class="line">root@bd81c5db48a1:/#</span><br></pre></td></tr></table></figure>
+<p>Dartアプリは/appディレクトリにあり、サーバープログラムは、<code>/bin/basic_http_server.dart</code>になります。</p>
+<figure class="highlight dart"><figcaption><span>/app/bin/basic_http_server.dart</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  <span class="comment">// Assumes the server lives in bin/ and that `pub build` ran</span></span><br><span class="line">  <span class="keyword">var</span> pathToBuild = join(dirname(Platform.script.toFilePath()), <span class="string">'..'</span>, <span class="string">'build'</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>ルートパスは<code>/app/build</code>ですが、直下にindex.htmlはなく、<code>/app/build/web</code>に静的コンテンツがあります。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ ls -al /app/build/web/</span><br><span class="line">total <span class="number">116</span></span><br><span class="line">drwxr-xr-x <span class="number">1</span> root root   <span class="number">112</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">06</span> .</span><br><span class="line">drwxr-xr-x <span class="number">1</span> root root     <span class="number">6</span> Aug <span class="number">15</span> <span class="number">12</span>:<span class="number">57</span> ..</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root <span class="number">38859</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">06</span> index.dart.js</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root <span class="number">72453</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">06</span> index.dart.precompiled.js</span><br><span class="line">-rw-r--r-- <span class="number">1</span> root root   <span class="number">253</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">06</span> index.html</span><br><span class="line">drwxr-xr-x <span class="number">1</span> root root    <span class="number">14</span> Aug <span class="number">15</span> <span class="number">11</span>:<span class="number">06</span> packages</span><br></pre></td></tr></table></figure>
+
+<p>正しいURLは、/webまたは、/web/index.htmlでした。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line">$ curl -s http://madras-keypunch.deis.210.140.16.229.xip.io/web/index.html</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Hello from Dart<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"text"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"application/dart"</span> <span class="attr">src</span>=<span class="string">"index.dart"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"packages/browser/dart.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>index.dartというファイルもないので、index.dartをコピーします。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ cp <span class="regexp">/app/</span>web<span class="regexp">/index.dart /</span>app<span class="regexp">/build/</span>web<span class="regexp">/</span></span><br></pre></td></tr></table></figure>
+
+<p>DartiumからURLを開きます。これでサーバーサイドとクライアントサイドのDartアプリの実行を確認できました。</p>
+<img src="/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/hello-dart.png" class="center">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/Go/" rel="tag"># Go</a>
+              <a href="/tags/Dart/" rel="tag"># Dart</a>
+              <a href="/tags/Deis/" rel="tag"># Deis</a>
+              <a href="/tags/Buildpack/" rel="tag"># Buildpack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/08/15/deis-in-idcf-cloud-deploy/" rel="prev" title="Deis in IDCFクラウド - Part2: SinatraをDeisにデプロイ">
+      <i class="fa fa-chevron-left"></i> Deis in IDCFクラウド - Part2: SinatraをDeisにデプロイ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/08/17/deis-in-idcf-cloud-dbaas/" rel="next" title="Deis in IDCFクラウド - Part4: DBaaS">
+      Deis in IDCFクラウド - Part4: DBaaS <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deisにログイン"><span class="nav-number">1.</span> <span class="nav-text">Deisにログイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Goアプリのデプロイ"><span class="nav-number">2.</span> <span class="nav-text">Goアプリのデプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dartアプリのデプロイ"><span class="nav-number">3.</span> <span class="nav-text">Dartアプリのデプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dartアプリのでバッグ"><span class="nav-number">4.</span> <span class="nav-text">Dartアプリのでバッグ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

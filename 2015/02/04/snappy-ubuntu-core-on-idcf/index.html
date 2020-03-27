@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="2015-01-14に待望のSnappy Ubuntu CoreのOVAイメージが公開されました。以前はVMwareにデプロイするときはかなり面倒で、次のステップが必要でした。1. qemu-imgコマンドでイメージをQCOW2形式からVMDK形式する 2. VMXファイルをマニュアルで記述する 3. ovftoolコマンドでVMXファイルからOVAを作成する 公式のOVAにはcloud-init">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Snappy Ubuntu Core on IDCFクラウド - Part1: 公式OVAを使う">
+<meta property="og:url" content="http://masato.github.io/2015/02/04/snappy-ubuntu-core-on-idcf/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="2015-01-14に待望のSnappy Ubuntu CoreのOVAイメージが公開されました。以前はVMwareにデプロイするときはかなり面倒で、次のステップが必要でした。1. qemu-imgコマンドでイメージをQCOW2形式からVMDK形式する 2. VMXファイルをマニュアルで記述する 3. ovftoolコマンドでVMXファイルからOVAを作成する 公式のOVAにはcloud-init">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-02-03T16:11:39.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.901Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="SnappyUbuntuCore">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="cloud-config">
+<meta property="article:tag" content="idcf-compute-api">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/02/04/snappy-ubuntu-core-on-idcf/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Snappy Ubuntu Core on IDCFクラウド - Part1: 公式OVAを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/02/04/snappy-ubuntu-core-on-idcf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Snappy Ubuntu Core on IDCFクラウド - Part1: 公式OVAを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 4 2015 01:11:39" itemprop="dateCreated datePublished" datetime="2015-02-04T01:11:39+09:00">Feb 4 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">2015-01-14に待望のSnappy Ubuntu CoreのOVAイメージが公開されました。以前はVMwareにデプロイするときはかなり面倒で、次のステップが必要でした。1. qemu-imgコマンドでイメージをQCOW2形式からVMDK形式する 2. VMXファイルをマニュアルで記述する 3. ovftoolコマンドでVMXファイルからOVAを作成する 公式のOVAにはcloud-initもインストール済みなので、cloud-config.ymlをuserdataとして使えば、IDCFクラウドでもSnappy Ubuntu Coreが簡単に使えます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2015-01-14に待望のSnappy Ubuntu Coreの<a href="https://insights.ubuntu.com/2015/01/15/snappy-ubuntu-core-now-on-the-hypervisor-of-your-choice-with-ova/" target="_blank" rel="noopener">OVAイメージが公開</a>されました。以前はVMwareにデプロイするときはかなり面倒で、野良OVAイメージのビルドに次のステップが必要でした。</p>
+<ol>
+<li>qemu-imgコマンドでQCOW2イメージをVMDK形式する</li>
+<li>VMXファイルをマニュアルで記述する</li>
+<li>ovftoolコマンドでVMXファイルからOVAイメージを作成する</li>
+</ol>
+<p>公式のOVAにはcloud-initもインストール済みなので、cloud-config.ymlをuserdataとして使えば、IDCFクラウドでもSnappy Ubuntu Coreが簡単に使えます。</p>
+<a id="more"></a>
+
+<h2 id="OVAテンプレートの作成"><a href="#OVAテンプレートの作成" class="headerlink" title="OVAテンプレートの作成"></a>OVAテンプレートの作成</h2><p><a href="https://insights.ubuntu.com/2015/01/15/snappy-ubuntu-core-now-on-the-hypervisor-of-your-choice-with-ova/" target="_blank" rel="noopener">Snappy Ubuntu Core now on the hypervisor of your choice with OVA</a>のページにある<a href="http://cloud-images.ubuntu.com/snappy/devel/core/current/devel-core-amd64-cloud.ova" target="_blank" rel="noopener">latest OVA image</a>のリンクからOVAのURLを取得します。テンプレート名、説明、URL、OSタイプ以外はデフォルトです。OSタイプは一番近い<code>Ubuntu 12.04 (64bit)</code>を選びました。</p>
+<ul>
+<li>テンプレート名: 任意</li>
+<li>説明: 任意</li>
+<li>URL: <a href="http://cloud-images.ubuntu.com/snappy/devel/core/current/devel-core-amd64-cloud.ova" target="_blank" rel="noopener">http://cloud-images.ubuntu.com/snappy/devel/core/current/devel-core-amd64-cloud.ova</a></li>
+<li>ゾーン: tesla</li>
+<li>ハイパーバイザー: VMware</li>
+<li>OSタイプ: Ubuntu 12.04 (64bit)</li>
+<li>フォーマット: OVA</li>
+<li>エクスポート: 有効</li>
+<li>パスワードリセット: 有効</li>
+<li>ダイナミックスケール: 有効</li>
+<li>ルートディスクコントローラ: scsi</li>
+<li>NICアダプタ: Vmxnet3</li>
+<li>キーボード: Japanese</li>
+</ul>
+<h2 id="仮想マシンの作成"><a href="#仮想マシンの作成" class="headerlink" title="仮想マシンの作成"></a>仮想マシンの作成</h2><h3 id="最小設定のcloud-config"><a href="#最小設定のcloud-config" class="headerlink" title="最小設定のcloud-config"></a>最小設定のcloud-config</h3><p>Snappy Ubuntu CoreはCoreOSと同じようにcloud-configを使って起動する必要があります。cloud-configを使わなくても起動はできますが、外部からのSSH接続が許可されていないため、コンソールからしか使えません。今回は最小設定のcloud-configを使います。</p>
+<figure class="highlight yaml"><figcaption><span>cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"><span class="attr">snappy:</span></span><br><span class="line">  <span class="attr">ssh_enabled:</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="必要な情報の取得"><a href="#必要な情報の取得" class="headerlink" title="必要な情報の取得"></a>必要な情報の取得</h3><p>仮想マシンを作成する時に必要なパラメータをIDCFクラウドのCLIを使い確認します。</p>
+<ul>
+<li>listTemplates: テンプレートのidを取得</li>
+<li>listZones: ゾーンのidを取得</li>
+<li>listServiceOfferings: 仮想マシンサイズのidを取得</li>
+<li>listSSHKeyPairs: SSH公開鍵の名前を取得</li>
+</ul>
+<p>今回利用するOVAのSnappy Ubuntu CoreにはCloud-initがインストールされています。IDCFクラウドが採用しているCloudStackをDataSourceとして自動的に認識してくれるので、指定した名前のSSH公開鍵をubuntuユーザーの<code>authorized_keys</code>に登録してくれます。これはかなり便利です。</p>
+<p>またAPIを実行するために必要な以下の情報をポータルの画面から確認しておきます。</p>
+<ul>
+<li><code>IDCF_COMPUTE_HOST</code>: エンドポイント</li>
+<li><code>IDCF_COMPUTE_API_KEY</code>: APIキー</li>
+<li><code>IDCF_COMPUTE_SECRET_KEY</code>: シークレットキー</li>
+</ul>
+<h3 id="仮想マシン作成のPythonスクリプト"><a href="#仮想マシン作成のPythonスクリプト" class="headerlink" title="仮想マシン作成のPythonスクリプト"></a>仮想マシン作成のPythonスクリプト</h3><p>IDCFクラウドのCLIツールはPythonで書いているので、Pythonプログラムのモジュールとしてimportできます。cloud-configはuserdataとしてBASE64でエンコードしてからパラメータに使います。</p>
+<figure class="highlight python"><figcaption><span>deploy.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> idcf.compute <span class="keyword">import</span> Compute</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    rawuserdata = <span class="string">'''#cloud-config</span></span><br><span class="line"><span class="string">snappy:</span></span><br><span class="line"><span class="string">  ssh_enabled: True</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">    userdata = base64.b64encode(rawuserdata)</span><br><span class="line">    client = Compute(</span><br><span class="line">        host=<span class="string">'エンドポイント'</span>,</span><br><span class="line">        api_key=<span class="string">'APIキー'</span>,</span><br><span class="line">        secret_key=<span class="string">'シークレットキー'</span>,</span><br><span class="line">        debug=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">    retval = client.deployVirtualMachine(</span><br><span class="line">        keypair=<span class="string">'SSH公開鍵の名前'</span>,</span><br><span class="line">        serviceofferingid=<span class="string">'仮想マシンサイズのID'</span>,</span><br><span class="line">        templateid=<span class="string">'登録したOVAテンプレートのID'</span>,</span><br><span class="line">        zoneid=<span class="string">'ゾーンのID'</span>,</span><br><span class="line">        name=<span class="string">'任意のhostname'</span>,</span><br><span class="line">        userdata=userdata)</span><br><span class="line"></span><br><span class="line">    print(retval)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pythonスクリプトの実行"><a href="#Pythonスクリプトの実行" class="headerlink" title="Pythonスクリプトの実行"></a>Pythonスクリプトの実行</h3><p>仮想マシンが作成されるまで数分待ちます。SSHサーバーが起動するまでに初回設定が入るため、ポータル画面で状態がRunningになっていてもSSHで接続できるまでさらに数分必要です。コンソールでlogin待機になるまでしばらく待ちます。</p>
+<h3 id="SSH公開鍵認証でログイン"><a href="#SSH公開鍵認証でログイン" class="headerlink" title="SSH公開鍵認証でログイン"></a>SSH公開鍵認証でログイン</h3><p>アカウント内の別の仮想マシンから、または、パブリックのIPアドレスをポートフォワードしてSSH公開鍵認証で接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -A ubuntu@snappy </span><br><span class="line">Welcome to Ubuntu Vivid Vervet (development branch) (GNU/Linux 3.18.0-9-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms <span class="keyword">for</span> each program are described <span class="keyword">in</span> the</span><br><span class="line">individual files <span class="keyword">in</span> /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">Welcome to the Ubuntu Core rolling development release.</span><br><span class="line"></span><br><span class="line"> * See https://ubuntu.com/snappy</span><br><span class="line"></span><br><span class="line">It<span class="string">'s a brave new world here in snappy Ubuntu Core! This machine</span></span><br><span class="line"><span class="string">does not use apt-get or deb packages. Please see '</span>snappy --<span class="built_in">help</span><span class="string">'</span></span><br><span class="line"><span class="string">for app installation and transactional updates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">To run a command as administrator (user "root"), use "sudo &lt;command&gt;".</span></span><br><span class="line"><span class="string">See "man sudo_root" for details.</span></span><br><span class="line"><span class="string">ubuntu@snappy:~$</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="バージョン確認など"><a href="#バージョン確認など" class="headerlink" title="バージョン確認など"></a>バージョン確認など</h3><p>OSのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=15.04</span><br><span class="line">DISTRIB_CODENAME=vivid</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">"Ubuntu Vivid Vervet (development branch)"</span></span><br></pre></td></tr></table></figure>
+
+<p>cloud-initのバージョンは0.7.7です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cloud-init --version</span><br><span class="line">cloud-init 0.7.7</span><br></pre></td></tr></table></figure>
+
+<p>ubuntu-coreはedge 144がインストールされていて最新の状態です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy versions</span><br><span class="line">Part         Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">ubuntu-core  edge  144        -          395812b6615109  *</span><br><span class="line">This <span class="built_in">command</span> needs root, please run with sudo</span><br><span class="line">$ snappy update-versions</span><br><span class="line">0 updated components are available with your current stability settings.</span><br></pre></td></tr></table></figure>
+
+<p>snappyコマンドのバージョンです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy --version</span><br><span class="line">0.1</span><br></pre></td></tr></table></figure>
+
+<p>まだframeworksもappsもインストールされていません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy info</span><br><span class="line">release: ubuntu-core/devel</span><br><span class="line">frameworks:</span><br><span class="line">apps:</span><br></pre></td></tr></table></figure>
+<h3 id="Dockerをインストール"><a href="#Dockerをインストール" class="headerlink" title="Dockerをインストール"></a>Dockerをインストール</h3><p>とりあえずDockerをインストールします。Snappy Ubuntu CoreではDockerのインストールはとても簡単なのですぐに使い始めることができます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy search docker</span><br><span class="line">Part    Version    Description</span><br><span class="line">docker  1.3.3.001  The docker app deployment mechanism</span><br><span class="line">$ sudo snappy install docker</span><br><span class="line">docker      4 MB     [===================================================================]    OK</span><br><span class="line">Part    Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">docker  edge  1.3.3.001  -          60b98945e5fc1d  *</span><br><span class="line">Reboot to use the new ubuntu-core.</span><br><span class="line">$ sudo snappy versions</span><br><span class="line">Part         Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">ubuntu-core  edge  144        -          395812b6615109  *</span><br><span class="line">docker       edge  1.3.3.001  -          60b98945e5fc1d  *</span><br><span class="line">Reboot to use the new ubuntu-core.</span><br></pre></td></tr></table></figure>
+
+<h3 id="アプリのインストール"><a href="#アプリのインストール" class="headerlink" title="アプリのインストール"></a>アプリのインストール</h3><p>サンプルのhello-worldアプリをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo snappy install hello-world</span><br><span class="line">hello-world     31 kB     [==============================================================]    OK</span><br><span class="line">Part         Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">hello-world  edge  1.0.5      -          3e8b192e18907d  *</span><br><span class="line">Reboot to use the new ubuntu-core.</span><br></pre></td></tr></table></figure>
+
+<p>先ほどのdockerはframeworks、hello-worldアプリはappsとしてレイアで区別されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy info</span><br><span class="line">release: ubuntu-core/devel</span><br><span class="line">frameworks: docker</span><br><span class="line">apps: hello-world</span><br></pre></td></tr></table></figure>
+<p>Hello World!を表示するだけのアプリがインストールされました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> hello-world.echo</span><br><span class="line">/home/ubuntu/snappy-bin/hello-world.echo</span><br><span class="line">$ hello-world.echo</span><br><span class="line">Hello World!</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SnappyUbuntuCore/" rel="tag"># SnappyUbuntuCore</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/cloud-config/" rel="tag"># cloud-config</a>
+              <a href="/tags/idcf-compute-api/" rel="tag"># idcf-compute-api</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/02/03/beagleboneblack-snappy-ubuntu-core/" rel="prev" title="Snappy Ubuntu Core on BeagleBone Black- Part1: インストール">
+      <i class="fa fa-chevron-left"></i> Snappy Ubuntu Core on BeagleBone Black- Part1: インストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/02/05/chromebook-ubuntu-trusty-extension/" rel="next" title="HP Chromebook 11にUbuntu 14.04.1とXfceをインストールする">
+      HP Chromebook 11にUbuntu 14.04.1とXfceをインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OVAテンプレートの作成"><span class="nav-number">1.</span> <span class="nav-text">OVAテンプレートの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#仮想マシンの作成"><span class="nav-number">2.</span> <span class="nav-text">仮想マシンの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#最小設定のcloud-config"><span class="nav-number">2.1.</span> <span class="nav-text">最小設定のcloud-config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#必要な情報の取得"><span class="nav-number">2.2.</span> <span class="nav-text">必要な情報の取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮想マシン作成のPythonスクリプト"><span class="nav-number">2.3.</span> <span class="nav-text">仮想マシン作成のPythonスクリプト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonスクリプトの実行"><span class="nav-number">2.4.</span> <span class="nav-text">Pythonスクリプトの実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH公開鍵認証でログイン"><span class="nav-number">2.5.</span> <span class="nav-text">SSH公開鍵認証でログイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#バージョン確認など"><span class="nav-number">2.6.</span> <span class="nav-text">バージョン確認など</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerをインストール"><span class="nav-number">2.7.</span> <span class="nav-text">Dockerをインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#アプリのインストール"><span class="nav-number">2.8.</span> <span class="nav-text">アプリのインストール</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

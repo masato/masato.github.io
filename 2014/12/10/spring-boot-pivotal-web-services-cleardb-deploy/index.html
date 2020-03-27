@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ローカルのDockerコンテナのJVMにSpring Bootのアプリをデプロイしましたが、JVMとコンテナの相性の良さを感じます。Spring Boot と Spring Cloud Netflix と Cloud Foundryを使いMicro Servicesが実現できそうな気がしてきました。まずは簡単なところから、前回作成したspring-cloud-sampleを使い、AmazonRDS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring BootをPivotal Web Servicesにデプロイする - Part3: ClearDBに接続する">
+<meta property="og:url" content="http://masato.github.io/2014/12/10/spring-boot-pivotal-web-services-cleardb-deploy/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ローカルのDockerコンテナのJVMにSpring Bootのアプリをデプロイしましたが、JVMとコンテナの相性の良さを感じます。Spring Boot と Spring Cloud Netflix と Cloud Foundryを使いMicro Servicesが実現できそうな気がしてきました。まずは簡単なところから、前回作成したspring-cloud-sampleを使い、AmazonRDS">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-12-10T13:18:00.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.907Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="SpringBoot">
+<meta property="article:tag" content="SpringCloud">
+<meta property="article:tag" content="MicroServices">
+<meta property="article:tag" content="ClearDB">
+<meta property="article:tag" content="PivotalWebServices">
+<meta property="article:tag" content="PivotalCF">
+<meta property="article:tag" content="CloudFoundry">
+<meta property="article:tag" content="Gradle">
+<meta property="article:tag" content="SpringCloudNetflix">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/12/10/spring-boot-pivotal-web-services-cleardb-deploy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Spring BootをPivotal Web Servicesにデプロイする - Part3: ClearDBに接続する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/12/10/spring-boot-pivotal-web-services-cleardb-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring BootをPivotal Web Servicesにデプロイする - Part3: ClearDBに接続する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 10 2014 22:18:00" itemprop="dateCreated datePublished" datetime="2014-12-10T22:18:00+09:00">Dec 10 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">ローカルのDockerコンテナのJVMにSpring Bootのアプリをデプロイしましたが、JVMとコンテナの相性の良さを感じます。Spring Boot と Spring Cloud Netflix と Cloud Foundryを使いMicro Servicesが実現できそうな気がしてきました。まずは簡単なところから、前回作成したspring-cloud-sampleを使い、AmazonRDS互換のClearDBと連携してみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/12/09/spring-boot-piroval-web-services-sample/">ローカルのDockerコンテナ</a>のJVMにSpring Bootのアプリをデプロイしましたが、JVMとコンテナの相性の良さを感じます。Spring Boot と Spring Cloud Netflix と Cloud Foundryを使いMicro Servicesが実現できそうな気がしてきました。まずは簡単なところから、<a href="/2014/12/09/spring-boot-piroval-web-services-sample/">前回作成</a>した<a href="https://github.com/masato/spring-cloud-sample" target="_blank" rel="noopener">spring-cloud-sample</a>を使い、AmazonRDS互換のClearDBと連携してみます。</p>
+<a id="more"></a>
+
+<h3 id="cloudfoundry-cliのインストール"><a href="#cloudfoundry-cliのインストール" class="headerlink" title="cloudfoundry/cliのインストール"></a>cloudfoundry/cliのインストール</h3><p>cliは、64bit版のdebパッケージをダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L -o cf-cli_amd64.deb  https://cli.run.pivotal.io/stable?release=debian64</span><br></pre></td></tr></table></figure>
+
+<p>dpkgコマンドでdebパッケージをインストールします。バージョンは6.7.0でした。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo dpkg -i cf-cli_amd64.deb</span><br><span class="line">(Reading database ... 46310 files and directories currently installed.)</span><br><span class="line">Preparing to unpack cf-cli_amd64.deb ...</span><br><span class="line">Unpacking cf-cli (6.7.0) over (6.7.0) ...</span><br><span class="line">Setting up cf-cli (6.7.0) ..</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/cloudfoundry/cli" target="_blank" rel="noopener">cloudfoundry/cli</a>は、新しくGoで書かれているのでインストールはとても簡単です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> cf</span><br><span class="line">/usr/bin/cf</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pivotal-Web-Servicesにlogin"><a href="#Pivotal-Web-Servicesにlogin" class="headerlink" title="Pivotal Web Servicesにlogin"></a>Pivotal Web Servicesにlogin</h3><p>最初にcfコマンドから、Pivotal Web Servicesにloginします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf login -a https://api.run.pivotal.io</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pivotal-Web-Servicesにpush"><a href="#Pivotal-Web-Servicesにpush" class="headerlink" title="Pivotal Web Servicesにpush"></a>Pivotal Web Servicesにpush</h3><p>プロジェクトにあるgradlewを使い、JARファイルをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/spring-cloud-sample</span><br><span class="line">$ <span class="built_in">cd</span> spring-cloud-sample</span><br><span class="line">$ ./gradlew clean build</span><br><span class="line">$ ls build/libs/</span><br><span class="line">helloconfig-0.0.1-SNAPSHOT.jar  build/libs/helloconfig-0.0.1-SNAPSHOT.jar.original</span><br></pre></td></tr></table></figure>
+
+<p>JARファイルをPivotal Web Servicesにpushしてデプロイします。この時点では、まだMySQLサービスをバインドしていないので起動に失敗します。{myapp}はアプリケーション名に置き換えてください。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf push &#123;myapp&#125; -p build/libs/helloconfig-0.0.1-SNAPSHOT.jar</span><br><span class="line">...</span><br><span class="line">-----&gt; Java Buildpack Version: v2.5 | https://github.com/cloudfoundry/java-buildpack.git<span class="comment">#840500e</span></span><br><span class="line">-----&gt; Downloading Open Jdk JRE 1.8.0_25 from https://download.run.pivotal.io/openjdk/lucid/x86_64/openjdk-1.8.0_25.tar.gz (1.3s)</span><br><span class="line">       Expanding Open Jdk JRE to .java-buildpack/open_jdk_jre (1.1s)</span><br><span class="line">-----&gt; Downloading Spring Auto Reconfiguration 1.5.0_RELEASE from https://download.run.pivotal.io/auto-reconfiguration/auto-reconfiguration-1.5.0_RELEASE.jar (0.1s)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="CleaDBサービスインスタンスを作成"><a href="#CleaDBサービスインスタンスを作成" class="headerlink" title="CleaDBサービスインスタンスを作成"></a>CleaDBサービスインスタンスを作成</h3><p>PivotalCFのドキュメントの<a href="http://docs.run.pivotal.io/devguide/services/managing-services.html" target="_blank" rel="noopener">Managing Service Instances with the CLI</a>を読みながら、サービスインスタンスの使い方を見ていきます。</p>
+<p>MarketplaceからClearDBサービスを探します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf marketplace | grep cleardb</span><br></pre></td></tr></table></figure>
+
+<p>CleaDBサービスのインスタンスを作成します。{mydb}はデータベース名に置き換えてください。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf create-service cleardb spark &#123;mydb&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CleaDBサービスのバインド"><a href="#CleaDBサービスのバインド" class="headerlink" title="CleaDBサービスのバインド"></a>CleaDBサービスのバインド</h3><p>CleaDBサービスをアプリケーションをバインドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf <span class="built_in">bind</span>-service &#123;myapp&#125; &#123;mydb&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>curlコマンドを使って、CloudFoundryにデプロイしたアプリに接続します。ClearDBへの接続情報が表示されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl &#123;myapp&#125;.cfapps.io</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Cloud Services&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h2&gt;Cloud Services&lt;/h2&gt;</span><br><span class="line">    &lt;table class=<span class="string">"table table-striped"</span>&gt;</span><br><span class="line">      &lt;thead&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;th&gt;Service Connector Type&lt;/th&gt;</span><br><span class="line">          &lt;th&gt;Connection address&lt;/th&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/thead&gt;</span><br><span class="line">      &lt;tbody&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;td&gt;&lt;strong&gt;org.apache.tomcat.jdbc.pool.DataSource&lt;/strong&gt;&lt;/td&gt;</span><br><span class="line">          &lt;td&gt;mysql://xxx.cleardb.net:3306/xxx&lt;/td&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>CloudFoundryで使うDataSourceの指定は以下だけです。</p>
+<figure class="highlight java"><figcaption><span>~/spring-cloud-sample/src/main/java/helloconfig/CloudConfiguration.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> helloconfig;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.config.java.AbstractCloudConfig;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Profile;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"cloud"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudConfiguration</span> <span class="keyword">extends</span> <span class="title">AbstractCloudConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> connectionFactory().dataSource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector" target="_blank" rel="noopener">spring-cloud-cloudfoundry-connector</a>の中で、<code>VCAP_SERVICES</code>環境変数のJSONをJacksonを使いアンマーシャルして、MySQLへの接続情報をセットしてくれます。</p>
+<p>spring-cloud-cloudfoundry-connectorは、build.gradleのdependenciesに追加してあります。</p>
+<figure class="highlight groovy"><figcaption><span>~/spring-cloud-sample/build.gradle</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile(<span class="string">"org.springframework.boot:spring-boot-starter-thymeleaf"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.boot:spring-boot-starter-data-jpa"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.cloud:spring-cloud-spring-service-connector:$&#123;springCloudVersion&#125;"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.cloud:spring-cloud-cloudfoundry-connector:$&#123;springCloudVersion&#125;"</span>)</span><br><span class="line"></span><br><span class="line">    compile(<span class="string">"com.h2database:h2"</span>)</span><br><span class="line">    testCompile(<span class="string">"org.springframework.boot:spring-boot-starter-test"</span>)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+              <a href="/tags/SpringCloud/" rel="tag"># SpringCloud</a>
+              <a href="/tags/MicroServices/" rel="tag"># MicroServices</a>
+              <a href="/tags/ClearDB/" rel="tag"># ClearDB</a>
+              <a href="/tags/PivotalWebServices/" rel="tag"># PivotalWebServices</a>
+              <a href="/tags/PivotalCF/" rel="tag"># PivotalCF</a>
+              <a href="/tags/CloudFoundry/" rel="tag"># CloudFoundry</a>
+              <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+              <a href="/tags/SpringCloudNetflix/" rel="tag"># SpringCloudNetflix</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/12/09/spring-boot-piroval-web-services-sample/" rel="prev" title="Spring BootをPivotal Web Servicesにデプロイする - Part2: ローカルのDocker開発環境で実行する">
+      <i class="fa fa-chevron-left"></i> Spring BootをPivotal Web Servicesにデプロイする - Part2: ローカルのDocker開発環境で実行する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/12/11/reactive-programming-books/" rel="next" title="Reactive Programming Books">
+      Reactive Programming Books <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#cloudfoundry-cliのインストール"><span class="nav-number">1.</span> <span class="nav-text">cloudfoundry&#x2F;cliのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pivotal-Web-Servicesにlogin"><span class="nav-number">2.</span> <span class="nav-text">Pivotal Web Servicesにlogin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pivotal-Web-Servicesにpush"><span class="nav-number">3.</span> <span class="nav-text">Pivotal Web Servicesにpush</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CleaDBサービスインスタンスを作成"><span class="nav-number">4.</span> <span class="nav-text">CleaDBサービスインスタンスを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CleaDBサービスのバインド"><span class="nav-number">5.</span> <span class="nav-text">CleaDBサービスのバインド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

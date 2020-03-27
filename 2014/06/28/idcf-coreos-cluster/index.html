@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IDCFクラウドへCoreOSをディスクへインストールできるようになったので、GCEにCoreOSクラスタで実験した方法で、IDCFクラウド上にCoreOSクラスタを構築してみます。CoreOSはインストールするときにcloud-config.ymlを参照して、SSH鍵の設定やsystemdの.serviceファイルを設定します。IDCFクラウドの場合は、作業マシンと外付けのディスクを用意してイン">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドにCoreOSクラスタを構築する - Part1: CoreOSの準備">
+<meta property="og:url" content="http://masato.github.io/2014/06/28/idcf-coreos-cluster/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IDCFクラウドへCoreOSをディスクへインストールできるようになったので、GCEにCoreOSクラスタで実験した方法で、IDCFクラウド上にCoreOSクラスタを構築してみます。CoreOSはインストールするときにcloud-config.ymlを参照して、SSH鍵の設定やsystemdの.serviceファイルを設定します。IDCFクラウドの場合は、作業マシンと外付けのディスクを用意してイン">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-28T03:31:51.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.671Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="cloud-config">
+<meta property="article:tag" content="idcf-compute-api">
+<meta property="article:tag" content="jq">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/28/idcf-coreos-cluster/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドにCoreOSクラスタを構築する - Part1: CoreOSの準備 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/28/idcf-coreos-cluster/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドにCoreOSクラスタを構築する - Part1: CoreOSの準備
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 28 2014 12:31:51" itemprop="dateCreated datePublished" datetime="2014-06-28T12:31:51+09:00">Jun 28 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">IDCFクラウドへCoreOSをディスクへインストールできるようになったので、GCEにCoreOSクラスタで実験した方法で、IDCFクラウド上にCoreOSクラスタを構築してみます。CoreOSはインストールするときにcloud-config.ymlを参照して、SSH鍵の設定やsystemdの.serviceファイルを設定します。IDCFクラウドの場合は、作業マシンと外付けのディスクを用意してインストール済みのディスクを作成します。今回はInstalling CoreOS to Diskを読みながら、IDCFクラウドへのCoreOSディスクインストールを復習します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-06-28</code>: <a href="/2014/06/28/idcf-coreos-cluster">IDCFクラウドにCoreOSクラスタを構築する - Part1: CoreOSの準備</a></li>
+<li><code>Update 2014-07-10</code>: <a href="/2014/07/10/idcf-coreos-cluster-discovery">IDCFクラウドにCoreOSクラスタを構築する - Part2: CoreOSのディスカバリ</a></li>
+<li><code>Update 2014-07-15</code>: <a href="/2014/07/15/idcf-coreos-cluster-setting-up">IDCFクラウドにCoreOSクラスタを構築する - Part3: クラスタをセットアップ</a></li>
+<li><code>Update 2014-07-17</code>: <a href="/2014/07/17/idcf-coreos-cluster-36710/">IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue</a></li>
+<li><code>Update 2014-07-19</code>: <a href="/2014/07/19/idcf-coreos-cluster-re-setting-up/">IDCFクラウドにCoreOSクラスタを構築する - Part5: 再セットアップ</a></li>
+</ul>
+<p>IDCFクラウドへCoreOSを<a href="/2014/06/03/idcf-coreos-install-disk/">ディスクへインストール</a>できるようになったので、<br>GCEに<a href="/2014/05/12/gce-coreos-cluster-prepare/">CoreOSクラスタ</a>で実験した方法で、IDCFクラウド上にCoreOSクラスタを構築してみます。</p>
+<p>CoreOSはインストールするときにcloud-config.ymlを参照して、SSH鍵の設定やsystemdの.serviceファイルを設定します。<br>IDCFクラウドの場合は、作業マシンと外付けのディスクを用意してインストール済みのディスクを作成します。</p>
+<p>今回は<a href="https://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">Installing CoreOS to Disk</a>を読みながら、IDCFクラウドへのCoreOS<a href="/2014/06/03/idcf-coreos-install-disk/">ディスクインストール</a>を復習します。</p>
+<h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p><a href="/2014/07/17/idcf-coreos-cluster-36710/">IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue</a>で、<code>/var/lib/coreos-install/user_data</code>を編集後にCoreOSをrebootすると、clud-config.ymlの再読込できました。</p>
+<a id="more"></a>
+
+
+<h3 id="1台構成の場合"><a href="#1台構成の場合" class="headerlink" title="1台構成の場合"></a>1台構成の場合</h3><p><a href="https://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">Installing CoreOS to Disk</a>に従って、clud-config.ymlにインスタンスを構成する情報を記述していきます。</p>
+<p><a href="https://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">前回</a>のcloud-config.ymlでは、必須のSSH鍵認証の設定だけ行っていました。</p>
+<figure class="highlight yml"><figcaption><span>clud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3xxx</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="waitjobコマンド"><a href="#waitjobコマンド" class="headerlink" title="waitjobコマンド"></a>waitjobコマンド</h3><p>idcf-compute-apiとjqを便利に使うため、スクリプトを用意します。</p>
+<figure class="highlight bash"><figcaption><span>~/bin/waitjob</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$1</span>)</span><br><span class="line">  status=$(<span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse.jobstatus'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;status&#125;</span> -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 10s</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\n"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">".queryasyncjobresultresponse | &#123;jobid: <span class="variable">$1</span>,jobresult&#125;"</span></span><br><span class="line">    <span class="built_in">break</span>;</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="作業マシンでCoreOSインストールの準備"><a href="#作業マシンでCoreOSインストールの準備" class="headerlink" title="作業マシンでCoreOSインストールの準備"></a>作業マシンでCoreOSインストールの準備</h3><p>IDCFクラウド上に適当なインスタンスを用意して、<a href="http://www.idcf.jp/cloud/docs/Getting%20Started" target="_blank" rel="noopener">idcf-compute-api</a>コマンドが利用できるようにします。</p>
+<p>まず、<a href="http://www.idcf.jp/cloud/docs/api/user/listDiskOfferings" target="_blank" rel="noopener">listDiskOfferings</a>コマンドで、作成するディスクのタイプを確認します。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">$  idcf-<span class="built_in">compute</span>-api listDiskOfferings   | <span class="type">jq</span> '.listdiskofferingsresponse.diskoffering[<span class="number">0</span>] | <span class="type">&#123;name</span>,id&#125;'</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"id"</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"Custom Disk"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/createVolume" target="_blank" rel="noopener">createVolume</a>コマンドで、CoreOSをインストールするための空のディスクを作成します。</p>
+<ul>
+<li>diskofferingid : 10 (ディスクのタイプ)</li>
+<li>size: 40 (40GB)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createVolume \</span><br><span class="line">  --name=coreos_cluster_disk \</span><br><span class="line">  --diskofferingid=10 \</span><br><span class="line">  --size=40 \</span><br><span class="line">  --zoneid=1 | jq <span class="string">'.createvolumeresponse.jobid'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"volume"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"type"</span>: <span class="string">"DATADISK"</span>,</span><br><span class="line">      <span class="string">"diskofferingname"</span>: <span class="string">"Custom Disk"</span>,</span><br><span class="line">      <span class="string">"diskofferingid"</span>: 10,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"id"</span>: 80921,</span><br><span class="line">      <span class="string">"isextractable"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos_cluster_disk"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 42949672960,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"Allocated"</span>,</span><br><span class="line">      <span class="string">"storage"</span>: <span class="string">"none"</span>,</span><br><span class="line">      <span class="string">"storagetype"</span>: <span class="string">"shared"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1131657</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作業マシンのインスタンスのIDを<a href="http://www.idcf.jp/cloud/docs/api/user/listVirtualMachines" target="_blank" rel="noopener">listVirtualMachines</a>コマンドで確認しておきます。<br>クエリの方法はいろいろありますが、今回は表示名を使ってみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listVirtualMachines | jq <span class="string">'.listvirtualmachinesresponse.virtualmachine[] | select(.displayname == "my-workstation").id'</span></span><br><span class="line">53553</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/attachVolume" target="_blank" rel="noopener">attachVolume</a>コマンドで、作成したディスクを作業マシンにアタッチします。</p>
+<ul>
+<li>id: 80921 (作成したディスクのID)</li>
+<li>virtualmachineid: 53553 (作業マシンのID)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api attachVolume \</span><br><span class="line">  --id=80921 \</span><br><span class="line">  --virtualmachineid=53553 | jq <span class="string">'.attachvolumeresponse.jobid'</span>)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"volume"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"diskofferingid"</span>: 10,</span><br><span class="line">      <span class="string">"diskofferingdisplaytext"</span>: <span class="string">"Custom Disk"</span>,</span><br><span class="line">      <span class="string">"id"</span>: 80921,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos_cluster_disk"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 42949672960,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"Ready"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1131658</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>fdisk</code>でアタッチされたディスクを確認すると、/dev/sddです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk -l | grep Disk</span><br><span class="line"></span><br><span class="line">警告: GPT (GUID パーティションテーブル) が <span class="string">'/dev/sdb'</span> に検出されました! この fdisk ユーティリティは GPT をサポートしません。GNU Parted を使ってください。</span><br><span class="line"></span><br><span class="line">ディスク /dev/sdc は正常なパーティションテーブルを含んでいません</span><br><span class="line">ディスク /dev/sdd は正常なパーティションテーブルを含んでいません</span><br><span class="line">Disk /dev/sda: 85.9 GB, 85899345920 bytes</span><br><span class="line">Disk /dev/sdb: 107.4 GB, 107374182400 bytes</span><br><span class="line">Disk /dev/sdc: 42.9 GB, 42949672960 bytes</span><br><span class="line">Disk /dev/sdd: 42.9 GB, 42949672960 bytes</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="CoreOSのインストールスクリプト"><a href="#CoreOSのインストールスクリプト" class="headerlink" title="CoreOSのインストールスクリプト"></a>CoreOSのインストールスクリプト</h3><p>CoreOSのインストールスクリプトをダウンロードします。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>mkdir -p ~<span class="regexp">/coreos_apps/cluster</span></span><br><span class="line"><span class="variable">$ </span>cd !$</span><br><span class="line"><span class="variable">$ </span>wget <span class="symbol">https:</span>/<span class="regexp">/raw.githubusercontent.com/coreos</span><span class="regexp">/init/master</span><span class="regexp">/bin/coreos</span>-install</span><br><span class="line"><span class="variable">$ </span>chmod u+x coreos-install</span><br></pre></td></tr></table></figure>
+
+<h3 id="クラスタ構成のcloud-config-yml"><a href="#クラスタ構成のcloud-config-yml" class="headerlink" title="クラスタ構成のcloud-config.yml"></a>クラスタ構成のcloud-config.yml</h3><p>etcdクラスタを構成するため、各ノードがお互いのサービスディスカバリが必要になります。<br>前回はetcdクラスタの構成情報を保存する場所として、<code>discovery.etcd.io</code>の公開サービスを使いました。</p>
+<p>discoveryAPIを使うため、最初にクラスタを識別するトークンを作成しておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://discovery.etcd.io/new</span><br><span class="line">https://discovery.etcd.io/217d781a5ad5c7c4660bfbbc239bd0c0</span><br></pre></td></tr></table></figure>
+
+<p>CoreOSはパスワード認証でSSH接続ができないため、ssh_authorized_keysに接続用の公開鍵を記述します。</p>
+<figure class="highlight yml"><figcaption><span>~/coreos_apps/cluster/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"> </span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">etcd:</span></span><br><span class="line">      <span class="attr">discovery:</span> <span class="string">https://discovery.etcd.io/217d781a5ad5c7c4660bfbbc239bd0c0</span></span><br><span class="line">      <span class="attr">addr:</span> <span class="string">$private_ipv4:4001</span></span><br><span class="line">      <span class="attr">peer-addr:</span> <span class="string">$private_ipv4:7001</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line"></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3xxx</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="CoreOSのインストール"><a href="#CoreOSのインストール" class="headerlink" title="CoreOSのインストール"></a>CoreOSのインストール</h3><p><code>coreos-install</code>コマンドを使い、マウントしたディスクにCoreOSをインストールします。<br>CoreOSのイメージはBetaチャネルを使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./coreos-install -d /dev/sdd -C beta -c ./cloud-config.yml</span><br><span class="line">Downloading and verifying coreos_production_image.bin.bz2...</span><br><span class="line">--2014-06-28 19:24:49--  http://beta.release.core-os.net/amd64-usr/current/coreos_production_image.bin.bz2</span><br><span class="line">...</span><br><span class="line">Writing coreos_production_image.bin.bz2 to /dev/sdd...</span><br><span class="line">  /tmp/coreos-install.IplQLdie0x/coreos_production_image.bin.bz2: <span class="keyword">done</span></span><br><span class="line">Installing cloud-config...</span><br><span class="line">Success! CoreOS beta current is installed on /dev/sdd</span><br></pre></td></tr></table></figure>
+
+<p>CoreOSをインストールしたディスクを作業マシンにmountして中身を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /coremnt</span><br><span class="line">$ sudo mount -o subvol=root /dev/sdd9 /coremnt/</span><br><span class="line">$ ls -al /coremnt/</span><br></pre></td></tr></table></figure>
+
+<p><code>/var/lib/coreos-install/user_data</code>にインストールされているcloud-configを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cat /coremnt/var/lib/coreos-install/user_data</span><br><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line">coreos:</span><br><span class="line">  etcd:</span><br><span class="line">      discovery: https://discovery.etcd.io/217d781a5ad5c7c4660bfbbc239bd0c0</span><br><span class="line">      addr: <span class="variable">$private_ipv4</span>:4001</span><br><span class="line">      peer-addr: <span class="variable">$private_ipv4</span>:7001</span><br><span class="line">  units:</span><br><span class="line">    - name: etcd.service</span><br><span class="line">      <span class="built_in">command</span>: start</span><br><span class="line">    - name: fleet.service</span><br><span class="line">      <span class="built_in">command</span>: start</span><br><span class="line"></span><br><span class="line">ssh_authorized_keys:</span><br><span class="line">  - ssh-rsa AAAAB3xxx</span><br></pre></td></tr></table></figure>
+
+<h3 id="テンプレートの作成"><a href="#テンプレートの作成" class="headerlink" title="テンプレートの作成"></a>テンプレートの作成</h3><p>mountしたCoreOSのディスクをumountします。<br>デタッチしたディスクから直接テンプレートを作成できないので、一度スナップショットを作成します。手順が面倒です。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sudo umount /coremnt</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/detachVolume" target="_blank" rel="noopener">detachVolume</a>コマンドで、ディスクを作業マシンからデタッチします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api detachVolume \</span><br><span class="line">  --id=80921  | jq <span class="string">'.detachvolumeresponse.jobid'</span>)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"volume"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"id"</span>: 80921,</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos_cluster_disk"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 42949672960,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"Ready"</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1131668</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/createSnapshot" target="_blank" rel="noopener">createSnapshot</a>コマンドを使い、スナップショットの取得をします。今回は9分30秒かかりました。</p>
+<ul>
+<li>volumeid:80921 (デタッチしたボリュームID) </li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createSnapshot \</span><br><span class="line">  --volumeid=80921 \</span><br><span class="line">  | jq <span class="string">'.createsnapshotresponse.jobid'</span>)</span><br><span class="line">........................................................</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"snapshot"</span>: &#123;</span><br><span class="line">      <span class="string">"volumetype"</span>: <span class="string">"DATADISK"</span>,</span><br><span class="line">      <span class="string">"volumename"</span>: <span class="string">"coreos_cluster_disk"</span>,</span><br><span class="line">      <span class="string">"volumeid"</span>: 80921,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"CreatedOnPrimary"</span>,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"id"</span>: 157309,</span><br><span class="line">      <span class="string">"intervaltype"</span>: <span class="string">"MANUAL"</span>,</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"detached_coreos_cluster_disk_20140628110329"</span>,</span><br><span class="line">      <span class="string">"snapshottype"</span>: <span class="string">"MANUAL"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1133135</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>テンプレート作成に必要なOSタイプを確認します。今回は”Other Linux (64-bit)”を指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listOsTypes | jq <span class="string">'.listostypesresponse.ostype[] | select(contains(&#123;description:"Other Linux (64-bit)"&#125;))'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"oscategoryid"</span>: 7,</span><br><span class="line">  <span class="string">"id"</span>: 99,</span><br><span class="line">  <span class="string">"description"</span>: <span class="string">"Other Linux (64-bit)"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/createTemplate" target="_blank" rel="noopener">createTemplate</a>コマンドを使い、スナップショットからテンプレートを作成します。</p>
+<ul>
+<li>snapshotid: 157309 (作成したスナップショットID)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createTemplate \</span><br><span class="line">  --snapshotid=157309 \</span><br><span class="line">  --displaytext=coreos-cluster-tpl-v2 \</span><br><span class="line">  --name=coreos-cluster-tpl-v2 \</span><br><span class="line">  --ostypeid=99 | jq <span class="string">'.createtemplateresponse.jobid'</span>)</span><br><span class="line">..</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"template"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"status"</span>: <span class="string">"Download Complete"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 42949672960,</span><br><span class="line">      <span class="string">"passwordenabled"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"ostypename"</span>: <span class="string">"Other Linux (64-bit)"</span>,</span><br><span class="line">      <span class="string">"format"</span>: <span class="string">"OVA"</span>,</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">      <span class="string">"id"</span>: 8599,</span><br><span class="line">      <span class="string">"isextractable"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"isfeatured"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"ispublic"</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="string">"isready"</span>: <span class="literal">true</span>,</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos-cluster-tpl-v2"</span>,</span><br><span class="line">      <span class="string">"ostypeid"</span>: 103</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1133136</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/listTemplates" target="_blank" rel="noopener">listTemplates</a>コマンドで、作成したテンプレートを確認します。</p>
+<ul>
+<li>id: 8599 (作成したテンプレートID)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listTemplates \</span><br><span class="line">  --id=8599 \</span><br><span class="line">  --templatefilter=self \</span><br><span class="line">  | jq <span class="string">'.listtemplatesresponse.template[] | &#123;id,name,size,isready&#125;'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"isready"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">"size"</span>: 42949672960,</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"coreos-cluster-tpl-v2"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 8599</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="インスタンスの作成は失敗"><a href="#インスタンスの作成は失敗" class="headerlink" title="インスタンスの作成は失敗"></a>インスタンスの作成は失敗</h3><p><a href="http://www.idcf.jp/cloud/docs/api/user/deployVirtualMachine" target="_blank" rel="noopener">deployVirtualMachine</a>は失敗してしまいました。。。</p>
+<p>原因はまだわからないので、デバッグしていきます。なかなかうまく行かないものです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api deployVirtualMachine \</span><br><span class="line">  --serviceofferingid=21 \</span><br><span class="line">  --templateid=8599 \</span><br><span class="line">  --zoneid=1 \</span><br><span class="line">  --name=coreos-cluster-v2 \</span><br><span class="line">  --displayname=coreos-cluster-v2 \</span><br><span class="line">  --group=mshimizu | jq <span class="string">'.deployvirtualmachineresponse.jobid'</span>)</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"errortext"</span>: <span class="string">"Unable to create a deployment for VM[User|xxx]"</span>,</span><br><span class="line">    <span class="string">"errorcode"</span>: 533</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"jobid"</span>: 1133137</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>今回はCoreOSのクラスタ作成用のテンプレートを作成しました。</p>
+<p>CoreOSを直接ディスクにインストールしているため、テンプレートにuserdataにdiscoveryAPI用のTOKENが埋め込まれてしまっています。そのため、このテンプレートから作成するインスタンスはすべて同じクラスタ構成になってしまいます。</p>
+<p>とりあえずテスト用なのでこのままCoreOSクラスタを構築しますが、別のクラスタを作る場合はTOKENを変更するのが面倒です。<br>起動後に変更できたとしても、一度古いTOKENでクラスタのノードを見てしまうので誤動作そうです。</p>
+<p>そもそもまだインスタンスの起動に成功していないのですが。</p>
+<p>理想はGCEのように、インスタンスの起動時にcloud-initでuserdataに指定したcloud-configを実行できると便利です。</p>
+<p>IDCFクラウドのCloudStackが古いため、cloud-initで使っているCloudStackAPIが使えるかどうか確認する必要があります。<br>userdataを使い、インスタンス起動時に実行したいスクリプトや環境変数を渡せるので、いろいろ便利に使えそう。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/cloud-config/" rel="tag"># cloud-config</a>
+              <a href="/tags/idcf-compute-api/" rel="tag"># idcf-compute-api</a>
+              <a href="/tags/jq/" rel="tag"># jq</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/27/measure-all-the-things-and-hexo-images/" rel="prev" title="Measure All The Things!!とHexoのタグプラグイン">
+      <i class="fa fa-chevron-left"></i> Measure All The Things!!とHexoのタグプラグイン
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/29/docker-devenv-scala-typsafe-activator/" rel="next" title="Docker開発環境 - Typesafe ActivatorでScalaをインストール">
+      Docker開発環境 - Typesafe ActivatorでScalaをインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1台構成の場合"><span class="nav-number">2.</span> <span class="nav-text">1台構成の場合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#waitjobコマンド"><span class="nav-number">3.</span> <span class="nav-text">waitjobコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンでCoreOSインストールの準備"><span class="nav-number">4.</span> <span class="nav-text">作業マシンでCoreOSインストールの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSのインストールスクリプト"><span class="nav-number">5.</span> <span class="nav-text">CoreOSのインストールスクリプト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#クラスタ構成のcloud-config-yml"><span class="nav-number">6.</span> <span class="nav-text">クラスタ構成のcloud-config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSのインストール"><span class="nav-number">7.</span> <span class="nav-text">CoreOSのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#テンプレートの作成"><span class="nav-number">8.</span> <span class="nav-text">テンプレートの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インスタンスの作成は失敗"><span class="nav-number">9.</span> <span class="nav-text">インスタンスの作成は失敗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

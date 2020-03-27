@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前回、BeagleBone BlackのファームウェアをDebian 7.5に戻しました。この環境でSDカードからUbuntu 14.04.1を起動してみます。USBシリアル変換ケーブルでBBBとWindows7をつなぎ、Puttyからシリアル接続します。BBBのリビジョンA5BのSDカードからUbuntu 14.04.1を起動する場合、USBネットワーク接続がデフォルトで使えませんでした。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeagleBone Blackのファームウェアを入れ直す - Part2: SDカードのUbuntu14.04.1へPuttyからシリアル接続する">
+<meta property="og:url" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="前回、BeagleBone BlackのファームウェアをDebian 7.5に戻しました。この環境でSDカードからUbuntu 14.04.1を起動してみます。USBシリアル変換ケーブルでBBBとWindows7をつなぎ、Puttyからシリアル接続します。BBBのリビジョンA5BのSDカードからUbuntu 14.04.1を起動する場合、USBネットワーク接続がデフォルトで使えませんでした。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/usb-serial-4pin.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/device-manager-com7.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/putty-serial-port.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/serial-ubuntu-14.04.png">
+<meta property="article:published_time" content="2015-01-29T11:45:15.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.554Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="BeagleBoneBlack">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Linux-ARM">
+<meta property="article:tag" content="Putty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/usb-serial-4pin.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeagleBone Blackのファームウェアを入れ直す - Part2: SDカードのUbuntu14.04.1へPuttyからシリアル接続する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/01/29/beagleboneblack-ubuntu14-04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeagleBone Blackのファームウェアを入れ直す - Part2: SDカードのUbuntu14.04.1へPuttyからシリアル接続する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 29 2015 20:45:15" itemprop="dateCreated datePublished" datetime="2015-01-29T20:45:15+09:00">Jan 29 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">前回、BeagleBone BlackのファームウェアをDebian 7.5に戻しました。この環境でSDカードからUbuntu 14.04.1を起動してみます。USBシリアル変換ケーブルでBBBとWindows7をつなぎ、Puttyからシリアル接続します。BBBのリビジョンA5BのSDカードからUbuntu 14.04.1を起動する場合、USBネットワーク接続がデフォルトで使えませんでした。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/01/27/beagleboneblack-debian/">前回</a>、BeagleBone BlackのファームウェアをDebian 7.5に戻しました。この環境でSDカードからUbuntu 14.04.1を起動してみます。USBシリアル変換ケーブルでBBBとWindows7をつなぎ、Puttyからシリアル接続します。BBBのリビジョンA5BのSDカードからUbuntu 14.04.1を起動する場合、USBネットワーク接続がデフォルトで使えませんでした。</p>
+<a id="more"></a>
+
+<h2 id="Ubuntu-14-04-1のイメージを用意"><a href="#Ubuntu-14-04-1のイメージを用意" class="headerlink" title="Ubuntu 14.04.1のイメージを用意"></a>Ubuntu 14.04.1のイメージを用意</h2><p>Cygwin64 Terminalを管理者として起動します。今回はイメージをeMMCにフラッシュせずにSDカードに焼いてから起動します。<a href="http://elinux.org/BeagleBoardUbuntu#BeagleBone.2FBeagleBone_Black" target="_blank" rel="noopener">Embedded Linux Wikiのページ</a>にある、<a href="https://rcn-ee.net/rootfs/2015-01-06/microsd/bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img.xz" target="_blank" rel="noopener">bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img.xz</a>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /cygdrive/c/Users/masato/Downloads/</span><br><span class="line">$ wget https://rcn-ee.net/rootfs/2015-01-06/microsd/bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img.xz</span><br><span class="line">$ md5sum bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img,xz</span><br><span class="line">9d602fdcaa350181c90bc90de15fd184 *bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img.xz</span><br></pre></td></tr></table></figure>
+
+<p>イメージをunxzコマンドで解凍して、SDカードに焼きます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ unxz bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img.xz</span><br><span class="line">$ dd <span class="keyword">if</span>=./bone-ubuntu-14.04.1-console-armhf-2015-01-06-2gb.img of=/dev/sdc</span><br></pre></td></tr></table></figure>
+
+<h2 id="USB-シリアル変換ケーブルのピンを刺す"><a href="#USB-シリアル変換ケーブルのピンを刺す" class="headerlink" title="USB-シリアル変換ケーブルのピンを刺す"></a>USB-シリアル変換ケーブルのピンを刺す</h2><p>Prolific社製のPL-2303チップセットの採用している<a href="http://www.amazon.co.jp/dp/B00L8SP7U6" target="_blank" rel="noopener">USB-シリアル変換ケーブル</a>をアマゾンから650円で購入しました。4ピンケーブルのBlack、Green、Whiteの3本をBBBに刺します。</p>
+<p><img src="/2015/01/29/beagleboneblack-ubuntu14-04/usb-serial-4pin.png" alt="usb-serial-4pin.png"></p>
+<h2 id="Puttyからシリアル接続"><a href="#Puttyからシリアル接続" class="headerlink" title="Puttyからシリアル接続"></a>Puttyからシリアル接続</h2><h3 id="Puttyの設定"><a href="#Puttyの設定" class="headerlink" title="Puttyの設定"></a>Puttyの設定</h3><p>USB-シリアル変換ケーブルをWindows7に接続すると自動でドライバがインストールされます。デバイスマネージャーでCOMポートを確認すると7を使っています。</p>
+<p><img src="/2015/01/29/beagleboneblack-ubuntu14-04/device-manager-com7.png" alt="device-manager-com7.png"></p>
+<p>Puttyの新しいセッションの作成をします。</p>
+<ul>
+<li>左カテゴリ &gt; 接続 &gt; シリアル</li>
+</ul>
+<p>以下の値を入力して、セッション一覧に名前を付けて保存します。</p>
+<ul>
+<li>接続先のシリアルポート: COM7</li>
+<li>通信速度(ボー): 115200</li>
+<li>データ長(ビット): 8</li>
+<li>ストップビット: 1</li>
+<li>パリティ: なし</li>
+<li>フロー制御: なし</li>
+</ul>
+<p><img src="/2015/01/29/beagleboneblack-ubuntu14-04/putty-serial-port.png" alt="putty-serical-port.png"></p>
+<h3 id="USB-シリアル接続"><a href="#USB-シリアル接続" class="headerlink" title="USB-シリアル接続"></a>USB-シリアル接続</h3><p>最初に電源供給用にBeagleBone Blackのmini USBケーブルを<a href="http://www.amazon.co.jp/dp/B00GTGETFG" target="_blank" rel="noopener">USB急速充電器</a>などに接続して電源を入れます。その後に3ピンを刺したUSB-シリアル接続をWindows7に接続します。</p>
+<p><img src="/2015/01/29/beagleboneblack-ubuntu14-04/serial-ubuntu-14.04.png" alt="serial-ubuntu-14.04.png"></p>
+<p>USB-シリアル接続を使い、PuttyからSDカードから起動しているUbuntu 14.04にログインすることができました。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BeagleBoneBlack/" rel="tag"># BeagleBoneBlack</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/Linux-ARM/" rel="tag"># Linux-ARM</a>
+              <a href="/tags/Putty/" rel="tag"># Putty</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/01/28/fx0-firefox-os/" rel="prev" title="Fx0でFirefox OSを遊ぶ - Part1: キツネだお">
+      <i class="fa fa-chevron-left"></i> Fx0でFirefox OSを遊ぶ - Part1: キツネだお
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/01/30/beagleboneblack-ubuntu14-04-wlan/" rel="next" title="BeagleBone Blackのファームウェアを入れ直す - Part3: SDカードのUbuntu14.04.1の無線LAN設定">
+      BeagleBone Blackのファームウェアを入れ直す - Part3: SDカードのUbuntu14.04.1の無線LAN設定 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-14-04-1のイメージを用意"><span class="nav-number">1.</span> <span class="nav-text">Ubuntu 14.04.1のイメージを用意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USB-シリアル変換ケーブルのピンを刺す"><span class="nav-number">2.</span> <span class="nav-text">USB-シリアル変換ケーブルのピンを刺す</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Puttyからシリアル接続"><span class="nav-number">3.</span> <span class="nav-text">Puttyからシリアル接続</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Puttyの設定"><span class="nav-number">3.1.</span> <span class="nav-text">Puttyの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-シリアル接続"><span class="nav-number">3.2.</span> <span class="nav-text">USB-シリアル接続</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

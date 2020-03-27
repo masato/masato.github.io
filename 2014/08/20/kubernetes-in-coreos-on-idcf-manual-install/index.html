@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Pamanaxに続いてDockerコンテナ管理ツールのKubernetesをIDCFクラウド上のCoreOSにインストールしてみます。今回は最初なので直接CoreOSにSSH接続してマニュアルでインストールします。CoreOSの世界ではcloud-configで初期設定をしたあとに直接変更を加えるのはお行儀が良くないので、インストールの確認ができたら、cloud-configでKubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes in CoreOS with Rudder on IDCFクラウド - Part1: マニュアルインストール">
+<meta property="og:url" content="http://masato.github.io/2014/08/20/kubernetes-in-coreos-on-idcf-manual-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Pamanaxに続いてDockerコンテナ管理ツールのKubernetesをIDCFクラウド上のCoreOSにインストールしてみます。今回は最初なので直接CoreOSにSSH接続してマニュアルでインストールします。CoreOSの世界ではcloud-configで初期設定をしたあとに直接変更を加えるのはお行儀が良くないので、インストールの確認ができたら、cloud-configでKubernetes">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-08-19T16:12:33.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.741Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="Docker管理">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="SDN">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/08/20/kubernetes-in-coreos-on-idcf-manual-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Kubernetes in CoreOS with Rudder on IDCFクラウド - Part1: マニュアルインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/08/20/kubernetes-in-coreos-on-idcf-manual-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kubernetes in CoreOS with Rudder on IDCFクラウド - Part1: マニュアルインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 20 2014 01:12:33" itemprop="dateCreated datePublished" datetime="2014-08-20T01:12:33+09:00">Aug 20 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Pamanaxに続いてDockerコンテナ管理ツールのKubernetesをIDCFクラウド上のCoreOSにインストールしてみます。今回は最初なので直接CoreOSにSSH接続してマニュアルでインストールします。CoreOSの世界ではcloud-configで初期設定をしたあとに直接変更を加えるのはお行儀が良くないので、インストールの確認ができたら、cloud-configでKubernetesをCoreOSクラスタにインストールしたいと思います。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-10-02</code>: <a href="/2014/10/02/kubernetes-fleet-flannel-guestbook/">Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part7: flannel版GuestBook</a></li>
+<li><code>Update 2014-09-27</code>: <a href="/2014/09/27/kubernetes-fleet-rudder-renamed-to-flannel/">Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part6: Rudder renamed to flannel</a></li>
+<li><code>Update 2014-09-22</code>: <a href="/2014/09/22/kubernetes-fleet-rudder-on-idcf/">Kubernetes on CoreOS with Fleet and Rudder on IDCFクラウド - Part5: FleetとRudderで再作成する</a></li>
+<li><code>Update 2014-09-05</code>: <a href="/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/">Kubernetes in CoreOS with Rudder on IDCFクラウド - Part4: GuestBook example</a></li>
+<li><code>Update 2014-09-04</code>: <a href="/2014/09/04/kubernetes-in-coreos-on-idcf-with-rudder/">Kubernetes in CoreOS with Rudder on IDCFクラウド - Part3: RudderでSDN風なこと</a></li>
+<li><code>Update 2014-08-31</code>: <a href="/2014/08/31/kubernetes-on-coreos-cluster/">Kubernetes in CoreOS with Rudder on IDCFクラウド - Part2: クラスタ再考</a></li>
+</ul>
+<p><a href="/2014/08/19/panamax-in-coreos-on-idcf/">Pamanax</a>に続いてDockerコンテナ管理ツールのKubernetesをIDCFクラウド上のCoreOSにインストールしてみます。今回は最初なので直接CoreOSにSSH接続してマニュアルでインストールします。</p>
+<p>CoreOSの世界ではcloud-configで初期設定をしたあとに直接変更を加えるのはお行儀が良くないので、インストールの確認ができたら、cloud-configでKubernetesをCoreOSクラスタにインストールしたいと思います。</p>
+<a id="more"></a>
+
+<h3 id="CoreOSのインストール"><a href="#CoreOSのインストール" class="headerlink" title="CoreOSのインストール"></a>CoreOSのインストール</h3><p>CoreOSを<a href="/2014/08/18/idcf-coreos-install-from-iso/">ISOからインストール</a>して、コンソールからパスワード変更をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo passwd core</span><br></pre></td></tr></table></figure>
+
+<p>パスワードでSSH接続できるようになりました。CoreOSインスタンスにSSH接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh core@10.1.1.120</span><br></pre></td></tr></table></figure>
+
+<p>CoreOSインスタンスにアサインされたipアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ip a</span><br><span class="line">...</span><br><span class="line">2: ens32: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</span><br><span class="line">    link/ether 02:00:30:55:01:12 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 10.1.1.120/22 brd 10.1.3.255 scope global ens32</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::30ff:fe55:112/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+
+<p>cloud-config.ymlにIPアドレスを指定して、あとは最低限の設定のみ行います。<br><code>stop-update-engine.service</code>のunitも明示的に書かないとKubernetesのインストール時におこられます。</p>
+<figure class="highlight yaml"><figcaption><span>~/coreos/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"> <span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3NzaC1...</span> <span class="string">deis</span></span><br><span class="line"></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">etcd:</span></span><br><span class="line">    <span class="attr">discovery:</span> <span class="string">https://discovery.etcd.io/8cb9184d20c460c4be658a846b6cab82</span></span><br><span class="line">    <span class="attr">addr:</span> <span class="number">10.1</span><span class="number">.1</span><span class="number">.120</span><span class="string">:4001</span></span><br><span class="line">    <span class="attr">peer-addr:</span> <span class="number">10.1</span><span class="number">.1</span><span class="number">.120</span><span class="string">:7001</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">stop-update-engine.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">Description=stop</span> <span class="string">update-engine</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">        <span class="string">ExecStart=/usr/bin/systemctl</span> <span class="string">stop</span> <span class="string">update-engine.service</span></span><br><span class="line">        <span class="string">ExecStartPost=/usr/bin/systemctl</span> <span class="string">mask</span> <span class="string">update-engine.service</span></span><br><span class="line"></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0644</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">COREOS_PUBLIC_IPV4=</span></span><br><span class="line">      <span class="string">COREOS_PRIVATE_IPV4=10.1.1.120</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/profile.d/nse-function.sh</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0755</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">function</span> <span class="string">nse()</span> <span class="string">&#123;</span></span><br><span class="line">        <span class="string">sudo</span> <span class="string">nsenter</span> <span class="string">--pid</span> <span class="string">--uts</span> <span class="string">--mount</span> <span class="string">--ipc</span> <span class="string">--net</span> <span class="string">--target</span> <span class="string">$(docker</span> <span class="string">inspect</span> <span class="string">--format="&amp;#123;&amp;#123;</span> <span class="string">.State.Pid</span> <span class="string">&amp;#125;&amp;#125;"</span> <span class="string">$1)</span></span><br><span class="line">      <span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>/dev/sdaにCoreOSをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo coreos-install -d /dev/sda -C stable -c ./cloud-config.yml</span><br><span class="line">...</span><br><span class="line">Installing cloud-config...</span><br><span class="line">Success! CoreOS stable 367.1.0 is installed on /dev/sda</span><br></pre></td></tr></table></figure>
+
+<p>rebootします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>公開鍵でSSH接続できることを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/deis</span><br><span class="line">$ ssh -A core@10.1.1.120</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Kubernetesのインストール"><a href="#Kubernetesのインストール" class="headerlink" title="Kubernetesのインストール"></a>Kubernetesのインストール</h3><p><a href="https://github.com/kelseyhightower/kubernetes-coreos" target="_blank" rel="noopener">kubernetes-coreos</a>を読みながらインストールをしていきます。まずはCoreOSにログインして、Kubernetesバイナリのインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /opt/bin</span><br><span class="line">$ sudo wget https://storage.googleapis.com/kubernetes/binaries.tar.gz</span><br><span class="line">$ sudo tar -xvf binaries.tar.gz -C /opt/bin</span><br><span class="line">apiserver</span><br><span class="line">controller-manager</span><br><span class="line">kubecfg</span><br><span class="line">kubelet</span><br><span class="line">proxy</span><br></pre></td></tr></table></figure>
+
+
+<p>Kubernetes のunitsを<code>git clone</code>してコピーします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/kelseyhightower/kubernetes-coreos.git</span><br><span class="line">$ ls kubernetes-coreos/units/</span><br><span class="line">apiserver.service           docker.service               kubelet.service</span><br><span class="line">controller-manager.service  download-kubernetes.service  proxy.service</span><br><span class="line">$ sudo cp kubernetes-coreos/units/* /etc/systemd/system/</span><br></pre></td></tr></table></figure>
+
+
+<p>Kubernetes サービスを開始します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl start apiserver</span><br><span class="line">$ sudo systemctl start controller-manager</span><br><span class="line">$ sudo systemctl start kubelet</span><br><span class="line">$ sudo systemctl start proxy</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="作業マシンにkubecfg-クライアントのインストール"><a href="#作業マシンにkubecfg-クライアントのインストール" class="headerlink" title="作業マシンにkubecfg クライアントのインストール"></a>作業マシンにkubecfg クライアントのインストール</h3><p>リモートの作業マシンで作業するbyobuでシェルマルチプレクサを開いておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ byobu</span><br></pre></td></tr></table></figure>
+
+<p>作業マシンからCoreOSにインストールしたapiserverへのSSHトンネルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/deis</span><br><span class="line">$ ssh -f -nNT -L 8080:127.0.0.1:8080 core@10.1.1.120</span><br></pre></td></tr></table></figure>
+
+<p>作業マシンからKubernetesへの接続を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -s http://localhost:8080</span><br><span class="line">&lt;html&gt;&lt;body&gt;Welcome to Kubernetes&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>作業マシンへ、kubecfg クライアントをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo wget https://storage.googleapis.com/kubernetes/kubecfg -O /usr/<span class="built_in">local</span>/bin/kubecfg</span><br><span class="line">$ sudo chmod +x /usr/<span class="built_in">local</span>/bin/kubecfg</span><br></pre></td></tr></table></figure>
+
+<p>kubecfgコマンドの起動確認をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /usr/<span class="built_in">local</span>/bin/kubecfg list /pods</span><br><span class="line">kubecfg list /pods</span><br><span class="line">Name                Image(s)            Host                Labels</span><br><span class="line">----------          ----------          ----------          ----------</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Pod-の作成"><a href="#Redis-Pod-の作成" class="headerlink" title="Redis Pod の作成"></a>Redis Pod の作成</h3><p>Podとは、コンテナをグループにした概念です。Podファイル用のディレクトリを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/kubernetes-coreos/pods</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><figcaption><span>~/kubernetes-coreos/pods/redis.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"redis"</span>,</span><br><span class="line">  <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">    <span class="attr">"manifest"</span>: &#123;</span><br><span class="line">      <span class="attr">"version"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">      <span class="attr">"id"</span>: <span class="string">"redis"</span>,</span><br><span class="line">      <span class="attr">"containers"</span>: [&#123;</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"redis"</span>,</span><br><span class="line">        <span class="attr">"image"</span>: <span class="string">"dockerfile/redis"</span>,</span><br><span class="line">        <span class="attr">"ports"</span>: [&#123;</span><br><span class="line">          <span class="attr">"containerPort"</span>: <span class="number">6379</span>,</span><br><span class="line">          <span class="attr">"hostPort"</span>: <span class="number">6379</span> </span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"labels"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"redis"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Redis Podの作成をします。2分ちょっと待ちます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /opt/bin/kubecfg -h http://127.0.0.1:8080 -c ~/kubernetes-coreos/pods/redis.json create /pods</span><br><span class="line">...</span><br><span class="line">I0819 03:56:12.709765 00662 request.go:287] Waiting <span class="keyword">for</span> completion of /operations/1</span><br><span class="line">Name                Image(s)            Host                Labels</span><br><span class="line">----------          ----------          ----------          ----------</span><br><span class="line">redis               dockerfile/redis    /                   name=redis</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Pod-の確認"><a href="#Redis-Pod-の確認" class="headerlink" title="Redis Pod の確認"></a>Redis Pod の確認</h3><p><code>docker ps</code>でコンテナの起動を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                     COMMAND                CREATED             STATUS              PORTS                    NAMES</span><br><span class="line">5d9727604f59        dockerfile/redis:latest   redis-server /etc/re   14 minutes ago      Up 14 minutes                                k8s--redis.d91677c6--redis.etcd--1575910b</span><br><span class="line">8cd1158abdf9        kubernetes/pause:latest   /pause                 15 minutes ago      Up 15 minutes       0.0.0.0:6379-&gt;6379/tcp   k8s--net.51c76ba5--redis.etcd--c5dddb70</span><br></pre></td></tr></table></figure>
+
+<p>docker0インターフェース(172.17.42.1)へ、redis-cliのdisposableコンテナから接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -t -i --rm  dockerfile/redis /usr/<span class="built_in">local</span>/bin/redis-cli -h 172.17.42.1</span><br><span class="line">172.17.42.1:6379&gt;</span><br></pre></td></tr></table></figure>
+
+<p>リモートの作業マシンからもリストしてみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /usr/<span class="built_in">local</span>/bin/kubecfg list /pods</span><br><span class="line">Name                Image(s)            Host                Labels</span><br><span class="line">----------          ----------          ----------          ----------</span><br><span class="line">redis               dockerfile/redis    127.0.0.1/          name=redis</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Pod-の削除"><a href="#Redis-Pod-の削除" class="headerlink" title="Redis Pod の削除"></a>Redis Pod の削除</h3><p>確認がおわったら、Podをdeleteします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /opt/bin/kubecfg -h http://127.0.0.1:8080 delete /pods/redis</span><br><span class="line">Status</span><br><span class="line">----------</span><br><span class="line">success</span><br></pre></td></tr></table></figure>
+
+<p>listしてpodsにエントリがないことを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /opt/bin/kubecfg -h http://127.0.0.1:8080 list /pods</span><br><span class="line">Name                Image(s)            Host                Labels</span><br><span class="line">----------          ----------          ----------          ----------</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/Docker%E7%AE%A1%E7%90%86/" rel="tag"># Docker管理</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+              <a href="/tags/SDN/" rel="tag"># SDN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/08/19/panamax-in-coreos-on-idcf/" rel="prev" title="Panamax in CoreOS on IDCFクラウド - Part1: インストール">
+      <i class="fa fa-chevron-left"></i> Panamax in CoreOS on IDCFクラウド - Part1: インストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/08/21/flocker-with-zfs-on-idcf/" rel="next" title="Flocker with ZFS on IDCFクラウド- Part1: ZFS on Linuxインストール">
+      Flocker with ZFS on IDCFクラウド- Part1: ZFS on Linuxインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSのインストール"><span class="nav-number">1.</span> <span class="nav-text">CoreOSのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetesのインストール"><span class="nav-number">2.</span> <span class="nav-text">Kubernetesのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンにkubecfg-クライアントのインストール"><span class="nav-number">3.</span> <span class="nav-text">作業マシンにkubecfg クライアントのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Pod-の作成"><span class="nav-number">4.</span> <span class="nav-text">Redis Pod の作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Pod-の確認"><span class="nav-number">5.</span> <span class="nav-text">Redis Pod の確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Pod-の削除"><span class="nav-number">6.</span> <span class="nav-text">Redis Pod の削除</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

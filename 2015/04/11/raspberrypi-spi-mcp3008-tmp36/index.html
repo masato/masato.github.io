@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Raspberry Piからセンシングデータを取得する場合もArduino Firmataと同様にNode.jsから行いたかったのですが難しそうなのでPythonに戻ることにしました。Raspberry PiのGPIOはデジタル入力しかできないのでTMP36やLM35DZのアナログセンサを使う場合はMCP3008やPCF8591などのADコンバータが必要になります。TMP36を使い温度を計測するP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Raspberry PiのPythonからTMP36のアナログ温度センサとMCP3008のADコンバータを使う">
+<meta property="og:url" content="http://masato.github.io/2015/04/11/raspberrypi-spi-mcp3008-tmp36/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Raspberry Piからセンシングデータを取得する場合もArduino Firmataと同様にNode.jsから行いたかったのですが難しそうなのでPythonに戻ることにしました。Raspberry PiのGPIOはデジタル入力しかできないのでTMP36やLM35DZのアナログセンサを使う場合はMCP3008やPCF8591などのADコンバータが必要になります。TMP36を使い温度を計測するP">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/04/11/raspberrypi-spi-mcp3008-tmp36/mcp3008-tmp36.png">
+<meta property="article:published_time" content="2015-04-11T05:15:56.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.875Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="RaspberryPi">
+<meta property="article:tag" content="センサー">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="TMP36">
+<meta property="article:tag" content="MCP3008">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/04/11/raspberrypi-spi-mcp3008-tmp36/mcp3008-tmp36.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/04/11/raspberrypi-spi-mcp3008-tmp36/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Raspberry PiのPythonからTMP36のアナログ温度センサとMCP3008のADコンバータを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/04/11/raspberrypi-spi-mcp3008-tmp36/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Raspberry PiのPythonからTMP36のアナログ温度センサとMCP3008のADコンバータを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Apr 11 2015 14:15:56" itemprop="dateCreated datePublished" datetime="2015-04-11T14:15:56+09:00">Apr 11 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Raspberry Piからセンシングデータを取得する場合もArduino Firmataと同様にNode.jsから行いたかったのですが難しそうなのでPythonに戻ることにしました。Raspberry PiのGPIOはデジタル入力しかできないのでTMP36やLM35DZのアナログセンサを使う場合はMCP3008やPCF8591などのADコンバータが必要になります。TMP36を使い温度を計測するPythonプログラムを書いてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Raspberry Piからセンシングデータを取得する場合もArduino Firmataと同様にNode.jsから行いたかったのですが難しそうなのでPythonに戻ることにしました。Raspberry PiのGPIOはデジタル入力しかできないので<a href="http://eleshop.jp/shop/g/gBB2122/" target="_blank" rel="noopener">TMP36</a>や<a href="http://eleshop.jp/shop/g/g731131/" target="_blank" rel="noopener">LM35DZ</a>のアナログセンサを使う場合は<a href="https://www.switch-science.com/catalog/1514/" target="_blank" rel="noopener">MCP3008</a>や<a href="http://www.aitendo.com/product/10190" target="_blank" rel="noopener">PCF8591</a>などのADコンバータが必要になります。TMP36を使い温度を計測するPythonプログラムを書いてみます。</p>
+<a id="more"></a>
+
+<h2 id="SPIを有効にする"><a href="#SPIを有効にする" class="headerlink" title="SPIを有効にする"></a>SPIを有効にする</h2><p><a href="http://ja.wikipedia.org/wiki/%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E3%83%BB%E3%83%9A%E3%83%AA%E3%83%95%E3%82%A7%E3%83%A9%E3%83%AB%E3%83%BB%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%95%E3%82%A7%E3%83%BC%E3%82%B9" target="_blank" rel="noopener">SPI(Serial Peripheral Interface)</a>はシリアル通信の規格の一つです。Raspberry PiのSPIを有効化する方法がカーネルの3.18から変更になったようです。<a href="http://www.raspberrypi-spy.co.uk/2014/08/enabling-the-spi-interface-on-the-raspberry-pi/" target="_blank" rel="noopener">Enabling The SPI Interface On The Raspberry Pi</a>にraspi-configを使う方法と手動で有効にする方法が書いてあります。今回は手動で行います。</p>
+<h3 id="ファームウェアを更新する"><a href="#ファームウェアを更新する" class="headerlink" title="ファームウェアを更新する"></a>ファームウェアを更新する</h3><p>カーネルが3.18.xでない場合はファームウェアを最新します。あわせてパッケージも最新にしました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get upgrade</span><br><span class="line">$ sudo rpi-update</span><br></pre></td></tr></table></figure>
+
+<p>カーネルのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.18.11+ (dc4@dc4-XPS13-9333) (gcc version 4.8.3 20140303 (prerelease) (crosstool-NG linaro-1.13.1+bzr2650 - Linaro GCC 2014.03) ) <span class="comment">#777 PREEMPT Sat Apr 11 17:24:23 BST 2015</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/boot/config.txt</code>を編集します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo vi /boot/config.txt</span><br><span class="line">dtparam=spi=on</span><br></pre></td></tr></table></figure>
+
+<p>rebootします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>SPIが有効になりました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsmod | grep spi</span><br><span class="line">spi_bcm2708             6018  0</span><br></pre></td></tr></table></figure>
+
+<h2 id="ブレッドボード配線"><a href="#ブレッドボード配線" class="headerlink" title="ブレッドボード配線"></a>ブレッドボード配線</h2><p>MCP3008とRaspberry PiとFT232RLをブレッドボードで配線します。</p>
+<p><img src="/2015/04/11/raspberrypi-spi-mcp3008-tmp36/mcp3008-tmp36.png" alt="mcp3008-tmp36.png"></p>
+<p>MCP3008とRaspberry Piと配線します。</p>
+<ul>
+<li>MCP3008 VDD     -&gt; Raspberry Pi 3.3V</li>
+<li>MCP3008 VREF    -&gt; Raspberry Pi 3.3V</li>
+<li>MCP3008 AGND    -&gt; Raspberry Pi GND</li>
+<li>MCP3008 CLK     -&gt; Raspberry Pi GPIO 11 (SCLK)</li>
+<li>MCP3008 DOUT    -&gt; Raspberry Pi GPIO 9 (MISO)</li>
+<li>MCP3008 DIN     -&gt; Raspberry Pi GPIO 10 (MOSI)</li>
+<li>MCP3008 CS/SHDN -&gt; Raspberry Pi GPIP 8 (CE0)</li>
+<li>MCP3008 DGND    -&gt; Raspberry Pi GND</li>
+</ul>
+<p>TMP36を配線します。</p>
+<ul>
+<li>TMP36 VCC     -&gt; Raspberry Pi 3.3V</li>
+<li>TMP36 VOUT    -&gt; MCP3008 CH0</li>
+<li>TMP36 GND     -&gt; Raspberry Pi GND</li>
+</ul>
+<h2 id="Pythonのインストール"><a href="#Pythonのインストール" class="headerlink" title="Pythonのインストール"></a>Pythonのインストール</h2><p>Raspberry PiのPython開発環境をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install python-dev</span><br><span class="line">$ python -V</span><br><span class="line">Python 2.7.3</span><br></pre></td></tr></table></figure>
+
+<p>ez_setupとpipをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://bootstrap.pypa.io/ez_setup.py -o - | sudo python</span><br><span class="line">$ curl https://bootstrap.pypa.io/get-pip.py -o - | sudo python</span><br><span class="line">$ pip -V</span><br><span class="line">pip 6.1.1 from /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages (python 2.7)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="py-spidev"><a href="#py-spidev" class="headerlink" title="py-spidev"></a>py-spidev</h3><p>PythonからSPIデバイスを操作するため<a href="https://github.com/doceme/py-spidev" target="_blank" rel="noopener">py-spidev</a>をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span></span><br><span class="line">$ git <span class="built_in">clone</span> git://github.com/doceme/py-spidev </span><br><span class="line">$ <span class="built_in">cd</span> py-spidev</span><br><span class="line">$ sudo python setup.py install</span><br><span class="line">...</span><br><span class="line">Writing /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/spidev-3.0.egg-info</span><br></pre></td></tr></table></figure>
+
+<h3 id="サンプルプロジェクト"><a href="#サンプルプロジェクト" class="headerlink" title="サンプルプロジェクト"></a>サンプルプロジェクト</h3><p>プロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/python_apps/spidev-spike</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p>以下のサイトを参考にしてPythonのサンプルプログラムを書きます。</p>
+<ul>
+<li><a href="http://windvoice.hatenablog.jp/entry/2015/03/04/165820" target="_blank" rel="noopener">ラズパイでセンサーのデータを継続的に記録する（ソフトウェア編）</a></li>
+<li><a href="http://www.raspberrypi-spy.co.uk/2013/10/analogue-sensors-on-the-raspberry-pi-using-an-mcp3008/" target="_blank" rel="noopener">Analogue Sensors On The Raspberry Pi Using An MCP3008</a></li>
+<li><a href="http://raspberrypi-aa.github.io/session3/spi.html" target="_blank" rel="noopener">Serial Peripheral Interface</a></li>
+</ul>
+<figure class="highlight python"><figcaption><span>~/python_apps/spidev-spike/spi_tmp36.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> spidev</span><br><span class="line"></span><br><span class="line">spi = spidev.SpiDev()</span><br><span class="line">spi.open(<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">readAdc</span><span class="params">(channel)</span>:</span></span><br><span class="line">    adc = spi.xfer2([<span class="number">1</span>,(<span class="number">8</span>+channel)&lt;&lt;<span class="number">4</span>,<span class="number">0</span>])</span><br><span class="line">    data = ((adc[<span class="number">1</span>]&amp;<span class="number">3</span>) &lt;&lt; <span class="number">8</span>) + adc[<span class="number">2</span>]</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convertVolts</span><span class="params">(data)</span>:</span></span><br><span class="line">    volts = (data * <span class="number">3.3</span>) / float(<span class="number">1023</span>)</span><br><span class="line">    volts = round(volts,<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> volts</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convertTemp</span><span class="params">(volts)</span>:</span></span><br><span class="line">    temp = (<span class="number">100</span> * volts) - <span class="number">50.0</span></span><br><span class="line">    temp = round(temp,<span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> temp</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            data = readAdc(<span class="number">0</span>)</span><br><span class="line">            print(<span class="string">"adc  : &#123;:8&#125; "</span>.format(data))</span><br><span class="line">            volts = convertVolts(data)</span><br><span class="line">            temp = convertTemp(volts)</span><br><span class="line">            print(<span class="string">"volts: &#123;:8.2f&#125;"</span>.format(volts))</span><br><span class="line">            print(<span class="string">"temp : &#123;:8.2f&#125;"</span>.format(temp))</span><br><span class="line"></span><br><span class="line">            time.sleep(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        spi.close()</span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="プログラム実行"><a href="#プログラム実行" class="headerlink" title="プログラム実行"></a>プログラム実行</h3><p>Pythonのプログラムを実行します。5秒間隔で気温を摂氏で表示します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python spi_tmp36.py</span><br><span class="line">adc  :      232</span><br><span class="line">volts:     0.75</span><br><span class="line">temp :    24.84</span><br><span class="line">adc  :      233</span><br><span class="line">volts:     0.75</span><br><span class="line">temp :    25.16</span><br><span class="line">adc  :      233</span><br><span class="line">volts:     0.75</span><br><span class="line">temp :    25.16</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RaspberryPi/" rel="tag"># RaspberryPi</a>
+              <a href="/tags/%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC/" rel="tag"># センサー</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/TMP36/" rel="tag"># TMP36</a>
+              <a href="/tags/MCP3008/" rel="tag"># MCP3008</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/04/10/ft232rl-esp8266-raspberry-pi/" rel="prev" title="FT232RLのUSB-TTLシリアル変換モジュールをESP826とRaspberry Piと使う">
+      <i class="fa fa-chevron-left"></i> FT232RLのUSB-TTLシリアル変換モジュールをESP826とRaspberry Piと使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/04/12/raspberrypi-1-wire-ds18b20-python/" rel="next" title="Raspberry Piで1-Wireデジタル温度センサのDS18B20をPythonから使う">
+      Raspberry Piで1-Wireデジタル温度センサのDS18B20をPythonから使う <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SPIを有効にする"><span class="nav-number">1.</span> <span class="nav-text">SPIを有効にする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ファームウェアを更新する"><span class="nav-number">1.1.</span> <span class="nav-text">ファームウェアを更新する</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ブレッドボード配線"><span class="nav-number">2.</span> <span class="nav-text">ブレッドボード配線</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pythonのインストール"><span class="nav-number">3.</span> <span class="nav-text">Pythonのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#py-spidev"><span class="nav-number">3.1.</span> <span class="nav-text">py-spidev</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルプロジェクト"><span class="nav-number">3.2.</span> <span class="nav-text">サンプルプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プログラム実行"><span class="nav-number">3.3.</span> <span class="nav-text">プログラム実行</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

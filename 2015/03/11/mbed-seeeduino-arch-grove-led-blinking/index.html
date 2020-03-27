@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Seeeduino Archと一緒に購入したGrove Blue LEDを使ってLチカしてみます。Grove Starter Kit for ArduinoやGrovePi+ Starter Kit for Raspberry Piと違い、Wikiにmbedのサンプルコードがないのでちょっと困りました。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mbedのSeeeduino ArchとGroveのLEDを使ってLチカする">
+<meta property="og:url" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Seeeduino Archと一緒に購入したGrove Blue LEDを使ってLチカしてみます。Grove Starter Kit for ArduinoやGrovePi+ Starter Kit for Raspberry Piと違い、Wikiにmbedのサンプルコードがないのでちょっと困りました。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/grobe-blue-led.jpg">
+<meta property="og:image" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/arch_v1.1_pinout.png">
+<meta property="og:image" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/crp-disabled.png">
+<meta property="og:image" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/alerts.png">
+<meta property="article:published_time" content="2015-03-11T14:55:08.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.742Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Lチカ">
+<meta property="article:tag" content="Grove">
+<meta property="article:tag" content="mbed">
+<meta property="article:tag" content="SeeeduinoArch">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/grobe-blue-led.jpg">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>mbedのSeeeduino ArchとGroveのLEDを使ってLチカする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mbedのSeeeduino ArchとGroveのLEDを使ってLチカする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 11 2015 23:55:08" itemprop="dateCreated datePublished" datetime="2015-03-11T23:55:08+09:00">Mar 11 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Seeeduino Archと一緒に購入したGrove Blue LEDを使ってLチカしてみます。Grove Starter Kit for ArduinoやGrovePi+ Starter Kit for Raspberry Piと違い、Wikiにmbedのサンプルコードがないのでちょっと困りました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Seeeduino Archと一緒に購入した<a href="http://www.seeedstudio.com/depot/Grove-Blue-LED-p-1139.html" target="_blank" rel="noopener">Grove Blue LED</a>を使ってLチカしてみます。<a href="http://www.seeedstudio.com/depot/Grove-Starter-Kit-for-Arduino-p-1855.html" target="_blank" rel="noopener">Grove Starter Kit for Arduino</a>や<a href="http://www.seeedstudio.com/depot/GrovePi-Starter-Kit-for-Raspberry-Pi-p-2240.html" target="_blank" rel="noopener">GrovePi+ Starter Kit for Raspberry Pi</a>と違い、<a href="http://www.seeedstudio.com/wiki/Grove_-_LED" target="_blank" rel="noopener">Wiki</a>にmbedのサンプルコードがないのでちょっと困りました。</p>
+<a id="more"></a>
+
+
+<h2 id="Grove-Blue-LED"><a href="#Grove-Blue-LED" class="headerlink" title="Grove Blue LED"></a>Grove Blue LED</h2><p><a href="https://www.switch-science.com/catalog/1251/" target="_blank" rel="noopener">GROVE - 青 LED (5mm)</a>をスイッチサイエンスから購入しました。4ピンケーブルは付属してました。別途購入してしまいましたが。</p>
+<p><img src="/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/grobe-blue-led.jpg" alt="grobe-blue-led.jpg"></p>
+<h2 id="ピンアウト図"><a href="#ピンアウト図" class="headerlink" title="ピンアウト図"></a>ピンアウト図</h2><p><a href="http://developer.mbed.org/users/seeed/notebook/Arch_V1_1/" target="_blank" rel="noopener">Arch　V1.1</a>のピンアウト図を見るとGroveのポートは3つあります。</p>
+<p><img src="/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/arch_v1.1_pinout.png" alt="arch_v1.1_pinout.png"></p>
+<p>マイコンボードによってピン番号が異なり、Arduinoの<code>digital port 2</code>やRaspberry Piの<code>D4</code>といった表記になっていません。Seeeduino Archの場合は以下のピン番号を使うとLチカするようです。</p>
+<ul>
+<li>UARTポート: <code>P1_14</code></li>
+<li>I2Cポート: <code>P0_04</code></li>
+</ul>
+<h2 id="mbed-Compiler"><a href="#mbed-Compiler" class="headerlink" title="mbed Compiler"></a>mbed Compiler</h2><p>オンラインの<a href="https://developer.mbed.org" target="_blank" rel="noopener">mbed Compiler</a>で<a href="/2015/03/10/mbed-seeeduino-arch-setting-up/">前回</a>コンパイルした<code>mbed_blinky</code>プロジェクトと同様に<code>Blinky LED Hello World</code>テンプレートを使います。ピン番号を<code>LED1</code>から<code>P1_14</code>に変更しただけです。</p>
+<h3 id="main-cpp"><a href="#main-cpp" class="headerlink" title="main.cpp"></a>main.cpp</h3><figure class="highlight cpp"><figcaption><span>main.cpp</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"mbed.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">DigitalOut <span class="title">myled</span><span class="params">(P1_14)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        myled = <span class="number">1</span>;</span><br><span class="line">        wait(<span class="number">0.2</span>);</span><br><span class="line">        myled = <span class="number">0</span>;</span><br><span class="line">        wait(<span class="number">0.2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ファームウェアの書き込み"><a href="#ファームウェアの書き込み" class="headerlink" title="ファームウェアの書き込み"></a>ファームウェアの書き込み</h3><p>OSXにUSBケーブルで接続して、Seeeduino Archのリセットボタンを押します。D0が青色に点灯し、OSXのデスクトップに<code>CRP DISABLD</code>ボリュームがマウントされたことを確認します。</p>
+<p><img src="/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/crp-disabled.png" alt="crp-disabled.png"></p>
+<p>mbed Compilerからコンパイルを実行するとバイナリファイルがダウンロードできます。ddコマンドを使ってSeeeduino Archに書き込みます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=~/Downloads/grove_led_LPC11U24.bin of=/Volumes/CRP\ DISABLD/firmware.bin conv=notrunc</span><br><span class="line">20+1 records <span class="keyword">in</span></span><br><span class="line">20+1 records out</span><br><span class="line">10308 bytes transferred <span class="keyword">in</span> 0.000077 secs (133854135 bytes/sec)</span><br></pre></td></tr></table></figure>
+
+<p>Seeeduino Archのリセットボタンを押すと「ディスクの不正な取り出し」の警告がでますがLチカが始まります。</p>
+<p><img src="/2015/03/11/mbed-seeeduino-arch-grove-led-blinking/alerts.png" alt="alerts.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/L%E3%83%81%E3%82%AB/" rel="tag"># Lチカ</a>
+              <a href="/tags/Grove/" rel="tag"># Grove</a>
+              <a href="/tags/mbed/" rel="tag"># mbed</a>
+              <a href="/tags/SeeeduinoArch/" rel="tag"># SeeeduinoArch</a>
+              <a href="/tags/ARM/" rel="tag"># ARM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/10/mbed-seeeduino-arch-setting-up/" rel="prev" title="mbedのSeeeduino ArchをセットアップしてLチカする">
+      <i class="fa fa-chevron-left"></i> mbedのSeeeduino ArchをセットアップしてLチカする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/12/bmp180-soldering/" rel="next" title="気圧と温度センサーのBMP180をはんだ付けする">
+      気圧と温度センサーのBMP180をはんだ付けする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Grove-Blue-LED"><span class="nav-number">1.</span> <span class="nav-text">Grove Blue LED</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ピンアウト図"><span class="nav-number">2.</span> <span class="nav-text">ピンアウト図</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mbed-Compiler"><span class="nav-number">3.</span> <span class="nav-text">mbed Compiler</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#main-cpp"><span class="nav-number">3.1.</span> <span class="nav-text">main.cpp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ファームウェアの書き込み"><span class="nav-number">3.2.</span> <span class="nav-text">ファームウェアの書き込み</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

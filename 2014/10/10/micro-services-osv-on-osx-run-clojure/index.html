@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CoreOS,SmartOS,OSvといったMicro OSの台頭はとても重要だと思います。さっそくIDCFクラウドで試してみようとOVA for VMWare ESXiをダウンロードしてデプロイしてみましたが失敗してしまいました。ovaをuntatarしてみるとovfのVirtualSystemTypeがvmx-08でです。PackerのOVAで確認したように、ESXi4にデプロイする場合はvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Micro Services with Docker or OSv - Part2: ClojureをOSv上で動かす">
+<meta property="og:url" content="http://masato.github.io/2014/10/10/micro-services-osv-on-osx-run-clojure/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="CoreOS,SmartOS,OSvといったMicro OSの台頭はとても重要だと思います。さっそくIDCFクラウドで試してみようとOVA for VMWare ESXiをダウンロードしてデプロイしてみましたが失敗してしまいました。ovaをuntatarしてみるとovfのVirtualSystemTypeがvmx-08でです。PackerのOVAで確認したように、ESXi4にデプロイする場合はvm">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-10-10T11:32:42.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.765Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="MicroServices">
+<meta property="article:tag" content="Clojure">
+<meta property="article:tag" content="OSX">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Puppies-vs-Cattle">
+<meta property="article:tag" content="MicroOS">
+<meta property="article:tag" content="OSv">
+<meta property="article:tag" content="SmartOS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/10/10/micro-services-osv-on-osx-run-clojure/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Micro Services with Docker or OSv - Part2: ClojureをOSv上で動かす | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/10/10/micro-services-osv-on-osx-run-clojure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Micro Services with Docker or OSv - Part2: ClojureをOSv上で動かす
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 10 2014 20:32:42" itemprop="dateCreated datePublished" datetime="2014-10-10T20:32:42+09:00">Oct 10 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">CoreOS,SmartOS,OSvといったMicro OSの台頭はとても重要だと思います。さっそくIDCFクラウドで試してみようとOVA for VMWare ESXiをダウンロードしてデプロイしてみましたが失敗してしまいました。ovaをuntatarしてみるとovfのVirtualSystemTypeがvmx-08でです。PackerのOVAで確認したように、ESXi4にデプロイする場合はvmx-07にする必要があります。他にも嵌まりそうなので、とりあえずローカルのOSXでOSvを動かしてみようと思います。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CoreOS,SmartOS,OSvといった<code>Micro OS</code>の台頭はとても重要だと思います。さっそくIDCFクラウドで試してみようと<a href="http://downloads.osv.io.s3.amazonaws.com/cloudius/osv/osv-v0.13.esx.ova" target="_blank" rel="noopener">OVA for VMWare ESXi</a>をダウンロードしてデプロイしてみましたが失敗してしまいました。ovaをuntatarしてみるとovfのVirtualSystemTypeがvmx-08です。<a href="http://masato.github.io/2014/06/22/packer-windows-idcf-cloud/">PackerのOVA</a>で確認したように、ESXi4にデプロイする場合はvmx-07にする必要があります。他にも嵌まりそうなので、とりあえずローカルのOSXでOSvを動かしてみようと思います。</p>
+<a id="more"></a>
+
+<h3 id="Micro-ServicesとMicro-OSについて"><a href="#Micro-ServicesとMicro-OSについて" class="headerlink" title="Micro ServicesとMicro OSについて"></a>Micro ServicesとMicro OSについて</h3><p>とても興味深いポストをいくつか読みました。PistonのJosshuaさんのPuppies-vs-Cattleのアナロジーは有名で、disposableなインフラを構築する上で常に意識しておく必要のある考え方です。レガシーなアプリはpuppyですが、サーバーに名前をつけていけません。</p>
+<ul>
+<li><a href="http://pistoncloud.com/2013/10/kiss-your-bash-prompt-goodbye/" target="_blank" rel="noopener">Kiss Your Bash Prompt Goodbye</a></li>
+<li><a href="http://blog.hendrikvolkmer.de/2013/10/11/the-missing-piece-operating-systems-for-web-scale-cloud-apps/" target="_blank" rel="noopener">The missing piece: Operating Systems for web scale Cloud Apps</a></li>
+<li><a href="https://www.linkedin.com/today/post/article/20140819064341-12018337-do-we-need-a-cloud-orchestrator" target="_blank" rel="noopener">Do we need a cloud orchestrator?</a></li>
+</ul>
+<h3 id="Homebrewとhomebrew-caskのインストール"><a href="#Homebrewとhomebrew-caskのインストール" class="headerlink" title="Homebrewとhomebrew-caskのインストール"></a>Homebrewとhomebrew-caskのインストール</h3><p><a href="http://osv.io/run-locally/" target="_blank" rel="noopener">Run Locally</a>を読みながらOSXでOSvを動かす環境を作っていきます。</p>
+<p>古いHomebrewが入っていたので、削除して再インストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/Library &amp;&amp; git stash &amp;&amp; git clean -d -f</span><br><span class="line">$ ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line">$ brew --version</span><br><span class="line">0.9.5</span><br></pre></td></tr></table></figure>
+
+<p><code>brew doctor</code>を実行するとWarningがたくさんでます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew doctor</span><br><span class="line">Warning: You have uncommitted modifications to Homebrew</span><br><span class="line">If this a surprise to you, <span class="keyword">then</span> you should stash these modifications.</span><br><span class="line">Stashing returns Homebrew to a pristine state but can be undone</span><br><span class="line">should you later need to <span class="keyword">do</span> so <span class="keyword">for</span> some reason.</span><br><span class="line">    <span class="built_in">cd</span> /usr/<span class="built_in">local</span>/Library &amp;&amp; git stash &amp;&amp; git clean -d -f</span><br><span class="line">Warning: Your Xcode (5.1.1) is outdated</span><br><span class="line">Please update to Xcode 6.0.1.</span><br><span class="line">Xcode can be updated from the App Store.</span><br></pre></td></tr></table></figure>
+
+<p>Xcodeのアップデートなど、Warningの修正をしていきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew prune</span><br><span class="line">Pruned 0 dead formulae</span><br><span class="line">Pruned 54 symbolic links and 14 directories from /usr/<span class="built_in">local</span></span><br><span class="line">$ sudo xcodebuild -license</span><br><span class="line">$ brew link git</span><br><span class="line">Linking /usr/<span class="built_in">local</span>/Cellar/git/2.1.2... 207 symlinks created</span><br></pre></td></tr></table></figure>
+
+<p>再度doctorを実行すると、Warningが消えました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew doctor</span><br><span class="line">Your system is ready to brew.</span><br></pre></td></tr></table></figure>
+
+<p>homebrew-caskをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew install caskroom/cask/brew-cask</span><br></pre></td></tr></table></figure>
+
+<h3 id="VirtualBoxインストール"><a href="#VirtualBoxインストール" class="headerlink" title="VirtualBoxインストール"></a>VirtualBoxインストール</h3><p>homebrew-caskを使ってVirtualBoxをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew cask install virtualbox</span><br><span class="line">$ VBoxManage --version</span><br><span class="line">4.3.16r95972</span><br></pre></td></tr></table></figure>
+
+<p>QEMUはbrewでインストールします。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ brew install qemu</span><br><span class="line">$ qemu-system-x86_64 --version</span><br><span class="line">QEMU emulator version <span class="number">2.1</span><span class="number">.2</span>, Copyright (c) <span class="number">2003</span><span class="number">-2008</span> Fabrice Bellard</span><br></pre></td></tr></table></figure>
+
+<h3 id="Capstan"><a href="#Capstan" class="headerlink" title="Capstan"></a>Capstan</h3><p><a href="http://osv.io/capstan/" target="_blank" rel="noopener">Capstan</a>はDockerfileに似た、OSvイメージのビルドツールです。<br>capstanコマンドは<code>$HOME/bin</code>にインストールされるのでPATHを通します。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ echo $PATH</span><br><span class="line"><span class="regexp">/Users/</span>mshimizu<span class="regexp">/google-cloud-sdk/</span><span class="string">bin:</span><span class="regexp">/usr/</span><span class="string">bin:</span><span class="regexp">/bin:/</span>usr<span class="regexp">/sbin:/</span><span class="string">sbin:</span><span class="regexp">/usr/</span>local/bin</span><br></pre></td></tr></table></figure>
+
+<p><code>~/.bash_profile</code>にPATHの追記をします。</p>
+<figure class="highlight bash"><figcaption><span>~/.bash_profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>Capstanを流行のワンライナーでインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bash_profile</span><br><span class="line">$ curl https://raw.githubusercontent.com/cloudius-systems/capstan/master/scripts/download | bash</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100   563  100   563    0     0    848      0 --:--:-- --:--:-- --:--:--   847</span><br><span class="line">Downloading Capstan binary: http://osv.capstan.s3.amazonaws.com/capstan/v0.1.2/darwin_amd64/capstan</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">$ <span class="built_in">which</span> capstan</span><br><span class="line">/Users/mshimizu/bin/capstan</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ClojureをOSvで動かす準備"><a href="#ClojureをOSvで動かす準備" class="headerlink" title="ClojureをOSvで動かす準備"></a>ClojureをOSvで動かす準備</h3><p><a href="http://osv.io/blog/blog/2014/07/27/capstan-lein-template/" target="_blank" rel="noopener">Running Clojure on OSv: Easier With a New Capstan Template</a>を参考にして、ClojureをOSvで動かしてみます。</p>
+<p>Javaをインストールします。homebrew-caskでインストールするとOracle Java 8がインストールされます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew cask search java</span><br><span class="line">==&gt; Exact match</span><br><span class="line">java</span><br><span class="line">==&gt; Partial matches</span><br><span class="line">eclipse-java		 javafx-scene-builder</span><br><span class="line">$ java -version</span><br><span class="line">java version <span class="string">"1.8.0_20"</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_20-b26)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.20-b23, mixed mode)</span><br></pre></td></tr></table></figure>
+
+<p>brewでLeiningenをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ brew install leiningen</span><br><span class="line">$ lein --version</span><br><span class="line">Leiningen 2.5.0 on Java 1.8.0_20 Java HotSpot(TM) 64-Bit Server VM</span><br></pre></td></tr></table></figure>
+
+<h3 id="Leiningenでアプリ作成"><a href="#Leiningenでアプリ作成" class="headerlink" title="Leiningenでアプリ作成"></a>Leiningenでアプリ作成</h3><p>leinのcapstanテンプレートを使いサンプルアプリを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span></span><br><span class="line">$ lein new capstan new-app</span><br><span class="line">Retrieving capstan/lein-template/0.1.0/lein-template-0.1.0.pom from clojars</span><br><span class="line">Retrieving capstan/lein-template/0.1.0/lein-template-0.1.0.jar from clojars</span><br><span class="line">Generating a fresh Capstan project.</span><br><span class="line">$ <span class="built_in">cd</span> new-app</span><br></pre></td></tr></table></figure>
+
+<p>作成されたClojureアプリです。</p>
+<figure class="highlight clj"><figcaption><span>~/new~app/src/new_app/core.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> new-app.core</span><br><span class="line">  (<span class="symbol">:gen-class</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> -main [&amp; args]</span><br><span class="line">  (<span class="name">println</span> <span class="string">"Hello from new-app: clojure on OSv project"</span>))</span><br></pre></td></tr></table></figure>
+
+<h3 id="Capstanでイメージのビルドと実行"><a href="#Capstanでイメージのビルドと実行" class="headerlink" title="Capstanでイメージのビルドと実行"></a>Capstanでイメージのビルドと実行</h3><p><code>capstan run</code>コマンドを使うと、ClojureアプリのOSvイメージをビルドしたあと、VirtualBoxでインスタンスが実行されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ capstan run</span><br><span class="line">Building new-app...</span><br><span class="line">Downloading cloudius/osv-openjdk/index.yaml...</span><br><span class="line">149 B / 149 B [==========================================================================] 100.00 %</span><br><span class="line">Downloading cloudius/osv-openjdk/osv-openjdk.vbox.gz...</span><br><span class="line">70.85 MB / 70.85 MB [====================================================================] 100.00 %</span><br><span class="line">Created instance: new-app</span><br><span class="line">OSv v0.13</span><br><span class="line">eth0: 10.0.2.15</span><br><span class="line">Hello from new-app: clojure on OSv project</span><br></pre></td></tr></table></figure>
+
+<h3 id="capstanコマンド例"><a href="#capstanコマンド例" class="headerlink" title="capstanコマンド例"></a>capstanコマンド例</h3><p>イメージの一覧です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ capstan images</span><br><span class="line">Name                           Description                                        Version                   Created</span><br><span class="line">cloudius/osv-openjdk           OpenJDK 7/OSv base image <span class="keyword">for</span> developers            v0.13                     2014-10-02T15:24:37</span><br><span class="line">new-app</span><br></pre></td></tr></table></figure>
+
+<p>インスタンスの一覧です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ capstan instances</span><br><span class="line">Name                                Platform   Status     Image</span><br><span class="line">new-app                             vbox       Stopped</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/MicroServices/" rel="tag"># MicroServices</a>
+              <a href="/tags/Clojure/" rel="tag"># Clojure</a>
+              <a href="/tags/OSX/" rel="tag"># OSX</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Puppies-vs-Cattle/" rel="tag"># Puppies-vs-Cattle</a>
+              <a href="/tags/MicroOS/" rel="tag"># MicroOS</a>
+              <a href="/tags/OSv/" rel="tag"># OSv</a>
+              <a href="/tags/SmartOS/" rel="tag"># SmartOS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/10/09/celery-ironmq-mackerel-in-docker-container-with-newrelic/" rel="prev" title="IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール">
+      <i class="fa fa-chevron-left"></i> IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/10/11/spark-core-from-maker-shed/" rel="next" title="Spark Core an IoT device - Part1: Maker Shedで購入">
+      Spark Core an IoT device - Part1: Maker Shedで購入 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Micro-ServicesとMicro-OSについて"><span class="nav-number">1.</span> <span class="nav-text">Micro ServicesとMicro OSについて</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Homebrewとhomebrew-caskのインストール"><span class="nav-number">2.</span> <span class="nav-text">Homebrewとhomebrew-caskのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualBoxインストール"><span class="nav-number">3.</span> <span class="nav-text">VirtualBoxインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Capstan"><span class="nav-number">4.</span> <span class="nav-text">Capstan</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ClojureをOSvで動かす準備"><span class="nav-number">5.</span> <span class="nav-text">ClojureをOSvで動かす準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leiningenでアプリ作成"><span class="nav-number">6.</span> <span class="nav-text">Leiningenでアプリ作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Capstanでイメージのビルドと実行"><span class="nav-number">7.</span> <span class="nav-text">Capstanでイメージのビルドと実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#capstanコマンド例"><span class="nav-number">8.</span> <span class="nav-text">capstanコマンド例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

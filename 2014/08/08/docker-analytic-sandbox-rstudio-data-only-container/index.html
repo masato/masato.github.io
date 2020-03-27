@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RStudio Serverをdisposableに本番環境へデプロイする準備として、ホームディレクトリをData-onlyコンテナへ分離します。今回作成するData-onlyコンテナにはフットプリントの小さいbusyboxを使います。RStudio Server学習者に2コンテナずつセットで提供します。Data-onlyコンテナはアーカイブしてIDCFオブジェクトストレージにバックアップする予定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerでデータ分析環境 - Part5: RStudio ServerとData-onlyコンテナ">
+<meta property="og:url" content="http://masato.github.io/2014/08/08/docker-analytic-sandbox-rstudio-data-only-container/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="RStudio Serverをdisposableに本番環境へデプロイする準備として、ホームディレクトリをData-onlyコンテナへ分離します。今回作成するData-onlyコンテナにはフットプリントの小さいbusyboxを使います。RStudio Server学習者に2コンテナずつセットで提供します。Data-onlyコンテナはアーカイブしてIDCFオブジェクトストレージにバックアップする予定">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-08-07T15:27:23.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.584Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="docker-registry">
+<meta property="article:tag" content="AnalyticSandbox">
+<meta property="article:tag" content="RStudioServer">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DataVolumeContainer">
+<meta property="article:tag" content="R">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/08/08/docker-analytic-sandbox-rstudio-data-only-container/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dockerでデータ分析環境 - Part5: RStudio ServerとData-onlyコンテナ | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/08/08/docker-analytic-sandbox-rstudio-data-only-container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerでデータ分析環境 - Part5: RStudio ServerとData-onlyコンテナ
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 8 2014 00:27:23" itemprop="dateCreated datePublished" datetime="2014-08-08T00:27:23+09:00">Aug 8 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">RStudio Serverをdisposableに本番環境へデプロイする準備として、ホームディレクトリをData-onlyコンテナへ分離します。今回作成するData-onlyコンテナにはフットプリントの小さいbusyboxを使います。RStudio Server学習者に2コンテナずつセットで提供します。Data-onlyコンテナはアーカイブしてIDCFオブジェクトストレージにバックアップする予定です。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/07/09/docker-analytic-sandbox-rstudio-server/">RStudio Server</a>をdisposableに本番環境へデプロイする準備として、ホームディレクトリをData-onlyコンテナへ分離します。</p>
+<p>今回作成するData-onlyコンテナにはフットプリントの小さいbusyboxを使います。<code>RStudio Server</code>学習者へRStudioとデータの2コンテナをセットで提供します。</p>
+<p>Data-onlyコンテナはアーカイブしてIDCFオブジェクトストレージにバックアップする予定です。</p>
+<a id="more"></a>
+
+<h3 id="rstudioユーザーのUIDとGID"><a href="#rstudioユーザーのUIDとGID" class="headerlink" title="rstudioユーザーのUIDとGID"></a>rstudioユーザーのUIDとGID</h3><p><code>RStudio Server</code>コンテナに作成したユーザーのUIDとGIDを確認します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/passwd</span></figcaption><table><tr><td class="code"><pre><span class="line">rstudio:x:1000:1001::/home/rstudio:</span><br></pre></td></tr></table></figure>
+
+<h3 id="ドットファイルのコピー"><a href="#ドットファイルのコピー" class="headerlink" title="ドットファイルのコピー"></a>ドットファイルのコピー</h3><p>まずプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/docker_apps/rstudio_data</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br><span class="line">$ mkdir dotfiles</span><br></pre></td></tr></table></figure>
+
+<p>Data-onlyにrstudioユーザーのホームディレクトリを作成するので、基本的なドットファイルを<code>Rstudio Server</code>コンテナからコピーします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker cp 6a373a56e271:/etc/skel/.bash_logout dotfiles</span><br><span class="line">$ docker cp 6a373a56e271:/etc/skel/.bashrc dotfiles</span><br><span class="line">$ docker cp 6a373a56e271:/etc/skel/.profile dotfiles</span><br></pre></td></tr></table></figure>
+
+<h3 id="Data-onlyコンテナの作成"><a href="#Data-onlyコンテナの作成" class="headerlink" title="Data-onlyコンテナの作成"></a>Data-onlyコンテナの作成</h3><p>busyboxをbaseimageに使い、Data-onlyコンテナのDockerfileを作成します。<br>VOLUMEディレクトリは<code>RStudio Server</code>の<code>/home/rstudio/</code>ディレクトリをマウントするので、<br>UIDとGIDを、上記で確認した1000:1001に合わせます。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/rstudio_data/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM busybox</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">RUN mkdir /tmp/dotfiles</span><br><span class="line">ADD dotfiles /tmp/dotfiles</span><br><span class="line">RUN mkdir /home/rstudio \</span><br><span class="line">  &amp;&amp; cp /tmp/dotfiles/.* /home/rstudio \</span><br><span class="line">  &amp;&amp; chown -R 1000:1001 /home/rstudio</span><br><span class="line">VOLUME /home/rstudio</span><br><span class="line">CMD /bin/sh</span><br></pre></td></tr></table></figure>
+
+<p>イメージをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t masato/rstudio-data</span><br></pre></td></tr></table></figure>
+
+<p>Data-onlyコンテナを起動します。</p>
+<figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line">$ docker run -i -t -d --<span class="keyword">name</span> rstudio-<span class="keyword">data</span> masato/rstudio-<span class="keyword">data</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ローカルのdocker-registryにpush"><a href="#ローカルのdocker-registryにpush" class="headerlink" title="ローカルのdocker-registryにpush"></a>ローカルのdocker-registryにpush</h3><p>あとで本番環境にデプロイするため、ローカルのdocker-registryにpushします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl localhost:5000</span><br><span class="line"><span class="string">"docker-registry server (dev) (v0.7.3)"</span></span><br><span class="line">$ docker tag masato/rstudio-data localhost:5000/rstudio-data</span><br><span class="line">$ docker push localhost:5000/rstudio-data</span><br><span class="line">...</span><br><span class="line">Pushing tag <span class="keyword">for</span> rev [710a7212b5b7] on &#123;http://localhost:5000/v1/repositories/rstudio-data/tags/latest&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ボリュームをマウントしてRStudio-Serverコンテナを起動"><a href="#ボリュームをマウントしてRStudio-Serverコンテナを起動" class="headerlink" title="ボリュームをマウントしてRStudio Serverコンテナを起動"></a>ボリュームをマウントしてRStudio Serverコンテナを起動</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -t --volumes-from rstudio-data masato/rstudio-server /sbin/my_init bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="ダミーファイルの作成"><a href="#ダミーファイルの作成" class="headerlink" title="ダミーファイルの作成"></a>ダミーファイルの作成</h3><p><code>RStudio Server</code>のrstudioユーザーのホームディレクトリにダミーファイルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sudo - rstudio</span></span><br><span class="line">$ <span class="built_in">echo</span> hello &gt; hello.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="Data-onlyコンテナのvfsを確認"><a href="#Data-onlyコンテナのvfsを確認" class="headerlink" title="Data-onlyコンテナのvfsを確認"></a>Data-onlyコンテナのvfsを確認</h3><p>Data-onlyコンテナのvfsのディレクトリの場所をinspectします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 11a84ee4e500 | grep <span class="string">"vfs/dir"</span></span><br><span class="line">        <span class="string">"/home/rstudio"</span>: <span class="string">"/var/lib/docker/vfs/dir/1fc752b41a7ef3d749152581e9482bedba9085817afe82da54accc9857668767"</span></span><br></pre></td></tr></table></figure>
+
+<p>Dockerホスト上から、Data-onlyコンテナに作成されたファイルを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ls -altr /var/lib/docker/vfs/dir/1fc752b41a7ef3d749152581e9482bedba9085817afe82da54accc9857668767</span><br><span class="line">合計 80</span><br><span class="line">-rw-r--r--   1 matedev admin   675  8月  7 22:56 .profile</span><br><span class="line">-rw-r--r--   1 matedev admin  3637  8月  7 22:56 .bashrc</span><br><span class="line">-rw-r--r--   1 matedev admin   220  8月  7 22:56 .bash_logout</span><br><span class="line">drwx------ 455 root    root  57344  8月  7 23:05 ..</span><br><span class="line">-rw-rw-r--   1 matedev admin     6  8月  7 23:06 hello.txt</span><br><span class="line">drwxr-xr-x   2 matedev admin  4096  8月  7 23:06 .</span><br></pre></td></tr></table></figure>
+
+<h3 id="Data-onlyコンテナにアタッチして確認"><a href="#Data-onlyコンテナにアタッチして確認" class="headerlink" title="Data-onlyコンテナにアタッチして確認"></a>Data-onlyコンテナにアタッチして確認</h3><p>Data-onlyコンテナに直接アタッチして、作成したファイルを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker start 11a84ee4e500</span><br><span class="line">$ docker attach 11a84ee4e500</span><br><span class="line">/ <span class="comment"># cd /home/rstudio/</span></span><br><span class="line">/home/rstudio <span class="comment"># ls</span></span><br><span class="line">R          hello.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>Data-onlyボリュームのバックアップはServerFaultの<a href="http://serverfault.com/questions/576490/docker-volume-backup-and-restore" target="_blank" rel="noopener">Docker volume backup and restore</a>を参考にして試してみます。</p>
+<p><a href="https://github.com/discordianfish/docker-backup" target="_blank" rel="noopener">docker-backup</a>や、S3にバックアップする<a href="https://github.com/discordianfish/docker-lloyd" target="_blank" rel="noopener">docker-lloyd</a>といったライブラリが紹介されています。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker-registry/" rel="tag"># docker-registry</a>
+              <a href="/tags/AnalyticSandbox/" rel="tag"># AnalyticSandbox</a>
+              <a href="/tags/RStudioServer/" rel="tag"># RStudioServer</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DataVolumeContainer/" rel="tag"># DataVolumeContainer</a>
+              <a href="/tags/R/" rel="tag"># R</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/08/07/docker-reverse-proxy-xipio-hipache-sinatra/" rel="prev" title="DockerのHTTP Routing - Part10: xip.io と Hipache で動的リバースプロキシ">
+      <i class="fa fa-chevron-left"></i> DockerのHTTP Routing - Part10: xip.io と Hipache で動的リバースプロキシ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/08/09/docker-analytic-sandbox-rstudio-openresty-deploy/" rel="next" title="Dockerでデータ分析環境 - Part6: Ubuntu14.04のDockerにRStudio ServerとOpenRestyをデプロイ">
+      Dockerでデータ分析環境 - Part6: Ubuntu14.04のDockerにRStudio ServerとOpenRestyをデプロイ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rstudioユーザーのUIDとGID"><span class="nav-number">1.</span> <span class="nav-text">rstudioユーザーのUIDとGID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ドットファイルのコピー"><span class="nav-number">2.</span> <span class="nav-text">ドットファイルのコピー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-onlyコンテナの作成"><span class="nav-number">3.</span> <span class="nav-text">Data-onlyコンテナの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ローカルのdocker-registryにpush"><span class="nav-number">4.</span> <span class="nav-text">ローカルのdocker-registryにpush</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ボリュームをマウントしてRStudio-Serverコンテナを起動"><span class="nav-number">5.</span> <span class="nav-text">ボリュームをマウントしてRStudio Serverコンテナを起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ダミーファイルの作成"><span class="nav-number">6.</span> <span class="nav-text">ダミーファイルの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-onlyコンテナのvfsを確認"><span class="nav-number">7.</span> <span class="nav-text">Data-onlyコンテナのvfsを確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-onlyコンテナにアタッチして確認"><span class="nav-number">8.</span> <span class="nav-text">Data-onlyコンテナにアタッチして確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">9.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

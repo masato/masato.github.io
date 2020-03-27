@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前回に続いて、IDCFクラウド上にLinuxMint17 MATEのリモートデスクトップ環境を構築します。いつも日本語入力と日本語キーボードの設定で嵌まるのですが、LinuxMint16のときと同じ手順で大丈夫でした。xrdpを使う前は、FreeNXとNoMachineクライアントで構築していたのですが、NoMachine4になってライセンスや設定方法がよくわからなくなりました。もともと日本語化が">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part2: インストール編">
+<meta property="og:url" content="http://masato.github.io/2014/06/02/idcf-linuxmint17-part2/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="前回に続いて、IDCFクラウド上にLinuxMint17 MATEのリモートデスクトップ環境を構築します。いつも日本語入力と日本語キーボードの設定で嵌まるのですが、LinuxMint16のときと同じ手順で大丈夫でした。xrdpを使う前は、FreeNXとNoMachineクライアントで構築していたのですが、NoMachine4になってライセンスや設定方法がよくわからなくなりました。もともと日本語化が">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-02T14:00:29.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.696Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="LinuxMint17">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="MATE">
+<meta property="article:tag" content="xrdp">
+<meta property="article:tag" content="DartEditor">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/02/idcf-linuxmint17-part2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part2: インストール編 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/02/idcf-linuxmint17-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part2: インストール編
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 2 2014 23:00:29" itemprop="dateCreated datePublished" datetime="2014-06-02T23:00:29+09:00">Jun 2 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">前回に続いて、IDCFクラウド上にLinuxMint17 MATEのリモートデスクトップ環境を構築します。いつも日本語入力と日本語キーボードの設定で嵌まるのですが、LinuxMint16のときと同じ手順で大丈夫でした。xrdpを使う前は、FreeNXとNoMachineクライアントで構築していたのですが、NoMachine4になってライセンスや設定方法がよくわからなくなりました。もともと日本語化が面倒だったので、xrdpが今のところ一番便利に使えます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-12-31</code>: <a href="/2014/12/31/idcf-linuxmint17-xrdp/">IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする</a></li>
+<li><code>Update 2014-08-23</code>: <a href="/2014/08/23/linuxmint17-dockerdevenv/">LinuxMint17 に Docker開発環境をインストールする</a></li>
+</ul>
+<p><a href="/2014/06/01/idcf-linuxmint17-part1/">Part1</a>に続いて、IDCFクラウド上にLinuxMint17 MATEのリモートデスクトップ環境を構築します。<br>いつも日本語入力と日本語キーボードの設定で嵌まるのですが、LinuxMint16のときと同じ手順で大丈夫でした。</p>
+<p>xrdpを使う前は、FreeNXとNoMachineクライアントで構築していたのですが、NoMachine4になってライセンスや設定方法がよくわからなくなりました。もともと日本語化が面倒だったので、xrdpが今のところ一番便利に使えます。</p>
+<a id="more"></a>
+
+<h3 id="インストールの準備"><a href="#インストールの準備" class="headerlink" title="インストールの準備"></a>インストールの準備</h3><p>最初にインストール用のISOを<a href="http://linuxmint.com/download.php" target="_blank" rel="noopener">ダウンロード</a>します。<br><code>idcf-compute-api</code>を使う場合はregisterIsoコマンドを使います。IDCFクラウドのポータル画面からもISOを登録できます。</p>
+<p>デスクトップ環境には<a href="http://cinnamon.linuxmint.com/" target="_blank" rel="noopener">Cinammon</a>用のISOも選べますが、<a href="http://mate-desktop.org/" target="_blank" rel="noopener">MATE</a>の方が軽くて好きなので、MATEのISOをダウンロードします。</p>
+<ul>
+<li>urlは、日本に近い台湾を選びました。</li>
+<li>ostypeidは、100の「Other Ubuntu (64-bit)」にしました。</li>
+<li>bootableは、trueにしてISOから起動できるようにします。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api registerIso \</span><br><span class="line"> --displaytext=linuxmint-17-mate-dvd-64bit.iso \</span><br><span class="line"> --name=linuxmint-17-mate-dvd-64bit.iso \</span><br><span class="line"> --url=http://ftp.stust.edu.tw/pub/Linux/LinuxMint/isos//stable/17/linuxmint-17-mate-dvd-64bit.iso \</span><br><span class="line"> --zoneid=1 \</span><br><span class="line"> --ostypeid=100 \</span><br><span class="line"> --bootable=<span class="literal">true</span> \</span><br><span class="line"> --ispublic=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="インスタンス作成"><a href="#インスタンス作成" class="headerlink" title="インスタンス作成"></a>インスタンス作成</h3><p>IDCFクラウドのポータル画面にログインして、登録したISOからインスタンスを作成します。<br>インスタンスが作成できたら、Webコンソールを起動してインストール作業を行います。</p>
+<h3 id="LinuxMintのインストール"><a href="#LinuxMintのインストール" class="headerlink" title="LinuxMintのインストール"></a>LinuxMintのインストール</h3><p>ライブDVDのLinuxMintが起動しているので、デスクトップ上の「Install Linux Mint」 のアイコンをダブルクリックします。<br>Webコンソールは動きが遅いので、あわてずゆっくり作業します。また、GUIのウィンドウは中央に開くので、Webコンソール用のブラウザ画面を大きくして操作します。</p>
+<p>インスト－ルは特に難しくないのですが、以下のようにしています。</p>
+<ul>
+<li>言語に日本語を選択</li>
+<li>キーボードレイアウトは日本語、日本語</li>
+<li>ユーザー作成は、「自動的にログインする」にチェック</li>
+</ul>
+<p><code>please remove installation media and close the tray (if any) then press ENTER:</code>のメッセージが表示されたら、ポータル画面からインスタンスを選択してISOをデタッチします。</p>
+<p>Webコンソールに戻り、ENTERを入力すると再起動するので、しばらく待ってからOSインストールで作成したユーザーでログインします。</p>
+<p>以降の作業はSSHから行いたいので、SSH環境をインストールします。xrdpから使うのでパスワード認証を有効にします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure>
+
+<p>SSHクライアントから接続の確認ができたら、Webコンソールは閉じても大丈夫です。</p>
+<h3 id="vimをインスト－ル"><a href="#vimをインスト－ル" class="headerlink" title="vimをインスト－ル"></a>vimをインスト－ル</h3><p>Ubuntuのデフォルトのnanoは苦手なので、vimをインストールします。<br>alternativesでは、<code>/usr/bin/vim.basic</code>を選択します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install vim</span><br><span class="line">$ sudo update-alternatives --config editor</span><br></pre></td></tr></table></figure>
+
+<h3 id="xrdpのセットアップ"><a href="#xrdpのセットアップ" class="headerlink" title="xrdpのセットアップ"></a>xrdpのセットアップ</h3><p>最初にapt-getのミラー設定をして、updateします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sed -i~ -e <span class="string">'s;http://archive.ubuntu.com/ubuntu;http://ftp.jaist.ac.jp/pub/Linux/ubuntu;'</span> /etc/apt/sources.list.d/official-package-repositories.list</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<p>xrdpをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install xrdp vnc4server</span><br></pre></td></tr></table></figure>
+
+<p>デスクトップ環境用に、認証ファイルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ touch ~/.Xauthority</span><br></pre></td></tr></table></figure>
+
+<p>ここで一度rebootしておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<h3 id="リモートデスクトップ接続"><a href="#リモートデスクトップ接続" class="headerlink" title="リモートデスクトップ接続"></a>リモートデスクトップ接続</h3><p>今回はWindowsから接続します。リモートデスクトップのオプションを開いて、画面の大きさを適当に調整します。<br>接続すると、認証後にデスクトップが表示されます。<br>LinuxMint17ではWindowsもOSXも、リモートデスクトップでホイールマウスも最初から使えるので便利です。</p>
+<h3 id="OSXの場合Microsoft-Remote-Desktop-Connection-Client-for-Macを使う"><a href="#OSXの場合Microsoft-Remote-Desktop-Connection-Client-for-Macを使う" class="headerlink" title="OSXの場合Microsoft Remote Desktop Connection Client for Macを使う"></a>OSXの場合Microsoft Remote Desktop Connection Client for Macを使う</h3><p>OSXで使えるRDPクライアントは2種類ありますが、<a href="http://www.microsoft.com/ja-jp/download/details.aspx?id=18140" target="_blank" rel="noopener">Microsoft Remote Desktop Connection Client for Mac 2.1</a>をダウンロードしてインストールします。インストーラーを右クリックして開くを実行します。App Storeで配布されている<a href="https://itunes.apple.com/jp/app/microsoft-remote-desktop/id715768417" target="_blank" rel="noopener">Microsoft Remote Desktop</a>を使うと、日本語キーボードが正しく認識されず、\と_が入力できないので使い物になりません。</p>
+<h3 id="日本語環境の構築"><a href="#日本語環境の構築" class="headerlink" title="日本語環境の構築"></a>日本語環境の構築</h3><p>ここからがいつも面倒なところです。<br>最初にlocaleを確認します。インストール後にはlocaleはja_JP.UTF-8になっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ locale</span><br><span class="line">LANG=ja_JP.UTF-8</span><br><span class="line">LANGUAGE=</span><br><span class="line">LC_CTYPE=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_NUMERIC=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_TIME=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_COLLATE=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_MONETARY=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_MESSAGES=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_PAPER=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_NAME=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_ADDRESS=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_TELEPHONE=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_MEASUREMENT=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_IDENTIFICATION=<span class="string">"ja_JP.UTF-8"</span></span><br><span class="line">LC_ALL=</span><br></pre></td></tr></table></figure>
+
+<h3 id="キーボードから「-」と「-」を入力できるようにする"><a href="#キーボードから「-」と「-」を入力できるようにする" class="headerlink" title="キーボードから「\」と「_」を入力できるようにする"></a>キーボードから「\」と「_」を入力できるようにする</h3><p>プログラマなのでバックスラッシュとアンダースコアが入力できないと、仕事になりません。</p>
+<p>いろいろ試したのですが、キーボードモデルはデフォルトのpc105のまま使い、<br><a href="https://gist.github.com/devlights/6337527" target="_blank" rel="noopener">Ubuntu 12.04でxrdpで日本語キーボードを認識させる</a>を参考にしながら、xrdpのキーマップを変更します。<br>リモートデスクトップ接続の場合、X.orgの自動デバイス認識がどうしてもうまくできませんでした。</p>
+<p>XKBMODELはpc105です。</p>
+<figure class="highlight bash"><figcaption><span>/etc/default/keyboard</span></figcaption><table><tr><td class="code"><pre><span class="line">XKBMODEL=<span class="string">"pc105"</span></span><br><span class="line">XKBLAYOUT=<span class="string">"jp"</span></span><br><span class="line">XKBVARIANT=<span class="string">""</span></span><br><span class="line">XKBOPTIONS=<span class="string">""</span></span><br></pre></td></tr></table></figure>
+
+<p>キーマップファイルをダウンロードして使えるようにします。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>cd /etc/xrdp</span><br><span class="line"><span class="variable">$ </span>sudo wget <span class="symbol">http:</span>/<span class="regexp">/www.mail-archive.com/xrdp</span>-devel<span class="variable">@lists</span>.sourceforge.net/msg00263/km-e0010411.ini</span><br><span class="line"><span class="variable">$ </span>sudo mv km-e0010411.ini km-0411.ini </span><br><span class="line"><span class="variable">$ </span>sudo chmod <span class="number">644</span> km-0411.ini</span><br><span class="line"><span class="variable">$ </span>sudo ln -s km-0411.ini km-e0010411.ini</span><br><span class="line"><span class="variable">$ </span>sudo ln -s km-0411.ini km-e0200411.ini</span><br><span class="line"><span class="variable">$ </span>sudo ln -s km-0411.ini km-e0210411.ini</span><br></pre></td></tr></table></figure>
+
+<p>xrdpをrestartします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo service xrdp restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="入力メソッドにiBusを使う"><a href="#入力メソッドにiBusを使う" class="headerlink" title="入力メソッドにiBusを使う"></a>入力メソッドにiBusを使う</h3><p>LinuxMint16のときfcitxだとレイアウトが読み込めなかったので、今回もiBusと、エンジンにはGoogleのMozcを使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install ibus-mozc</span><br><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>reboot後に、デスクトップ右下の入力モードで、「あ]が表示される、日本語-Mozcを選択します。<br>インプットメソッドの切り替えは、デフォルトで<code>Ctrl + Space</code>が割り当てられていますが、<br><code>Dart Editor</code>を使う場合、このキーボードショートカットはコード補完と重なってしまうため、は削除しておきます。</p>
+<p>OSXの場合「英数」キーが、Windowsの場合は「半角/全角」キーが切り替えのトグルになっているようです。</p>
+<h3 id="ディレクトリ名を英語にする"><a href="#ディレクトリ名を英語にする" class="headerlink" title="ディレクトリ名を英語にする"></a>ディレクトリ名を英語にする</h3><p>日本語環境にすると、「デスクトップ」や「ダウンロード」などディレクトリ名も日本語になってしますので、英語表記に直します。</p>
+<p>デスクトップにログインして、Terminalを開きコマンドを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ LANG=C xdg-user-dirs-gtk-update</span><br><span class="line">Moving DESKTOP directory from デスクトップ to Desktop</span><br><span class="line">Moving DOWNLOAD directory from ダウンロード to Downloads</span><br><span class="line">Moving TEMPLATES directory from テンプレート to Templates</span><br><span class="line">Moving PUBLICSHARE directory from 公開 to Public</span><br><span class="line">Moving DOCUMENTS directory from ドキュメント to Documents</span><br><span class="line">Moving MUSIC directory from ミュージック to Music</span><br><span class="line">Moving PICTURES directory from ピクチャ to Pictures</span><br><span class="line">Moving VIDEOS directory from ビデオ to Videos</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>特に問題もなく、IDCFクラウド上にLinuxMit17 MATEのリモートデスクトップ環境ができました。<br>以前に比べてかなり便利になった気がします。</p>
+<p>これで<code>Dart Editor</code>を使う準備ができたので、次からはDartをGUI環境で開発する準備をしようと思います。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/LinuxMint17/" rel="tag"># LinuxMint17</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/MATE/" rel="tag"># MATE</a>
+              <a href="/tags/xrdp/" rel="tag"># xrdp</a>
+              <a href="/tags/DartEditor/" rel="tag"># DartEditor</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/01/idcf-linuxmint17-part1/" rel="prev" title="IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part1: GUIで開発したい">
+      <i class="fa fa-chevron-left"></i> IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part1: GUIで開発したい
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/03/idcf-coreos-install-disk/" rel="next" title="IDCFクラウドでCoreOSをディスクからインストールする">
+      IDCFクラウドでCoreOSをディスクからインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールの準備"><span class="nav-number">1.</span> <span class="nav-text">インストールの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インスタンス作成"><span class="nav-number">2.</span> <span class="nav-text">インスタンス作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinuxMintのインストール"><span class="nav-number">3.</span> <span class="nav-text">LinuxMintのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vimをインスト－ル"><span class="nav-number">4.</span> <span class="nav-text">vimをインスト－ル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xrdpのセットアップ"><span class="nav-number">5.</span> <span class="nav-text">xrdpのセットアップ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#リモートデスクトップ接続"><span class="nav-number">6.</span> <span class="nav-text">リモートデスクトップ接続</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSXの場合Microsoft-Remote-Desktop-Connection-Client-for-Macを使う"><span class="nav-number">7.</span> <span class="nav-text">OSXの場合Microsoft Remote Desktop Connection Client for Macを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日本語環境の構築"><span class="nav-number">8.</span> <span class="nav-text">日本語環境の構築</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#キーボードから「-」と「-」を入力できるようにする"><span class="nav-number">9.</span> <span class="nav-text">キーボードから「\」と「_」を入力できるようにする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#入力メソッドにiBusを使う"><span class="nav-number">10.</span> <span class="nav-text">入力メソッドにiBusを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ディレクトリ名を英語にする"><span class="nav-number">11.</span> <span class="nav-text">ディレクトリ名を英語にする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">12.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

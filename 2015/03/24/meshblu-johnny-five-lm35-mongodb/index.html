@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="先日構築したMeshbluコンテナのデータストアはNeDBのままでした。センシングデータをMongoDBに保存するように変更します。引き続きArduinoはFirmataとJohnny-Fiveを使いホストマシンから操作します。LM35を搭載した温度センサーモジュールを用意してArduinoから温度データを取得します。取得したデータはWebSocket over SSLでMeshbluにPOSTし">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Johnny-Fiveを使いLM35の温度データをArduinoからMeshbluのMongoDBに保存する">
+<meta property="og:url" content="http://masato.github.io/2015/03/24/meshblu-johnny-five-lm35-mongodb/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="先日構築したMeshbluコンテナのデータストアはNeDBのままでした。センシングデータをMongoDBに保存するように変更します。引き続きArduinoはFirmataとJohnny-Fiveを使いホストマシンから操作します。LM35を搭載した温度センサーモジュールを用意してArduinoから温度データを取得します。取得したデータはWebSocket over SSLでMeshbluにPOSTし">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/03/24/meshblu-johnny-five-lm35-mongodb/temperature-lm35.png">
+<meta property="article:published_time" content="2015-03-24T04:00:08.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.763Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Arduino">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="センサー">
+<meta property="article:tag" content="WebSocket">
+<meta property="article:tag" content="Meshblu">
+<meta property="article:tag" content="Johnny-Five">
+<meta property="article:tag" content="MongoDB">
+<meta property="article:tag" content="LM35">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/03/24/meshblu-johnny-five-lm35-mongodb/temperature-lm35.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/24/meshblu-johnny-five-lm35-mongodb/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Johnny-Fiveを使いLM35の温度データをArduinoからMeshbluのMongoDBに保存する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/24/meshblu-johnny-five-lm35-mongodb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Johnny-Fiveを使いLM35の温度データをArduinoからMeshbluのMongoDBに保存する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 24 2015 13:00:08" itemprop="dateCreated datePublished" datetime="2015-03-24T13:00:08+09:00">Mar 24 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">先日構築したMeshbluコンテナのデータストアはNeDBのままでした。センシングデータをMongoDBに保存するように変更します。引き続きArduinoはFirmataとJohnny-Fiveを使いホストマシンから操作します。LM35を搭載した温度センサーモジュールを用意してArduinoから温度データを取得します。取得したデータはWebSocket over SSLでMeshbluにPOSTしてMongoDBに保存します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>先日構築した<a href="/2015/03/17/meshblu-on-docker-install">Meshbluコンテナ</a>のデータストアは<a href="https://github.com/louischatriot/nedb/" target="_blank" rel="noopener">NeDB</a>のままでした。センシングデータをMongoDBに保存するように変更します。引き続きArduinoはFirmataとJohnny-Fiveを使いホストマシンから操作します。LM35を搭載した<a href="http://www.aitendo.com/product/10763" target="_blank" rel="noopener">温度センサーモジュール</a>を用意してArduinoから温度データを取得します。取得したデータはWebSocket over SSLでMeshbluにPOSTしてMongoDBに保存します。</p>
+<a id="more"></a>
+
+<h2 id="MongoDBをデータストアに使う"><a href="#MongoDBをデータストアに使う" class="headerlink" title="MongoDBをデータストアに使う"></a>MongoDBをデータストアに使う</h2><h3 id="Dockerコンテナの起動"><a href="#Dockerコンテナの起動" class="headerlink" title="Dockerコンテナの起動"></a>Dockerコンテナの起動</h3><p>Meshbluの<a href="https://github.com/octoblu/meshblu" target="_blank" rel="noopener">リポジトリ</a>を<a href="https://github.com/masato/meshblu" target="_blank" rel="noopener">fork</a>してDockerfileなど修正しました。forkしたリポジトリをcloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/meshblu</span><br><span class="line">$ <span class="built_in">cd</span> meshblu</span><br><span class="line">$ docker build -t meshblu .</span><br></pre></td></tr></table></figure>
+
+<p>Dockerコンテナにカレントディレクトリをマウントして使うため<code>node_modules</code>のシムリンクを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ln -s /dist/node_modules ./node_modules</span><br></pre></td></tr></table></figure>
+
+<p>今回のMongoDBはMeshbluのコンテナ内で起動しています。環境変数<code>MONGODB_URI</code>にURLを指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -d --name meshblu \</span><br><span class="line">  -p 3000:3000 \</span><br><span class="line">  -p 4443:4443 \</span><br><span class="line">  -p 5683:5683 \</span><br><span class="line">  -p 1883:1883 \</span><br><span class="line">  -e PORT=3000 \</span><br><span class="line">  -e MQTT_PORT=1883 \</span><br><span class="line">  -e MQTT_PASSWORD=skynetpass \</span><br><span class="line">  -e MONGODB_URI=mongodb://localhost:27017/skynet \</span><br><span class="line">  -e SSL_PORT=4443 \</span><br><span class="line">  -e SSL_CERT=/opt/meshblu/certs/server.crt \</span><br><span class="line">  -e SSL_KEY=/opt/meshblu/certs/server.key \</span><br><span class="line">  -v <span class="variable">$PWD</span>:/var/www \</span><br><span class="line">  -v <span class="variable">$PWD</span>/docker:/etc/supervisor/conf.d \</span><br><span class="line">  -v <span class="variable">$HOME</span>/docker_apps/certs/meshblu:/opt/meshblu/certs \</span><br><span class="line">  meshblu</span><br></pre></td></tr></table></figure>
+
+<p>Meshbluが起動しました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker logs meshblu</span><br><span class="line">...</span><br><span class="line">Meshblu (formerly skynet.im) development environment loaded...</span><br><span class="line">...</span><br><span class="line">Starting HTTP/HTTPS... <span class="keyword">done</span>.</span><br><span class="line">Starting MQTT... <span class="keyword">done</span>.</span><br><span class="line">CoAP listening at coap://localhost:5683</span><br><span class="line">HTTP listening at http://0.0.0.0:3000</span><br><span class="line">HTTPS listening at https://0.0.0.0:4443</span><br><span class="line">...</span><br><span class="line">MQTT listening at mqtt://0.0.0.0:1883</span><br></pre></td></tr></table></figure>
+
+<h3 id="任意のuuid-tokenでデバイスの登録"><a href="#任意のuuid-tokenでデバイスの登録" class="headerlink" title="任意のuuid/tokenでデバイスの登録"></a>任意のuuid/tokenでデバイスの登録</h3><p>statusを取得してMeshbluが起動していることを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> MESHBLU_URL=https://xxxx</span><br><span class="line">$ curl --insecure <span class="string">"<span class="variable">$MESHBLU_URL</span>/status"</span></span><br><span class="line">&#123;<span class="string">"meshblu"</span>:<span class="string">"online"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>センシングデータデバイスを登録します。普通に登録すると以下のようにuuidとtokenが取得できますがとても長いので扱いずらいです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  --insecure \</span><br><span class="line">  -d <span class="string">"name=osx"</span> \</span><br><span class="line">  <span class="string">"<span class="variable">$MESHBLU_URL</span>/devices"</span></span><br><span class="line">&#123;<span class="string">"geo"</span>:null,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"name"</span>:<span class="string">"osx"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-24T07:34:12.997Z"</span>,<span class="string">"uuid"</span>:<span class="string">"2aa8fd10-d1f8-11e4-a109-7b68e78fda3b"</span>,<span class="string">"token"</span>:<span class="string">"b4f6c6df56b82f747444b891e133ddd8c34992b6"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>POSTするメッセージに任意の<code>uuid</code>と<code>token</code>を指定することができます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  --insecure \</span><br><span class="line">  -d <span class="string">"name=johnny-five-test&amp;uuid=johnny&amp;token=five"</span> \</span><br><span class="line">  <span class="string">"<span class="variable">$MESHBLU_URL</span>/devices"</span></span><br><span class="line">&#123;<span class="string">"geo"</span>:null,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"name"</span>:<span class="string">"johnny-five-test"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-25T04:50:17.949Z"</span>,<span class="string">"uuid"</span>:<span class="string">"johnny"</span>,<span class="string">"token"</span>:<span class="string">"five"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>今回はArduinoのホストマシンにOSXを使います。さきほど取得したuuidとtoken、MeshbluのURLを<code>~/.bash_profile</code>に記述して再読込します。</p>
+<figure class="highlight bash"><figcaption><span>~/.bash_profile</span></figcaption><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> MESHBLU_URL=https://xxx</span><br><span class="line">$ <span class="built_in">export</span> OSX_UUID=johnny</span><br><span class="line">$ <span class="built_in">export</span> OSX_TOKEN=five</span><br></pre></td></tr></table></figure>
+
+<p>環境変数を指定して登録したデバイスを表示してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bash_profile</span><br><span class="line">$ curl -X GET \</span><br><span class="line">  <span class="string">"<span class="variable">$MESHBLU_URL</span>/devices"</span> \</span><br><span class="line">  --insecure  \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: <span class="variable">$OSX_UUID</span>"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: <span class="variable">$OSX_TOKEN</span>"</span></span><br><span class="line">&#123;<span class="string">"devices"</span>:[&#123;<span class="string">"geo"</span>:null,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"name"</span>:<span class="string">"johnny-five-test"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-03-25T04:50:17.949Z"</span>,<span class="string">"uuid"</span>:<span class="string">"johnny"</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MongoDBのコレクションの確認"><a href="#MongoDBのコレクションの確認" class="headerlink" title="MongoDBのコレクションの確認"></a>MongoDBのコレクションの確認</h3><p>Dockerコンテナに入りMongoDBのコレクションを表示してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it  meshblu bash</span><br></pre></td></tr></table></figure>
+
+<p>データベース名は環境変数<code>MONGODB_URI</code>に指定した<code>skynet</code>です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mongo skynet</span><br><span class="line">MongoDB shell version: 2.4.13</span><br><span class="line">connecting to: skynet</span><br><span class="line">&gt; show collections;</span><br><span class="line">devices</span><br><span class="line">system.indexes</span><br></pre></td></tr></table></figure>
+
+<p>先ほど登録したデバイスのコレクションが作成されています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.devices.find();</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55123e89a90c660a00775d53"</span>), <span class="string">"geo"</span> : null, <span class="string">"ipAddress"</span> : <span class="string">"172.17.42.1"</span>, <span class="string">"name"</span> : <span class="string">"johnny-five-test"</span>, <span class="string">"online"</span> : <span class="literal">false</span>, <span class="string">"timestamp"</span> : ISODate(<span class="string">"2015-03-25T04:50:17.949Z"</span>), <span class="string">"token"</span> : <span class="string">"<span class="variable">$2a</span><span class="variable">$08</span><span class="variable">$O3hl4gnoTHG0zj</span>/rcIACieEqzB5zHsnktZwNDdFldrJqdVcBidVe6"</span>, <span class="string">"uuid"</span> : <span class="string">"johnny"</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="センシングデータをPOSTする"><a href="#センシングデータをPOSTする" class="headerlink" title="センシングデータをPOSTする"></a>センシングデータをPOSTする</h2><p>OSXをホストマシンとしてFirmataプロトコルでArduinoに接続します。<a href="https://github.com/rwaldron/johnny-five" target="_blank" rel="noopener">Johnny-Five</a>からArduinoを操作してセンシングデータを取得します。取得したデータは<a href="https://github.com/octoblu/meshblu-npm" target="_blank" rel="noopener">meshblu-npm</a>を使ってMeshbluにPOSTしてMongoDBに保存します。</p>
+<h3 id="LM35-温度センサモジュール"><a href="#LM35-温度センサモジュール" class="headerlink" title="LM35 温度センサモジュール"></a>LM35 温度センサモジュール</h3><p>温度センサモジュールはaitendoから<a href="http://www.aitendo.com/product/10763" target="_blank" rel="noopener">M35DZ-3P</a>を購入しました。Jonny-Fiveから操作できる<a href="https://github.com/rwaldron/johnny-five/blob/master/docs/temperature-lm35.md" target="_blank" rel="noopener">LM35</a>を搭載しています。回路図を参考にしてArduinoと接続します。</p>
+<p><img src="/2015/03/24/meshblu-johnny-five-lm35-mongodb/temperature-lm35.png" alt="temperature-lm35.png"></p>
+<h3 id="サンプルプロジェクト"><a href="#サンプルプロジェクト" class="headerlink" title="サンプルプロジェクト"></a>サンプルプロジェクト</h3><p>OSX上にサンプルプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/node_apps/johnny-five-meshblu-lm35</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p><code>package.json</code>にインストールするパッケージを記述します。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/johnny-five-meshblu-lm35/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"johnny-five-meshblu-lm35"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">        <span class="attr">"johnny-five"</span>: <span class="string">"0.8.49"</span>,</span><br><span class="line">        <span class="attr">"meshblu"</span>: <span class="string">"1.19.0"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>app.jsにメインプログラムを書きます。Meshbluの接続情報は<code>~/.bash_profile</code>に記述した環境変数を使います。Meshbluに接続したあとJohnny-FiveからLM35の温度データを取得します。<code>freq: 5000</code>として5秒間隔にします。温度データが取得できたらJSONにフォーマットしてMesubluにPOSTします。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/johnny-five-meshblu-lm35/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> five = <span class="built_in">require</span>(<span class="string">"johnny-five"</span>),</span><br><span class="line">    meshblu = <span class="built_in">require</span>(<span class="string">'meshblu'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> conn = meshblu.createConnection(&#123;</span><br><span class="line">    <span class="string">"uuid"</span>: process.env.OSX_UUID,</span><br><span class="line">    <span class="string">"token"</span>: process.env.OSX_TOKEN,</span><br><span class="line">    <span class="string">"protocol"</span>: <span class="string">"websocket"</span>,</span><br><span class="line">    <span class="string">"server"</span>: process.env.MESHBLU_URL</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">'notReady'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'UUID FAILED AUTHENTICATION!'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'UUID AUTHENTICATED!'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line"></span><br><span class="line">    five.Board().on(<span class="string">"ready"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">"Ready..."</span>);</span><br><span class="line">        <span class="keyword">var</span> temperature = <span class="keyword">new</span> five.Temperature(&#123;</span><br><span class="line">            controller: <span class="string">"LM35"</span>,</span><br><span class="line">            pin: <span class="string">"A0"</span>,</span><br><span class="line">            freq: <span class="number">5000</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        temperature.on(<span class="string">"data"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(data.celsius);</span><br><span class="line">            conn.data(&#123;</span><br><span class="line">                <span class="string">"temperature"</span>:data.celsius</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>必要なパッケージをインストールしてNode.jsプログラムを起動します。標準出力には摂氏の温度が5秒間隔で表示されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install</span><br><span class="line">$ npm start</span><br><span class="line">...</span><br><span class="line">25.390625</span><br><span class="line">25.390625</span><br><span class="line">25.87890625</span><br><span class="line">25.87890625</span><br><span class="line">25.390625</span><br></pre></td></tr></table></figure>
+
+<h3 id="MongoDBのデータ確認"><a href="#MongoDBのデータ確認" class="headerlink" title="MongoDBのデータ確認"></a>MongoDBのデータ確認</h3><p>Meshbluコンテナを起動しているDockerホストにログインします。Meshbluコンテナに入りMongoDBの<code>data</code>コレクションをリストします。Arduinoに接続したLM35モジュールから取得した温度データが、OSXで動作しているJohnny-Fiveを通してクラウド上のMongoDBに保存されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it meshblu bash</span><br><span class="line">mongo skynet</span><br><span class="line">MongoDB shell version: 2.4.13</span><br><span class="line">connecting to: skynet</span><br><span class="line">&gt; db.data.find();</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-03-25T03:53:08.179Z"</span>, <span class="string">"temperature"</span> : <span class="string">"25.390625"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"55123124c2eede05005958f2"</span>) &#125;</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-03-25T03:53:13.176Z"</span>, <span class="string">"temperature"</span> : <span class="string">"25.87890625"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"55123129c2eede05005958f3"</span>) &#125;</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-03-25T03:53:18.251Z"</span>, <span class="string">"temperature"</span> : <span class="string">"25.87890625"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"5512312ec2eede05005958f4"</span>) &#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC/" rel="tag"># センサー</a>
+              <a href="/tags/WebSocket/" rel="tag"># WebSocket</a>
+              <a href="/tags/Meshblu/" rel="tag"># Meshblu</a>
+              <a href="/tags/Johnny-Five/" rel="tag"># Johnny-Five</a>
+              <a href="/tags/MongoDB/" rel="tag"># MongoDB</a>
+              <a href="/tags/LM35/" rel="tag"># LM35</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/23/beagleboneblack-arduino-johnny-five-firmata/" rel="prev" title="BeagleBone BlackからArduinoをJohnny-FiveとFirmataで操作する">
+      <i class="fa fa-chevron-left"></i> BeagleBone BlackからArduinoをJohnny-FiveとFirmataで操作する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/25/meshblu-debug-mqtt-http-bridge-redis/" rel="next" title="MeshbluのdebugとMQTT-HTTP BridgeのためのRedis">
+      MeshbluのdebugとMQTT-HTTP BridgeのためのRedis <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MongoDBをデータストアに使う"><span class="nav-number">1.</span> <span class="nav-text">MongoDBをデータストアに使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerコンテナの起動"><span class="nav-number">1.1.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意のuuid-tokenでデバイスの登録"><span class="nav-number">1.2.</span> <span class="nav-text">任意のuuid&#x2F;tokenでデバイスの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBのコレクションの確認"><span class="nav-number">1.3.</span> <span class="nav-text">MongoDBのコレクションの確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#センシングデータをPOSTする"><span class="nav-number">2.</span> <span class="nav-text">センシングデータをPOSTする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LM35-温度センサモジュール"><span class="nav-number">2.1.</span> <span class="nav-text">LM35 温度センサモジュール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルプロジェクト"><span class="nav-number">2.2.</span> <span class="nav-text">サンプルプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBのデータ確認"><span class="nav-number">2.3.</span> <span class="nav-text">MongoDBのデータ確認</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

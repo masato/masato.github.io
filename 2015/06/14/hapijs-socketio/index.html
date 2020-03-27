@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Hapi.jsのREST APIが一通り動くようになったので次はHapi.jsにSocket.IOサーバーを作成してみます。Using hapi.js with Socket.ioにとても良いSocket.IOの解説があります。著者のMatt Harrison氏はManningでHapi.js in ActionをMEAPで執筆中です。ブログが非常にわかりやすいので著書も期待できます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hapi.js with Socket.IO - Part1: Hello World!">
+<meta property="og:url" content="http://masato.github.io/2015/06/14/hapijs-socketio/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Hapi.jsのREST APIが一通り動くようになったので次はHapi.jsにSocket.IOサーバーを作成してみます。Using hapi.js with Socket.ioにとても良いSocket.IOの解説があります。著者のMatt Harrison氏はManningでHapi.js in ActionをMEAPで執筆中です。ブログが非常にわかりやすいので著書も期待できます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/06/14/hapijs-socketio/hello-socketio.png">
+<meta property="article:published_time" content="2015-06-14T11:47:06.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.665Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Hapijs">
+<meta property="article:tag" content="SocketIO">
+<meta property="article:tag" content="dotenv">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/06/14/hapijs-socketio/hello-socketio.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/14/hapijs-socketio/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Hapi.js with Socket.IO - Part1: Hello World! | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/14/hapijs-socketio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hapi.js with Socket.IO - Part1: Hello World!
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 14 2015 20:47:06" itemprop="dateCreated datePublished" datetime="2015-06-14T20:47:06+09:00">Jun 14 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Hapi.jsのREST APIが一通り動くようになったので次はHapi.jsにSocket.IOサーバーを作成してみます。Using hapi.js with Socket.ioにとても良いSocket.IOの解説があります。著者のMatt Harrison氏はManningでHapi.js in ActionをMEAPで執筆中です。ブログが非常にわかりやすいので著書も期待できます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>のREST APIが<a href="/2015/06/13/hapijs-plugins/">一通り動く</a>ようになったので次はHapi.jsにSocket.IOサーバーを作成してみます。<a href="http://matt-harrison.com/using-hapi-js-with-socket-io/" target="_blank" rel="noopener">Using hapi.js with Socket.io</a>にとても良いSocket.IOの解説があります。著者のMatt Harrison氏はManningで<a href="http://www.manning.com/harrison/" target="_blank" rel="noopener">Hapi.js in Action</a>をMEAPで執筆中です。ブログが非常にわかりやすいので著書も期待できます。</p>
+<a id="more"></a>
+
+<h2 id="リソース"><a href="#リソース" class="headerlink" title="リソース"></a>リソース</h2><p>Hapi.jsとSocket.IOの使い方は以下のサイトを参考にして勉強します。</p>
+<ul>
+<li><a href="http://matt-harrison.com/using-hapi-js-with-socket-io/" target="_blank" rel="noopener">Using hapi.js with Socket.io</a></li>
+<li><a href="http://www.appsaloon.be/blog/socket-io-with-hapi-js/" target="_blank" rel="noopener">SOCKET.IO WITH HAPI.JS</a></li>
+<li><a href="http://stackoverflow.com/questions/18343509/hapi-js-with-socket-io-where-is-socket-io-js" target="_blank" rel="noopener">Hapi.js with Socket.io — Where is socket.io.js?</a></li>
+<li><a href="https://github.com/expr/hapi-socketio-example" target="_blank" rel="noopener">Hapi + socket.io Example</a></li>
+<li><a href="https://nodesource.com/blog/understanding-socketio" target="_blank" rel="noopener">Understanding Socket.IO</a></li>
+</ul>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>適当なディレクトリにプロジェクトを作成します。リポジトリは<a href="https://github.com/masato/docker-hapi-socketio" target="_blank" rel="noopener">こちら</a>です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-hapi-socketio</span><br><span class="line">$ tree -a -L 2</span><br><span class="line">.</span><br><span class="line">├── .dockerignore</span><br><span class="line">├── .env</span><br><span class="line">├── .gitignore</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── app.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">├── npm-debug.log</span><br><span class="line">├── package.json</span><br><span class="line">└── templates</span><br><span class="line">    └── index.html</span><br></pre></td></tr></table></figure>
+
+<p>以下のバージョンのパッケージを使います。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/docker-hapi-socketio/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"docker-hapi-socketio"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"docker-hapi-socketio"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">      <span class="attr">"hapi"</span>: <span class="string">"^8.6.1"</span>,</span><br><span class="line">      <span class="attr">"socket.io"</span>: <span class="string">"^1.3.5"</span>,</span><br><span class="line">      <span class="attr">"handlebars"</span>: <span class="string">"^3.0.3"</span>,</span><br><span class="line">      <span class="attr">"dotenv"</span>: <span class="string">"^1.1.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="サーバーサイド"><a href="#サーバーサイド" class="headerlink" title="サーバーサイド"></a>サーバーサイド</h2><h3 id="hapi-serverのlisnterはhttp-server"><a href="#hapi-serverのlisnterはhttp-server" class="headerlink" title="hapi serverのlisnterはhttp server"></a>hapi serverのlisnterはhttp server</h3><p>hapi server(<code>var server = new Hapi.Server();</code>)にconnectionを作成(<code>server.connection({ port: 4000 });</code>)すると、内部で新しいNode.jsのhttp server(<code>var listener = require(&#39;http&#39;).createServer(handler);</code>)が作成されます。このhttp serverインスタンスはlistenerプロパティ(<code>var listener = server.listener;</code>)になります。</p>
+<h3 id="Socket-IOに渡すappもhttp-server"><a href="#Socket-IOに渡すappもhttp-server" class="headerlink" title="Socket.IOに渡すappもhttp server"></a>Socket.IOに渡すappもhttp server</h3><p>Socket.IOをrequireするときに渡す<code>var io = require(&#39;socket.io&#39;)(app);</code>のapp変数もhapi serverのlistenerと同様にhttp server(<code>var app = require(&#39;http&#39;).createServer(handler);</code>)です。ただし以下のようにhapi serverにconnectionを作成して作成した8080ポートの<code>hapi server.listener</code>(<code>node http server</code>)をSocket.IOに渡すとセットアップ処理で<code>node http server</code>のrequestイベントのリスナーがすべて削除されてしまいます。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Hapi = <span class="built_in">require</span>(<span class="string">'hapi'</span>)</span><br><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> Hapi.Server();</span><br><span class="line">server.connection(&#123; <span class="attr">port</span>: <span class="number">8080</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> io = <span class="built_in">require</span>(<span class="string">'socket.io'</span>)(server.listener);</span><br><span class="line"></span><br><span class="line">io.on(<span class="string">'connection'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">socket</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'connected'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.start();</span><br></pre></td></tr></table></figure>
+
+<h3 id="API用のhttp-serverとSocket-IO用のhttp-server"><a href="#API用のhttp-serverとSocket-IO用のhttp-server" class="headerlink" title="API用のhttp serverとSocket.IO用のhttp server"></a>API用のhttp serverとSocket.IO用のhttp server</h3><p>hapiはportを指定して内部で複数の<code>node http server</code>を起動することができます。下の例では1つのhapi serverでREST APIを8080ポートでLISTENするHTTPサーバーと、8080ポートでLISTENするSocket.IOサーバーの2つが起動しています。HTTPサーバーはいまのところ<code>/</code>からindex.htmlのエントリポイントを提供するだけでREST APIのRouteは実装していません。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-hapi-socketio/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">'user strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Hapi = <span class="built_in">require</span>(<span class="string">'hapi'</span>),</span><br><span class="line">    server = <span class="keyword">new</span> Hapi.Server(),</span><br><span class="line">    Path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'dotenv'</span>).load();</span><br><span class="line"></span><br><span class="line">server.connection(&#123; <span class="attr">port</span>: process.env.API_PORT, <span class="attr">labels</span>: [<span class="string">'api'</span>] &#125;);</span><br><span class="line">server.connection(&#123; <span class="attr">port</span>: process.env.SOCKETIO_PORT, <span class="attr">labels</span>: [<span class="string">'twitter'</span>] &#125;);</span><br><span class="line"></span><br><span class="line">server.views(&#123;</span><br><span class="line">    engines: &#123;</span><br><span class="line">        html: <span class="built_in">require</span>(<span class="string">'handlebars'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    path: Path.join(__dirname, <span class="string">'templates'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.select(<span class="string">'api'</span>).route(&#123;</span><br><span class="line">    method: <span class="string">'GET'</span>,</span><br><span class="line">    path: <span class="string">'/'</span>,</span><br><span class="line">    handler: <span class="function"><span class="keyword">function</span> (<span class="params">request, reply</span>) </span>&#123;</span><br><span class="line">        reply.view(<span class="string">'index'</span>,</span><br><span class="line">                   &#123; <span class="attr">socketio_host</span>: (process.env.PUBLIC_IP+<span class="string">':'</span></span><br><span class="line">                                     +process.env.SOCKETIO_PORT)&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> io = <span class="built_in">require</span>(<span class="string">'socket.io'</span>)(server.select(<span class="string">'twitter'</span>).listener);</span><br><span class="line">io.on(<span class="string">'connection'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">socket</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'connected!'</span>);</span><br><span class="line">    <span class="keyword">var</span> tweet = &#123;<span class="attr">text</span>: <span class="string">'hello world!'</span>&#125;;</span><br><span class="line">    <span class="keyword">var</span> interval = setInterval(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        socket.emit(<span class="string">'tweet'</span>, tweet);</span><br><span class="line">    &#125;, <span class="number">5000</span>);</span><br><span class="line"></span><br><span class="line">    socket.on(<span class="string">'disconnect'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        clearInterval(interval);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.start();</span><br></pre></td></tr></table></figure>
+
+<h2 id="クライアントサイド"><a href="#クライアントサイド" class="headerlink" title="クライアントサイド"></a>クライアントサイド</h2><p>クライアントサイドはSPAで実装します。HTTPサーバー(8000)がserveするindex.htmlがエントリポイントになります。index.htmlからSocker.IOサーバー(8080)がserveする<code>socket.io.js</code>のクライアントライブラリをロードしてSocket.IOサーバー(8080)に接続します。socket変数の<code>connect</code>と<code>tweet</code>イベントにlistenerをアタッチします。</p>
+<figure class="highlight html"><figcaption><span>~/node_apps/docker-hapi-socketio/templates/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>tweet<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://&#123;&#123;socketio_host&#125;&#125;/socket.io/socket.io.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">      $(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="keyword">var</span> socket = io.connect(<span class="string">"http://&#123;&#123;socketio_host&#125;&#125;"</span>);</span></span><br><span class="line"><span class="actionscript">        socket.on(<span class="string">"connect"</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(<span class="string">"Connected!"</span>);</span></span><br><span class="line">        &#125;);</span><br><span class="line"><span class="actionscript">        socket.on(<span class="string">"tweet"</span>, <span class="function"><span class="keyword">function</span><span class="params">(tweet)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(tweet);</span></span><br><span class="line"><span class="javascript">          $(<span class="string">"#tweet"</span>).prepend(tweet.text + <span class="string">"&lt;br&gt;"</span>);</span></span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"tweet"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>このindex.htmlは<a href="http://handlebarsjs.com/" target="_blank" rel="noopener">Handlebars.js</a>のテンプレートです。<code></code>は<code>.env</code>に定義した環境変数を<a href="https://www.npmjs.com/package/dotenv" target="_blank" rel="noopener">dotenv</a>を使ってロードした値が入っています。</p>
+<h2 id="プログラムの実行"><a href="#プログラムの実行" class="headerlink" title="プログラムの実行"></a>プログラムの実行</h2><p>Docker Composeからhapiサービスをupします。ブラウザから<code>.env</code>ファイルに定義したIPアドレスとポートに接続すると<code>connected!</code>のログが出力されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up</span><br><span class="line">Recreating dockerhapisocketio_hapi_1...</span><br><span class="line">Attaching to dockerhapisocketio_hapi_1</span><br><span class="line">hapi_1 |</span><br><span class="line">hapi_1 | &gt; docker-hapi-socketio@0.0.1 start /app</span><br><span class="line">hapi_1 | &gt; node app.js</span><br><span class="line">hapi_1 |</span><br><span class="line">hapi_1 | connected!</span><br></pre></td></tr></table></figure>
+
+<p>サーバーサイドでは5秒間隔でメッセージをemitしています。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-hapi-socketio/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> tweet = &#123;<span class="attr">text</span>: <span class="string">'hello world!'</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> interval = setInterval(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    socket.emit(<span class="string">'tweet'</span>, tweet);</span><br><span class="line">&#125;, <span class="number">5000</span>);</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザサイドにも5秒間隔でメッセージがappendされていきます。</p>
+<p><img src="/2015/06/14/hapijs-socketio/hello-socketio.png" alt="hello-socketio.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hapijs/" rel="tag"># Hapijs</a>
+              <a href="/tags/SocketIO/" rel="tag"># SocketIO</a>
+              <a href="/tags/dotenv/" rel="tag"># dotenv</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/13/hapijs-plugins/" rel="prev" title="Hapi.jsでHappy Coding - Part3: プラグインをつくる">
+      <i class="fa fa-chevron-left"></i> Hapi.jsでHappy Coding - Part3: プラグインをつくる
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/15/hoplon-install/" rel="next" title="Hoplon入門- Part1: Bootのバージョン">
+      Hoplon入門- Part1: Bootのバージョン <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#リソース"><span class="nav-number">1.</span> <span class="nav-text">リソース</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#サーバーサイド"><span class="nav-number">3.</span> <span class="nav-text">サーバーサイド</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hapi-serverのlisnterはhttp-server"><span class="nav-number">3.1.</span> <span class="nav-text">hapi serverのlisnterはhttp server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Socket-IOに渡すappもhttp-server"><span class="nav-number">3.2.</span> <span class="nav-text">Socket.IOに渡すappもhttp server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#API用のhttp-serverとSocket-IO用のhttp-server"><span class="nav-number">3.3.</span> <span class="nav-text">API用のhttp serverとSocket.IO用のhttp server</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#クライアントサイド"><span class="nav-number">4.</span> <span class="nav-text">クライアントサイド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プログラムの実行"><span class="nav-number">5.</span> <span class="nav-text">プログラムの実行</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Java開発ではローカルのWindowsやmacOSのIntelliJ IDEAやEclipseなどのIDEを利用しますが、Node.jsやPythonなどスクリプト言語の開発はVimやEmacsのエディタという方も多いと思います。Eclimを使うとJavaも同じようにエディタから開発をすることができます。クラウドの仮想マシンに開発環境を構築すればローカルの設定依存せずターミナルからSSH接続して">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EclimでJavaもEmacsからコーディングする">
+<meta property="og:url" content="http://masato.github.io/2017/08/04/emacs-eclim-java/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Java開発ではローカルのWindowsやmacOSのIntelliJ IDEAやEclipseなどのIDEを利用しますが、Node.jsやPythonなどスクリプト言語の開発はVimやEmacsのエディタという方も多いと思います。Eclimを使うとJavaも同じようにエディタから開発をすることができます。クラウドの仮想マシンに開発環境を構築すればローカルの設定依存せずターミナルからSSH接続して">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/08/03/emacs-eclim-java/eclim.png">
+<meta property="og:image" content="http://masato.github.io/2017/08/03/emacs-eclim-java/eclim2.png">
+<meta property="og:image" content="http://masato.github.io/2017/08/03/emacs-eclim-java/eclim3.png">
+<meta property="article:published_time" content="2017-08-04T00:32:05.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.635Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="TreasureData">
+<meta property="article:tag" content="Kafka">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/08/03/emacs-eclim-java/eclim.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/08/04/emacs-eclim-java/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>EclimでJavaもEmacsからコーディングする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/08/04/emacs-eclim-java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EclimでJavaもEmacsからコーディングする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 4 2017 09:32:05" itemprop="dateCreated datePublished" datetime="2017-08-04T09:32:05+09:00">Aug 4 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Emacs/" itemprop="url" rel="index"><span itemprop="name">Emacs</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/Emacs/Eclim/" itemprop="url" rel="index"><span itemprop="name">Eclim</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Java開発ではローカルのWindowsやmacOSのIntelliJ IDEAやEclipseなどのIDEを利用しますが、Node.jsやPythonなどスクリプト言語の開発はVimやEmacsのエディタという方も多いと思います。Eclimを使うとJavaも同じようにエディタから開発をすることができます。クラウドの仮想マシンに開発環境を構築すればローカルの設定依存せずターミナルからSSH接続していつでも同じ開発ができます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　Java開発ではローカルのWindowsやmacOSのIntelliJ IDEAやEclipseなどのIDEを利用しますが、Node.jsやPythonなどスクリプト言語の開発はVimやEmacsのエディタという方も多いと思います。Eclimを使うとJavaも同じようにエディタから開発をすることができます。クラウドの仮想マシンに開発環境を構築すればローカルの設定依存せずターミナルからSSH接続していつでも同じ開発ができます。</p>
+<a id="more"></a>
+
+
+<h2 id="仮想マシン"><a href="#仮想マシン" class="headerlink" title="仮想マシン"></a>仮想マシン</h2><p>　クラウドに仮想マシンを用意します。今回はUbuntu 16.04 LTS (Xenial Xerus)にJavaの開発環境を構築します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/os-release</span><br><span class="line">NAME=<span class="string">"Ubuntu"</span></span><br><span class="line">VERSION=<span class="string">"16.04.3 LTS (Xenial Xerus)"</span></span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">PRETTY_NAME=<span class="string">"Ubuntu 16.04.3 LTS"</span></span><br><span class="line">VERSION_ID=<span class="string">"16.04"</span></span><br><span class="line">HOME_URL=<span class="string">"http://www.ubuntu.com/"</span></span><br><span class="line">SUPPORT_URL=<span class="string">"http://help.ubuntu.com/"</span></span><br><span class="line">BUG_REPORT_URL=<span class="string">"http://bugs.launchpad.net/ubuntu/"</span></span><br><span class="line">VERSION_CODENAME=xenial</span><br><span class="line">UBUNTU_CODENAME=xenial</span><br></pre></td></tr></table></figure>
+
+<p>　パッケージを更新しておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>　Java 8のSDKをインストールします。OpenJDK以外でも構いません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install openjdk-8-jdk -y</span><br><span class="line">$ java -version</span><br><span class="line">openjdk version <span class="string">"1.8.0_131"</span></span><br><span class="line">OpenJDK Runtime Environment (build 1.8.0_131-8u131-b11-2ubuntu1.16.04.3-b11)</span><br><span class="line">OpenJDK 64-Bit Server VM (build 25.131-b11, mixed mode)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eclipse-Oxygen"><a href="#Eclipse-Oxygen" class="headerlink" title="Eclipse Oxygen"></a>Eclipse Oxygen</h2><p>　EclimはEclipseに接続してエディタからEclipseの一部の機能を使えるようにします。2017年6月にリリースされた<a href="https://www.eclipse.org/oxygen/" target="_blank" rel="noopener">Eclipse Oxygen (4.7)</a>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/oxygen/R/eclipse-java-oxygen-R-linux-gtk-x86_64.tar.gz</span><br><span class="line">$ tar zxvf eclipse-java-oxygen-R-linux-gtk-x86_64.tar.gz</span><br><span class="line">$ sudo mv eclipse /opt/</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Emacs"><a href="#Emacs" class="headerlink" title="Emacs"></a>Emacs</h2><p>　Emacs24をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install emacs24-nox emacs24-el -y</span><br><span class="line">$ emacs --version</span><br><span class="line">GNU Emacs 24.5.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cask"><a href="#Cask" class="headerlink" title="Cask"></a>Cask</h3><p>　Emacsパッケージ管理の<a href="http://cask.github.io/" target="_blank" rel="noopener">Cask</a>です。インストールにはGitとPythonが必要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install git python -y</span><br><span class="line">$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.cask/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>　<code>~/.emacs.d</code>ディレクトリに以下のような設定ファイルを用意します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree ~/.emacs.d</span><br><span class="line">├── Cask</span><br><span class="line">├── init.el</span><br><span class="line">└── inits</span><br><span class="line">    ├── 00-keybindings.el</span><br><span class="line">    ├── 01-menu.el</span><br><span class="line">    ├── 02-files.el</span><br><span class="line">    └── 08-eclim.el</span><br></pre></td></tr></table></figure>
+
+<p>　<code>init.el</code>は<a href="https://github.com/emacs-jp/init-loader" target="_blank" rel="noopener">init-loader</a>を使いファイルを分割します。<code>~/.emacs.d/inits/08-eclim.el</code>以外はお好みで利用してください。</p>
+<ul>
+<li>~/.emacs.d/init.el</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(require &#39;cask &quot;~&#x2F;.cask&#x2F;cask.el&quot;)</span><br><span class="line">(cask-initialize)</span><br><span class="line"></span><br><span class="line">(require &#39;init-loader)</span><br><span class="line">(setq init-loader-show-log-after-init nil)</span><br><span class="line">(init-loader-load &quot;~&#x2F;.emacs.d&#x2F;inits&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>　Caskにインストールするパッケージを記述します。Java開発用に<a href="https://github.com/emacs-eclim/emacs-eclim" target="_blank" rel="noopener">eclim</a>と<a href="https://github.com/senny/emacs-eclim/blob/master/company-emacs-eclim.el" target="_blank" rel="noopener">company-emacs-eclim</a>をインストールします。</p>
+<ul>
+<li>~/.emacs.d/Cask</li>
+</ul>
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line">(<span class="name">source</span> gnu)</span><br><span class="line">(<span class="name">source</span> melpa)</span><br><span class="line"></span><br><span class="line">(<span class="name">depends-on</span> <span class="string">"cask"</span>)</span><br><span class="line">(<span class="name">depends-on</span> <span class="string">"init-loader"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">;; java</span></span><br><span class="line">(<span class="name">depends-on</span> <span class="string">"eclim"</span>)</span><br><span class="line">(<span class="name">depends-on</span> <span class="string">"company-emacs-eclim"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>　Eclimの設定は<a href="https://github.com/emacs-eclim/emacs-eclim/blob/master/README.md" target="_blank" rel="noopener">README</a>に従います。ポップアップダイアログとコード補完機能は<a href="https://github.com/company-mode/company-mode" target="_blank" rel="noopener">company-mode</a>を使います。</p>
+<ul>
+<li>~/.emacs.d/inits/08-eclim-el</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(require &#39;eclim)</span><br><span class="line"></span><br><span class="line">;; enable eclim-mode globally</span><br><span class="line">(setq eclimd-autostart t)</span><br><span class="line">(global-eclim-mode)</span><br><span class="line"></span><br><span class="line">;; Eclipse installation</span><br><span class="line">(custom-set-variables</span><br><span class="line">  &#39;(eclim-eclipse-dirs &#39;(&quot;&#x2F;opt&#x2F;eclipse&#x2F;eclipse&quot;))</span><br><span class="line">  &#39;(eclim-executable &quot;&#x2F;opt&#x2F;eclipse&#x2F;eclim&quot;))</span><br><span class="line"></span><br><span class="line">;; Displaying compilation error messages in the echo area</span><br><span class="line">(setq help-at-pt-display-when-idle t)</span><br><span class="line">(setq help-at-pt-timer-delay 0.1)</span><br><span class="line">(help-at-pt-set-timer)</span><br><span class="line"></span><br><span class="line">;; Configuring company-mode</span><br><span class="line">(require &#39;company)</span><br><span class="line">(require &#39;company-emacs-eclim)</span><br><span class="line">(company-emacs-eclim-setup)</span><br><span class="line">(global-company-mode t)</span><br></pre></td></tr></table></figure>
+
+<p>　以下は必須ではありませんがEmacsでよく使う設定です。<code>C-h</code>でバックスペースのキーバインドを変更します。</p>
+<ul>
+<li>~/.emacs.d/inits/00-keybindings.el</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(define-key global-map &quot;\C-h&quot; &#39;delete-backward-char)</span><br><span class="line">(define-key global-map &quot;\M-?&quot; &#39;help-for-help)</span><br></pre></td></tr></table></figure>
+
+<p>　Emacsのメニューを非表示にします。</p>
+<ul>
+<li>~/.emacs.d/inits/01-menu.el</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(menu-bar-mode 0)</span><br></pre></td></tr></table></figure>
+
+<p>　行末の空白削除、バックアップを作らない、タブ設定などです。</p>
+<ul>
+<li>~/.emacs.d/inits/02-files.el</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(when (boundp &#39;show-trailing-whitespace)</span><br><span class="line">      (setq-default show-trailing-whitespace t))</span><br><span class="line"></span><br><span class="line">(add-hook &#39;before-save-hook &#39;delete-trailing-whitespace)</span><br><span class="line"></span><br><span class="line">(setq backup-inhibited t)</span><br><span class="line">(setq next-line-add-newlines nil)</span><br><span class="line">(setq-default tab-width 4 indent-tabs-mode nil)</span><br><span class="line"></span><br><span class="line">(setq default-major-mode &#39;text-mode)</span><br></pre></td></tr></table></figure>
+
+<p>　最後に<code>cask</code>コマンドを実行してパッケージをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.emacs.d</span><br><span class="line">$ cask install</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eclim"><a href="#Eclim" class="headerlink" title="Eclim"></a>Eclim</h2><p> <a href="http://eclim.org/install.html#install-headless" target="_blank" rel="noopener">Installing on a headless server</a>にあるようにXサーバーが必要なEclipseをヘッドレスで利用するため仮想フレームバッファの<a href="https://www.x.org/releases/X11R7.7/doc/man/man1/Xvfb.1.xhtml" target="_blank" rel="noopener">Xvfb</a>をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install xvfb build-essential -y</span><br></pre></td></tr></table></figure>
+
+<p>　Eclipseのディレクトリに移動してEclimをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /opt/eclipse</span><br><span class="line">$ wget https://github.com/ervandew/eclim/releases/download/2.7.0/eclim_2.7.0.jar</span><br><span class="line">$ java -Dvim.files=<span class="variable">$HOME</span>/.vim -Declipse.home=<span class="string">"/opt/eclipse"</span> -jar eclim_2.7.0.jar install</span><br></pre></td></tr></table></figure>
+
+<p>　 Xvfbとeclimdを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ Xvfb :1 -screen 0 1024x768x24 &amp;</span><br><span class="line">$ DISPLAY=:1 /opt/eclipse/eclimd -b</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="サンプルプロジェクト"><a href="#サンプルプロジェクト" class="headerlink" title="サンプルプロジェクト"></a>サンプルプロジェクト</h2><p>　<a href="http://maven.apache.org/archetypes/maven-archetype-quickstart/" target="_blank" rel="noopener">maven-archetype-quickstart</a>のアーキタイプからサンプルプロジェクトを作成しEclimの動作確認をします。最初に<a href="http://sdkman.io/" target="_blank" rel="noopener">SDKMAN!</a>から<a href="https://maven.apache.org/" target="_blank" rel="noopener">Maven</a>をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -s get.sdkman.io | /bin/bash</span><br><span class="line">$ <span class="built_in">source</span> ~/.sdkman/bin/sdkman-init.sh</span><br><span class="line">$ sdk install maven</span><br><span class="line">...</span><br><span class="line">Setting maven 3.5.0 as default.</span><br></pre></td></tr></table></figure>
+
+<p>　適当なディレクトリで<code>mvn archetype:generate</code>を実行します。Eclipseの設定ファイルも<code>mvn eclipse:eclipse</code>で作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/java_apps &amp;&amp; <span class="built_in">cd</span> ~/java_apps</span><br><span class="line">$ mvn archetype:generate \</span><br><span class="line">  -DarchetypeArtifactId=maven-archetype-quickstart \</span><br><span class="line">  -DinteractiveMode=<span class="literal">false</span> \</span><br><span class="line">  -DgroupId=com.example \</span><br><span class="line">  -DartifactId=spike</span><br><span class="line">$ <span class="built_in">cd</span> spike</span><br><span class="line">$ mvn eclipse:eclipse</span><br></pre></td></tr></table></figure>
+
+<p>　Emacsを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emacs</span><br></pre></td></tr></table></figure>
+
+<p>　アーキタイプから生成したプロジェクトをEclipseにインポートします。</p>
+<figure class="highlight elm"><table><tr><td class="code"><pre><span class="line"><span class="type">M</span>-x eclim-project-<span class="keyword">import</span></span><br></pre></td></tr></table></figure>
+
+<p>　ミニバッファでProject Directoryを聞かれるのでプロジェクトのディレクトリを指定します。</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Project</span> Directory: ~<span class="regexp">/java_apps/</span>spike<span class="regexp">/</span></span><br></pre></td></tr></table></figure>
+
+<p>　<code>Hello world!</code>に日付を追加しました。</p>
+<ul>
+<li>~/java_apps/spike/src/main/java/com/example/App.java</li>
+</ul>
+<figure class="highlight java"><figcaption><span>~/java_apps/spike/src/main/java/com/example/App.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Hello world!</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">( String[] args )</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Date date = <span class="keyword">new</span> Date();</span><br><span class="line">        System.out.println( <span class="string">"Hello World!: "</span> + date.getMinutes());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　<code>date.get</code>まで入力するとポッップアップとミニバッファに候補が表示されます。カーソルで<code>getMinutes</code>を選択してエンターを押します。</p>
+<p><img src="/2017/08/03/emacs-eclim-java/eclim.png" alt="eclim.png"></p>
+<p>　<code>C-x C-s</code>でファイルを保存すると<code>Eclim reports 0 errors, 1 warnings.</code>と表示されます。<code>getMinutes</code>にアンダーラインが引かれそこにカーソルを移動するとミニバッファにエラーメッセージが出ます。Hello worldなのでここでは無視します。</p>
+<p><img src="/2017/08/03/emacs-eclim-java/eclim2.png" alt="eclim2.png"></p>
+<p>　mainメソッドがあるJavaファイルをバッファに表示して<code>eclim-run-class</code>を実行するとコンパイルとmainメソッドが走ります。</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">M-x eclim-<span class="built_in">run</span>-<span class="built_in">class</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/08/03/emacs-eclim-java/eclim3.png" alt="eclim3.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TreasureData/" rel="tag"># TreasureData</a>
+              <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/04/yahoo-geocoder-turfjs-polygon/" rel="prev" title="Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する">
+      <i class="fa fa-chevron-left"></i> Yahoo!ジオコーダAPIとTurf.jsで住所からポリゴンを計算してgeojson.ioに描画する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/08/sensortag-kafka-streams/" rel="next" title="Kafka StreamsでSensorTagをウィンドウ集計をする">
+      Kafka StreamsでSensorTagをウィンドウ集計をする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#仮想マシン"><span class="nav-number">1.</span> <span class="nav-text">仮想マシン</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java"><span class="nav-number">2.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse-Oxygen"><span class="nav-number">3.</span> <span class="nav-text">Eclipse Oxygen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Emacs"><span class="nav-number">4.</span> <span class="nav-text">Emacs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cask"><span class="nav-number">4.1.</span> <span class="nav-text">Cask</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclim"><span class="nav-number">5.</span> <span class="nav-text">Eclim</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#サンプルプロジェクト"><span class="nav-number">6.</span> <span class="nav-text">サンプルプロジェクト</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="EclipseでOSGiバンドルのHello Worldを開発してEclipse Kuraにリモートからデプロイします。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eclipse IoT の紹介 - Part3: Eclipse KuraでOSGiのHello World">
+<meta property="og:url" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="EclipseでOSGiバンドルのHello Worldを開発してEclipse Kuraにリモートからデプロイします。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world1.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world2.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world3.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world4.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world5.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world6.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world7.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world8.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world9.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world10.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world11.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world12.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world13.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world14.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world15.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world16.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world17.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world18.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world19.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world20.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world21.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world22.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world23.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world23.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world24.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world25.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world26.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world27.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world28.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world29.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world30.png">
+<meta property="article:published_time" content="2017-02-06T06:46:59.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.615Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Eclipse">
+<meta property="article:tag" content="EclipseIoT">
+<meta property="article:tag" content="EclipseKura">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/hello-world1.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Eclipse IoT の紹介 - Part3: Eclipse KuraでOSGiのHello World | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/02/06/eclipse-iot-hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Eclipse IoT の紹介 - Part3: Eclipse KuraでOSGiのHello World
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 6 2017 15:46:59" itemprop="dateCreated datePublished" datetime="2017-02-06T15:46:59+09:00">Feb 6 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/EclipseIoT/" itemprop="url" rel="index"><span itemprop="name">EclipseIoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">EclipseでOSGiバンドルのHello Worldを開発してEclipse Kuraにリモートからデプロイします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　はじめに<a href="http://www.eclipse.org/kura/" target="_blank" rel="noopener">Eclipse Kura</a>で採用されているOSGiについて少し復習してから、<a href="http://eclipse.github.io/kura/doc/hello-example.html" target="_blank" rel="noopener">ドキュメントサイト</a>にある簡単なHello Woldアプリを開発してEclipse Kuraへデプロイしてみます。</p>
+<a id="more"></a>
+
+<h2 id="OSGiの復習"><a href="#OSGiの復習" class="headerlink" title="OSGiの復習"></a>OSGiの復習</h2><p>　OSGiはEclipseのプラグインの仕組みに採用されているので名前を聞いたことがある方も多いと思います。1999年に設立された<a href="https://www.osgi.org/" target="_blank" rel="noopener">OSGi Alliance</a>が仕様を策定しています。</p>
+<p>　もともと「Open Service Gateway Initiative」と呼ばれるように、家庭やオフィスに設置したゲートウェイ端末上で家電やセンサーなどを制御するプログラムを動かすためのプラットフォームの仕様でした。その後ゲートウェイ以外に車載や組込機器、工場などエンタープライズの分野に採用が広が���ます。</p>
+<h3 id="OSGiバンドルとOSGiフレームワーク"><a href="#OSGiバンドルとOSGiフレームワーク" class="headerlink" title="OSGiバンドルとOSGiフレームワーク"></a>OSGiバンドルとOSGiフレームワーク</h3><p>　リモートから動的にJavaモジュールを追加、更新できるのが特徴です。このモジュールをOSGiバンドルと呼びます。クラスファイルやリソースファイル、マニフェストなどを含んだ通常のjarファイルです。</p>
+<p>　OSGiバンドルはJVMで動作するOSGiフレームワークにインストールします。Eclipse KuraではOSGiフレームワークの実装として<a href="https://projects.eclipse.org/projects/rt.equinox" target="_blank" rel="noopener">Eclipse Equinox</a>が採用されています。アプリケーションのコンポーネント化技術として他のモジュールを停止せずに機能の追加や更新ができます。現在主流になりつつあるコンテナ技術をベースにしたマイクロサービスのアーキテクチャと似ています。<a href="http://qiita.com/masato/items/912a447698f172dbb45b" target="_blank" rel="noopener">前回</a>調査した、<a href="https://resin.io/" target="_blank" rel="noopener">Resin.io</a>や<a href="https://www.ubuntu.com/core" target="_blank" rel="noopener">Ubuntu Core</a>もIoT Gatewayのアプリケーション管理に同様のコンテナ化のアプローチを取っています。</p>
+<h2 id="Working-Setの作成"><a href="#Working-Setの作成" class="headerlink" title="Working Setの作成"></a>Working Setの作成</h2><p>　ここからEclipse使いHello Wolrdアプリを開発していきます。まずEclipseで複数のプロジェクトを管理する仕組みとしてワーキングセットを使います。パッケージエクスプローラの三角マークをクリックし���、表示する単位をワーキングセットにします。適当な名前をつけて新しいワーキングセットを作成します。今回は「Kura Projects」にしました。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">P<span class="function"><span class="title">ackage</span> Exploler -&gt;</span> T<span class="function"><span class="title">op</span> Level Elements -&gt;</span> Working Sets</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world1.png" alt="hello-world1.png"></p>
+<h3 id="サンプルプロジェクトをインポート"><a href="#サンプルプロジェクトをインポート" class="headerlink" title="サンプルプロジェクトをインポート"></a>サンプルプロジェクトをインポート</h3><p>　<a href="https://eclipse.github.io/kura/doc/kura-setup.html" target="_blank" rel="noopener">Getting Started</a>にあるKuraのサンプルワークスペースから以下の6つのプロジェクトをEclipseにインポートします。</p>
+<ul>
+<li>org.eclipse.kura.demo.heater</li>
+<li>org.eclipse.kura.emulator</li>
+<li>org.eclipse.kura.example.beacon</li>
+<li>org.eclipse.kura.example.ble.tisensortag</li>
+<li>org.eclipse.kura.example.publisher</li>
+<li>target-definition</li>
+</ul>
+<p>　<a href="http://www.eclipse.org/downloads/download.php?file=/kura/releases/2.0.2/user_workspace_archive_2.0.2.zip" target="_blank" rel="noopener">Kura User Workspace archive</a>をダウンロードします。Eclipse Kuraは2.0.2をインストールしているので同じバージョンを使います。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ wget http:<span class="regexp">//</span>www.eclipse.org<span class="regexp">/downloads/</span>download.php?file=<span class="regexp">/kura/</span>releases<span class="regexp">/2.0.2/u</span>ser_workspace_archive_2.<span class="number">0.2</span>.zip</span><br></pre></td></tr></table></figure>
+
+
+<p>　ダウンロードしたzipファイルをEclipseにインポートします。プロジェクトは先ほど作成した<code>Kura Projets</code>に追加します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">F<span class="function"><span class="title">ile</span> -&gt;</span> I<span class="function"><span class="title">mport</span> -&gt;</span> G<span class="function"><span class="title">eneral</span> -&gt;</span> Existing Projects into Workspace</span><br><span class="line">S<span class="function"><span class="title">elect</span> archive file -&gt;</span> <span class="function"><span class="title">user_workspace_archive_2</span>.0.2.zip　-&gt;</span> A<span class="function"><span class="title">dd</span> projects to working sets -&gt;</span> <span class="function"><span class="title">select</span> -&gt;</span> Kura Projects</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="プロジェクトの再ビルド"><a href="#プロジェクトの再ビルド" class="headerlink" title="プロジェクトの再ビルド"></a>プロジェクトの再ビルド</h3><p>　target-definitionプロジェクトにあるkura-equinox_3.8.1.targetをTarget Editorで開きます。</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line">target-<span class="keyword">definition</span>/kura-equinox_3<span class="number">.8</span><span class="number">.1</span>.target -&gt; 右クリック -&gt; Open With -&gt; Target Editor</span><br></pre></td></tr></table></figure>
+
+<p>　Target Platformをリセットしてプロジェクトを再ビルドします。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">Difinitionタブ -&gt; <span class="keyword">Set</span> <span class="built_in">as</span> Target Platformをクリック</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world2.png" alt="hello-world2.png"></p>
+<h2 id="Plug-in-プロジェクト"><a href="#Plug-in-プロジェクト" class="headerlink" title="Plug-in プロジェクト"></a>Plug-in プロジェクト</h2><p>　OSGiバンドルの開発はPlug-inプロジェクトで行います。　ウィザードを使いプロジェクトを作成します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">F<span class="function"><span class="title">ile</span> -&gt;</span> N<span class="function"><span class="title">ew</span> -&gt;</span> P<span class="function"><span class="title">roject</span> -&gt;</span> P<span class="function"><span class="title">lug</span>-<span class="built_in">in</span> Development  -&gt;</span> Plug-<span class="built_in">in</span> Project</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world3.png" alt="hello-world3.png"></p>
+<p>　<a href="http://eclipse.github.io/kura/doc/hello-example.html" target="_blank" rel="noopener">Hello World Example</a>の例に沿って新しいプロジェクトを作成します。</p>
+<ul>
+<li>Project name: org.eclipse.kura.example.hello_osgi</li>
+<li>Target Platform: an OSGi framework: チェック</li>
+<li>選択: standard</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world4.png" alt="hello-world4.png"></p>
+<p>　ダイアログを次に進みプラグインのプロパティを設定します。</p>
+<ul>
+<li><p>Name: Hello World Example with Logger</p>
+</li>
+<li><p>Execution Environment : JavaSE-1.8</p>
+</li>
+<li><p>Generate an activator… : チェックしない</p>
+</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world5.png" alt="hello-world5.png"></p>
+<p>　<code>Kura Projects</code>ワーキングセットに<code>eclipse.kura.example.hello_osgi</code>が作成されました。</p>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world6.png" alt="hello-world6.png"></p>
+<h3 id="MANIFEST-MFの編集"><a href="#MANIFEST-MFの編集" class="headerlink" title="MANIFEST.MFの編集"></a>MANIFEST.MFの編集</h3><p>　OSGiバンドルはバンドルのマニフェストファイルを含むjarファイルです。ここにバンドルのメタデータを定義します。プロジェクトに作成された<code>META-INF/MANIFEST.MF</code>をPlug-in Manifest Editorで開きDependenciesタブをクリックします。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">META-INF/MANIFEST.MFを右クリック -&gt; <span class="keyword">Open</span> With -&gt; Plug-<span class="built_in">in</span> Manifest Editor -&gt; <span class="keyword">Dependencies</span>タブ</span><br></pre></td></tr></table></figure>
+
+<p>　dependenciesにjarファイルを追加してファイルの変更を保存します。</p>
+<ul>
+<li>Automated Management of Dependencies を開く</li>
+<li>Add -&gt; org.eclipse.osgi.services -&gt; OK</li>
+<li>Add -&gt; slf4j.api -&gt; OK</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world7.png" alt="hello-world7.png"></p>
+<p>　作成されたMANIFEST.MFはEclipseでOpenJDK 8を利用しているため<code>JavaSE-1.8</code>となっています。Java 1.8のままOSGiバンドルをエクスポートすると<code>Export Plug-ins&#39; has encountered a problem.</code>のエラーが出るためJavaSE-1.7に変更します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Bundle-ManifestVersion: 2</span><br><span class="line">Bundle-Name: Hello World Example with Logger</span><br><span class="line">Bundle-SymbolicName: org.eclipse.kura.example.hello_osgi</span><br><span class="line">Bundle-Version: 1.0.0.qualifier</span><br><span class="line">Bundle-RequiredExecutionEnvironment: JavaSE-1.7</span><br><span class="line">Import-Package: org.osgi.service.component;version&#x3D;&quot;1.2.0&quot;,</span><br><span class="line"> org.slf4j;version&#x3D;&quot;1.6.4&quot;</span><br><span class="line">Service-Component: component.xml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Bundle-RequiredExecutionEnvironment: JavaSE-1.7</li>
+</ul>
+<h3 id="Javaクラスの作成"><a href="#Javaクラスの作成" class="headerlink" title="Javaクラスの作成"></a>Javaクラスの作成</h3><p>　プロジェクトにサンプルにあるJavaクラスを作成してactivate()、deactivate()メソッドを定義します。この2つのメソッドはKuraのOSGiフレームワークによってインスタンスがActivate (活性化) 、Deactivate (非活性化)したときに実行され、OSGiバンドルをstart/stopした時に標準出力します。あとでに<code>component.xml</code>に指定します。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">プロジェクトを右クリック -&gt;  New -&gt; <span class="keyword">Class</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Source folder: org.eclipse.kura.example.hello_osgi/src</li>
+<li>Package field: org.eclipse.kura.example.hello_osgi</li>
+<li>Name field: HelloOsgi</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">package org.eclipse.kura.example.hello_osgi;</span><br><span class="line"></span><br><span class="line">import org.osgi.service.component.ComponentContext;</span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line">public class HelloOsgi &#123;</span><br><span class="line"></span><br><span class="line">    private static final Logger s_logger &#x3D; LoggerFactory.getLogger(HelloOsgi.class);</span><br><span class="line">    private static final String APP_ID &#x3D; &quot;org.eclipse.kura.example.hello_osgi&quot;;</span><br><span class="line"></span><br><span class="line">    protected void activate(ComponentContext componentContext) &#123;</span><br><span class="line">        s_logger.info(&quot;Bundle &quot; + APP_ID + &quot; has started!&quot;);</span><br><span class="line">        s_logger.info(APP_ID + &quot;: This is a debug message.&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected void deactivate(ComponentContext componentContext) &#123;</span><br><span class="line">        s_logger.info(&quot;Bundle &quot; + APP_ID + &quot; has stopped!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MANIFEST-MFにパッケージを追加"><a href="#MANIFEST-MFにパッケージを追加" class="headerlink" title="MANIFEST.MFにパッケージを追加"></a>MANIFEST.MFにパッケージを追加</h3><p>　MANIFEST.MFファイルをPlug-in Manifest Editorで開きDependencisesタブをクリックします。<code>Automated Management of Dependencies</code>メニューの<code>add dependencies</code> リンクをクリックすると、Javaファイルのimport宣言をベースにして<code>Imported Packages</code>に自動的にjarファイルが追加されます。</p>
+<ul>
+<li>org.osgi.service.component (1.2.0)</li>
+<li>org.slf4j (1.6.4)</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world8.png" alt="hello-world8.png"></p>
+<p>　忘れずにMANIFEST.MFファイルの変更を保存して反映しておきます。</p>
+<h3 id="component-xmlの作成"><a href="#component-xmlの作成" class="headerlink" title="component.xmlの作成"></a>component.xmlの作成</h3><p>　次にOSGiコンポーネント定義ファイルの<code>component.xml</code>を作成します。このファイルでHelloOsgi.javaのインスタンスをコンポーネントに定義します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">プロジェクトを右クリック -&gt; N<span class="function"><span class="title">ew</span> -&gt;</span> O<span class="function"><span class="title">ther</span> -&gt;</span> P<span class="function"><span class="title">lug</span>-<span class="built_in">in</span> Development -&gt;</span> Component Definition</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world9.png" alt="hello-world9.png"></p>
+<p>　現在のプロジェクトのフォルダが選択されていることを確認して、<code>Class</code>の右にあるBrowseボタンをクリッ���します。</p>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world10.png" alt="hello-world10.png"></p>
+<p>　Select entriesのフィールドに<code>hello</code>と入力して先ほど作成したJavaクラスを選択してOKボタンをクリックします。</p>
+<ul>
+<li>Select entries: hello</li>
+<li>Matching items: HelloOsgi</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world11.png" alt="hello-world11.png"></p>
+<p>　ウィザードに戻ると選択したクラスが入力された状態になります。最後に<code>component.xml</code>ファイルを保存する<code>OSGI-INF</code>フォルダを入力します。Finishボタンをクリックしてウィザードは終了です。</p>
+<ul>
+<li>Enter or select the parent folder: org.eclipse.kura.example.hello_osgi/OSGI-INF</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world12.png" alt="hello-world12.png"></p>
+<p>　component.xmlをComponent Definition Editorで開きます。コンポーネントのライフサイクルは、OSGiフレームワークが管理します。Activate　(活性化)、Deactivate (非活性化)のサイクルで実行するコンポーネントのメソッドを指定します。</p>
+<ul>
+<li>Activate: activate</li>
+<li>Deactivate: deactivate</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world13.png" alt="hello-world13.png"></p>
+<p>　XMLファイルのコンポーネント定義が作成されました。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;scr:component xmlns:scr&#x3D;&quot;http:&#x2F;&#x2F;www.osgi.org&#x2F;xmlns&#x2F;scr&#x2F;v1.1.0&quot; activate&#x3D;&quot;activate&quot; deactivate&#x3D;&quot;deactivate&quot; name&#x3D;&quot;org.eclipse.kura.example.hello_osgi&quot;&gt;</span><br><span class="line">   &lt;implementation class&#x3D;&quot;org.eclipse.kura.example.hello_osgi.HelloOsgi&quot;&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;scr:component&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="OSGiバンドルのエクスポート"><a href="#OSGiバンドルのエクスポート" class="headerlink" title="OSGiバンドルのエクスポート"></a>OSGiバンドルのエクスポート</h2><p>　ここまで開発したOSGiバンドルをエクスポートしてEclipse KuraのOSGiフレームワークにデプロイする準備をします。OSGiバンドルのデプロイ方法は、スタンドアロンのOSGiプラグイン形式と、デプロイ管理サービスを使うDeploymentパッケージの2つあります。</p>
+<h3 id="OSGiプラグイン"><a href="#OSGiプラグイン" class="headerlink" title="OSGiプラグイン"></a>OSGiプラグイン</h3><p>　最初にスタンドアロンのOSGiプラグインとしてOSGiバンドルを作成します。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">プロジェクトを右クリック -&gt; <span class="keyword">Export</span> -&gt; Plug-<span class="built_in">in</span> Development -&gt; Deployable plug-ins and fragments</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world14.png" alt="hello-world14.png"></p>
+<p><code>Available Plug-ins and Fragments</code>で作成したOSGiプラグインを選択します。</p>
+<ul>
+<li>org.eclipse.kura.example.hello_osgi</li>
+</ul>
+<p>　Directoryをチェックして右のBrowseボタンをクリックします。jarファイルを保存するローカルのファイルシステムの場所を選択します。</p>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world15.png" alt="hello-world15.png"></p>
+<p>　<code>MANIFEST.MF</code>をJavaSE-1.8をJavaSE-1.7に変更していない場合はこのエクスポートの時にエラーになるため確���しておきます。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Bundle-RequiredExecutionEnvironment: JavaSE-1.7</span><br></pre></td></tr></table></figure>
+
+
+<p>　Finishボタンでウィザードを終了すると以下のように指定したフォルダにjarファイルがエクスポートされます。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">~/myPlugins/plugins/org<span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi_1</span>.<span class="number">0.0</span>.<span class="number">201702060832</span>.jar</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Deploymentパッケージ"><a href="#Deploymentパッケージ" class="headerlink" title="Deploymentパッケージ"></a>Deploymentパッケージ</h3><p>　次はもう一つのDeploymentパッケージを作成します。拡張子は<code>*.dp</code>のファイルです。<code>*.dpp</code>のパッケージ定義ファイルからビルドして複数のOSGiバンドルをパッケージ化できます。dpファイルはデプロイ管理サービスを使いリモートのEclipse Kuraにデプロイすることができます。</p>
+<p>　最初にdppとdpファイルをエクスポートするフォルダ<code>resources/dp</code>を作成します。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">プロジェクトを右クリック <span class="selector-tag">-</span>&gt; <span class="selector-tag">New</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">Folder</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>folder name: resources/dpを作成</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world16.png" alt="hello-world16.png"></p>
+<p>　<code>Deployment Package Definition</code>ウィザードを起動してDeploymentパッケージ定義のdppファイルを作成します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">F<span class="function"><span class="title">ile</span> -&gt;</span> N<span class="function"><span class="title">ew</span> -&gt;</span> O<span class="function"><span class="title">ther</span> -&gt;</span> OSG<span class="function"><span class="title">i</span> -&gt;</span> Deployment Package Definition</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world17.png" alt="hello-world17.png"></p>
+<p>　ファイルを出力するフォルダとファイル名を指定します。</p>
+<ul>
+<li>Target folder: /org.eclipse.kura.example.hello_osgi/resources/dp</li>
+<li>File name: hello_osgi</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world18.png" alt="hello-world18.png"></p>
+<p>　Finishボタンでウィザードを終了すると<code>resources/dp/hello_osgi.dpp</code>に定義ファイルが作成されます。</p>
+<p>　次にhello_osgi.dppファイルをDeployment Editorで開きます。BundlesタブにあるNewボタンをクリックして新しい行を作成したあと、Bundle Pathセルにある<code>...</code>ボタンをクリックします。ここで先ほどmyPluginsフォルダにエクスポートしたOSGiプラグインのjarファイルを選択します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">N<span class="function"><span class="title">ew</span> -&gt;</span> B<span class="function"><span class="title">undle</span> Path column -&gt;</span> Browse</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world19.png" alt="hello-world19.png"></p>
+<p>　Headersタブは以下のようにキーが入力されます。</p>
+<ul>
+<li>DeploymentPackage-SymbolicName: hello_osgi</li>
+<li>DeploymentPackage-Version: 1.0.0</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world20.png" alt="hello-world20.png"></p>
+<p>　dppファイルから<code>Quick Build</code>するとhello_osgi.dpが作成されます。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">resources</span>/dp/hello_osgi.dppを右クリック -&gt;</span> Quick Build</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world21.png" alt="hello-world21.png"></p>
+<h2 id="OSGiバンドルのデプロイ-Local-Emulation-Mode"><a href="#OSGiバンドルのデプロイ-Local-Emulation-Mode" class="headerlink" title="OSGiバンドルのデプロイ - Local Emulation Mode"></a>OSGiバンドルのデプロイ - Local Emulation Mode</h2><p>　<a href="http://eclipse.github.io/kura/doc/deploying-bundles.html" target="_blank" rel="noopener">Deploying Bundles</a>のページを読みながらOSGiバンドルをデプロイします。</p>
+<h3 id="エミュレータの起動"><a href="#エミュレータの起動" class="headerlink" title="エミュレータの起動"></a>エミュレータの起動</h3><p>　最初に試す<a href="http://eclipse.github.io/kura/doc/deploying-bundles.html#local-emulation-mode" target="_blank" rel="noopener">Local Emulation Mode</a>はLinuxとmacOSだけで動作するモードです。KuraのエミュレータをEclipse上で起動してここにOSGiバンドルをデプロイします。</p>
+<p>　 他のプロジェクトが開いているとエミュレータを起動した時に一緒に動いてしまうので、Working SetはインポートしたKuraのサンプルプロジェクトの<code>org.eclipse.kura.emulator</code>と<code>hello_osgi</code>を残し他はcloseしておきます。</p>
+<p>　macOSの場合src/main/resourcesフォルダにあるKura_Emulator_OSXを起動します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">/<span class="function"><span class="title">org</span>.eclipse.kura.emulator/src/main/resources/Kura_Emulator_OSX.launch ファイル -&gt;</span> 右クリック -&gt; R<span class="function"><span class="title">un</span> <span class="keyword">as</span> -&gt;</span> Kura_Emulator_OSX</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world22.png" alt="hello-world22.png"></p>
+<p>　エミュレータが起動するとhello_osgiのOSGiバンドルにある<code>activate()</code>メソッドが自動的に開始します。EclipseのConsoleにHelloOsgiのログが出力されました。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">13<span class="selector-pseudo">:47</span><span class="selector-pseudo">:07</span>,009 <span class="selector-attr">[Component Resolve Thread]</span> <span class="selector-tag">INFO</span>  <span class="selector-tag">HelloOsgi</span><span class="selector-pseudo">:13</span>  <span class="selector-tag">-</span> <span class="selector-tag">Bundle</span> <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span> <span class="selector-tag">has</span> <span class="selector-tag">started</span>!</span><br><span class="line">13<span class="selector-pseudo">:47</span><span class="selector-pseudo">:07</span>,009 <span class="selector-attr">[Component Resolve Thread]</span> <span class="selector-tag">INFO</span>  <span class="selector-tag">HelloOsgi</span><span class="selector-pseudo">:14</span>  <span class="selector-tag">-</span> <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span>: <span class="selector-tag">This</span> <span class="selector-tag">is</span> <span class="selector-tag">a</span> <span class="selector-tag">debug</span> <span class="selector-tag">message</span>.</span><br><span class="line"><span class="selector-tag">Framework</span> <span class="selector-tag">is</span> <span class="selector-tag">running</span> <span class="selector-tag">in</span> <span class="selector-tag">emulation</span> <span class="selector-tag">mode</span></span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world23.png" alt="hello-world23.png"></p>
+<h3 id="OSGiコンソール"><a href="#OSGiコンソール" class="headerlink" title="OSGiコンソール"></a>OSGiコンソール</h3><p>　ConsoleウィンドウをクリックしてEnterキーを押すとOSGiコンソールの<code>osgi&gt;</code>プロンプトが表示されます。ssコマンドでインストールされたOSGiバンドルのリストを表示することができます。バンドルID: 40が今回作成したhello_osgiのOSGiバンドルです。</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">osgi&gt; ss</span><br><span class="line">id	State       Bundle</span><br><span class="line"><span class="number">0</span>	<span class="literal">ACTIVE</span>      org.eclipse.osgi_3<span class="number">.8</span><span class="number">.1</span>.v20120830<span class="number">-144521</span></span><br><span class="line">true            Fragments=<span class="number">2</span></span><br><span class="line"><span class="number">1</span>	<span class="literal">ACTIVE</span>      org.eclipse.equinox.cm_1<span class="number">.0</span><span class="number">.400</span>.v20120522<span class="number">-1841</span></span><br><span class="line"><span class="number">2</span>	RESOLVED    org.eclipse.kura.sun.misc_1<span class="number">.0</span><span class="number">.0</span></span><br><span class="line">true            Master=<span class="number">0</span></span><br><span class="line"><span class="number">3</span>	<span class="literal">ACTIVE</span>      org.eclipse.equinox.common_3<span class="number">.6</span><span class="number">.100</span>.v20120522<span class="number">-1841</span></span><br><span class="line">...</span><br><span class="line"><span class="number">38</span>	<span class="literal">ACTIVE</span>      org.apache.felix.gogo.runtime_0<span class="number">.8</span><span class="number">.0</span>.v201108120515</span><br><span class="line"><span class="number">39</span>	<span class="literal">ACTIVE</span>      org.apache.commons.fileupload_1<span class="number">.2</span><span class="number">.2</span>.v20111214<span class="number">-1400</span></span><br><span class="line"><span class="number">40</span>	<span class="literal">ACTIVE</span>      org.eclipse.kura.example.hello_osgi_1<span class="number">.0</span><span class="number">.0</span>.qualifier</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world23.png" alt="hello-world24.png"></p>
+<p>　stopコマンドにバンドルIDを指定して　OSGiバンドルを停止させます。<code>deactivate()</code>メソッドが実行され定義してあるメッセージが出力されました。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">osgi</span>&gt; <span class="selector-tag">stop</span> 40</span><br><span class="line">09<span class="selector-pseudo">:39</span><span class="selector-pseudo">:38</span>,217 <span class="selector-attr">[Gogo shell]</span> <span class="selector-tag">INFO</span>  <span class="selector-tag">HelloOsgi</span><span class="selector-pseudo">:18</span>  <span class="selector-tag">-</span> <span class="selector-tag">Bundle</span> <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span> <span class="selector-tag">has</span> <span class="selector-tag">stopped</span>!</span><br></pre></td></tr></table></figure>
+
+<p>　同様にuninstallコマンドにバンドルIDを指定するとOSGiバンドルを削除することができます。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">osgi</span>&gt; <span class="selector-tag">uninstall</span> 40</span><br><span class="line"><span class="selector-tag">osgi</span>&gt; </span><br><span class="line"><span class="selector-tag">osgi</span>&gt; <span class="selector-tag">ss</span></span><br><span class="line">...</span><br><span class="line">38	<span class="selector-tag">ACTIVE</span>      <span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.felix</span><span class="selector-class">.gogo</span><span class="selector-class">.runtime_0</span><span class="selector-class">.8</span><span class="selector-class">.0</span><span class="selector-class">.v201108120515</span></span><br><span class="line">39	<span class="selector-tag">ACTIVE</span>      <span class="selector-tag">org</span><span class="selector-class">.apache</span><span class="selector-class">.commons</span><span class="selector-class">.fileupload_1</span><span class="selector-class">.2</span><span class="selector-class">.2</span><span class="selector-class">.v20111214-1400</span></span><br><span class="line">41	<span class="selector-tag">ACTIVE</span>      <span class="selector-tag">org</span><span class="selector-class">.hsqldb</span><span class="selector-class">.hsqldb_2</span><span class="selector-class">.3</span><span class="selector-class">.0</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p>　OSGiコンソールから直接OSGiバンドルをインストールしてみます。引数にはOSGiプラグインのjarを指定します。今度はバンドルID: 66でデプロイされました。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">osgi&gt; install file:/Users/mshimizu/myPlugins/plugins/org.eclipse.kura.example.hello_osgi_1<span class="number">.0</span><span class="number">.0</span><span class="number">.201702060832</span>.jar</span><br><span class="line">Bundle id <span class="keyword">is</span> <span class="number">66</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world24.png" alt="hello-world24.png"></p>
+<p>　startコマンドにバンドルIDを指定してOSGiバンドルを起動します。<code>activate()</code>メソッドに定義したメッセージが標準出力されました。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">osgi</span>&gt; <span class="selector-tag">start</span> 66</span><br><span class="line">14<span class="selector-pseudo">:11</span><span class="selector-pseudo">:37</span>,276 <span class="selector-attr">[Component Resolve Thread (Bundle 29)]</span> <span class="selector-tag">INFO</span>  <span class="selector-tag">HelloOsgi</span><span class="selector-pseudo">:13</span>  <span class="selector-tag">-</span> <span class="selector-tag">Bundle</span> <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span> <span class="selector-tag">has</span> <span class="selector-tag">started</span>!</span><br><span class="line">14<span class="selector-pseudo">:11</span><span class="selector-pseudo">:37</span>,276 <span class="selector-attr">[Component Resolve Thread (Bundle 29)]</span> <span class="selector-tag">INFO</span>  <span class="selector-tag">HelloOsgi</span><span class="selector-pseudo">:14</span>  <span class="selector-tag">-</span> <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span>: <span class="selector-tag">This</span> <span class="selector-tag">is</span> <span class="selector-tag">a</span> <span class="selector-tag">debug</span> <span class="selector-tag">message</span>.</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world25.png" alt="hello-world25.png"></p>
+<h2 id="OSGiバンドルのデプロイ-Remote-Target-Device"><a href="#OSGiバンドルのデプロイ-Remote-Target-Device" class="headerlink" title="OSGiバンドルのデプロイ - Remote Target Device"></a>OSGiバンドルのデプロイ - Remote Target Device</h2><p>　最後に<a href="https://masato.github.io/2017/01/29/eclipse-iot-kura-install/">前回</a>Raspberry Pi 2にインストールしたEclipse KuraのOSGiフレームワークに<a href="http://eclipse.github.io/kura/doc/deploying-bundles.html#remote-target-device" target="_blank" rel="noopener">リモートから</a>OSGiバンドルをデプロイしてみます。Raspberry Pi 2はmacOSと有線LANで接続してmDNSで名前解決できるように���ておきます。</p>
+<h3 id="mToolkitのFrameworksビュー"><a href="#mToolkitのFrameworksビュー" class="headerlink" title="mToolkitのFrameworksビュー"></a>mToolkitのFrameworksビュー</h3><p>　Eclipseにインストールした<a href="http://dz.prosyst.com/pdoc/mBS_SDK_8.1/eclipse_plugins/mtoolkit/introduction.html" target="_blank" rel="noopener">mToolkit</a>プラグインからリモートのOSGiフレームワークに接続してみます。最初にmToolkitのFrameworksビューを開きます。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">W<span class="function"><span class="title">indow</span> -&gt;</span> S<span class="function"><span class="title">how</span> View -&gt;</span> O<span class="function"><span class="title">ther</span> -&gt;</span>  <span class="function"><span class="title">mToolkit</span> -&gt;</span> Frameworks</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world26.png" alt="hello-world26.png"></p>
+<p>　Frameworksビューを右クリックしてOSGiフレームワークを追加します。</p>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">右クリック -&gt; <span class="keyword">Add</span> Framework</span><br></pre></td></tr></table></figure>
+
+<p>　macOSと有線LANで接続したRaspberry Pi 2の名前とアドレスを入力します。mDNSで名前解決する場合は<code>raspberrypi.local</code>、または直接IPアドレスを入力します。</p>
+<ul>
+<li>Name: RPi2</li>
+<li>Address: raspberrypi.local</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world27.png" alt="hello-world27.png"></p>
+<p>　Framework名は適当に「RPi2」と名前をつけました。右クリックして接続します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">F<span class="function"><span class="title">ramework</span>名を右クリック -&gt;</span> Connect Framework</span><br></pre></td></tr></table></figure>
+
+<p>　OSGiフレームワークのKuraはファイアウォールでポートを許可する必要があります。KuraのWeb UIからファイアウォールの設定を確認します。</p>
+<p><a href="http://raspberrypi.local/kura" target="_blank" rel="noopener">http://raspberrypi.local/kura</a></p>
+<p>　OSGiフレームワークへの接続は1450ポートを使います。デフォルトで許可されていました。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">F<span class="function"><span class="title">irewall</span> -&gt;</span> O<span class="function"><span class="title">pen</span> Portsタブ -&gt;</span> <span class="number">1450</span>の許可</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Port or Port Range: 1450</li>
+<li>Protocol: tcp</li>
+<li>Permitted Network: 0.0.0.0/0</li>
+<li>Permitted Interface Name: eth0</li>
+</ul>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world28.png" alt="hello-world28.png"></p>
+<h3 id="OSGiプラグイン-1"><a href="#OSGiプラグイン-1" class="headerlink" title="OSGiプラグイン"></a>OSGiプラグイン</h3><p>スタンドアロンのOSGiプラグインのjarを選択してデプロイします。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">* <span class="selector-tag">mToolkit</span> <span class="selector-tag">Frameworks</span>ビュー <span class="selector-tag">-</span>&gt; <span class="selector-tag">Framework</span>名を右クリック <span class="selector-tag">-</span>&gt;  <span class="selector-tag">Install</span> <span class="selector-tag">Bundle</span> <span class="selector-tag">-</span>&gt; <span class="selector-tag">org</span><span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi_1</span><span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.201702060832</span><span class="selector-class">.jar</span></span><br></pre></td></tr></table></figure>
+
+
+<p>　Framework名のBundlesにデプロイしたorg.eclipse.kura.example.hello_osgiが表示されます。</p>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world29.png" alt="hello-world29.png"></p>
+<p>　バンドル名を右クリックしてStart、StopするとOSGiコンソールの時と同じように<code>activate()</code>と<code>deactivate()</code>メソッドのメッセージが表示されます。</p>
+<h3 id="Deploymentパッケージ-1"><a href="#Deploymentパッケージ-1" class="headerlink" title="Deploymentパッケージ"></a>Deploymentパッケージ</h3><p>　以前にインストールしたOSGiバンドルはuninstallしておきます。Framework名を右クリックして今度は<code>Install Deployment Package</code>を選択します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">mToolkit</span> Frameworks view -&gt;</span> F<span class="function"><span class="title">ramework</span>名を右クリック -&gt;</span> Install Deployment Package</span><br></pre></td></tr></table></figure>
+
+<p>　dpファイルは先ほどエクスポートした<code>hello_osgi.dp</code>ファイルを選択します。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">~<span class="regexp">/Documents/</span>workspace<span class="regexp">/org.eclipse.kura.example.hello_osgi/</span>resources<span class="regexp">/dp/</span>hello_osgi.dp</span><br></pre></td></tr></table></figure>
+
+<p>　Deployment Packagesのツリーの中にOSGiバンドルが表示されました。 </p>
+<p><img src="/2017/02/06/eclipse-iot-hello-world/hello-world30.png" alt="hello-world30.png"></p>
+<h3 id="Eclipse-Kuraから確認"><a href="#Eclipse-Kuraから確認" class="headerlink" title="Eclipse Kuraから確認"></a>Eclipse Kuraから確認</h3><p>　Eclipse KuraへmacOSからSSH接続してログを確認します。Hello Worldバンドルのstartとstopのログが表示されています。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">$ ssh pi@raspberrypi.local</span><br><span class="line">$ tail -f /var/log/kura.log</span><br><span class="line">...</span><br><span class="line"><span class="number">2017</span>-<span class="number">02</span>-<span class="number">08</span> <span class="number">12</span>:<span class="number">38</span>:<span class="number">59</span>,<span class="number">923</span> [Component Resolve Thread (Bundle <span class="number">7</span>)] INFO  o<span class="selector-class">.e</span><span class="selector-class">.k</span><span class="selector-class">.e</span><span class="selector-class">.h</span><span class="selector-class">.HelloOsgi</span> - Bundle org<span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span> has started!</span><br><span class="line"><span class="number">2017</span>-<span class="number">02</span>-<span class="number">08</span> <span class="number">12</span>:<span class="number">38</span>:<span class="number">59</span>,<span class="number">925</span> [Component Resolve Thread (Bundle <span class="number">7</span>)] INFO  o<span class="selector-class">.e</span><span class="selector-class">.k</span><span class="selector-class">.e</span><span class="selector-class">.h</span><span class="selector-class">.HelloOsgi</span> - org<span class="selector-class">.eclipse</span><span class="selector-class">.kura</span><span class="selector-class">.example</span><span class="selector-class">.hello_osgi</span>: This is <span class="selector-tag">a</span> debug message.</span><br></pre></td></tr></table></figure>
+
+<p>　teleneでOSGiフレームワークに接続してOSGiバンドルを一覧します。</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">$ telnet localhost <span class="number">5002</span></span><br><span class="line">osgi&gt; ss</span><br><span class="line"><span class="string">"Framework is launched."</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">id	State       Bundle</span><br><span class="line"><span class="number">0</span>	<span class="literal">ACTIVE</span>      org.eclipse.osgi_3<span class="number">.8</span><span class="number">.1</span>.v20120830<span class="number">-144521</span></span><br><span class="line">true            Fragments=<span class="number">2</span></span><br><span class="line"><span class="number">1</span>	<span class="literal">ACTIVE</span>      org.eclipse.equinox.cm_1<span class="number">.0</span><span class="number">.400</span>.v20120522<span class="number">-1841</span></span><br><span class="line"><span class="number">2</span>	RESOLVED    org.eclipse.kura.sun.misc_1<span class="number">.0</span><span class="number">.0</span></span><br><span class="line">...</span><br><span class="line"><span class="number">78</span>	<span class="literal">ACTIVE</span>      org.eclipse.kura.example.hello_osgi_1<span class="number">.0</span><span class="number">.0</span><span class="number">.201702081230</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="OSGiバンドルを永続化する"><a href="#OSGiバンドルを永続化する" class="headerlink" title="OSGiバンドルを永続化する"></a>OSGiバンドルを永続化する</h2><p>　mToolkitからリモートのOSGiフレームワークにデプロイする方法は一時的な方法なのでEclipse Kuraを再起動すると消えてしまいます。</p>
+<h3 id="SCPする場合"><a href="#SCPする場合" class="headerlink" title="SCPする場合"></a>SCPする場合</h3><p>　動作確認が終わったらdpファイルをターゲットデバイスの以下のディレクトリにコピーして永続化します。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/opt/</span>eclipse<span class="regexp">/kura/</span>kura<span class="regexp">/packages</span></span><br></pre></td></tr></table></figure>
+
+<p>　macOSから一度Raspberry Pi 2にSCPでdpファイルを転送してから目的のディレクトリにコピーします。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>scp ~<span class="regexp">/Documents/workspace</span><span class="regexp">/org.eclipse.kura.example.hello_osgi/resources</span><span class="regexp">/dp/hello</span>_osgi.dp pi<span class="variable">@raspberrypi</span>.<span class="symbol">local:</span></span><br><span class="line"><span class="variable">$ </span>ssh pi<span class="variable">@raspberrypi</span>.local</span><br><span class="line"><span class="variable">$ </span>sudo cp ~<span class="regexp">/hello_osgi.dp /opt</span><span class="regexp">/eclipse/kura</span><span class="regexp">/kura/packages</span><span class="regexp">/</span></span><br></pre></td></tr></table></figure>
+
+<p> <code>/opt/eclipse/kura/kura/dpa.properties</code>ファイルに以下の書式でパッケージ名とファイルのパスを追加します。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">package_name=file\<span class="symbol">:/opt/eclipse/kura/kura/packages/package_filename</span>.dp</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">org.eclipse.kura.example.hello_osgi&#x3D;file\:&#x2F;opt&#x2F;eclipse&#x2F;kura&#x2F;kura&#x2F;packages&#x2F;hello_osgi.dp</span><br></pre></td></tr></table></figure>
+
+
+<p> Eclipse Kuraをリスタートします。restartコマンドを使うとプロセスの停止に失敗することがあるので、stop　-&gt; startします。</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">$ sudo /etc/init.d/kura <span class="literal">stop</span></span><br><span class="line">$ sudo /etc/init.d/kura <span class="literal">start</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="KuraのWeb-UIからアップロードする場合"><a href="#KuraのWeb-UIからアップロードする場合" class="headerlink" title="KuraのWeb UIからアップロードする場合"></a>KuraのWeb UIからアップロードする場合</h3><p>　Eclipse KuraのWeb UIにログインしてdpファイルをアップロードしてもOSGiバンドルは永続化されます。Webブラウザからデプロイできるのでこちらの方が簡単です。左のPackageメニューからdpファイルをSubmitします。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">P<span class="function"><span class="title">ackage</span> -&gt;</span> U<span class="function"><span class="title">pload</span> - dpファイル -&gt;</span> Submit</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Eclipse/" rel="tag"># Eclipse</a>
+              <a href="/tags/EclipseIoT/" rel="tag"># EclipseIoT</a>
+              <a href="/tags/EclipseKura/" rel="tag"># EclipseKura</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/02/04/idcf-ubuntu-1610-xrdp/" rel="prev" title="IDCFクラウドのUbuntu 16.04を16.10にupgradeしてxrdpリモートデスクトップ環境を構築する">
+      <i class="fa fa-chevron-left"></i> IDCFクラウドのUbuntu 16.04を16.10にupgradeしてxrdpリモートデスクトップ環境を構築する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/07/27/sensortag-kafka-python-spark-streaming-1/" rel="next" title="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 1: Raspberry Pi 3">
+      PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 1: Raspberry Pi 3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGiの復習"><span class="nav-number">1.</span> <span class="nav-text">OSGiの復習</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSGiバンドルとOSGiフレームワーク"><span class="nav-number">1.1.</span> <span class="nav-text">OSGiバンドルとOSGiフレームワーク</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Working-Setの作成"><span class="nav-number">2.</span> <span class="nav-text">Working Setの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルプロジェクトをインポート"><span class="nav-number">2.1.</span> <span class="nav-text">サンプルプロジェクトをインポート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの再ビルド"><span class="nav-number">2.2.</span> <span class="nav-text">プロジェクトの再ビルド</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Plug-in-プロジェクト"><span class="nav-number">3.</span> <span class="nav-text">Plug-in プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MANIFEST-MFの編集"><span class="nav-number">3.1.</span> <span class="nav-text">MANIFEST.MFの編集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Javaクラスの作成"><span class="nav-number">3.2.</span> <span class="nav-text">Javaクラスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MANIFEST-MFにパッケージを追加"><span class="nav-number">3.3.</span> <span class="nav-text">MANIFEST.MFにパッケージを追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#component-xmlの作成"><span class="nav-number">3.4.</span> <span class="nav-text">component.xmlの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGiバンドルのエクスポート"><span class="nav-number">4.</span> <span class="nav-text">OSGiバンドルのエクスポート</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSGiプラグイン"><span class="nav-number">4.1.</span> <span class="nav-text">OSGiプラグイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploymentパッケージ"><span class="nav-number">4.2.</span> <span class="nav-text">Deploymentパッケージ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGiバンドルのデプロイ-Local-Emulation-Mode"><span class="nav-number">5.</span> <span class="nav-text">OSGiバンドルのデプロイ - Local Emulation Mode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#エミュレータの起動"><span class="nav-number">5.1.</span> <span class="nav-text">エミュレータの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSGiコンソール"><span class="nav-number">5.2.</span> <span class="nav-text">OSGiコンソール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGiバンドルのデプロイ-Remote-Target-Device"><span class="nav-number">6.</span> <span class="nav-text">OSGiバンドルのデプロイ - Remote Target Device</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mToolkitのFrameworksビュー"><span class="nav-number">6.1.</span> <span class="nav-text">mToolkitのFrameworksビュー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSGiプラグイン-1"><span class="nav-number">6.2.</span> <span class="nav-text">OSGiプラグイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploymentパッケージ-1"><span class="nav-number">6.3.</span> <span class="nav-text">Deploymentパッケージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse-Kuraから確認"><span class="nav-number">6.4.</span> <span class="nav-text">Eclipse Kuraから確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSGiバンドルを永続化する"><span class="nav-number">7.</span> <span class="nav-text">OSGiバンドルを永続化する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SCPする場合"><span class="nav-number">7.1.</span> <span class="nav-text">SCPする場合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KuraのWeb-UIからアップロードする場合"><span class="nav-number">7.2.</span> <span class="nav-text">KuraのWeb UIからアップロードする場合</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

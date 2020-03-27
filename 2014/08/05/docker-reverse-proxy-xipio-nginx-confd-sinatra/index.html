@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="以下のサイトを参考に、confdとNginxで動的リバースプロキシを作成してみます。特にconfdは新しいテンプレートを使いたいので、0.6.0-alpha1を利用しています。Experimenting with CoreOS, confd, etcd, fleet, and CloudFormation, Automated Nginx Reverse Proxy for Docker, con">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DockerのHTTP Routing - Part8: xip.io と Nginx と confd 0.6 で動的リバースプロキシ">
+<meta property="og:url" content="http://masato.github.io/2014/08/05/docker-reverse-proxy-xipio-nginx-confd-sinatra/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="以下のサイトを参考に、confdとNginxで動的リバースプロキシを作成してみます。特にconfdは新しいテンプレートを使いたいので、0.6.0-alpha1を利用しています。Experimenting with CoreOS, confd, etcd, fleet, and CloudFormation, Automated Nginx Reverse Proxy for Docker, con">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-08-04T15:37:39.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.601Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DataVolumeContainer">
+<meta property="article:tag" content="xipio">
+<meta property="article:tag" content="Sinatra">
+<meta property="article:tag" content="HTTPRouting">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="nginx-proxy">
+<meta property="article:tag" content="まとめ">
+<meta property="article:tag" content="confd">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/08/05/docker-reverse-proxy-xipio-nginx-confd-sinatra/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DockerのHTTP Routing - Part8: xip.io と Nginx と confd 0.6 で動的リバースプロキシ | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/08/05/docker-reverse-proxy-xipio-nginx-confd-sinatra/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DockerのHTTP Routing - Part8: xip.io と Nginx と confd 0.6 で動的リバースプロキシ
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 5 2014 00:37:39" itemprop="dateCreated datePublished" datetime="2014-08-05T00:37:39+09:00">Aug 5 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">以下のサイトを参考に、confdとNginxで動的リバースプロキシを作成してみます。特にconfdは新しいテンプレートを使いたいので、0.6.0-alpha1を利用しています。Experimenting with CoreOS, confd, etcd, fleet, and CloudFormation, Automated Nginx Reverse Proxy for Docker, confd 0.6.x, xip.ioのサブドメインにリバースプロキシ先のポート番号をprefixして、Nginxは80ポートで複数のserver_nameに応答することができます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-08-06</code>: <a href="/2014/08/06/docker-reverse-proxy-xipio-openresty-sinatra/">DockerのHTTP Routing - Part9: xip.io と OpenResty で動的リバースプロキシ</a></li>
+<li><code>Update 2014-08-07</code>: <a href="/2014/08/07/docker-reverse-proxy-xipio-hipache-sinatra/">DockerのHTTP Routing - Part10: xip.io と Hipache で動的リバースプロキシ</a></li>
+</ul>
+<p>以下のサイトを参考に、confdとNginxで動的リバースプロキシを作成してみます。<br>特にconfdは新しいテンプレートを使いたいので、<code>0.6.0-alpha1</code>を利用しています。</p>
+<ul>
+<li><a href="http://marceldegraaf.net/2014/04/24/experimenting-with-coreos-confd-etcd-fleet-and-cloudformation.html" target="_blank" rel="noopener">Experimenting with CoreOS, confd, etcd, fleet, and CloudFormation</a></li>
+<li><a href="http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/" target="_blank" rel="noopener">Automated Nginx Reverse Proxy for Docker</a></li>
+<li><a href="https://github.com/kelseyhightower/confd/blob/0.6.x/docs/quick-start-guide.md" target="_blank" rel="noopener">confd 0.6.x</a></li>
+</ul>
+<p>xip.ioのサブドメインにリバースプロキシ先のポート番号をprefixして、Nginxは80ポートで複数の<code>server_name</code>に応答することができます。</p>
+<a id="more"></a>
+
+<h3 id="データコンテナの作成"><a href="#データコンテナの作成" class="headerlink" title="データコンテナの作成"></a>データコンテナの作成</h3><p>Dockerfileを作成します。VOLUMEに格納するディレクトリを書きます。nsenterでアタッチするときにbashが必要になるので、busyboxではなくubuntuにしました。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/confd-data/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:trusty</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">VOLUME [<span class="string">"/etc/confd"</span>,<span class="string">"/registry_conf"</span>,<span class="string">"/data"</span>,<span class="string">"/etc/supervisor/conf.d"</span>,<span class="string">"/etc/nginx/sites-enabled"</span>]</span><br><span class="line">CMD [<span class="string">"/bin/bash"</span>]</span><br></pre></td></tr></table></figure>
+
+<p>イメージをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t masato/confd-data .</span><br></pre></td></tr></table></figure>
+
+<p>データコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --name confd-data -i -t -d masato/confd-data /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="condの設定"><a href="#condの設定" class="headerlink" title="condの設定"></a>condの設定</h3><p>nsenterを使い、データコンテナにアタッチします。<br><a href="/2014/08/03/docker-volume-nsenter-mount/">前回</a>作成した<code>~/bin/docker-nester</code>コマンドを使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-nsenter cd887aad372d</span><br></pre></td></tr></table></figure>
+
+<p>データコンテナに<code>/etc/confd/conf.d/nginx.toml</code>ファイルを作成します。まずディレクトリの作成から。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># mkdir -p /etc/confd/conf.d</span></span><br></pre></td></tr></table></figure>
+
+<p>nginx.tomlファイルを作成します。</p>
+<p>myapp1とmyapp2のサブドメイン毎に2つ設定します。これは<a href="https://github.com/kelseyhightower/confd/blob/0.6.x/docs/quick-start-guide.md#create-the-source-template-1" target="_blank" rel="noopener">0.6.x</a>から採用された書式です。</p>
+<figure class="highlight bash"><figcaption><span>/etc/confd/conf.d/myapp1.nginx.toml</span></figcaption><table><tr><td class="code"><pre><span class="line">[template]</span><br><span class="line">prefix = <span class="string">"/myapp1"</span></span><br><span class="line">keys = [</span><br><span class="line">  <span class="string">"/subdomain"</span>,</span><br><span class="line">  <span class="string">"/upstream"</span>,</span><br><span class="line">]</span><br><span class="line">owner       = <span class="string">"nginx"</span></span><br><span class="line">mode        = <span class="string">"0644"</span></span><br><span class="line">src         = <span class="string">"nginx.conf.tmpl"</span></span><br><span class="line">dest        = <span class="string">"/etc/nginx/sites-enabled/myapp1.conf"</span></span><br><span class="line">check_cmd   = <span class="string">"/usr/sbin/nginx -t -c /etc/nginx/nginx.conf"</span></span><br><span class="line">reload_cmd  = <span class="string">"/usr/sbin/service nginx reload"</span></span><br></pre></td></tr></table></figure>
+
+<p>myapp2サブドメイン用のTOMLファイルです。</p>
+<figure class="highlight bash"><figcaption><span>/etc/confd/conf.d/myapp2.nginx.toml</span></figcaption><table><tr><td class="code"><pre><span class="line">[template]</span><br><span class="line">prefix = <span class="string">"/myapp2"</span></span><br><span class="line">keys = [</span><br><span class="line">  <span class="string">"/subdomain"</span>,</span><br><span class="line">  <span class="string">"/upstream"</span>,</span><br><span class="line">]</span><br><span class="line">owner       = <span class="string">"nginx"</span></span><br><span class="line">mode        = <span class="string">"0644"</span></span><br><span class="line">src         = <span class="string">"nginx.conf.tmpl"</span></span><br><span class="line">dest        = <span class="string">"/etc/nginx/sites-enabled/myapp2.conf"</span></span><br><span class="line">check_cmd   = <span class="string">"/usr/sbin/nginx -t -c /etc/nginx/nginx.conf"</span></span><br><span class="line">reload_cmd  = <span class="string">"/usr/sbin/service nginx reload"</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="/2014/07/30/docker-reverse-proxy-nginx-multiple-upstreams/">DockerのHTTP Routing - Part7: Nginx multiple upstreams</a>で調べた書き方で、Nginxの設定ファイルのテンプレートを作成します。<code>0.6.x</code>から<code>getv</code>と<code>getvs</code>が使えます。</p>
+<p>Goの<a href="http://golang.org/pkg/text/template/" target="_blank" rel="noopener">text/template</a>を使っていますが、Railsに慣れていると表現力が乏しいです。特にconfdではユーザー定義関数のFuncMapが自分で追加できないので不便です。テンプレート内ではパスを操作したい場合があるので、<a href="http://golang.org/pkg/strings/#Split" target="_blank" rel="noopener">strings.Split</a>も追加して欲しいです。</p>
+<figure class="highlight html"><figcaption><span>/etc/confd/templates/nginx.conf.tmpl</span></figcaption><table><tr><td class="code"><pre><span class="line">upstream <span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>getv "/subdomain"&#125;&#125; &#123;</span><br><span class="line"><span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>range getvs "/upstream/*"&#125;&#125;</span><br><span class="line">    server <span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>.<span class="symbol">&amp;#125;</span><span class="symbol">&amp;#125;</span>;</span><br><span class="line"><span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>end&#125;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  server_name ~^<span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>getv "/subdomain"<span class="symbol">&amp;#125;</span><span class="symbol">&amp;#125;</span>\.(.*)\.xip\.io$;</span><br><span class="line"></span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_set_header host $host;</span><br><span class="line">    proxy_set_header x-real-ip $remote_addr;</span><br><span class="line">    proxy_set_header x-forwarded-for $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_pass http://<span class="symbol">&amp;#123;</span><span class="symbol">&amp;#123;</span>getv "/subdomain"<span class="symbol">&amp;#125;</span><span class="symbol">&amp;#125;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nginx-etcd-confdのイメージを作成"><a href="#Nginx-etcd-confdのイメージを作成" class="headerlink" title="Nginx + etcd + confdのイメージを作成"></a>Nginx + etcd + confdのイメージを作成</h3><p>今回作成したDockerfileです。etcd, confd, Nginxを1つのコンテナにインストールして使います。</p>
+<p>etcdのインストールはいろいろ方法がありますがGOPATHを指定してから<code>go get</code>することにします。</p>
+<p>confdも<code>go get</code>したかったのですがGitHubからタグをしてしてインストールできないようなので、バイナリをダウンロードします。<br><a href="https://github.com/kelseyhightower/confd/blob/0.6.x/docs/quick-start-guide.md#create-the-source-template-1" target="_blank" rel="noopener">0.6.x Quick Start Guide</a>で採用された書式を利用します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/nginx-confd/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM dockerfile/supervisor</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line">  &amp;&amp; apt-get update</span><br><span class="line"><span class="comment"># nginx install</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common \</span><br><span class="line">    &amp;&amp; add-apt-repository -y ppa:nginx/stable \</span><br><span class="line">    &amp;&amp; apt-get update \</span><br><span class="line">    &amp;&amp; DEBIAN_FRONTEND=noninteractive apt-get install -y nginx \</span><br><span class="line">    &amp;&amp; sed -i <span class="string">'s/^\t\(listen \[::\]:80 .*\)$/\t#\1/'</span> /etc/nginx/sites-available/default</span><br><span class="line"><span class="comment"># Go install</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y golang</span><br><span class="line">ENV GOPATH /gopath</span><br><span class="line">ENV PATH <span class="variable">$PATH</span>:<span class="variable">$GOPATH</span>/bin</span><br><span class="line"><span class="comment"># etcd and confd install</span></span><br><span class="line">RUN go get github.com/coreos/etcd</span><br><span class="line">RUN go get github.com/coreos/etcdctl</span><br><span class="line">RUN  curl -qL https://github.com/kelseyhightower/confd/releases/download/v0.6.0-alpha1/confd-0.6.0-alpha1-linux-amd64 \</span><br><span class="line">     -o /usr/<span class="built_in">local</span>/bin/confd &amp;&amp; chmod +x /usr/<span class="built_in">local</span>/bin/confd</span><br><span class="line">CMD [<span class="string">"supervisord"</span>, <span class="string">"-c"</span>, <span class="string">"/etc/supervisor/supervisord.conf"</span>]</span><br><span class="line">EXPOSE 80 4001 7001</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nginx-etcd-confdンテナの起動"><a href="#Nginx-etcd-confdンテナの起動" class="headerlink" title="Nginx + etcd + confdンテナの起動"></a>Nginx + etcd + confdンテナの起動</h3><p>データコンテナを<code>--volumes-from</code>に指定して、Nginxのコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --name nginx-confd -d -p 80:80 --volumes-from confd-data masato/nginx-confd</span><br></pre></td></tr></table></figure>
+
+<p>起動したコンテナのIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 095b93ed0e25 | jq -r <span class="string">'.[0].NetworkSettings.IPAddress'</span></span><br><span class="line">172.17.0.209</span><br></pre></td></tr></table></figure>
+
+<h3 id="etcdの動作確認"><a href="#etcdの動作確認" class="headerlink" title="etcdの動作確認"></a>etcdの動作確認</h3><p>Dockerホストからetcdへputとgetのテストをします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L http://172.17.0.209:4001/v2/keys/mykey -XPUT -d value=<span class="string">"this is awesome"</span></span><br><span class="line">&#123;<span class="string">"action"</span>:<span class="string">"set"</span>,<span class="string">"node"</span>:&#123;<span class="string">"key"</span>:<span class="string">"/mykey"</span>,<span class="string">"value"</span>:<span class="string">"this is awesome"</span>,<span class="string">"modifiedIndex"</span>:3,<span class="string">"createdIndex"</span>:3&#125;&#125;</span><br><span class="line">$ curl -L http://172.17.0.209:4001/v2/keys/mykey</span><br><span class="line">&#123;<span class="string">"action"</span>:<span class="string">"get"</span>,<span class="string">"node"</span>:&#123;<span class="string">"key"</span>:<span class="string">"/mykey"</span>,<span class="string">"value"</span>:<span class="string">"this is awesome"</span>,<span class="string">"modifiedIndex"</span>:3,<span class="string">"createdIndex"</span>:3&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Dockerホストのetcdctlからも<code>peers</code>を指定して確認してみます。etcdクラスタに参加しないので、<code>-no-sync</code>オプションを指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ etcdctl -C <span class="string">"172.17.0.209:4001"</span> -no-sync get /mykey</span><br><span class="line">this is awesome</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sinatraコンテナを2つ起動"><a href="#Sinatraコンテナを2つ起動" class="headerlink" title="Sinatraコンテナを2つ起動"></a>Sinatraコンテナを2つ起動</h3><p>Sinatraのサンプルアプリは<a href="https://registry.hub.docker.com/u/marceldegraaf/sinatra/" target="_blank" rel="noopener">marceldegraaf/sinatra</a>を利用します。それぞれポートは5001と5002にマッピングします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull marceldegraaf/sinatra</span><br><span class="line">$ docker run --name sinatra-5001 -p 5001:5000 -e PORT=5000 -d marceldegraaf/sinatra</span><br><span class="line">$ docker run --name sinatra-5002 -p 5002:5000 -e PORT=5000 -d marceldegraaf/sinatra</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sinatraコンテナをconfdに登録"><a href="#Sinatraコンテナをconfdに登録" class="headerlink" title="Sinatraコンテナをconfdに登録"></a>Sinatraコンテナをconfdに登録</h3><p>DockerホストからNginxコンテナのIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-get-ip 095b93ed0e25</span><br><span class="line">172.17.0.209</span><br></pre></td></tr></table></figure>
+
+<p>5001ポートでリバースプロキシするSinatraコンテナのIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-get-ip b6ea1bb67b7f</span><br><span class="line">172.17.0.37</span><br></pre></td></tr></table></figure>
+
+<p>5002ポートでリバースプロキシするSinatraコンテナのIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-get-ip 93f545c79ce0</span><br><span class="line">172.17.0.191</span><br></pre></td></tr></table></figure>
+
+<p>etcdctlコマンドで動的にルーティングを設定します。Dockerホストのetcdはクラスタに参加しないため<code>-no-sync</code>を指定します。</p>
+<p><code>/myapp1/subdomain</code>のキーに、upstreamの名前を登録します。<br><code>/myapp1/upstream</code>のキーに、upstream先のserverのIPアドレスとポートを登録します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ etcdctl -C <span class="string">"172.17.0.209:4001"</span> -no-sync <span class="built_in">set</span> /myapp1/subdomain p5001</span><br><span class="line">$ etcdctl -C <span class="string">"172.17.0.209:4001"</span> -no-sync <span class="built_in">set</span> /myapp1/upstream/p5001 172.17.0.37:5000</span><br><span class="line">$ etcdctl -C <span class="string">"172.17.0.209:4001"</span> -no-sync <span class="built_in">set</span> /myapp2/subdomain p5002</span><br><span class="line">$ etcdctl -C <span class="string">"172.17.0.209:4001"</span> -no-sync <span class="built_in">set</span> /myapp2/upstream/p5002 172.17.0.191:5000</span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>xip.ioを使い、NginxからSinatraアプリへ動的リバースプロキシができました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl p5001.10.1.2.164.xip.io</span><br><span class="line">Hello world!</span><br><span class="line">$ curl p5002.10.1.2.164.xip.io</span><br><span class="line">Hello world!</span><br></pre></td></tr></table></figure>
+
+<p>confdが作成した、myapp1(p5001サブドメイン)用のNginxの設定ファイルです。</p>
+<figure class="highlight bash"><figcaption><span>/etc/nginx/sites-enabled/myapp1.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">upstream p5001 &#123;</span><br><span class="line"></span><br><span class="line">    server 172.17.0.37:5000;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  server_name ~^p5001\.(.*)\.xip\.io$;</span><br><span class="line"></span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_set_header host <span class="variable">$host</span>;</span><br><span class="line">    proxy_set_header x-real-ip <span class="variable">$remote_addr</span>;</span><br><span class="line">    proxy_set_header x-forwarded-for <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    proxy_pass http://p5001;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>confdが作成した、myapp2(p5002サブドメイン)用のNginxの設定ファイルです。</p>
+<figure class="highlight bash"><figcaption><span>/etc/nginx/sites-enabled/myapp2.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">upstream p5002 &#123;</span><br><span class="line"></span><br><span class="line">    server 172.17.0.191:5000;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  server_name ~^p5002\.(.*)\.xip\.io$;</span><br><span class="line"></span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_set_header host <span class="variable">$host</span>;</span><br><span class="line">    proxy_set_header x-real-ip <span class="variable">$remote_addr</span>;</span><br><span class="line">    proxy_set_header x-forwarded-for <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    proxy_pass http://p5002;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><ul>
+<li><a href="/2014/07/14/docker-service-discovery-http-routing/">DockerのHTTP Routing: Part1: Service Discovery</a></li>
+<li><a href="/2014/07/18/docker-reverse-proxy/">DockerのHTTP Routing: Part2: リバースプロキシ調査</a></li>
+<li><a href="/2014/07/21/docker-reverse-proxy-openresty/">DockerのHTTP Routing - Part3: OpenResty はじめに</a></li>
+<li><a href="/2014/07/23/docker-reverse-proxy-xipio-nginx/">DockerのHTTP Routing - Part4: xip.io と Nginx と Node.js</a></li>
+<li><a href="/2014/07/24/docker-reverse-proxy-bouncy/">DockerのHTTP Routing - Part5: xip.io と bouncy と XRegExp</a></li>
+<li><a href="/2014/07/27/docker-reverse-proxy-nginx-confd/">DockerのHTTP Routing - Part6: confd はじめに</a></li>
+<li><a href="/2014/07/30/docker-reverse-proxy-nginx-multiple-upstreams/">DockerのHTTP Routing - Part7: Nginx multiple upstreams</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DataVolumeContainer/" rel="tag"># DataVolumeContainer</a>
+              <a href="/tags/xipio/" rel="tag"># xipio</a>
+              <a href="/tags/Sinatra/" rel="tag"># Sinatra</a>
+              <a href="/tags/HTTPRouting/" rel="tag"># HTTPRouting</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/nginx-proxy/" rel="tag"># nginx-proxy</a>
+              <a href="/tags/%E3%81%BE%E3%81%A8%E3%82%81/" rel="tag"># まとめ</a>
+              <a href="/tags/confd/" rel="tag"># confd</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/08/04/docker-devenv-nginx-supervisor/" rel="prev" title="Dockerで開発環境をつくる - Nginx Part3: Supervisorでデモナイズ">
+      <i class="fa fa-chevron-left"></i> Dockerで開発環境をつくる - Nginx Part3: Supervisorでデモナイズ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/08/06/docker-reverse-proxy-xipio-openresty-sinatra/" rel="next" title="DockerのHTTP Routing - Part9: xip.io と OpenResty で動的リバースプロキシ">
+      DockerのHTTP Routing - Part9: xip.io と OpenResty で動的リバースプロキシ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#データコンテナの作成"><span class="nav-number">1.</span> <span class="nav-text">データコンテナの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#condの設定"><span class="nav-number">2.</span> <span class="nav-text">condの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-etcd-confdのイメージを作成"><span class="nav-number">3.</span> <span class="nav-text">Nginx + etcd + confdのイメージを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-etcd-confdンテナの起動"><span class="nav-number">4.</span> <span class="nav-text">Nginx + etcd + confdンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etcdの動作確認"><span class="nav-number">5.</span> <span class="nav-text">etcdの動作確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sinatraコンテナを2つ起動"><span class="nav-number">6.</span> <span class="nav-text">Sinatraコンテナを2つ起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sinatraコンテナをconfdに登録"><span class="nav-number">7.</span> <span class="nav-text">Sinatraコンテナをconfdに登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">8.</span> <span class="nav-text">確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">9.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

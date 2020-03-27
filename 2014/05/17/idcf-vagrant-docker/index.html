@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Vagrant 1.6からDockerをProviderに使えるようになりました。この前はVagrantのProviderにLXCを使いましたが、DockerをVagrantから使える方が便利な気がします。vagrant sshコマンドが使えるようにDockerのイメージにはphusion&#x2F;baseimageを使います。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドのVagrant1.6でDocker Providerを使う">
+<meta property="og:url" content="http://masato.github.io/2014/05/17/idcf-vagrant-docker/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Vagrant 1.6からDockerをProviderに使えるようになりました。この前はVagrantのProviderにLXCを使いましたが、DockerをVagrantから使える方が便利な気がします。vagrant sshコマンドが使えるようにDockerのイメージにはphusion&#x2F;baseimageを使います。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-17T12:54:49.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.707Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Vagrant">
+<meta property="article:tag" content="DockerProvider">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/05/17/idcf-vagrant-docker/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドのVagrant1.6でDocker Providerを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/05/17/idcf-vagrant-docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドのVagrant1.6でDocker Providerを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 17 2014 21:54:49" itemprop="dateCreated datePublished" datetime="2014-05-17T21:54:49+09:00">May 17 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Vagrant 1.6からDockerをProviderに使えるようになりました。この前はVagrantのProviderにLXCを使いましたが、DockerをVagrantから使える方が便利な気がします。vagrant sshコマンドが使えるようにDockerのイメージにはphusion/baseimageを使います。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>Vagrant 1.6</code>からDockerをProviderに使えるようになりました。<br><a href="/2014/05/11/idcf-vagrant-lxc/">この前</a>はVagrantのProviderにLXCを使いましたが、DockerをVagrantから使える方が便利な気がします。<br><code>vagrant ssh</code>コマンドが使えるようにDockerのイメージには<a href="https://github.com/phusion/baseimage-docker" target="_blank" rel="noopener">phusion/baseimage</a>を使います。</p>
+<a id="more"></a>
+
+<h3 id="準備"><a href="#準備" class="headerlink" title="準備"></a>準備</h3><p>Vagrantfileを保存するプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/docker_apps/phusion</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p><code>phusion/baseimage</code>で使うinsecure_keyをダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -o insecure_key -fSL https://github.com/phusion/baseimage-docker/raw/master/image/insecure_key</span><br><span class="line">$ chmod 600 insecure_key</span><br></pre></td></tr></table></figure>
+
+<h3 id="vagrant-up"><a href="#vagrant-up" class="headerlink" title="vagrant up"></a>vagrant up</h3><p>Vagrantfileを作成します。ここでは明示的にportを22に指定します。</p>
+<figure class="highlight ruby"><figcaption><span>~/docker_apps/phusion/Vagrantfile</span></figcaption><table><tr><td class="code"><pre><span class="line">Vagrant.configure(<span class="string">"2"</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.define <span class="string">"phusion"</span> <span class="keyword">do</span> <span class="params">|v|</span></span><br><span class="line">    v.vm.provider <span class="string">"docker"</span> <span class="keyword">do</span> <span class="params">|d|</span></span><br><span class="line">      d.cmd = [<span class="string">"/sbin/my_init"</span>, <span class="string">"--enable-insecure-key"</span>]</span><br><span class="line">      d.image = <span class="string">"phusion/baseimage:latest"</span></span><br><span class="line">      d.has_ssh = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    v.ssh.username = <span class="string">"root"</span></span><br><span class="line">    v.ssh.private_key_path= <span class="string">"insecure_key"</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  config.ssh.port = <span class="number">22</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>providerオプションにdockerを指定してupします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant up --provider=docker</span><br><span class="line">Bringing machine <span class="string">'phusion'</span> up with <span class="string">'docker'</span> provider...</span><br><span class="line">==&gt; phusion: Creating the container...</span><br><span class="line">    phusion:   Name: phusion_phusion_1400332643</span><br><span class="line">    phusion:  Image: phusion/baseimage:latest</span><br><span class="line">    phusion:    Cmd: /sbin/my_init --<span class="built_in">enable</span>-insecure-key</span><br><span class="line">    phusion: Volume: /home/matedev/docker_apps/phusion:/vagrant</span><br><span class="line">    phusion:   Port: 2222:22</span><br><span class="line">    phusion:</span><br><span class="line">    phusion: Container created: d419de25cc4a</span><br><span class="line">==&gt; phusion: Starting container...</span><br><span class="line">==&gt; phusion: Waiting <span class="keyword">for</span> machine to boot. This may take a few minutes...</span><br><span class="line">    phusion: SSH address: 172.17.0.2:22</span><br><span class="line">    phusion: SSH username: root</span><br><span class="line">    phusion: SSH auth method: private key</span><br><span class="line">    phusion: Warning: Connection refused. Retrying...</span><br><span class="line">==&gt; phusion: Machine booted and ready!</span><br></pre></td></tr></table></figure>
+
+<h3 id="コンテナの確認"><a href="#コンテナの確認" class="headerlink" title="コンテナの確認"></a>コンテナの確認</h3><p>Dockerコンテナが起動していることを確認するため、psします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                      COMMAND                CREATED             STATUS              PORTS                  NAMES</span><br><span class="line">d419de25cc4a        phusion/baseimage:latest   /sbin/my_init --enab   4 minutes ago       Up 4 minutes        0.0.0.0:2222-&gt;22/tcp   phusion_phusion_1400328566</span><br><span class="line">matedev@matedesk ~/docker_apps/phusion $</span><br></pre></td></tr></table></figure>
+
+<h3 id="SSH接続いろいろ"><a href="#SSH接続いろいろ" class="headerlink" title="SSH接続いろいろ"></a>SSH接続いろいろ</h3><p><code>vagrant up</code>したDokerコンテナに、SSH接続をいろいろな方法で試してみます。<br>まずは、ssh-configでVagrantのSSH設定を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant ssh-config</span><br><span class="line">Host phusion</span><br><span class="line">  HostName 172.17.0.2</span><br><span class="line">  User root</span><br><span class="line">  Port 22</span><br><span class="line">  UserKnownHostsFile /dev/null</span><br><span class="line">  StrictHostKeyChecking no</span><br><span class="line">  PasswordAuthentication no</span><br><span class="line">  IdentityFile /home/matedev/docker_apps/phusion/insecure_key</span><br><span class="line">  IdentitiesOnly yes</span><br><span class="line">  LogLevel FATAL</span><br></pre></td></tr></table></figure>
+
+<p>コンテナのIPアドレスへ22ポートへ接続できます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -i insecure_key root@172.17.0.2</span><br><span class="line">Warning: Permanently added <span class="string">'172.17.0.2'</span> (ECDSA) to the list of known hosts.</span><br><span class="line">Last login: Sat May 17 12:09:33 2014 from 172.17.42.1</span><br><span class="line">root@d419de25cc4a:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>localhostにポートフォワードされた2222ポートで接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -l root -i insecure_key -p 2222 localhost</span><br><span class="line">Warning: Permanently added <span class="string">'[localhost]:2222'</span> (ECDSA) to the list of known hosts.</span><br><span class="line">Last login: Sat May 17 12:16:34 2014 from 172.17.42.1</span><br><span class="line">root@d419de25cc4a:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p><code>vagrant global-status</code>でVMとしてコンテナが起動しているのを確認できます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant global-status</span><br><span class="line">id       name    provider state   directory</span><br><span class="line">----------------------------------------------------------------------</span><br><span class="line">8bdfaed  phusion docker running /home/matedev/docker_apps/phusion</span><br></pre></td></tr></table></figure>
+<h3 id="コンテナを破棄する"><a href="#コンテナを破棄する" class="headerlink" title="コンテナを破棄する"></a>コンテナを破棄する</h3><p><code>vagrant global-status</code>で確認したidを使ってdestroyします。ここではVMが1つしか起動していないので、最初の文字の8だけでidが一意にできます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant destroy 8</span><br><span class="line">    default: Are you sure you want to destroy the <span class="string">'default'</span> VM? [y/N] y</span><br><span class="line">==&gt; default: Deleting the container...</span><br><span class="line">==&gt; default: Removing built image...</span><br></pre></td></tr></table></figure>
+
+<p><code>agrant destroy</code>でVMを破棄すると、dockerコンテナの正常に破棄されるので便利です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$  docker ps -a</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>Vagrant 1.6</code>からサポートされたDocker Providerは開発環境として気軽に<code>vagrant up</code>と<code>vagrant destroy</code>できます。<br>Dockerの便利なところで、自分でDockerfileを書いたり、Dockerインデックスからいろいろなイメージをpullもそのままです。<br>また、コンテナのIDを指定して、<code>docker stop</code>と<code>docker rm</code>をしなくてもコンテナを破棄できるのも便利です。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Vagrant/" rel="tag"># Vagrant</a>
+              <a href="/tags/DockerProvider/" rel="tag"># DockerProvider</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/05/17/idcf-docker/" rel="prev" title="IDCFクラウドにDockerをインストール">
+      <i class="fa fa-chevron-left"></i> IDCFクラウドにDockerをインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/05/18/docker-dart-redstone/" rel="next" title="DockerでDartのRedstone.dartをはじめました">
+      DockerでDartのRedstone.dartをはじめました <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#準備"><span class="nav-number">1.</span> <span class="nav-text">準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vagrant-up"><span class="nav-number">2.</span> <span class="nav-text">vagrant up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナの確認"><span class="nav-number">3.</span> <span class="nav-text">コンテナの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH接続いろいろ"><span class="nav-number">4.</span> <span class="nav-text">SSH接続いろいろ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナを破棄する"><span class="nav-number">5.</span> <span class="nav-text">コンテナを破棄する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

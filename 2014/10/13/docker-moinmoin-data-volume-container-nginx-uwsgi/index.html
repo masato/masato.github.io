@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MoinMoinの移設作業は開発環境でDockerイメージを作成するところから始めます。現在はCentOS6.5 + Apache + mod_wsgiで動いていますが、Ubuntu + Nginx + uWSGIに移行してみました。データボリュームコンテナはdocker-lloydを使ってIDCFオブジェクトストレージにバックアップしたかったのですが、コードを読んでも動作がわからなかったので、こ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MoinMoinをDigitalOceanのCoreOSに移設する - Part2: Dockerイメージの作成">
+<meta property="og:url" content="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="MoinMoinの移設作業は開発環境でDockerイメージを作成するところから始めます。現在はCentOS6.5 + Apache + mod_wsgiで動いていますが、Ubuntu + Nginx + uWSGIに移行してみました。データボリュームコンテナはdocker-lloydを使ってIDCFオブジェクトストレージにバックアップしたかったのですが、コードを読んでも動作がわからなかったので、こ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-default.png">
+<meta property="og:image" content="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-acl.png">
+<meta property="og:image" content="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-acl-admin.png">
+<meta property="article:published_time" content="2014-10-12T18:36:05.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.596Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="MoinMoin">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="DataVolumeContainer">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="sed">
+<meta property="article:tag" content="uWSGI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-default.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>MoinMoinをDigitalOceanのCoreOSに移設する - Part2: Dockerイメージの作成 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MoinMoinをDigitalOceanのCoreOSに移設する - Part2: Dockerイメージの作成
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 13 2014 03:36:05" itemprop="dateCreated datePublished" datetime="2014-10-13T03:36:05+09:00">Oct 13 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">MoinMoinの移設作業は開発環境でDockerイメージを作成するところから始めます。現在はCentOS6.5 + Apache + mod_wsgiで動いていますが、Ubuntu + Nginx + uWSGIに移行してみました。データボリュームコンテナはdocker-lloydを使ってIDCFオブジェクトストレージにバックアップしたかったのですが、コードを読んでも動作がわからなかったので、これまで通りテンポラリのコンテナを経由してアーカイブの操作をします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-10-18</code>: MoinMoin in Production on CoreOS - Part4: Staging to IDCF Cloud](/2014/10/18/docker-moinmoin-idcf-coreos/)</li>
+<li><code>Update 2014-10-15</code>: <a href="/2014/10/15/docker-data-volume-container-docker-lloyd/">Docker data volume container backing up with docker-lloyd</a></li>
+<li><code>Update 2014-10-14</code>: <a href="/2014/10/14/docker-data-volume-container-docker-backup/">MoinMoinをDigitalOceanのCoreOSに移設する - Part3: docker-backupでデータボリュームコンテナのバックアップとリストア</a></li>
+</ul>
+<p>MoinMoinの移設作業は開発環境でDockerイメージを作成するところから始めます。現在はCentOS6.5 + Apache + <code>mod_wsgi</code>で動いていますが、Ubuntu + Nginx + uWSGIに移行してみました。</p>
+<p>データボリュームコンテナは<a href="https://github.com/discordianfish/docker-lloyd" target="_blank" rel="noopener">docker-lloyd</a>を使ってIDCFオブジェクトストレージにバックアップしたかったのですが、コードを読んでも動作がわからなかったので、これまで通りテンポラリのコンテナを経由してアーカイブの操作をします。</p>
+<a id="more"></a>
+
+<h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p>MoinMoinのイメージを作成するプロジェクトの構成です。</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">$ tree ~/docker_apps/moinmoin/</span><br><span class="line">~/docker_apps/moinmoin/</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── common.css</span><br><span class="line">├── nginx.conf</span><br><span class="line">├── run.sh</span><br><span class="line">├── screen.css</span><br><span class="line">└── user</span><br></pre></td></tr></table></figure>
+
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>最初に作成したDockerfileです。dperson/moinmoinの<a href="https://github.com/dperson/moinmoin/blob/master/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>を参考にしました。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moinmoin/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">ENV HOME /root</span><br><span class="line">ENV WORKDIR /root</span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -qy language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN locale-gen <span class="variable">$LANG</span> &amp;&amp; update-locale <span class="variable">$LANG</span> &amp;&amp; \</span><br><span class="line">    ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">  apt-get install -qy nginx uwsgi uwsgi-plugin-python python wget unzip</span><br><span class="line">ADD nginx.conf /etc/nginx/sites-available/default</span><br><span class="line">RUN wget http://static.moinmo.in/files/moin-1.9.7.tar.gz -P /tmp &amp;&amp; \</span><br><span class="line">    tar xzf /tmp/moin-1.9.7.tar.gz -C /tmp &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /tmp/moin-1.9.7 &amp;&amp; \</span><br><span class="line">    python setup.py install --force --prefix=/usr/<span class="built_in">local</span> &amp;&amp; \</span><br><span class="line">    sed -e <span class="string">'/sitename/s/Untitled //'</span> \</span><br><span class="line">        -e <span class="string">'/page_front_page.*Front/s/#\(page_front_page\)/\1/'</span> \</span><br><span class="line">        -e <span class="string">'/superuser/ &#123; s/#\(superuser\)/\1/; s/YourName/ScottTiger/ &#125;'</span> \</span><br><span class="line">        -e <span class="string">'/page_front_page/s/#u/u/'</span> \</span><br><span class="line">        -e <span class="string">'/acl_rights_before/s/.*/    acl_rights_default = u"ScottTiger:read,write,delete,revert,admin"\n&amp;/'</span>\</span><br><span class="line">        -e <span class="string">'/theme_default/s/modernized/europython/'</span> \</span><br><span class="line">        -e <span class="string">'/theme_default/s/.*/    tz_offset = 9.0\n&amp;/'</span> \</span><br><span class="line">       /usr/<span class="built_in">local</span>/share/moin/config/wikiconfig.py &gt; \</span><br><span class="line">       /usr/<span class="built_in">local</span>/share/moin/wikiconfig.py &amp;&amp; \</span><br><span class="line">       chown -Rh www-data. /usr/<span class="built_in">local</span>/share/moin/data \</span><br><span class="line">                           /usr/<span class="built_in">local</span>/share/moin/underlay &amp;&amp; \</span><br><span class="line">    wget https://bitbucket.org/thesheep/moin-europython/get/3995afe116b0.zip -P /tmp &amp;&amp; \</span><br><span class="line">    unzip /tmp/3995afe116b0.zip -d /tmp &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /tmp/thesheep* &amp;&amp; \</span><br><span class="line">    cp europython.py /usr/<span class="built_in">local</span>/share/moin/data/plugin/theme &amp;&amp; \</span><br><span class="line">    mkdir /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython &amp;&amp; \</span><br><span class="line">    cp -R css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython &amp;&amp; \</span><br><span class="line">    cp -R img /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython</span><br><span class="line">ADD screen.css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython/css/screen.css</span><br><span class="line">ADD common.css /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs/europython/css/common.css</span><br><span class="line">ADD user /usr/<span class="built_in">local</span>/share/moin/data/user/1338720549.58.37773</span><br><span class="line">ADD run.sh /run.sh</span><br><span class="line">VOLUME [<span class="string">"/usr/local/share/moin/data/pages"</span>]</span><br><span class="line">CMD [<span class="string">"bash"</span>, <span class="string">"/run.sh"</span>]</span><br><span class="line">EXPOSE 80</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<h3 id="sedでwikiconfig-pyの編集"><a href="#sedでwikiconfig-pyの編集" class="headerlink" title="sedでwikiconfig.pyの編集"></a>sedでwikiconfig.pyの編集</h3><p>moin-1.9.7.tar.gzをダウンロードしたあと、wikiconfig.pyの編集をsedで編集します。<br>dperson/moinmoinの<a href="https://github.com/dperson/moinmoin/blob/master/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>を参考にしました。<br>こういったsedの使い方は初めて見ました。奥が深いです。とても良い勉強になりました。</p>
+<h3 id="Europythonのテーマ"><a href="#Europythonのテーマ" class="headerlink" title="Europythonのテーマ"></a>Europythonのテーマ</h3><p>MoinMoinのテーマは<a href="http://moinmo.in/ThemeMarket/Europython" target="_blank" rel="noopener">Europython</a>を使います。<a href="https://pypi.python.org/pypi" target="_blank" rel="noopener">pypi</a>と同じテーマなので気に入っています。<br>ローカルでzipを解凍してデフォルトのfont-familyを修正してからADDします。</p>
+<p>screen.cssのfont-familyを編集します。</p>
+<figure class="highlight css"><figcaption><span>~/docker_apps/moinmoin/screen.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>:  <span class="string">"lucida grande"</span>,tahoma,verdana,arial,<span class="string">'ヒラギノ角ゴ Pro W3'</span>, <span class="string">'Hiragino Kaku Gothic Pro'</span>, <span class="string">'Osaka'</span>, <span class="string">'Meiryo UI'</span>,<span class="string">'メイリオ'</span>, <span class="string">'ＭＳ Ｐゴシック'</span>, sans-serif;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">div</span><span class="selector-id">#sidebar</span> <span class="selector-tag">ul</span><span class="selector-id">#navibar</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">  <span class="comment">/*font-family: Verdana,Geneva,"Bitstream Vera Sans",Helvetica,sans-serif;*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>common.cssのfont-familyを編集します。</p>
+<figure class="highlight css"><figcaption><span>~/docker_apps/moinmoin/common.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>, <span class="selector-tag">h5</span> &#123;</span><br><span class="line">    <span class="comment">/*font-family: serif;*/</span></span><br><span class="line">    <span class="attribute">font-weight</span>: normal;</span><br><span class="line">    <span class="attribute">letter-spacing</span>: <span class="number">0.05em</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h3><p>/etc/nginx/sites-available/defaultにコピーするnginx.confです。<br>デフォルトの設定ファイルからIPv6と<code>try_files</code>をコメントアウトします。<br>uWSGIとドメインソケットで通信する設定をします。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moinmoin/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80 default_server;</span><br><span class="line">        <span class="comment">#listen [::]:80 default_server ipv6only=on;</span></span><br><span class="line">        root /usr/share/nginx/html;</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">        <span class="comment"># Make site accessible from http://localhost/</span></span><br><span class="line">        server_name localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">                <span class="comment">#try_files $uri $uri/ =404;</span></span><br><span class="line">                <span class="comment"># Uncomment to enable naxsi on this location</span></span><br><span class="line">                <span class="comment"># include /etc/nginx/naxsi.rules</span></span><br><span class="line">                include uwsgi_params;</span><br><span class="line">                uwsgi_modifier1 30;</span><br><span class="line">                uwsgi_pass unix:/tmp/moin.sock;</span><br><span class="line">        &#125;</span><br><span class="line">        location /moin_static197 &#123;</span><br><span class="line">                <span class="built_in">alias</span> /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages/MoinMoin/web/static/htdocs;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="uWSGIの起動"><a href="#uWSGIの起動" class="headerlink" title="uWSGIの起動"></a>uWSGIの起動</h3><p>Dockerコンテナの起動スクリプトを用意します。uWSGIをデーモンで起動したあと、Nginxをフォアグラウンドで起動します。<br>以前はruintやSupervisordでinitを書いていましたが、最近はこういった起動スクリプトを用意する方がDockerらしい気がします。</p>
+<p>またデータコンテナをアタッチするときにpagesディレクトリの権限を修正するため、起動前に<code>www-data:www-data</code>に所有者を変更します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moinmoin/run.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">chown -R www-data:www-data /usr/<span class="built_in">local</span>/share/moin/data/pages</span><br><span class="line">uwsgi --uid www-data \</span><br><span class="line">    -s /tmp/moin.sock \</span><br><span class="line">    --plugins python \</span><br><span class="line">    --pidfile /var/run/uwsgi-moinmoin.pid \</span><br><span class="line">    --wsgi-file server/moin.wsgi \</span><br><span class="line">    -M -p 4 \</span><br><span class="line">    --<span class="built_in">chdir</span> /usr/<span class="built_in">local</span>/share/moin \</span><br><span class="line">    --python-path /usr/<span class="built_in">local</span>/share/moin \</span><br><span class="line">    --harakiri 30 \</span><br><span class="line">    --die-on-term \</span><br><span class="line">    --daemonize /var/<span class="built_in">log</span>/uwsgi/app/moinmoin.log</span><br><span class="line">nginx -g <span class="string">'daemon off;'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="起動と確認"><a href="#起動と確認" class="headerlink" title="起動と確認"></a>起動と確認</h3><p>イメージをビルドしてコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t masato/moinmoin .</span><br><span class="line">$ docker tag masato/moinmoin localhost:5000/moin</span><br><span class="line">$ docker push localhost:5000/moin</span><br><span class="line">$ docker run --name wiki -d masato/moinmoin</span><br><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> wiki</span><br><span class="line">172.17.0.178</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザで確認します。</p>
+<img src="/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-default.png" class="center">
+
+
+
+<h3 id="docker-backupdのバックアップとリストアは断念"><a href="#docker-backupdのバックアップとリストアは断念" class="headerlink" title="docker-backupdのバックアップとリストアは断念"></a>docker-backupdのバックアップとリストアは断念</h3><p><a href="https://github.com/discordianfish/docker-backup" target="_blank" rel="noopener">docker-backup</a>を試してみましたが、Goのコードを読んでも挙動がよくわかりませんでした。Goはもっと勉強しないと。</p>
+<h3 id="データボリュームコンテナの作成"><a href="#データボリュームコンテナの作成" class="headerlink" title="データボリュームコンテナの作成"></a>データボリュームコンテナの作成</h3><p>データボリュームコンテナを作成する前に、起動しているmoinのコンテナを削除します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">kill</span> wiki &amp;&amp; docker rm wiki</span><br></pre></td></tr></table></figure>
+
+<p>データボリュームコンテナを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -v /usr/<span class="built_in">local</span>/share/moin/data/pages --name wiki-vol busybox <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>既存のさくらVPSで動かしているMoinMoinのpagesは<a href="/2014/04/29/dropbox-uploader-moinmoin/">Dropboxにバックアップ</a>しています。<br>データボリュームコンテナにDropboxからダウンロードしたpagesのアーカイブをuntarします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm --volumes-from wiki-vol -v $(<span class="built_in">pwd</span>):/backup ubuntu tar zxfv /backup/141012171613_pages.tar.gz --strip-components=1 -C /usr/<span class="built_in">local</span>/share/moin/data/pages</span><br></pre></td></tr></table></figure>
+
+<p>データコンテナをアタッチしてwikiを起動</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --name wiki -d --volumes-from wiki-vol masato/moinmoin</span><br><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> wiki</span><br><span class="line">172.17.0.201</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザで確認するとACLが機能して、ログインしないとコンテンツが表示されません。</p>
+<img src="/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-acl.png" class="center">
+
+<h3 id="管理者ユーザーの作成"><a href="#管理者ユーザーの作成" class="headerlink" title="管理者ユーザーの作成"></a>管理者ユーザーの作成</h3><p>この設定ではユーザーは管理者ユーザー(ScottTiger)のみ操作が可能です。</p>
+<figure class="highlight python"><figcaption><span>/usr/local/share/moin/wikiconfig.py</span></figcaption><table><tr><td class="code"><pre><span class="line">acl_rights_default = <span class="string">u'ScottTiger:read,write,delete,revert,admin'</span></span><br></pre></td></tr></table></figure>
+
+<p>従って既存のデータを移行する場合は、<code>/usr/local/share/moin/data/user/</code>のディレクトリにあるユーザー定義ファイルをコピーして追加しないと、何も操作ができなくなります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ADD user /usr/<span class="built_in">local</span>/share/moin/data/user/1338720549.58.37773</span><br></pre></td></tr></table></figure>
+
+<p>予め登録してある管理者ユーザーでログインするとWikiページが表示されました。</p>
+<img src="/2014/10/13/docker-moinmoin-data-volume-container-nginx-uwsgi/moin-acl-admin.png" class="center">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MoinMoin/" rel="tag"># MoinMoin</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/DataVolumeContainer/" rel="tag"># DataVolumeContainer</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/sed/" rel="tag"># sed</a>
+              <a href="/tags/uWSGI/" rel="tag"># uWSGI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/10/12/docker-moinmoin-design/" rel="prev" title="MoinMoinをDigitalOceanのCoreOSに移設する - Part1: はじめに">
+      <i class="fa fa-chevron-left"></i> MoinMoinをDigitalOceanのCoreOSに移設する - Part1: はじめに
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/10/14/docker-data-volume-container-docker-backup/" rel="next" title="MoinMoinをDigitalOceanのCoreOSに移設する - Part3: docker-backupでデータボリュームコンテナのバックアップとリストア">
+      MoinMoinをDigitalOceanのCoreOSに移設する - Part3: docker-backupでデータボリュームコンテナのバックアップとリストア <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sedでwikiconfig-pyの編集"><span class="nav-number">3.</span> <span class="nav-text">sedでwikiconfig.pyの編集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Europythonのテーマ"><span class="nav-number">4.</span> <span class="nav-text">Europythonのテーマ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx"><span class="nav-number">5.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uWSGIの起動"><span class="nav-number">6.</span> <span class="nav-text">uWSGIの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#起動と確認"><span class="nav-number">7.</span> <span class="nav-text">起動と確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-backupdのバックアップとリストアは断念"><span class="nav-number">8.</span> <span class="nav-text">docker-backupdのバックアップとリストアは断念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#データボリュームコンテナの作成"><span class="nav-number">9.</span> <span class="nav-text">データボリュームコンテナの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理者ユーザーの作成"><span class="nav-number">10.</span> <span class="nav-text">管理者ユーザーの作成</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

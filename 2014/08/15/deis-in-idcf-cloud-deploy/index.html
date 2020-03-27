@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="構築したDeisの設定と、簡単なアプリのデプロイまで行ってみます。Deis in Google Compute Engineで使っている、Google Cloud DNSの代わりにxip.ioを、Load Balancingの代わりに、IDCFクラウドに標準機能であるロードバランサーを利用します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deis in IDCFクラウド - Part2: SinatraをDeisにデプロイ">
+<meta property="og:url" content="http://masato.github.io/2014/08/15/deis-in-idcf-cloud-deploy/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="構築したDeisの設定と、簡単なアプリのデプロイまで行ってみます。Deis in Google Compute Engineで使っている、Google Cloud DNSの代わりにxip.ioを、Load Balancingの代わりに、IDCFクラウドに標準機能であるロードバランサーを利用します。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/08/15/deis-in-idcf-cloud-deploy/deis.png">
+<meta property="article:published_time" content="2014-08-14T15:55:55.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.579Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="GCE">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Deis">
+<meta property="article:tag" content="xipio">
+<meta property="article:tag" content="Sinatra">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/08/15/deis-in-idcf-cloud-deploy/deis.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/08/15/deis-in-idcf-cloud-deploy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Deis in IDCFクラウド - Part2: SinatraをDeisにデプロイ | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/08/15/deis-in-idcf-cloud-deploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Deis in IDCFクラウド - Part2: SinatraをDeisにデプロイ
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 15 2014 00:55:55" itemprop="dateCreated datePublished" datetime="2014-08-15T00:55:55+09:00">Aug 15 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">構築したDeisの設定と、簡単なアプリのデプロイまで行ってみます。Deis in Google Compute Engineで使っている、Google Cloud DNSの代わりにxip.ioを、Load Balancingの代わりに、IDCFクラウドに標準機能であるロードバランサーを利用します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/08/14/deis-in-idcf-cloud-install/">構築したDeis</a>の設定と、簡単なアプリのデプロイまで行ってみます。</p>
+<p><a href="https://gist.github.com/andyshinn/a78b617b2b16a2782655" target="_blank" rel="noopener">Deis in Google Compute Engine</a>で使っている、<a href="https://developers.google.com/cloud-dns/?hl=ja" target="_blank" rel="noopener">Google Cloud DNS</a>の代わりに<a href="http://xip.io/" target="_blank" rel="noopener">xip.io</a>を、<a href="https://developers.google.com/compute/docs/load-balancing/" target="_blank" rel="noopener">Load Balancing</a>の代わりに、IDCFクラウドに標準機能である<a href="http://www.idcf.jp/cloud/self/manual/03.html" target="_blank" rel="noopener">ロードバランサー</a>を利用します。</p>
+<a id="more"></a>
+
+<h3 id="Deisクライアントのインストール"><a href="#Deisクライアントのインストール" class="headerlink" title="Deisクライアントのインストール"></a>Deisクライアントのインストール</h3><p>作業マシンにDeisクライアントをインストールします。バージョンは0.10.0です。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ sudo pip <span class="keyword">install</span> <span class="comment">--upgrade deis</span></span><br><span class="line">$ deis <span class="comment">--version</span></span><br><span class="line">Deis CLI <span class="number">0.10</span><span class="number">.0</span></span><br><span class="line">$ which deis</span><br><span class="line">/usr/<span class="keyword">local</span>/<span class="keyword">bin</span>/deis</span><br></pre></td></tr></table></figure>
+
+<h3 id="ネットワーク設定"><a href="#ネットワーク設定" class="headerlink" title="ネットワーク設定"></a>ネットワーク設定</h3><p>2222ポートと80ポートのロードバランサーを設定します。<br>roundrobinの分散対象にはCoreOSクラスタの3台を指定します。</p>
+<p>WildcardDNSはxip.ioを使うため、Deisの命名規則に従い以下のドメイン名にしました。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">deis</span><span class="selector-class">.210</span><span class="selector-class">.140</span><span class="selector-class">.16</span><span class="selector-class">.229</span><span class="selector-class">.xip</span><span class="selector-class">.io</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Deisコントローラーへユーザー登録"><a href="#Deisコントローラーへユーザー登録" class="headerlink" title="Deisコントローラーへユーザー登録"></a>Deisコントローラーへユーザー登録</h3><p>Deisコントローラーにユーザーを登録します。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ deis register <span class="string">http:</span><span class="comment">//deis.210.140.16.229.xip.io</span></span><br><span class="line"><span class="string">username:</span> masato</span><br><span class="line"><span class="string">password:</span></span><br><span class="line">password (confirm):</span><br><span class="line"><span class="string">email:</span> ma6ato<span class="meta">@gmail</span>.com</span><br><span class="line">Registered masato</span><br><span class="line">Logged <span class="keyword">in</span> <span class="keyword">as</span> masato</span><br></pre></td></tr></table></figure>
+
+<p><code>deis keys:add</code>を入力すると、<code>~/.ssh</code>に存在する鍵をリストしてくれるので、<br>Deisで利用したい鍵の番号を選択します。</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line">$ deis keys:<span class="keyword">add</span></span><br></pre></td></tr></table></figure>
+
+<p>以降の管理作業をするため、Deisコントローラーにログインします。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ deis login <span class="string">http:</span><span class="comment">//deis.210.140.16.229.xip.io</span></span><br><span class="line"><span class="string">username:</span> masato</span><br><span class="line"><span class="string">password:</span></span><br><span class="line">Logged <span class="keyword">in</span> <span class="keyword">as</span> masato</span><br></pre></td></tr></table></figure>
+
+<h3 id="Deisクラスタの作成"><a href="#Deisクラスタの作成" class="headerlink" title="Deisクラスタの作成"></a>Deisクラスタの作成</h3><p>アプリケーションをデプロイするために、Deisのクラスタを作成します。<br><code>--hosts</code>がわかりづらいところですが、CoreOSの内部IPアドレスを指定します。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ deis clusters:create dev deis<span class="number">.210</span><span class="number">.140</span><span class="number">.16</span><span class="number">.229</span>.xip.io \</span><br><span class="line">    --hosts=<span class="number">10.1</span><span class="number">.2</span><span class="number">.34</span>,<span class="number">10.1</span><span class="number">.3</span><span class="number">.33</span>,<span class="number">10.1</span><span class="number">.0</span><span class="number">.249</span> \</span><br><span class="line">    --auth=~/.ssh/deis</span><br><span class="line">Creating cluster... done, created dev</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sinatraのデプロイ"><a href="#Sinatraのデプロイ" class="headerlink" title="Sinatraのデプロイ"></a>Sinatraのデプロイ</h3><p>Deisが提供しているSinatraの<a href="https://github.com/deis/example-ruby-sinatra.git" target="_blank" rel="noopener">サンプルアプリ</a>をcloneします。</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ git clone http<span class="variable">s:</span>//github.<span class="keyword">com</span>/deis/example-<span class="keyword">ruby</span>-sinatra.git</span><br><span class="line">$ <span class="keyword">cd</span> example-<span class="keyword">ruby</span>-sinatra</span><br></pre></td></tr></table></figure>
+
+<p>アプリケーションを作成します。Gitのリモートリポジトリが追加されました。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ deis <span class="keyword">create</span></span><br><span class="line">Creating application... done, created outlaw-rucksack</span><br><span class="line"><span class="keyword">Warning</span>: Permanently added <span class="string">'[deis.210.140.16.229.xip.io]:2222,[210.140.16.229]:2222'</span> (ECDSA) <span class="keyword">to</span> the <span class="keyword">list</span> <span class="keyword">of</span> known hosts.</span><br><span class="line">Git remote deis added</span><br></pre></td></tr></table></figure>
+
+<p><code>git push</code>をしてデプロイします。ログをみるとHerokuのようにslugを作成してからデプロイしています。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">git</span> <span class="string">push</span> <span class="string">deis</span> <span class="string">master</span></span><br><span class="line"><span class="attr">Counting objects:</span> <span class="number">102</span><span class="string">,</span> <span class="string">done.</span></span><br><span class="line"><span class="string">Delta</span> <span class="string">compression</span> <span class="string">using</span> <span class="string">up</span> <span class="string">to</span> <span class="number">4</span> <span class="string">threads.</span></span><br><span class="line"><span class="attr">Compressing objects:</span> <span class="number">100</span><span class="string">%</span> <span class="string">(53/53),</span> <span class="string">done.</span></span><br><span class="line"><span class="attr">Writing objects:</span> <span class="number">100</span><span class="string">%</span> <span class="string">(102/102),</span> <span class="number">22.19</span> <span class="string">KiB</span> <span class="string">|</span> <span class="number">0</span> <span class="string">bytes/s,</span> <span class="string">done.</span></span><br><span class="line"><span class="string">Total</span> <span class="number">102</span> <span class="string">(delta</span> <span class="number">43</span><span class="string">),</span> <span class="string">reused</span> <span class="number">102</span> <span class="string">(delta</span> <span class="number">43</span><span class="string">)</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Ruby</span> <span class="string">app</span> <span class="string">detected</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Compiling</span> <span class="string">Ruby/Rack</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="attr">Using Ruby version:</span> <span class="string">ruby-1.9.3</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Installing</span> <span class="string">dependencies</span> <span class="string">using</span> <span class="number">1.6</span><span class="number">.3</span></span><br><span class="line">       <span class="attr">Running:</span> <span class="string">bundle</span> <span class="string">install</span> <span class="string">--without</span> <span class="string">development:test</span> <span class="string">--path</span> <span class="string">vendor/bundle</span> <span class="string">--binstubs</span> <span class="string">vendor/bundle/bin</span> <span class="string">-j4</span> <span class="string">--deployment</span></span><br><span class="line">       <span class="string">Don't</span> <span class="string">run</span> <span class="string">Bundler</span> <span class="string">as</span> <span class="string">root.</span> <span class="string">Bundler</span> <span class="string">can</span> <span class="string">ask</span> <span class="string">for</span> <span class="string">sudo</span> <span class="string">if</span> <span class="string">it</span> <span class="string">is</span> <span class="string">needed,</span> <span class="string">and</span></span><br><span class="line">       <span class="string">installing</span> <span class="string">your</span> <span class="string">bundle</span> <span class="string">as</span> <span class="string">root</span> <span class="string">will</span> <span class="string">break</span> <span class="string">this</span> <span class="string">application</span> <span class="string">for</span> <span class="string">all</span> <span class="string">non-root</span></span><br><span class="line">       <span class="string">users</span> <span class="string">on</span> <span class="string">this</span> <span class="string">machine.</span></span><br><span class="line">       <span class="string">Fetching</span> <span class="string">gem</span> <span class="string">metadata</span> <span class="string">from</span> <span class="string">http://rubygems.org/..........</span></span><br><span class="line">       <span class="string">Using</span> <span class="string">bundler</span> <span class="number">1.6</span><span class="number">.3</span></span><br><span class="line">       <span class="string">Installing</span> <span class="string">tilt</span> <span class="number">1.3</span><span class="number">.6</span></span><br><span class="line">       <span class="string">Installing</span> <span class="string">rack</span> <span class="number">1.5</span><span class="number">.2</span></span><br><span class="line">       <span class="string">Installing</span> <span class="string">rack-protection</span> <span class="number">1.5</span><span class="number">.0</span></span><br><span class="line">       <span class="string">Installing</span> <span class="string">sinatra</span> <span class="number">1.4</span><span class="number">.2</span></span><br><span class="line">       <span class="string">Your</span> <span class="string">bundle</span> <span class="string">is</span> <span class="string">complete!</span></span><br><span class="line">       <span class="string">Gems</span> <span class="string">in</span> <span class="string">the</span> <span class="string">groups</span> <span class="string">development</span> <span class="string">and</span> <span class="string">test</span> <span class="string">were</span> <span class="string">not</span> <span class="string">installed.</span></span><br><span class="line">       <span class="string">It</span> <span class="string">was</span> <span class="string">installed</span> <span class="string">into</span> <span class="string">./vendor/bundle</span></span><br><span class="line">       <span class="string">Bundle</span> <span class="string">completed</span> <span class="string">(13.48s)</span></span><br><span class="line">       <span class="string">Cleaning</span> <span class="string">up</span> <span class="string">the</span> <span class="string">bundler</span> <span class="string">cache.</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Discovering</span> <span class="string">process</span> <span class="string">types</span></span><br><span class="line">       <span class="string">Procfile</span> <span class="string">declares</span> <span class="string">types</span> <span class="string">-&gt;</span> <span class="string">web</span></span><br><span class="line">       <span class="string">Default</span> <span class="string">process</span> <span class="string">types</span> <span class="string">for</span> <span class="string">Ruby</span> <span class="string">-&gt;</span> <span class="string">rake,</span> <span class="string">console,</span> <span class="string">web</span></span><br><span class="line"><span class="string">-----&gt;</span> <span class="string">Compiled</span> <span class="string">slug</span> <span class="string">size</span> <span class="string">is</span> <span class="string">12M</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">Building</span> <span class="string">Docker</span> <span class="string">image</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Sending</span> <span class="string">build</span> <span class="string">context</span> <span class="string">to</span> <span class="string">Docker</span> <span class="string">daemon</span> <span class="number">11.77</span> <span class="string">MB</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Sending</span> <span class="string">build</span> <span class="string">context</span> <span class="string">to</span> <span class="string">Docker</span> <span class="string">daemon</span></span><br><span class="line"><span class="attr">remote: Step 0 :</span> <span class="string">FROM</span> <span class="string">deis/slugrunner</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">f607bc8783a5</span></span><br><span class="line"><span class="attr">remote: Step 1 :</span> <span class="string">RUN</span> <span class="string">mkdir</span> <span class="string">-p</span> <span class="string">/app</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">Running</span> <span class="string">in</span> <span class="string">0b97b30b3657</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">78bff4f79476</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">0b97b30b3657</span></span><br><span class="line"><span class="attr">remote: Step 2 :</span> <span class="string">ADD</span> <span class="string">slug.tgz</span> <span class="string">/app</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">022a38002b84</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">d1b6139bd64c</span></span><br><span class="line"><span class="attr">remote: Step 3 :</span> <span class="string">ENTRYPOINT</span> <span class="string">["/runner/init"]</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">Running</span> <span class="string">in</span> <span class="string">19ae5bcceb39</span></span><br><span class="line"><span class="attr">remote:</span>  <span class="string">---&gt;</span> <span class="string">abdcc4adba9a</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Removing</span> <span class="string">intermediate</span> <span class="string">container</span> <span class="string">19ae5bcceb39</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">Successfully</span> <span class="string">built</span> <span class="string">abdcc4adba9a</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">Pushing</span> <span class="string">image</span> <span class="string">to</span> <span class="string">private</span> <span class="string">registry</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">Launching...</span> <span class="string">done,</span> <span class="string">v2</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span> <span class="string">-----&gt;</span> <span class="string">outlaw-rucksack</span> <span class="string">deployed</span> <span class="string">to</span> <span class="string">Deis</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">http://outlaw-rucksack.deis.210.140.16.229.xip.io</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="attr">remote:</span>        <span class="string">To</span> <span class="string">learn</span> <span class="string">more,</span> <span class="string">use</span> <span class="string">`deis</span> <span class="string">help`</span> <span class="string">or</span> <span class="string">visit</span> <span class="string">http://deis.io</span></span><br><span class="line"><span class="attr">remote:</span></span><br><span class="line"><span class="string">To</span> <span class="string">ssh://git@deis.210.140.16.229.xip.io:2222/outlaw-rucksack.git</span></span><br><span class="line"> <span class="string">*</span> <span class="string">[new</span> <span class="string">branch]</span>      <span class="string">master</span> <span class="string">-&gt;</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p><code>git push deis master</code>ログの最後の方にアプリのURLが表示されるので、curlで確認してみます。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">$ curl -s <span class="keyword">http</span>://outlaw-rucksack.deis<span class="number">.210</span><span class="number">.140</span><span class="number">.16</span><span class="number">.229</span>.xip.io</span><br><span class="line">Powered <span class="keyword">by</span> Deis!</span><br><span class="line">Running <span class="keyword">on</span> <span class="title">container</span> <span class="title">ID</span> <span class="title">3110024e035b</span></span><br></pre></td></tr></table></figure>
+
+<p>ブラウザからも確認してみます。</p>
+<img src="/2014/08/15/deis-in-idcf-cloud-deploy/deis.png" class="center">
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/GCE/" rel="tag"># GCE</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Deis/" rel="tag"># Deis</a>
+              <a href="/tags/xipio/" rel="tag"># xipio</a>
+              <a href="/tags/Sinatra/" rel="tag"># Sinatra</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/08/14/deis-in-idcf-cloud-install/" rel="prev" title="Deis in IDCFクラウド - Part1: CoreOSクラスタとDeisインストール">
+      <i class="fa fa-chevron-left"></i> Deis in IDCFクラウド - Part1: CoreOSクラスタとDeisインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/08/16/deis-in-idcf-cloud-go-dart-buildpack/" rel="next" title="Deis in IDCFクラウド - Part3: GoとDartのBuildpack">
+      Deis in IDCFクラウド - Part3: GoとDartのBuildpack <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deisクライアントのインストール"><span class="nav-number">1.</span> <span class="nav-text">Deisクライアントのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ネットワーク設定"><span class="nav-number">2.</span> <span class="nav-text">ネットワーク設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deisコントローラーへユーザー登録"><span class="nav-number">3.</span> <span class="nav-text">Deisコントローラーへユーザー登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deisクラスタの作成"><span class="nav-number">4.</span> <span class="nav-text">Deisクラスタの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sinatraのデプロイ"><span class="nav-number">5.</span> <span class="nav-text">Sinatraのデプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

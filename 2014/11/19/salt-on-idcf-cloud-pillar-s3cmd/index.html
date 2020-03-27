@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="apt-getでインストールできるs3cmdのバージョンは古いためマルチパートアップロード機能が使えません。IDCFオブジェクトストレージで使うs3cmdをGitHubから最新バージョンをcloneしてビルドして使ってみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Salt on IDCF クラウド - Part3: PillarとIDCFオブジェクトストレージ用のs3cmd">
+<meta property="og:url" content="http://masato.github.io/2014/11/19/salt-on-idcf-cloud-pillar-s3cmd/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="apt-getでインストールできるs3cmdのバージョンは古いためマルチパートアップロード機能が使えません。IDCFオブジェクトストレージで使うs3cmdをGitHubから最新バージョンをcloneしてビルドして使ってみます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-11-19T12:49:23.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.894Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFCloud">
+<meta property="article:tag" content="Salt">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="s3cmd">
+<meta property="article:tag" content="IDCFオブジェクトストレージ">
+<meta property="article:tag" content="SaltFormula">
+<meta property="article:tag" content="SaltPillar">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/11/19/salt-on-idcf-cloud-pillar-s3cmd/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Salt on IDCF クラウド - Part3: PillarとIDCFオブジェクトストレージ用のs3cmd | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/11/19/salt-on-idcf-cloud-pillar-s3cmd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Salt on IDCF クラウド - Part3: PillarとIDCFオブジェクトストレージ用のs3cmd
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Nov 19 2014 21:49:23" itemprop="dateCreated datePublished" datetime="2014-11-19T21:49:23+09:00">Nov 19 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">apt-getでインストールできるs3cmdのバージョンは古いためマルチパートアップロード機能が使えません。IDCFオブジェクトストレージで使うs3cmdをGitHubから最新バージョンをcloneしてビルドして使ってみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>apt-getでインストールできるs3cmdのバージョンは古いためマルチパートアップロード機能が使えません。IDCFオブジェクトストレージで使うs3cmdをGitHubから最新バージョンをcloneしてビルドして使ってみます。</p>
+<a id="more"></a>
+
+<h3 id="Salt-Formula"><a href="#Salt-Formula" class="headerlink" title="Salt Formula"></a>Salt Formula</h3><p><a href="/2014/11/18/salt-on-idcf-cloud-salt-formula/">前回</a>作成したFormulaのディレクトリ構造に、common.slsとs3cmdのFormulaを追加します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree /srv/salt/</span><br><span class="line">/srv/salt/</span><br><span class="line">├── base.sls</span><br><span class="line">├── common.sls</span><br><span class="line">├── emacs</span><br><span class="line">│   └── init.sls</span><br><span class="line">├── s3cmd</span><br><span class="line">│   └── init.sls</span><br><span class="line">└── top.sls</span><br></pre></td></tr></table></figure>
+
+<h3 id="base-sls"><a href="#base-sls" class="headerlink" title="base.sls"></a>base.sls</h3><p>base.slsは<a href="/2014/11/18/salt-on-idcf-cloud-salt-formula/">前回</a>から変更はありません。</p>
+<figure class="highlight yml"><figcaption><span>/srv/salt/base.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">ja_JP.UTF-8:</span></span><br><span class="line">  <span class="string">locale.system</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Asia/Tokyo:</span></span><br><span class="line">  <span class="string">timezone.system</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="top-sls"><a href="#top-sls" class="headerlink" title="top.sls"></a>top.sls</h3><p><code>roles:dev</code>をGrainsで指定しているminionに、s3cmdのFormula SLSを適用します。</p>
+<figure class="highlight yml"><figcaption><span>/srv/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">'*'</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">  <span class="attr">'roles:salt-master':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">  <span class="attr">'roles:dev':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="common-sls"><a href="#common-sls" class="headerlink" title="common.sls"></a>common.sls</h3><p>SLSファイルで共通して使うstatesをcommon.slsに定義します。個別のSLSファイルからincludeして使います。</p>
+<figure class="highlight yml"><figcaption><span>/srv/salt/common.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">pkg-core:</span></span><br><span class="line">  <span class="attr">pkg.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">pkgs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">git</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">python-pip</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Pillar"><a href="#Pillar" class="headerlink" title="Pillar"></a>Pillar</h3><p>Pillarはminionに定義するGrainと違い、masterに定義するデータです。masterに保存しますが、該当のminionしか利用できないデータです。最初にディレクトリを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /srv/pillar/</span><br></pre></td></tr></table></figure>
+
+<p>masterのディレクトリ構成は以下のようになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree /srv/pillar/</span><br><span class="line">/srv/pillar/</span><br><span class="line">├── s3cmd.sls</span><br><span class="line">└── top.sls</span><br></pre></td></tr></table></figure>
+
+<p><code>Salt Formula</code>と同じようにtop.slsファイルを作成します。</p>
+<figure class="highlight yml"><figcaption><span>/srv/pillar/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">'*'</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br></pre></td></tr></table></figure>
+
+<p>s3cmdのPillarには、IDCFオブジェクトストレージの認証に利用する<code>access_key</code>と<code>secret_key</code>を定義します。</p>
+<figure class="highlight yml"><figcaption><span>/srv/pillar/s3cmd.sls:</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">s3cmd:</span></span><br><span class="line">  <span class="attr">access_key:</span> <span class="string">xxx</span></span><br><span class="line">  <span class="attr">secret_key:</span> <span class="string">xxx</span></span><br></pre></td></tr></table></figure>
+
+<p><code>pillar</code>モジュールの<code>items</code>functionを使い、Pillarに定義したデータを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> pillar.items</span><br><span class="line">...</span><br><span class="line">    s3cmd:</span><br><span class="line">        ----------</span><br><span class="line">        access_key:</span><br><span class="line">            xxx</span><br><span class="line">        secret_key:</span><br><span class="line">            xxx</span><br></pre></td></tr></table></figure>
+
+<p>Pillarで定義したデータは、Formulaをminionに適用するときに以下のように参照することができます。.s3cfgのテンプレートは通常の設定ファイルを使いますが、エンドポイントの設定をIDCFオブジェクトストレージ用に変更します。また、access_keyとsecret_keyをPillarから動的に取得します。</p>
+<figure class="highlight bash"><figcaption><span>/srv/salt/s3cmd/s3cfg</span></figcaption><table><tr><td class="code"><pre><span class="line">[default]</span><br><span class="line">access_key = &amp;<span class="comment">#123;&amp;#123; pillar['s3cmd']['access_key'] &#125;&#125;</span></span><br><span class="line">...</span><br><span class="line">host_base = ds.jp-east.idcfcloud.com</span><br><span class="line">host_bucket = %(bucket)s.ds.jp-east.idcfcloud.com</span><br><span class="line">...</span><br><span class="line">secret_key = &amp;<span class="comment">#123;&amp;#123; pillar['s3cmd']['secret_key'] &#125;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="s3cmd-Formula"><a href="#s3cmd-Formula" class="headerlink" title="s3cmd Formula"></a>s3cmd Formula</h3><p>s3cmdのSLSファイルでは、common.slsをincludeして使います。s3cmdはGitHubからcloneします。cmd.waitのstateでは<code>git clone</code>の状態を監視して、リポジトリが更新されたら<code>python setup.py install</code>を実行してs3cmdをビルドします。s3cmdのビルドにはpython-dateutilが必要なので、pipからインストールします。それぞれrequireでcommon.slsの実行を前提条件にします。</p>
+<p>file stateを使いテンプレートとPillarに定義したキー情報を代入して<code>/root/.s3cfg</code>に配置します。</p>
+<figure class="highlight yml"><figcaption><span>/srv/salt/s3cmd/init.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">include:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">common</span></span><br><span class="line"></span><br><span class="line"><span class="attr">s3cmd-install:</span></span><br><span class="line">  <span class="attr">git.latest:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">https://github.com/s3tools/s3cmd.git</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">target:</span> <span class="string">/opt/s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">sls:</span> <span class="string">common</span></span><br><span class="line">  <span class="attr">pip.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">python-dateutil</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">sls:</span> <span class="string">common</span></span><br><span class="line">  <span class="attr">cmd.wait:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">python</span> <span class="string">setup.py</span> <span class="string">install</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">cwd:</span> <span class="string">/opt/s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">git:</span> <span class="string">s3cmd-install</span></span><br><span class="line"></span><br><span class="line"><span class="string">/root/.s3cfg:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://s3cmd/s3cfg</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">template:</span> <span class="string">jinja</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">600</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">user:</span> <span class="string">root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">group:</span> <span class="string">root</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="state-highstateで全てのFormulaを適用する"><a href="#state-highstateで全てのFormulaを適用する" class="headerlink" title="state.highstateで全てのFormulaを適用する"></a>state.highstateで全てのFormulaを適用する</h3><p><code>highstate</code>functionを使い、<code>Salt Formula</code>のすべてのSLSファイルをminionに適用します。<code>&#39;*&#39;</code>のワイルドカードを指定して、すべてのminionを対象にします。s3cmdは<code>roles:dev</code>をGrainsで指定しているminion1とminion2にインストールされます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>s3cmdのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'minion2*'</span> cmd.run <span class="string">'s3cmd --version'</span></span><br><span class="line">minion2.cs74idcfcloud.internal:</span><br><span class="line">    s3cmd version 1.5.0-rc1</span><br></pre></td></tr></table></figure>
+
+<p><code>s3cmd ls</code>を実行してIDCFオブジェクトストレージのバケツを一覧します。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'minion1*'</span> cmd.run <span class="string">'s3cmd ls'</span></span><br><span class="line">minion1.cs74idcfcloud.<span class="built_in">int</span>ernal:</span><br><span class="line">    <span class="number">2014</span><span class="number">-10</span><span class="number">-31</span> <span class="number">03</span>:<span class="number">20</span>  s3:<span class="comment">//xxx</span></span><br><span class="line">    <span class="number">2014</span><span class="number">-10</span><span class="number">-14</span> <span class="number">06</span>:<span class="number">28</span>  s3:<span class="comment">//xxx</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCFCloud/" rel="tag"># IDCFCloud</a>
+              <a href="/tags/Salt/" rel="tag"># Salt</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/s3cmd/" rel="tag"># s3cmd</a>
+              <a href="/tags/IDCF%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" rel="tag"># IDCFオブジェクトストレージ</a>
+              <a href="/tags/SaltFormula/" rel="tag"># SaltFormula</a>
+              <a href="/tags/SaltPillar/" rel="tag"># SaltPillar</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/11/18/salt-on-idcf-cloud-salt-formula/" rel="prev" title="Salt on IDCF クラウド - Part2: Salt Formula">
+      <i class="fa fa-chevron-left"></i> Salt on IDCF クラウド - Part2: Salt Formula
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/11/20/salt-on-idcf-cloud-monitoring/" rel="next" title="Salt on IDCF クラウド - Part4: psutilとpsモジュールで監視">
+      Salt on IDCF クラウド - Part4: psutilとpsモジュールで監視 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Salt-Formula"><span class="nav-number">1.</span> <span class="nav-text">Salt Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#base-sls"><span class="nav-number">2.</span> <span class="nav-text">base.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top-sls"><span class="nav-number">3.</span> <span class="nav-text">top.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#common-sls"><span class="nav-number">4.</span> <span class="nav-text">common.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pillar"><span class="nav-number">5.</span> <span class="nav-text">Pillar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#s3cmd-Formula"><span class="nav-number">6.</span> <span class="nav-text">s3cmd Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-highstateで全てのFormulaを適用する"><span class="nav-number">7.</span> <span class="nav-text">state.highstateで全てのFormulaを適用する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">8.</span> <span class="nav-text">確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MBaaSを調査しているところですがCordovaをベースにしてIonicやOnsen UI、SupersonicをつかったHTML5ハイブリッドモバイルアプリを作ってみようと思います。開発環境はなるべくクラウド上のDockerコンテナで行いたいです。DockerコンテナにAndroid SDKはヘッドレスでインストールしてIonicの開発環境を構築します。ローカルのサーバーを起動することでリモー">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerで開発環境をつくる - IonicとCordovaとAndroid SDKをインストール">
+<meta property="og:url" content="http://masato.github.io/2014/12/30/docker-devenv-ionic-cordova/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="MBaaSを調査しているところですがCordovaをベースにしてIonicやOnsen UI、SupersonicをつかったHTML5ハイブリッドモバイルアプリを作ってみようと思います。開発環境はなるべくクラウド上のDockerコンテナで行いたいです。DockerコンテナにAndroid SDKはヘッドレスでインストールしてIonicの開発環境を構築します。ローカルのサーバーを起動することでリモー">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/12/30/docker-devenv-ionic-cordova/ionic-chats.png">
+<meta property="article:published_time" content="2014-12-29T15:20:10.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.593Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="MBaaS">
+<meta property="article:tag" content="HTML5HybridMobileApps">
+<meta property="article:tag" content="Cordova">
+<meta property="article:tag" content="DockerDevEnv">
+<meta property="article:tag" content="Ionic">
+<meta property="article:tag" content="AndroidSDK">
+<meta property="article:tag" content="OnsenUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/12/30/docker-devenv-ionic-cordova/ionic-chats.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/12/30/docker-devenv-ionic-cordova/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dockerで開発環境をつくる - IonicとCordovaとAndroid SDKをインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/12/30/docker-devenv-ionic-cordova/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerで開発環境をつくる - IonicとCordovaとAndroid SDKをインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 30 2014 00:20:10" itemprop="dateCreated datePublished" datetime="2014-12-30T00:20:10+09:00">Dec 30 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">MBaaSを調査しているところですがCordovaをベースにしてIonicやOnsen UI、SupersonicをつかったHTML5ハイブリッドモバイルアプリを作ってみようと思います。開発環境はなるべくクラウド上のDockerコンテナで行いたいです。DockerコンテナにAndroid SDKはヘッドレスでインストールしてIonicの開発環境を構築します。ローカルのサーバーを起動することでリモートからブラウザでプレビューができるようになります。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/12/22/mbaas-html5-hybrid-mobile-apps-references/">MBaaSを調査</a>しているところですが<a href="http://cordova.apache.org/" target="_blank" rel="noopener">Cordova</a>をベースにして<a href="http://ionicframework.com/" target="_blank" rel="noopener">Ionic</a>や<a href="http://onsen.io/" target="_blank" rel="noopener">Onsen UI</a>、<a href="http://www.appgyver.com/supersonic" target="_blank" rel="noopener">Supersonic</a>をつかったHTML5ハイブリッドモバイルアプリを作ってみようと思います。開発環境はなるべくクラウド上のDockerコンテナで行いたいです。DockerコンテナにAndroid SDKはヘッドレスでインストールしてIonicの開発環境を構築します。ローカルのサーバーを起動することでリモートからブラウザでプレビューができるようになります。</p>
+<a id="more"></a>
+
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>今回作成したDockerイメージは、<a href="https://registry.hub.docker.com/u/masato/ionic-cordova/" target="_blank" rel="noopener">masato/ionic-cordova</a>にpushしています。GitHubのリポジトリは<a href="https://github.com/masato/ionic-cordova" target="_blank" rel="noopener">ここ</a>です。開発環境用のDockerイメージは<a href="https://index.docker.io/u/phusion/baseimage/" target="_blank" rel="noopener">phusion/baseimage</a>をベースにしています。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/ionic-cordova/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.15</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"><span class="comment">## Enabling the insecure key permanently</span></span><br><span class="line">RUN /usr/sbin/enable_insecure_key</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line"><span class="comment">## oracle-java8</span></span><br><span class="line">RUN add-apt-repository ppa:webupd8team/java &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> oracle-java7-installer shared/accepted-oracle-license-v1-1 select <span class="literal">true</span> | /usr/bin/debconf-set-selections</span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       python emacs24-nox emacs24-el \</span><br><span class="line">                       git byobu wget curl unzip tree elinks \</span><br><span class="line">                       oracle-java7-installer oracle-java7-set-default ant \</span><br><span class="line">                       lib32z1 lib32ncurses5 lib32bz2-1.0 lib32stdc++6</span><br><span class="line">ENV JAVA_HOME /usr/lib/jvm/java-7-oracle</span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN locale-gen <span class="variable">$LANG</span> &amp;&amp; update-locale <span class="variable">$LANG</span> &amp;&amp; \</span><br><span class="line">    ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"><span class="comment">## Development Environment</span></span><br><span class="line">RUN update-alternatives --<span class="built_in">set</span> editor /usr/bin/vim.basic</span><br><span class="line">ENV USERNAME docker</span><br><span class="line">ENV HOME /home/<span class="variable">$&#123;USERNAME&#125;</span></span><br><span class="line">ENV PATH <span class="variable">$PATH</span>:<span class="variable">$&#123;HOME&#125;</span>/bin</span><br><span class="line"><span class="comment"># Add Un-Root User</span></span><br><span class="line">RUN useradd -m -d <span class="variable">$&#123;HOME&#125;</span> -s /bin/bash <span class="variable">$&#123;USERNAME&#125;</span> &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$&#123;USERNAME&#125;</span>:<span class="variable">$&#123;USERNAME&#125;</span>"</span> | chpasswd &amp;&amp; \</span><br><span class="line">    mkdir <span class="variable">$&#123;HOME&#125;</span>/.ssh <span class="variable">$&#123;HOME&#125;</span>/tmp &amp;&amp; \</span><br><span class="line">    chmod 700 <span class="variable">$&#123;HOME&#125;</span>/.ssh &amp;&amp; \</span><br><span class="line">    cp /root/.ssh/authorized_keys <span class="variable">$&#123;HOME&#125;</span>/.ssh &amp;&amp; \</span><br><span class="line">    chmod 600 <span class="variable">$&#123;HOME&#125;</span>/.ssh/authorized_keys &amp;&amp; \</span><br><span class="line">    chown -R <span class="variable">$&#123;USERNAME&#125;</span>:<span class="variable">$&#123;USERNAME&#125;</span> <span class="variable">$&#123;HOME&#125;</span>/.ssh &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"export LANG=ja_JP.UTF-8"</span> &gt;&gt; <span class="variable">$&#123;HOME&#125;</span>/.profile &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"docker ALL=(ALL) NOPASSWD:ALL"</span> &gt;&gt; /etc/sudoers</span><br><span class="line">ENV USERNAME docker</span><br><span class="line">ENV HOME /home/<span class="variable">$&#123;USERNAME&#125;</span></span><br><span class="line">WORKDIR /data</span><br><span class="line">ENV DATA_DIR /data</span><br><span class="line">ADD dotfiles <span class="variable">$&#123;HOME&#125;</span></span><br><span class="line">RUN mkdir -p /data &amp;&amp; \</span><br><span class="line">    chown -R <span class="variable">$&#123;USERNAME&#125;</span>:<span class="variable">$&#123;USERNAME&#125;</span> <span class="variable">$&#123;HOME&#125;</span> <span class="variable">$&#123;DATA_DIR&#125;</span></span><br><span class="line">USER <span class="variable">$&#123;USERNAME&#125;</span></span><br><span class="line"><span class="comment">## Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="built_in">export</span> PATH=<span class="string">'$&#123;HOME&#125;/.cask/bin:$PATH'</span> &gt;&gt; <span class="variable">$&#123;HOME&#125;</span>/.profile &amp;&amp; \</span><br><span class="line">    /bin/bash -c <span class="string">'source $&#123;HOME&#125;/.profile &amp;&amp; cd $&#123;HOME&#125;/.emacs.d &amp;&amp; cask install'</span></span><br><span class="line"><span class="comment">## auto-java-complete</span></span><br><span class="line">RUN <span class="built_in">cd</span> <span class="variable">$&#123;HOME&#125;</span>/.emacs.d &amp;&amp; \</span><br><span class="line">    git <span class="built_in">clone</span> https://github.com/emacs-java/auto-java-complete &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> auto-java-complete &amp;&amp; \</span><br><span class="line">    javac Tags.java -encoding UTF-8 &amp;&amp; \</span><br><span class="line">    java -cp <span class="string">"/usr/lib/jvm/java-7-oracle/jre/lib/rt.jar:."</span> Tags</span><br><span class="line"><span class="comment">## Android SDK</span></span><br><span class="line">ENV ANDROID_SDK_VERSION r24.0.2</span><br><span class="line">ENV ANDROID_API_LEVEL 19</span><br><span class="line">ENV ANDROID_BUILD_TOOLS_VERSION 21.1.1</span><br><span class="line">ENV ANDROID_HOME <span class="variable">$&#123;HOME&#125;</span>/android-sdk-linux</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">'export ANDROID_HOME=$&#123;ANDROID_HOME&#125;'</span> &gt;&gt; <span class="variable">$&#123;HOME&#125;</span>/.profile</span><br><span class="line">ENV PATH <span class="variable">$&#123;PATH&#125;</span>:<span class="variable">$&#123;ANDROID_HOME&#125;</span>/tools:<span class="variable">$&#123;ANDROID_HOME&#125;</span>/platform-tools</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">'export PATH=$&#123;PATH&#125;:$&#123;ANDROID_HOME&#125;/tools:$&#123;ANDROID_HOME&#125;/platform-tools'</span> &gt;&gt; <span class="variable">$&#123;HOME&#125;</span>/.profile</span><br><span class="line">RUN wget -qO- <span class="string">"http://dl.google.com/android/android-sdk_<span class="variable">$&#123;ANDROID_SDK_VERSION&#125;</span>-linux.tgz"</span> \</span><br><span class="line">    | tar -zxv -C <span class="variable">$&#123;HOME&#125;</span> &amp;&amp; \</span><br><span class="line">    <span class="built_in">echo</span> y | android update sdk --no-ui --all --filter platform-tool,android-<span class="variable">$&#123;ANDROID_API_LEVEL&#125;</span>,sysimg-<span class="variable">$&#123;ANDROID_API_LEVEL&#125;</span>,build-tools-<span class="variable">$&#123;ANDROID_BUILD_TOOLS_VERSION&#125;</span></span><br><span class="line">ENV NODE_VERSION v0.10</span><br><span class="line"><span class="comment">## Node.js/Cordova/Ionic</span></span><br><span class="line">RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.22.0/install.sh | bash &amp;&amp; \</span><br><span class="line">    /bin/bash -c <span class="string">'source $&#123;HOME&#125;/.nvm/nvm.sh &amp;&amp; \</span></span><br><span class="line"><span class="string">                  nvm install $&#123;NODE_VERSION&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">                  nvm use $&#123;NODE_VERSION&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">                  nvm alias default $&#123;NODE_VERSION&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">                  npm install -g npm &amp;&amp; \</span></span><br><span class="line"><span class="string">                  npm install -g cordova ionic &amp;&amp; \</span></span><br><span class="line"><span class="string">                  npm cache clear'</span></span><br><span class="line"><span class="comment">## Create Cordova and ionic sample apps</span></span><br><span class="line">RUN /bin/bash -c <span class="string">'source $&#123;HOME&#125;/.nvm/nvm.sh &amp;&amp; nvm use $&#123;NODE_VERSION&#125; \</span></span><br><span class="line"><span class="string">    cd $&#123;DATA_DIR&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">    cordova create cordova_test com.example.test "CordovaTestApp" &amp;&amp; \</span></span><br><span class="line"><span class="string">    cd $&#123;DATA_DIR&#125;/cordova_test &amp;&amp; \</span></span><br><span class="line"><span class="string">    cordova platform add android &amp;&amp; \</span></span><br><span class="line"><span class="string">    cordova build &amp;&amp; \</span></span><br><span class="line"><span class="string">    cd $&#123;DATA_DIR&#125; &amp;&amp; \</span></span><br><span class="line"><span class="string">    ionic start ionicTestApp tabs &amp;&amp; \</span></span><br><span class="line"><span class="string">    cd $&#123;DATA_DIR&#125;/ionicTestApp &amp;&amp; \</span></span><br><span class="line"><span class="string">    ionic platform add android &amp;&amp; \</span></span><br><span class="line"><span class="string">    ionic build android'</span></span><br><span class="line">USER root</span><br><span class="line">ENV HOME /root</span><br><span class="line">VOLUME [<span class="string">"/data"</span>]</span><br><span class="line">EXPOSE 8100 35729</span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<h3 id="32bit版のライブラリ"><a href="#32bit版のライブラリ" class="headerlink" title="32bit版のライブラリ"></a>32bit版のライブラリ</h3><p>IonicのインストールにはOracle JDK 7、Ant、Android SDK、Node.jsが必要です。今回のDockerコンテナはUbuntu 14.04の64bit版ですが、Androidが一部32bit版のライブラリに依存しているようです。<a href="http://sherwinrobles.blogspot.jp/2014/02/installing-and-setting-up-android.html" target="_blank" rel="noopener">Installing and setting up Android Developer Tools in Ubuntu 13.10</a>を参考にして、<code>lib32z1 lib32ncurses5 lib32bz2-1.0 lib32stdc++6</code>のライブラリをインストールします。</p>
+<h3 id="Android-SDK"><a href="#Android-SDK" class="headerlink" title="Android SDK"></a>Android SDK</h3><p>Android SDKはヘッドレスで使います。今回の設定は以下のフィルタしました。</p>
+<blockquote>
+<p>android update sdk –no-ui –all –filter platform-tool,android-19,sysimg-19,build-tools-21.1.1</p>
+</blockquote>
+<p>APIレベルは<a href="http://developer.android.com/guide/topics/manifest/uses-sdk-element.html" target="_blank" rel="noopener">uses-sdk</a>を参照にしてandroid-19を指定しました。Android 4.4(Kitkat)を対象にします。</p>
+<p>Build Toolsのバージョンも <a href="https://developer.android.com/tools/revisions/build-tools.html" target="_blank" rel="noopener">SDK Build Tools Release Notes</a>を参照して、最新の21.1.1を指定しています。</p>
+<h3 id="CordovaとIonic"><a href="#CordovaとIonic" class="headerlink" title="CordovaとIonic"></a>CordovaとIonic</h3><p>CordoavとIonicはどちらもnpmでインストールするためNode.jsが必要です。nvmでv0.10.35をインストールします。そのあと確認のためCordovaとIonicのサンプルを<code>/data</code>ディレクトリに作成しました。</p>
+<h3 id="Dockerコンテナの起動"><a href="#Dockerコンテナの起動" class="headerlink" title="Dockerコンテナの起動"></a>Dockerコンテナの起動</h3><p>使い捨てのDockerコンテナを起動します。開発ユーザーの<code>docker</code>にスイッチします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm masato/ionic-cordova /sbin/my_init bash</span><br><span class="line">$ su - docker</span><br></pre></td></tr></table></figure>
+
+<p>Ionicのサンプルアプリのディレクトリに移動します。nvmを使い<code>ionic serve</code>を実行してローカルにWebサーバーを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /data/ionicTestApp/</span><br><span class="line">$ ionic serve</span><br><span class="line"></span><br><span class="line">Multiple addresses available.</span><br><span class="line">Please select <span class="built_in">which</span> address to use by entering its number from the list below:</span><br><span class="line"> 1) 172.17.3.90 (eth0)</span><br><span class="line"> 2) localhost</span><br><span class="line">Address Selection:  1</span><br><span class="line">Selected address: 172.17.3.90</span><br><span class="line">Running dev server: http://172.17.3.90:8100</span><br><span class="line">Running live reload server: http://172.17.3.90:35729</span><br><span class="line">Watching : [ <span class="string">'www/**/*'</span>, <span class="string">'!www/lib/**/*'</span> ]</span><br><span class="line">Ionic server commands, enter:</span><br><span class="line">  restart or r to restart the client app from the root</span><br><span class="line">  goto or g and a url to have the app navigate to the given url</span><br><span class="line">  consolelogs or c to <span class="built_in">enable</span>/<span class="built_in">disable</span> console <span class="built_in">log</span> output</span><br><span class="line">  serverlogs or s to <span class="built_in">enable</span>/<span class="built_in">disable</span> server <span class="built_in">log</span> output</span><br><span class="line">  quit or q to shutdown the server and <span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+
+<p>DockerコンテナのIPアドレスを確認して、ngrokでトンネルします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> e0c6dac55a79</span><br><span class="line">172.17.3.90</span><br><span class="line">$ docker run -it --rm wizardapps/ngrok:latest ngrok 172.17.3.90:8100</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザでngrokのトンネルしたURLを開くと、Ionicのtabsサンプルをプレビューできます。</p>
+<p><a href="http://6e7e14f6.ngrok.com/" target="_blank" rel="noopener">http://6e7e14f6.ngrok.com/</a></p>
+<img src="/2014/12/30/docker-devenv-ionic-cordova/ionic-chats.png" class="center">
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MBaaS/" rel="tag"># MBaaS</a>
+              <a href="/tags/HTML5HybridMobileApps/" rel="tag"># HTML5HybridMobileApps</a>
+              <a href="/tags/Cordova/" rel="tag"># Cordova</a>
+              <a href="/tags/DockerDevEnv/" rel="tag"># DockerDevEnv</a>
+              <a href="/tags/Ionic/" rel="tag"># Ionic</a>
+              <a href="/tags/AndroidSDK/" rel="tag"># AndroidSDK</a>
+              <a href="/tags/OnsenUI/" rel="tag"># OnsenUI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/12/29/docker-devenv-mono-fsharp/" rel="prev" title="Dockerで開発環境をつくる - F#のインストール">
+      <i class="fa fa-chevron-left"></i> Dockerで開発環境をつくる - F#のインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/12/31/idcf-linuxmint17-xrdp/" rel="next" title="IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする">
+      IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#32bit版のライブラリ"><span class="nav-number">2.</span> <span class="nav-text">32bit版のライブラリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android-SDK"><span class="nav-number">3.</span> <span class="nav-text">Android SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CordovaとIonic"><span class="nav-number">4.</span> <span class="nav-text">CordovaとIonic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerコンテナの起動"><span class="nav-number">5.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

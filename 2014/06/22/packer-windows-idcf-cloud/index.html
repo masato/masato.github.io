@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="PackerでOVA作成シリーズです。Part10でようやくOVAが作成できたので、IDCFオブジェクトストレージにPUTしたあと、IDCFクラウドにデプロイして動作確認します。その後IDCFクラウドからエクスポートしたOVAと同じ方法で、IDCFオブジェクトストレージからダウンロード、ローカルのVMware Player 6.02にもう一度OVAをデプロイしてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Packerを使いWindows上でOVAを作成する - Part11: PackerのOVAをIDCFクラウドで動かす">
+<meta property="og:url" content="http://masato.github.io/2014/06/22/packer-windows-idcf-cloud/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="PackerでOVA作成シリーズです。Part10でようやくOVAが作成できたので、IDCFオブジェクトストレージにPUTしたあと、IDCFクラウドにデプロイして動作確認します。その後IDCFクラウドからエクスポートしたOVAと同じ方法で、IDCFオブジェクトストレージからダウンロード、ローカルのVMware Player 6.02にもう一度OVAをデプロイしてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-22T02:31:09.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Packer">
+<meta property="article:tag" content="IDCFオブジェクトストレージ">
+<meta property="article:tag" content="idcf-compute-api">
+<meta property="article:tag" content="jq">
+<meta property="article:tag" content="PackerOVA">
+<meta property="article:tag" content="VMwarePlayer">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/22/packer-windows-idcf-cloud/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Packerを使いWindows上でOVAを作成する - Part11: PackerのOVAをIDCFクラウドで動かす | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/22/packer-windows-idcf-cloud/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Packerを使いWindows上でOVAを作成する - Part11: PackerのOVAをIDCFクラウドで動かす
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 22 2014 11:31:09" itemprop="dateCreated datePublished" datetime="2014-06-22T11:31:09+09:00">Jun 22 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">PackerでOVA作成シリーズです。Part10でようやくOVAが作成できたので、IDCFオブジェクトストレージにPUTしたあと、IDCFクラウドにデプロイして動作確認します。その後IDCFクラウドからエクスポートしたOVAと同じ方法で、IDCFオブジェクトストレージからダウンロード、ローカルのVMware Player 6.02にもう一度OVAをデプロイしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://masato.github.io/tags/PackerOVA/">PackerでOVA作成</a>シリーズです。<br><a href="/2014/06/19/packer-windows-nested-vmware-player-create-ova/">Part10</a>でようやくOVAが作成できたので、IDCFオブジェクトストレージにPUTしたあと、IDCFクラウドにデプロイして動作確認します。</p>
+<p>その後<a href="/2014/06/21/idcf-storage-knox-stream-upload/">IDCFクラウドからエクスポートしたOVA</a>と同じ方法で、IDCFオブジェクトストレージからダウンロード、ローカルの<code>VMware Player 6.02</code>にもう一度OVAをデプロイしてみます。</p>
+<p>いろいろと苦労しましたが、ようやく<a href="http://masato.github.io/tags/PackerOVA/">PackerでOVA作成</a>のシリーズが終わりました。備忘のためリンクです。</p>
+<ul>
+<li><a href="/2014/06/08/packer-windows-vmware-iso-ova-buildenv/">Packerを使いWindows上でOVAを作成する - Part1: VMware Workstation ビルド環境</a></li>
+<li><a href="/2014/06/08/packer-windows-vmware-iso-ova-build/">Packerを使いWindows上でOVAを作成する - Part2: VMware Workstation ビルド実行</a></li>
+<li><a href="/2014/06/09/packer-idcf-ova/">Packerを使いWindows上でOVAを作成する - Part3: IDCFクラウド</a></li>
+<li><a href="/2014/06/11/packer-windows-vagrant-mingw-mintty/">Packerを使いWindows上でOVAを作成する - Part4: Nested ESXi5 on VirtualBox ESXi5 Vagrant</a></li>
+<li><a href="/2014/06/12/packer-windows-vagrant-nested-esxi5/">Packerを使いWindows上でOVAを作成する - Part5: Nested ESXi5 on VirtualBox インストール</a></li>
+<li><a href="/2014/06/13/packer-windows-vagrant-remote-esxi5-build/">Packerを使いWindows上でOVAを作成する - Part6: Nested ESXi5 on VirtualBox リモートビルド</a></li>
+<li><a href="/2014/06/14/packer-windows-vagrant-remote-esxi5-partedUtil/">Packerを使いWindows上でOVAを作成する - Part7: Nested ESXi5 on VirtualBox パーティション作成</a></li>
+<li><a href="/2014/06/15/packer-windows-vagrant-nested-vmware-player/">Packerを使いWindows上でOVAを作成する - Part8: Nested VirtualBox デスクトップ環境のディスク拡張</a></li>
+<li><a href="/2014/06/16/packer-windows-nested-vmware-palyer/">Packerを使いWindows上でOVAを作成する - Part9: VMwarePlayerでNested VT-x</a></li>
+<li><a href="/2014/06/19/packer-windows-nested-vmware-player-create-ova/">Packerを使いWindows上でOVAを作成する - Part10: Nested VT-x VMwarePlayerでOVA作成</a></li>
+<li><a href="/2014/06/22/packer-windows-idcf-cloud/">Packerを使いWindows上でOVAを作成する - Part11: PackerのOVAをIDCFクラウドで動かす</a></li>
+</ul>
+<a id="more"></a>
+
+<h3 id="OVAをESXi4用に再パッケージして準備する"><a href="#OVAをESXi4用に再パッケージして準備する" class="headerlink" title="OVAをESXi4用に再パッケージして準備する"></a>OVAをESXi4用に再パッケージして準備する</h3><p>Packerで作成したOVAをIDCFクラウドで動作させるため、再パッケージします。</p>
+<ul>
+<li>マニフェストファイルを除外</li>
+<li>OVFファイルのVirtualSystemTypeを<code>vmx-07</code>を確認する</li>
+</ul>
+<p>OVFのVirtualSystemTypeは指定したように<code>vmx-07</code>になっています。</p>
+<figure class="highlight xml"><figcaption><span>packer_vmware-iso_vmware.ovf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">vssd:VirtualSystemType</span>&gt;</span>vmx-07<span class="tag">&lt;/<span class="name">vssd:VirtualSystemType</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>tmpディレクトリを作成、マニフェストを除いてOVAを作り直します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/packer_apps/tmp</span><br><span class="line">$ <span class="built_in">cd</span> ~/packer_apps</span><br><span class="line">$ mv packer_vmware-iso_vmware-disk1.vmdk tmp</span><br><span class="line">$ mv packer_vmware-iso_vmware-disk1.ovf tmp</span><br><span class="line">$ <span class="built_in">cd</span> tmp</span><br><span class="line">$ tar cvf ../packer_vmware-iso_vmware_07_nomf.ova packer_vmware*</span><br></pre></td></tr></table></figure>
+
+<h3 id="OVAをIDCFオブジェクトストレージへPUT"><a href="#OVAをIDCFオブジェクトストレージへPUT" class="headerlink" title="OVAをIDCFオブジェクトストレージへPUT"></a>OVAをIDCFオブジェクトストレージへPUT</h3><p>s3cmdを使い、IDCFオブジェクトストレージへOVAをPUTします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/packer_apps</span><br><span class="line">$ s3cmd put -c ~/.s3cfg.idcf --acl-public packer_vmware-iso_vmware_07_nomf.ova s3://ova/</span><br></pre></td></tr></table></figure>
+
+<h3 id="OVAからインスタンスを作成"><a href="#OVAからインスタンスを作成" class="headerlink" title="OVAからインスタンスを作成"></a>OVAからインスタンスを作成</h3><p>IDCFオブジェクトストレージへPUTしたOVAからテンプレートを作成します。</p>
+<p>まず、registerTemplateコマンドで使うテンプレートの<code>OS Types</code>を確認します。<br>今回は<code>Othre Ubuntu (64-bit)</code>の100を使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listOsTypes -c=id,description | egrep <span class="string">"Ubuntu.*64-bit"</span></span><br><span class="line">100,<span class="string">"Other Ubuntu (64-bit)"</span></span><br><span class="line">126,<span class="string">"Ubuntu 10.04 (64-bit)"</span></span><br><span class="line">130,<span class="string">"Ubuntu 8.04 (64-bit)"</span></span><br><span class="line">129,<span class="string">"Ubuntu 8.10 (64-bit)"</span></span><br><span class="line">128,<span class="string">"Ubuntu 9.04 (64-bit)"</span></span><br><span class="line">127,<span class="string">"Ubuntu 9.10 (64-bit)"</span></span><br></pre></td></tr></table></figure>
+
+<p>registerTemplateコマンドを使い、IDCFオブジェクトストレージのURLからテンプレートを登録します。<br>あとでOVAをエクスポートするので、<code>isextractable=true</code>にします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api registerTemplate \</span><br><span class="line">    --name=packer-07-nomf-v2  \</span><br><span class="line">    --displaytext=packer-07-nomf-v2 \</span><br><span class="line">    --format=OVA \</span><br><span class="line">    --hypervisor=VMware \</span><br><span class="line">    --ostypeid=100 \</span><br><span class="line">    --url=http://ova.ds.jp-east.idcfcloud.com/packer_vmware-iso_vmware_07_nomf.ova \</span><br><span class="line">    --zoneid=1 \</span><br><span class="line">    --isextractable=<span class="literal">true</span> \</span><br><span class="line">    --passwordenabled=<span class="literal">true</span>  | jq <span class="string">'.registertemplateresponse.template | .[0] | &#123;id,name&#125;'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"packer-07-nomf-v2"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 8390</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>インスタンスタイプのidを確認します。今回はM4を使うので、idは21です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings -c=id,name,displaytext | grep M4</span><br><span class="line">21,<span class="string">"M4"</span>,<span class="string">"M4 ( 2CPU / 4GB )"</span></span><br></pre></td></tr></table></figure>
+
+<p>waitjobのヘルパースクリプトを用意します。</p>
+<figure class="highlight bash"><figcaption><span>~/bin/waitjob</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$1</span>)</span><br><span class="line">  status=$(<span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse.jobstatus'</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;status&#125;</span> -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 10s</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\n"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">".queryasyncjobresultresponse | &#123;jobid: <span class="variable">$1</span>,jobresult&#125;"</span></span><br><span class="line">    <span class="built_in">break</span>;</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>registerTemplateコマンドで登録したtemplateidを指定してインスタンスを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api deployVirtualMachine \</span><br><span class="line">  --serviceofferingid=21 \</span><br><span class="line">  --templateid=8390 \</span><br><span class="line">  --zoneid=1 \</span><br><span class="line">  --name=nomf-07-v2 \</span><br><span class="line">  --displayname=nomf-07-v2 \</span><br><span class="line">  --keypair=google_compute_api \</span><br><span class="line">  --group=mshimizu | jq <span class="string">'.deployvirtualmachineresponse | .jobid'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>作成したインスタンスにSSHで接続して確認します。</p>
+<ul>
+<li>login: packer</li>
+<li>password: packer</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh packer@nomf-07-v2</span><br><span class="line">packer@ubuntu-1404:~$</span><br></pre></td></tr></table></figure>
+
+<h3 id="OVAをダウンロードする"><a href="#OVAをダウンロードする" class="headerlink" title="OVAをダウンロードする"></a>OVAをダウンロードする</h3><p>registerTemplateコマンドで登録したOVAをローカルの<code>VMware Player</code>にデプロイして確認するためダウンロードします。</p>
+<p><a href="/2014/06/21/idcf-storage-knox-stream-upload/">昨日作成した</a>のシェルスクリプトを使います。</p>
+<figure class="highlight bash"><figcaption><span>~/idcf_apps/extract_template.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$1</span>"</span> ] || [ -z <span class="string">"<span class="variable">$2</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Usage: extract_template template_id object_name"</span></span><br><span class="line">  <span class="built_in">exit</span> -1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">extract_template</span></span>() &#123;</span><br><span class="line">  waitjob $(idcf-compute-api extractTemplate --id=<span class="variable">$1</span> \</span><br><span class="line">              --mode=HTTP_DOWNLOAD --zoneid=1\</span><br><span class="line">             | jq <span class="string">'.extracttemplateresponse.jobid'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">extract_template_status</span></span>() &#123;</span><br><span class="line">  templateid=$(<span class="built_in">echo</span> <span class="variable">$1</span> | jq <span class="string">'if (.jobresult | has("template")) then .jobresult.template.id else false end'</span>)</span><br><span class="line">  idcf-compute-api listTemplates  \</span><br><span class="line">               --templatefilter=self --id=<span class="string">"<span class="variable">$&#123;templateid&#125;</span>"</span> \</span><br><span class="line">             | jq <span class="string">'.listtemplatesresponse.template[0].isready'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">extract_url</span></span>() &#123;</span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$1</span> | jq <span class="string">'if (.jobresult | has("template")) then .jobresult.template.url else .jobresult end'</span>  \</span><br><span class="line">            | sed -e <span class="string">'s/%2F/\//g'</span> \</span><br><span class="line">            | sed -e <span class="string">'s/"//g'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">json=`extract_template <span class="variable">$1</span>`</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  template_isready=`extract_template_status <span class="string">"<span class="variable">$&#123;json&#125;</span>"</span>`</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;template_isready&#125;</span> == <span class="literal">true</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\n"</span></span><br><span class="line">    url=`extract_url <span class="string">"<span class="variable">$&#123;json&#125;</span>"</span>`</span><br><span class="line">    <span class="keyword">if</span> [[ <span class="string">"<span class="variable">$&#123;url&#125;</span>"</span> == http* ]]; <span class="keyword">then</span></span><br><span class="line">      node ./upload_stream.js <span class="variable">$&#123;url&#125;</span> <span class="variable">$2</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      <span class="built_in">echo</span> <span class="string">"extract template failed: "</span> <span class="variable">$&#123;url&#125;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    <span class="built_in">break</span>;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 10s</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>同様にknox-mpuを使った、IDCFオブジェクトストレージにマルチアップロードするためのNodo.jsのスクリプトファイルです。</p>
+<figure class="highlight plain"><figcaption><span>~/idcf_apps/upload_stream.js</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">#!&#x2F;usr&#x2F;bin&#x2F;env node</span><br><span class="line"></span><br><span class="line">process.env[&#39;NODE_TLS_REJECT_UNAUTHORIZED&#39;] &#x3D; &#39;0&#39;;</span><br><span class="line"></span><br><span class="line">var url &#x3D; process.argv[2]</span><br><span class="line">  , fileName &#x3D; process.argv[3];</span><br><span class="line"></span><br><span class="line">var knox &#x3D; require(&#39;knox&#39;)</span><br><span class="line">  , MultiPartUpload &#x3D; require(&#39;knox-mpu&#39;)</span><br><span class="line">  , https &#x3D; require(&#39;https&#39;)</span><br><span class="line">  , util &#x3D; require(&#39;util&#39;)</span><br><span class="line">  , request &#x3D; require(&#39;request&#39;);</span><br><span class="line"></span><br><span class="line">var bucketName &#x3D; &#39;s3-streaming-upload&#39;</span><br><span class="line">  , endpointName &#x3D; &#39;ds.jp-east.idcfcloud.com&#39;;</span><br><span class="line"></span><br><span class="line">var uploadUrl &#x3D; util.format(&#39;https:&#x2F;&#x2F;%s.%s&#x2F;%s&#39;,</span><br><span class="line">                             bucketName,endpointName,fileName);</span><br><span class="line"></span><br><span class="line">console.log(&#39;extract ova from: &#39; + url, &#39;\nto IDCF Obeject Storage: &#39;+ uploadUrl);</span><br><span class="line"></span><br><span class="line">var client &#x3D; knox.createClient(&#123;</span><br><span class="line">  key: &#39;&#123;ACCESS_KEY&#125;&#39;</span><br><span class="line">, secret: &#39;&#123;SECRET_KEY&#125;&#39;</span><br><span class="line">, bucket: bucketName</span><br><span class="line">, endpoint: endpointName</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">var stream &#x3D; request(url);</span><br><span class="line">upload &#x3D; new MultiPartUpload(</span><br><span class="line">  &#123;</span><br><span class="line">    client: client</span><br><span class="line">  , objectName: fileName</span><br><span class="line">  , stream: stream</span><br><span class="line">  &#125;,function(err,body)&#123;</span><br><span class="line">      console.log(body);</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>registerTemplateコマンドで登録したtemplateidを使い、OVAをIDCFオブジェクトストレージにPUTします。<br>第2引数はPUT先のオブジェクト名です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ time ./extract_template.sh 8390 packer-v07-v2.ova</span><br><span class="line">extract ova from: https://xxx.realhostip.com/userdata/xxx.ova ,</span><br><span class="line">to IDCF Obeject Storage: https://s3-streaming-upload.ds.jp-east.idcfcloud.com/packer-v07-v2.ova</span><br><span class="line">&#123; Location: <span class="string">'http://s3-streaming-upload.s3.amazonaws.com/packer-v07-v2.ova'</span>,</span><br><span class="line">  Bucket: <span class="string">'s3-streaming-upload'</span>,</span><br><span class="line">  Key: <span class="string">'packer-v07-v2.ova'</span>,</span><br><span class="line">  ETag: <span class="string">'7OX4lu3aR4uc9-S5Q7G8uA=='</span>,</span><br><span class="line">  size: 597514240 &#125;</span><br><span class="line"></span><br><span class="line">real    0m44.926s</span><br><span class="line">user    0m14.265s</span><br><span class="line">sys     0m3.597s</span><br></pre></td></tr></table></figure>
+
+<p>ACLをpublicに設定してダウンロードできるようにします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ s3cmd -c ~/.s3cfg.idcf setacl --acl-public s3://s3-streaming-upload/packer-v07-v2.ova</span><br><span class="line">s3://s3-streaming-upload/packer-v07-v2.ova: ACL <span class="built_in">set</span> to Public  [1 of 1]</span><br></pre></td></tr></table></figure>
+
+<h3 id="ダウンロードしたOVAをVMXに変換できない"><a href="#ダウンロードしたOVAをVMXに変換できない" class="headerlink" title="ダウンロードしたOVAをVMXに変換できない"></a>ダウンロードしたOVAをVMXに変換できない</h3><p>以下のURLからダウンロードできるようになります。<br><a href="https://s3-streaming-upload.ds.jp-east.idcfcloud.com/packer-v07-v2.ova" target="_blank" rel="noopener">https://s3-streaming-upload.ds.jp-east.idcfcloud.com/packer-v07-v2.ova</a></p>
+<p>Minttyを起動して、OVAをwgetします。ここでも証明書の検証ができません。。。</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> exp_tmp</span><br><span class="line">$ wget --<span class="keyword">no</span>-check-certificate http<span class="variable">s:</span>//s3-streaming-upload.<span class="keyword">ds</span>.jp-east.idcfcloud.<span class="keyword">com</span>/packer-v07-v2.ova -<span class="keyword">P</span> ./exp_tmp</span><br></pre></td></tr></table></figure>
+
+<p><code>VMware Player</code>にOVAをインポートするためovftoolでVMXに変換したいのですが、失敗します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ./exp_tmp</span><br><span class="line">$ ovftool.exe packer-v07-v2.ova packer-v07-v2.vmx</span><br><span class="line">Error: Did not find an .ovf file at the beginning of the OVA package.</span><br><span class="line">Completed with errors</span><br></pre></td></tr></table></figure>
+
+<p>どうもIDCFクラウドにデプロイするためにマニフェストファイルを削除してOVAを作成したのが問題のようです。</p>
+<h3 id="OVFの署名に失敗する"><a href="#OVFの署名に失敗する" class="headerlink" title="OVFの署名に失敗する"></a>OVFの署名に失敗する</h3><p>ダウンロードしたOVAをtarで展開します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> exp_tmp</span><br><span class="line">$ tar xvf packer-v07-v2.ova</span><br><span class="line">packer_vmware-iso_vmware-disk1.vmdk</span><br><span class="line">packer_vmware-iso_vmware.ovf</span><br></pre></td></tr></table></figure>
+
+<p>VirtualSystemTypeのバージョンを<code>vmx-09</code>に編集します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vim  packer_vmware-iso_vmware.ovf</span><br><span class="line">        &lt;vssd:VirtualSystemIdentifier&gt;packer-vmware-iso&lt;/vssd:VirtualSystemIdentifier&gt;</span><br><span class="line">&lt;!--</span><br><span class="line">        &lt;vssd:VirtualSystemType&gt;vmx-07&lt;/vssd:VirtualSystemType&gt;</span><br><span class="line">--&gt;</span><br><span class="line">        &lt;vssd:VirtualSystemType&gt;vmx-09&lt;/vssd:VirtualSystemType&gt;</span><br><span class="line">      &lt;/System&gt;</span><br></pre></td></tr></table></figure>
+
+<p>マニフェストを作成するため、自己署名の証明書を用意します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ openssl.exe genrsa 2048 &gt; server.key</span><br><span class="line">$ openssl.exe req -new -key server.key &gt; server.csr</span><br><span class="line">$ openssl.exe x509 -days 3650 -req -signkey server.key &lt; server.csr &gt; server.crt</span><br></pre></td></tr></table></figure>
+
+<p>VMDKとOVFからマニフェストを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ openssl.exe sha1 *.vmdk *.ovf &gt; packer_vmware-iso_vmware.mf</span><br><span class="line">$ cat packer_vmware-iso_vmware.mf</span><br><span class="line">SHA1(packer_vmware-iso_vmware-disk1.vmdk)= 99b3d41e577ff876c5f4d82c906ad3c932dfc9cb</span><br><span class="line">SHA1(packer_vmware-iso_vmware.ovf)= a129f064db70c6a91d6a2ac9af7aeccd2642fb9e</span><br></pre></td></tr></table></figure>
+
+<p>ovftoolを使い、OVFの署名したいのですが失敗してしまいます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ovftool.exe --privateKey=server.key packer_vmware-iso_vmware.ovf packer_vmware-iso_vmware_signed.ovf</span><br><span class="line">Opening OVF <span class="built_in">source</span>: packer_vmware-iso_vmware.ovf</span><br><span class="line">The manifest validates</span><br><span class="line">Opening OVF target: packer_vmware-iso_vmware_signed.ovf</span><br><span class="line">Writing OVF package: packer_vmware-iso_vmware_signed.ovf</span><br><span class="line">Transfer Completed</span><br><span class="line">Error: Failed to <span class="built_in">read</span> the certificate from server.key</span><br><span class="line">Error: Invalid argument</span><br><span class="line">Completed with errors</span><br></pre></td></tr></table></figure>
+
+<p>いろいろ試したのですが、手詰まりなのでIDCFクラウドのOVAをそのまま<code>VMware Player 6.02</code>にインポートするのは諦めました。</p>
+<h3 id="OVFをVMware-Playerにインポートする"><a href="#OVFをVMware-Playerにインポートする" class="headerlink" title="OVFをVMware Playerにインポートする"></a>OVFをVMware Playerにインポートする</h3><p><code>VMware Player 6.02</code>にOVFを引数にしてインポートを開始します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /c/Program\ Files\ \(x86\)/VMware/VMware\ Player/vmplayer.exe packer_vmware-iso_vmware.ovf</span><br></pre></td></tr></table></figure>
+
+<p>インポートが終了したら、<code>VMware Player 6.02</code>のコンソールからUbuntu14.04のゲストOSにログインします。</p>
+<ul>
+<li>login: packer</li>
+<li>password: packer</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Ubuntu 14.04 LTS ubuntu-1404 tty1</span><br><span class="line"></span><br><span class="line">ubuntu-1404 login: packer</span><br><span class="line">Password:</span><br><span class="line">packer@ubuntu-1404:~$</span><br></pre></td></tr></table></figure>
+
+<h4 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h4><p>IDCFクラウドからエクスポートしたOVAをVMXに変換して<code>VMware Player 6.02</code>へインポートするのは失敗してしまいました。</p>
+<p>しかし、tarで展開した後にVirtualSystemIdentifierをvmx-09に戻したOVFをインポートすることができたので、とりあえず成功とします。</p>
+<p>これまでPackerでOVAを作ることを試してみましたが、Dockerを使い普段開発していると、OVA作成の環境構築やビルド、イメージの可搬性はとても厄介に感じます。</p>
+<p>Dockerから公式のOSイメージをpullしてきて、その後はDockerfileを随時手直ししつつ、ソースコードはGitで管理して、自分のイメージを作っていくのがこれからのモダンな環境のようです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Packer/" rel="tag"># Packer</a>
+              <a href="/tags/IDCF%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" rel="tag"># IDCFオブジェクトストレージ</a>
+              <a href="/tags/idcf-compute-api/" rel="tag"># idcf-compute-api</a>
+              <a href="/tags/jq/" rel="tag"># jq</a>
+              <a href="/tags/PackerOVA/" rel="tag"># PackerOVA</a>
+              <a href="/tags/VMwarePlayer/" rel="tag"># VMwarePlayer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/21/idcf-storage-knox-stream-upload/" rel="prev" title="knox-mpuでNode.jsのStreamからRiakCSへマルチパートアップロードする">
+      <i class="fa fa-chevron-left"></i> knox-mpuでNode.jsのStreamからRiakCSへマルチパートアップロードする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/22/hexo-update-271/" rel="next" title="Hexoとテーマのアップデート">
+      Hexoとテーマのアップデート <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OVAをESXi4用に再パッケージして準備する"><span class="nav-number">1.</span> <span class="nav-text">OVAをESXi4用に再パッケージして準備する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVAをIDCFオブジェクトストレージへPUT"><span class="nav-number">2.</span> <span class="nav-text">OVAをIDCFオブジェクトストレージへPUT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVAからインスタンスを作成"><span class="nav-number">3.</span> <span class="nav-text">OVAからインスタンスを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVAをダウンロードする"><span class="nav-number">4.</span> <span class="nav-text">OVAをダウンロードする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ダウンロードしたOVAをVMXに変換できない"><span class="nav-number">5.</span> <span class="nav-text">ダウンロードしたOVAをVMXに変換できない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVFの署名に失敗する"><span class="nav-number">6.</span> <span class="nav-text">OVFの署名に失敗する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OVFをVMware-Playerにインポートする"><span class="nav-number">7.</span> <span class="nav-text">OVFをVMware Playerにインポートする</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#まとめ"><span class="nav-number">7.1.</span> <span class="nav-text">まとめ</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

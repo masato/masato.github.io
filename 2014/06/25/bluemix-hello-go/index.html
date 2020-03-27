@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IBM Bluemix Challengeが始まっていたので遅くなりましたがようやくエントリしました。 オフィシャル以外にもCloud Foundry用に各言語のBuildpackがいくつかあるので、遊びながら何かネタを考えたいと思います。なんとBLU Accelerationも使えるみたいです。 それにしても最近のdeveloperWorksはおもしろいです。DigitalOceanのTutor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BlueMixでHello Go">
+<meta property="og:url" content="http://masato.github.io/2014/06/25/bluemix-hello-go/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IBM Bluemix Challengeが始まっていたので遅くなりましたがようやくエントリしました。 オフィシャル以外にもCloud Foundry用に各言語のBuildpackがいくつかあるので、遊びながら何かネタを考えたいと思います。なんとBLU Accelerationも使えるみたいです。 それにしても最近のdeveloperWorksはおもしろいです。DigitalOceanのTutor">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-25T14:21:15.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.556Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CloudFoundry">
+<meta property="article:tag" content="Bluemix">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="HelloWorld">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/25/bluemix-hello-go/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BlueMixでHello Go | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/25/bluemix-hello-go/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BlueMixでHello Go
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 25 2014 23:21:15" itemprop="dateCreated datePublished" datetime="2014-06-25T23:21:15+09:00">Jun 25 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://www.ibm.com/developerworks/jp/bluemix/contest/index.html" target="_blank" rel="noopener">IBM Bluemix Challenge</a>が始まっていたので遅くなりましたがようやくエントリしました。</p>
+<p>オフィシャル以外にも<code>Cloud Foundry</code>用に各言語のBuildpackがいくつかあるので、遊びながら何かネタを考えたいと思います。<br>なんと<code>BLU Acceleration</code>も<a href="http://www.ibm.com/developerworks/jp/bigdata/library/bd-ruby-bluacceleration-app/" target="_blank" rel="noopener">使える</a>みたいです。</p>
+<p>それにしても最近の<a href="http://www.ibm.com/developerworks/jp/views/cloud/libraryview.jsp" target="_blank" rel="noopener">developerWorks</a>はおもしろいです。DigitalOceanの<a href="https://www.digitalocean.com/community/tutorials" target="_blank" rel="noopener">Tutorials</a>とかも、写経していて楽しいです。</p>
+<p>BlueMixはDojoのようなので、Multi-LevelPushMenuとは違うようですが、<br>左メニューは最近お気に入りの多階層ナビゲーションです。SoftLayer買収後からかなり印象が変わりました。</p>
+<p>まずはGoのBuildpackを使ってみて、うまく動いたらDartも試してみようと思います。</p>
+<a id="more"></a>
+
+<p>BlueMixはIBMがSolftLayer上に構築した、<code>Cloud Foundry</code>ベースのPaaSです。<br>特徴的なのは、<code>IBM DevOps Services (旧JazzHub)</code>と連携すると、 RationalのJazzとWebIDEのOrionが使えます。</p>
+<p>Nitrous.IOやMonacoのような環境が気に入っているので、WebIDEは積極的に使いたいです。</p>
+<h2 id="GoのBuildpackと開発環境"><a href="#GoのBuildpackと開発環境" class="headerlink" title="GoのBuildpackと開発環境"></a>GoのBuildpackと開発環境</h2><p>GoのBuildpackは<a href="https://github.com/michaljemala/cloudfoundry-buildpack-go" target="_blank" rel="noopener">michaljemala/cloudfoundry-buildpack-go</a>を使います。<br>GitHubのREADMEにサンプルコードがあるので、これに従って進めていきます。</p>
+<p>開発環境は、昨日できたての作業ユーザーを作った<a href="/2014/06/24/docker-devenv-adduser-add-permission-denied/">Dockerfile</a>を使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -t masato/baseimage:1.8 /sbin/my_init /bin/bash</span><br><span class="line"><span class="comment"># su - docker</span></span><br></pre></td></tr></table></figure>
+
+<p>Git、Ruby、Emacs、byobuと基本の開発環境が一瞬で起動すると、とても気分がよいです。</p>
+<h2 id="michaljemala-hello-goをclone"><a href="#michaljemala-hello-goをclone" class="headerlink" title="michaljemala/hello-goをclone"></a>michaljemala/hello-goをclone</h2><p>サンプルの<a href="https://github.com/michaljemala/hello-go.git" target="_blank" rel="noopener">hell-go</a>を<code>git clone</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/cf_apps</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/michaljemala/hello-go.git</span><br></pre></td></tr></table></figure>
+
+<p><code>Cloud Foundry</code>のデプロイ設定であるmanifest.ymlを自分用に編集します。<br>nameとhostを自分用に変更しました。メモリのサイズや起動するインスタンス数を指定します。</p>
+<figure class="highlight yml"><figcaption><span>~/cf_apps/hello-go/manifest.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">applications:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">masato-hello-go</span></span><br><span class="line">  <span class="attr">memory:</span> <span class="string">8M</span></span><br><span class="line">  <span class="attr">instances:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">buildpack:</span> <span class="string">https://github.com/michaljemala/cloudfoundry-buildpack-go.git</span></span><br><span class="line">  <span class="attr">host:</span> <span class="string">masato-hello-go</span></span><br><span class="line">  <span class="attr">domain:</span> <span class="string">mybluemix.net</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">.</span></span><br></pre></td></tr></table></figure>
+
+<p>修正するファイルはこれだけです。プロジェクトは、Goのプログラムファイル、.godir、Procfileで構成されています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree hello-go -a -L 1</span><br><span class="line">hello-go</span><br><span class="line">├── .git</span><br><span class="line">├── .godir</span><br><span class="line">├── Procfile</span><br><span class="line">├── README.md</span><br><span class="line">├── manifest.yml</span><br><span class="line">└── web.go</span><br><span class="line"></span><br><span class="line">1 directory, 5 files</span><br></pre></td></tr></table></figure>
+
+<p>Procfileはforemanが起動するプロセスを記述するファイルです。</p>
+<figure class="highlight ruby"><figcaption><span>~/cf_apps/hello-go/Procfile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="symbol">web:</span> hello-go</span><br></pre></td></tr></table></figure>
+
+<p>.godirはよくわかりませんが、アプリケーションの名前を書くようです。</p>
+<figure class="highlight ruby"><figcaption><span>~/cf_apps/hello-go/.godir</span></figcaption><table><tr><td class="code"><pre><span class="line">hello-go</span><br></pre></td></tr></table></figure>
+
+<p>8080でLISTENするGoのサーバープログラムです。<br><code>/</code>のリクエストハンドラで、VCAP環境変数などの実行環境の情報をダンプします。</p>
+<figure class="highlight go"><figcaption><span>~/cf_apps/hello-go/web.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">        <span class="string">"code.google.com/p/log4go"</span></span><br><span class="line">        <span class="string">"fmt"</span></span><br><span class="line">        <span class="string">"launchpad.net/goyaml"</span></span><br><span class="line">        <span class="string">"net/http"</span></span><br><span class="line">        <span class="string">"os"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">        HostVar = <span class="string">"VCAP_APP_HOST"</span></span><br><span class="line">        PortVar = <span class="string">"VCAP_APP_PORT"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">        A <span class="keyword">string</span></span><br><span class="line">        B []<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        log := <span class="built_in">make</span>(log4go.Logger)</span><br><span class="line">        log.AddFilter(<span class="string">"stdout"</span>, log4go.DEBUG, log4go.NewConsoleLogWriter())</span><br><span class="line"></span><br><span class="line">        http.HandleFunc(<span class="string">"/"</span>, hello)</span><br><span class="line">        <span class="keyword">var</span> port <span class="keyword">string</span></span><br><span class="line">        <span class="keyword">if</span> port = os.Getenv(PortVar); port == <span class="string">""</span> &#123;</span><br><span class="line">                port = <span class="string">"8080"</span></span><br><span class="line">        &#125;</span><br><span class="line">        log.Debug(<span class="string">"Listening at port %v\n"</span>, port)</span><br><span class="line">        <span class="keyword">if</span> err := http.ListenAndServe(<span class="string">":"</span>+port, <span class="literal">nil</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">                <span class="built_in">panic</span>(err)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">        <span class="comment">// Dump ENV</span></span><br><span class="line">        fmt.Fprint(res, <span class="string">"ENV:\n"</span>)</span><br><span class="line">        env := os.Environ()</span><br><span class="line">        <span class="keyword">for</span> _, e := <span class="keyword">range</span> env &#123;</span><br><span class="line">                fmt.Fprintln(res, e)</span><br><span class="line">        &#125;</span><br><span class="line">        fmt.Fprint(res, <span class="string">"\nYAML:\n"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment">//Dump some YAML</span></span><br><span class="line">        t := T&#123;A: <span class="string">"Foo"</span>, B: []<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;&#125;</span><br><span class="line">        <span class="keyword">if</span> d, err := goyaml.Marshal(&amp;t); err != <span class="literal">nil</span> &#123;</span><br><span class="line">                fmt.Fprintf(res, <span class="string">"Unable to dump YAML"</span>)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                fmt.Fprintf(res, <span class="string">"--- t dump:\n%s\n\n"</span>, <span class="keyword">string</span>(d))</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="cfツールのインストール"><a href="#cfツールのインストール" class="headerlink" title="cfツールのインストール"></a>cfツールのインストール</h3><p><code>Cloud Foundry</code>は実装をGoに移行しているようで、まずCLIのcfコマンドがGoの実装に変更されています。<br>Goらしく、バイナリをPATHが通っているところに配置するだけでインストールは終了です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/bin</span><br><span class="line">$ wget https://s3.amazonaws.com/go-cli/releases/v6.1.2/cf-linux-amd64.tgz</span><br><span class="line">$ tar zxvf cf-linux-amd64.tgz  -C ~/bin</span><br><span class="line">$ chmod u+x ~/bin/cf</span><br><span class="line">$ <span class="built_in">source</span> .profile</span><br><span class="line">$ <span class="built_in">which</span> cf</span><br><span class="line">/home/docker/bin/cf</span><br><span class="line">$ cf --version</span><br><span class="line">cf version 6.1.2-6a013ca</span><br></pre></td></tr></table></figure>
+
+<p>cfコマンドを使いBlueMixのエンドポイントを指定してログインします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf login</span><br><span class="line"></span><br><span class="line">API endpoint&gt; https://api.ng.bluemix.net</span><br><span class="line">Email&gt; &#123;メールアドレス&#125;</span><br><span class="line"></span><br><span class="line">Password&gt; &#123;パスワード&#125;</span><br><span class="line">Authenticating...</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="BlueMixへPUSH"><a href="#BlueMixへPUSH" class="headerlink" title="BlueMixへPUSH"></a>BlueMixへPUSH</h3><p>Buildpackを指定してPUSHします。プロジェクトにあるmanifest.ymlを使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cf push masato-hello-go --b https://github.com/michaljemala/cloudfoundry-buildpack-go.git</span><br><span class="line">Using manifest file /home/docker/go_apps/hello-go/manifest.yml</span><br><span class="line">...</span><br><span class="line">-----&gt; Downloaded app package (4.0K)</span><br><span class="line">Cloning into <span class="string">'/tmp/buildpacks/cloudfoundry-buildpack-go'</span>...</span><br><span class="line">OK</span><br><span class="line"> Installing Go 1.2.1...  <span class="keyword">done</span> <span class="keyword">in</span> 7s</span><br><span class="line"> Installing Virtualenv...  <span class="keyword">done</span></span><br><span class="line"> Downloading Mercurial sources...  <span class="keyword">done</span> <span class="keyword">in</span> 4s</span><br><span class="line"> Installing Mercurial...  <span class="keyword">done</span></span><br><span class="line"> Downloading Bazaar sources...  <span class="keyword">done</span> <span class="keyword">in</span> 15s</span><br><span class="line"> Installing Bazaar...  <span class="keyword">done</span></span><br><span class="line"> Running <span class="string">'go get -tags cf ./...'</span>...  <span class="keyword">done</span> <span class="keyword">in</span> 45s</span><br><span class="line">-----&gt; Uploading droplet (2.0M)</span><br><span class="line">...</span><br><span class="line">requested state: started</span><br><span class="line">instances: 1/1</span><br><span class="line">usage: 8M x 1 instances</span><br><span class="line">urls: masato-hello-go.mybluemix.net</span><br><span class="line"></span><br><span class="line">     state   since                    cpu    memory   disk</span><br><span class="line"><span class="comment">#0   down    2014-06-26 02:27:59 AM   0.0%   0 of 0   0 of 0</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>curlコマンドの-Iオプションで、HTTPヘッダを表示します。<br>curlコマンドでアプリが返す、実行環境の情報を表示できます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -I http://masato-hello-go.mybluemix.net</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">...</span><br><span class="line">$ curl -I http://masato-hello-go.mybluemix.net</span><br><span class="line">ENV:</span><br><span class="line">TMPDIR=/home/vcap/tmp</span><br><span class="line">VCAP_APP_PORT=62536</span><br><span class="line">USER=vcap</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>VisualStudio Online</code>も含め、PaaSとGitリポジトリ、プロジェクト管理ツールやコミュニケーションツール、<br>WebIDEが一体になったクラウドサービスが出始めています。</p>
+<p>PivotalやSAP、IBMもデザインシンキングを提唱して、今年はエンタープライズ向けの、<br>クラウド上でのアジャイルな開発環境やテスト環境が本格的化しそうな雰囲気です。</p>
+<p>個人的にはNitrous.IOみたいにコンパクトな開発環境が好みですが。</p>
+<p>次回はBlueMixの特徴である、<code>IBM DevOps Services</code>と連携させて、Gitリポジトリや、WebIDEのOrionを試してみます。<br>本当にChromeだけで開発環境が完結できそうな気がしていきました。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CloudFoundry/" rel="tag"># CloudFoundry</a>
+              <a href="/tags/Bluemix/" rel="tag"># Bluemix</a>
+              <a href="/tags/Go/" rel="tag"># Go</a>
+              <a href="/tags/HelloWorld/" rel="tag"># HelloWorld</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/24/docker-devenv-adduser-add-permission-denied/" rel="prev" title="DockerfileのADDとuseraddのPermission denied">
+      <i class="fa fa-chevron-left"></i> DockerfileのADDとuseraddのPermission denied
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/26/docker-debian-7-wheezy/" rel="next" title="DockerでDebian 7 wheezy">
+      DockerでDebian 7 wheezy <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GoのBuildpackと開発環境"><span class="nav-number">1.</span> <span class="nav-text">GoのBuildpackと開発環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#michaljemala-hello-goをclone"><span class="nav-number">2.</span> <span class="nav-text">michaljemala&#x2F;hello-goをclone</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cfツールのインストール"><span class="nav-number">2.1.</span> <span class="nav-text">cfツールのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BlueMixへPUSH"><span class="nav-number">2.2.</span> <span class="nav-text">BlueMixへPUSH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">2.3.</span> <span class="nav-text">確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">2.4.</span> <span class="nav-text">まとめ</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

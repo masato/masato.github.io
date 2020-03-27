@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="練習としてCreating your first nodeを動かすことができました。次はもう少し実際の利用にあわせてInfluxDBにメッセージを保存するnodeを書いてみます。node-red-nodesのstorageディレクトリにデータベース用のnodeがいくつかあります。今回はPostgreSQLの110-postgres.jsを参考にします。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node-RED on Docker - Part5: InfluxDBのnodeを作成する">
+<meta property="og:url" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="練習としてCreating your first nodeを動かすことができました。次はもう少し実際の利用にあわせてInfluxDBにメッセージを保存するnodeを書いてみます。node-red-nodesのstorageディレクトリにデータベース用のnodeがいくつかあります。今回はPostgreSQLの110-postgres.jsを参考にします。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/inject-node.png">
+<meta property="og:image" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/influx-edit-config.png">
+<meta property="og:image" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/deploy-run.png">
+<meta property="og:image" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/influx-admin-query.png">
+<meta property="article:published_time" content="2015-02-16T01:55:46.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.805Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="InfluxDB">
+<meta property="article:tag" content="Node-RED">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/inject-node.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Node-RED on Docker - Part5: InfluxDBのnodeを作成する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/02/16/node-red-on-docker-create-influxdb-node/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Node-RED on Docker - Part5: InfluxDBのnodeを作成する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 16 2015 10:55:46" itemprop="dateCreated datePublished" datetime="2015-02-16T10:55:46+09:00">Feb 16 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">練習としてCreating your first nodeを動かすことができました。次はもう少し実際の利用にあわせてInfluxDBにメッセージを保存するnodeを書いてみます。node-red-nodesのstorageディレクトリにデータベース用のnodeがいくつかあります。今回はPostgreSQLの110-postgres.jsを参考にします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/02/14/node-red-on-docker-create-first-node/">練習</a>として<a href="http://nodered.org/docs/creating-nodes/first-node.html" target="_blank" rel="noopener">Creating your first node</a>を動かすことができました。次はもう少し実際の利用にあわせてInfluxDBにメッセージを保存するnodeを書いてみます。<a href="https://github.com/node-red/node-red-nodes" target="_blank" rel="noopener">node-red-nodes</a>のstorageディレクトリにデータベース用のnodeがいくつかあります。今回はPostgreSQLの<a href="https://github.com/node-red/node-red-nodes/blob/master/storage/postgres/110-postgres.js" target="_blank" rel="noopener">110-postgres.js</a>を参考にします。</p>
+<a id="more"></a>
+
+<h2 id="Cannot-find-module-‘influx’"><a href="#Cannot-find-module-‘influx’" class="headerlink" title="Cannot find module ‘influx’"></a>Cannot find module ‘influx’</h2><p><a href="/2015/02/13/node-red-on-docker-build-error/">前回</a>settings.jsに追加のnodesディレクトリを設定しました。コンテナを起動するときにDockerホストのディレクトリをマウントするようにしています。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/nod-red/settings.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">nodesDir: <span class="string">'/data/nodes'</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>最初はこの追加ディレクトリにInfluxDBのnodeを配置しましたが、<code>require(&quot;influx&quot;);</code>のところでモジュールの読み込みに失敗してしまいます。<a href="https://github.com/node-red/node-red-nodes" target="_blank" rel="noopener">InfluxDBクライアント</a>はNode-REDのpackage.jsonの最後に追加しました。<a href="https://registry.hub.docker.com/u/google/nodejs-runtime/" target="_blank" rel="noopener">google/nodejs-runtime</a>のDockerfileでは<code>ONBUILD RUN npm install</code>でnpmモジュールをインストールしています。</p>
+<figure class="highlight"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">    "dependencies": &#123;</span><br><span class="line">        "express": "3.17.2",</span><br><span class="line">        "when": "3.7.2",</span><br><span class="line">...</span><br><span class="line">        "influx":"3.3.0"</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>作成したnodeをnpmパッケージとして公開する方法が<a href="http://nodered.org/docs/creating-nodes/packaging.html" target="_blank" rel="noopener">Packaging</a>にあります。まだ開発中なのでNode-REDをcloneしたディレクトリにある<code>nodes/core/storage/</code>配下に直接追加してDockerイメージを再作成することにします。npmに登録するのはテストが通ってからにします。</p>
+<h2 id="InfluxDBのnode"><a href="#InfluxDBのnode" class="headerlink" title="InfluxDBのnode"></a>InfluxDBのnode</h2><p>ファイル名の数字のprefixはnodesディレクトリ内でnodeのロード順を定義するようです。とりあえず98にしました。jsファイルにnodeのロジックを記述します。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/node-red/nodes/core/storage/98-influxdb.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">RED</span>) </span>&#123;</span><br><span class="line"><span class="meta">    "use strict"</span>;</span><br><span class="line">    <span class="keyword">var</span> influx = <span class="built_in">require</span>(<span class="string">"influx"</span>);</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">InfluxDBNode</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">        RED.nodes.createNode(<span class="keyword">this</span>,n);</span><br><span class="line">        <span class="keyword">this</span>.host = n.host;</span><br><span class="line">        <span class="keyword">this</span>.port = n.port;</span><br><span class="line">        <span class="keyword">this</span>.db = n.db;</span><br><span class="line">        <span class="keyword">this</span>.user = <span class="keyword">this</span>.credentials.user;</span><br><span class="line">        <span class="keyword">this</span>.password = <span class="keyword">this</span>.credentials.password;</span><br><span class="line">    &#125;</span><br><span class="line">    RED.nodes.registerType(<span class="string">"influxdb"</span>,InfluxDBNode,&#123;</span><br><span class="line">        credentials: &#123;</span><br><span class="line">            user: &#123;<span class="attr">type</span>:<span class="string">"text"</span>&#125;,</span><br><span class="line">            password: &#123;<span class="attr">type</span>: <span class="string">"password"</span>&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">InfluxNode</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">        RED.nodes.createNode(<span class="keyword">this</span>,n);</span><br><span class="line">        <span class="keyword">this</span>.influxdb = n.influxdb;</span><br><span class="line">        <span class="keyword">this</span>.influxConfig =  RED.nodes.getNode(<span class="keyword">this</span>.influxdb);</span><br><span class="line">        <span class="keyword">var</span> node = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.influxConfig) &#123;</span><br><span class="line">            node.clientdb = influx(&#123;</span><br><span class="line">                host : <span class="keyword">this</span>.influxConfig.host,</span><br><span class="line">                port : <span class="keyword">this</span>.influxConfig.port,</span><br><span class="line">                username : <span class="keyword">this</span>.influxConfig.user,</span><br><span class="line">                password : <span class="keyword">this</span>.influxConfig.password,</span><br><span class="line">                database : <span class="keyword">this</span>.influxConfig.db</span><br><span class="line">            &#125;);</span><br><span class="line">            node.on(<span class="string">"input"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</span><br><span class="line">                node.clientdb.writePoint(msg.topic, <span class="built_in">JSON</span>.parse(msg.payload), <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">                    <span class="keyword">if</span>(err) &#123;</span><br><span class="line">                        node.error(err);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    RED.nodes.registerType(<span class="string">"influx"</span>,InfluxNode);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>htmlファイルにはnodeの設定を記述します。ユーザーが値を入力するフォームのテンプレートとNode-REDへの登録を行います。今回は最初なのでcategoryは<code>config</code>と<code>sotrage-out</code>だけ作成してレコードを登録する機能だけ実装します。</p>
+<figure class="highlight html"><figcaption><span>~/docker_apps/node-red/nodes/core/storage/98-influxdb.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/x-red"</span> <span class="attr">data-template-name</span>=<span class="string">"influxdb"</span>&gt;</span></span><br><span class="line"><span class="javascript">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-row"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-config-input-host"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-bookmark"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Host<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="javascript">        &lt;input <span class="class"><span class="keyword">class</span></span>=<span class="string">"input-append-left"</span> type=<span class="string">"text"</span> id=<span class="string">"node-config-input-host"</span> placeholder=<span class="string">"localhost"</span> style=<span class="string">"width: 40%;"</span> &gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-config-input-port"</span> <span class="attr">style</span>=<span class="string">"margin-left: 10px; width: 35px; "</span>&gt;</span> Port<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"node-config-input-port"</span> <span class="attr">placeholder</span>=<span class="string">"8086"</span> <span class="attr">style</span>=<span class="string">"width:45px"</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="javascript">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-row"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-config-input-db"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-briefcase"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Database<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"node-config-input-db"</span> <span class="attr">placeholder</span>=<span class="string">""</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="javascript">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-row"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-config-input-name"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-user"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Username<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"node-config-input-user"</span> <span class="attr">placeholder</span>=<span class="string">"username"</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-config-input-password"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-lock"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Password<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">id</span>=<span class="string">"node-config-input-password"</span> <span class="attr">placeholder</span>=<span class="string">"password"</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">    RED.nodes.registerType(<span class="string">'influxdb'</span>,&#123;</span></span><br><span class="line"><span class="actionscript">        category: <span class="string">'config'</span>,</span></span><br><span class="line">        defaults: &#123;</span><br><span class="line"><span class="actionscript">            host: &#123; value:<span class="string">"localhost"</span>,required:<span class="literal">true</span>&#125;,</span></span><br><span class="line"><span class="actionscript">            port: &#123; value: <span class="number">8086</span>,required:<span class="literal">true</span>&#125;,</span></span><br><span class="line"><span class="actionscript">            db: &#123; value:<span class="string">"influxdb"</span>,required:<span class="literal">true</span>&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        credentials: &#123;</span><br><span class="line"><span class="actionscript">            user: &#123;type:<span class="string">"text"</span>&#125;,</span></span><br><span class="line"><span class="actionscript">            password: &#123;type: <span class="string">"password"</span>&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="actionscript">        label: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">return</span> <span class="keyword">this</span>.db;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/x-red"</span> <span class="attr">data-template-name</span>=<span class="string">"influx"</span>&gt;</span></span><br><span class="line"><span class="javascript">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-row"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-input-name"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-tag"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Name<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"node-input-name"</span> <span class="attr">placeholder</span>=<span class="string">"Name"</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="javascript">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"form-row"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"node-input-influxdb"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"fa fa-tag"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span> Server<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"node-input-influxdb"</span>&gt;</span></span></span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/x-red"</span> <span class="attr">data-help-name</span>=<span class="string">"influx"</span>&gt;</span></span><br><span class="line"><span class="handlebars"><span class="xml">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>A InfluxDB I/O node. <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span></span><br><span class="line"><span class="actionscript">    RED.nodes.registerType(<span class="string">"influx"</span>,&#123;</span></span><br><span class="line"><span class="actionscript">        category: <span class="string">"storage-output"</span>,</span></span><br><span class="line"><span class="actionscript">        color:<span class="string">"#dbb84d"</span>,</span></span><br><span class="line">        defaults: &#123;</span><br><span class="line"><span class="actionscript">            influxdb: &#123;type:<span class="string">"influxdb"</span>,required:<span class="literal">true</span>&#125;,</span></span><br><span class="line"><span class="actionscript">            name: &#123;value:<span class="string">""</span>&#125;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        inputs: 1,</span><br><span class="line">        outputs: 0,</span><br><span class="line"><span class="actionscript">        icon: <span class="string">"influxdb.png"</span>,</span></span><br><span class="line"><span class="actionscript">        align: <span class="string">"right"</span>,</span></span><br><span class="line"><span class="actionscript">        label: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">var</span> influxDBNode = RED.nodes.node(<span class="keyword">this</span>.influxdb);</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">return</span> <span class="keyword">this</span>.name||(influxDBNode?influxDBNode.label():<span class="string">"influxdb"</span>);</span></span><br><span class="line">        &#125;,</span><br><span class="line"><span class="actionscript">        labelStyle: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>&#123;</span></span><br><span class="line"><span class="actionscript">            <span class="keyword">return</span> <span class="keyword">this</span>.name?<span class="string">"node_label_italic"</span>:<span class="string">""</span>;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>最後にInfluxDBのアイコンを用意します。</p>
+<p><code>~/docker_apps/node-red/public/icons/influxdb.png</code></p>
+<h2 id="Dockerイメージの作成と起動"><a href="#Dockerイメージの作成と起動" class="headerlink" title="Dockerイメージの作成と起動"></a>Dockerイメージの作成と起動</h2><p>Dockerイメージのビルドとコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/node-red/</span><br><span class="line">$ docker build -t node-red .</span><br><span class="line">$ docker run -d  --name node-red \</span><br><span class="line">  -p 1880:1880 \</span><br><span class="line">  -v /opt/nodes:/data/nodes \</span><br><span class="line">  node-red</span><br></pre></td></tr></table></figure>
+
+<h2 id="Node-REDでflowの作成"><a href="#Node-REDでflowの作成" class="headerlink" title="Node-REDでflowの作成"></a>Node-REDでflowの作成</h2><h3 id="input-inject"><a href="#input-inject" class="headerlink" title="input:inject"></a>input:inject</h3><p>inject nodeをworkspaceにドラッグ&amp;ドロップします。テスト用にPayloadにInfluxDBに保存するJSONを文字列で書きます。キーはダブルクォートで囲います。TopicはInfluxDBのseries名になります。</p>
+<ul>
+<li>Payload: string {“temperature”:4.5,”humidity”:6.7}</li>
+<li>Topic: sensortest</li>
+<li>Repeat: None</li>
+<li>Name: dummy-input</li>
+</ul>
+<p><img src="/2015/02/16/node-red-on-docker-create-influxdb-node/inject-node.png" alt="inject-node.png"></p>
+<h3 id="storage-influx"><a href="#storage-influx" class="headerlink" title="storage:influx"></a>storage:influx</h3><p>storageカテゴリからinfluxをworkspaceにドラッグ&amp;ドロップします。nodeのconfigに接続するInfluxDBのHost名やDatabase名を設定します。</p>
+<ul>
+<li><p>node</p>
+<ul>
+<li>Name: influxdb-store</li>
+<li>Server: sensor-test</li>
+</ul>
+</li>
+<li><p>config</p>
+<ul>
+<li>Host: 10.1.3.67</li>
+<li>Port: 8086</li>
+<li>Database: sensor-test</li>
+<li>User: admin</li>
+<li>Password: password</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2015/02/16/node-red-on-docker-create-influxdb-node/influx-edit-config.png" alt="influx-edit-config.png"></p>
+<h3 id="デプロイと実行"><a href="#デプロイと実行" class="headerlink" title="デプロイと実行"></a>デプロイと実行</h3><p>InfluxDBにテスト用のDatabaseとユーザーを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST <span class="string">'http://10.1.3.67:8086/db?u=root&amp;p=root'</span> -d <span class="string">'&#123;"name": "sensor-test"&#125;'</span></span><br><span class="line">$ curl -X POST <span class="string">'http://10.1.3.67:8086/db/sensor-test/users?u=root&amp;p=root'</span> \</span><br><span class="line">  -d <span class="string">'&#123;"name": "admin", "password": "password"&#125;'</span></span><br></pre></td></tr></table></figure>
+
+<p>画面右上の<code>Deploy</code>ボタンを押してデプロイします。テストなのでflowの起動はinject nodeの左側のボタンをクリックします。</p>
+<p><img src="/2015/02/16/node-red-on-docker-create-influxdb-node/deploy-run.png" alt="deploy-run.png"></p>
+<h2 id="InfluxDBの管理画面"><a href="#InfluxDBの管理画面" class="headerlink" title="InfluxDBの管理画面"></a>InfluxDBの管理画面</h2><p><code>sensor-test</code>データベースのクエリ画面を開きます。</p>
+<ul>
+<li>Databases &gt; sensor-test &gt; Explore Data</li>
+</ul>
+<p>以下のような簡単なQueryを記述して<code>Execute Query</code>ボタンを押すと1レコードヒットしました。Node-REDのinject nodeに定義したPayloadがInfluxDBに保存できたようです。</p>
+<p><img src="/2015/02/16/node-red-on-docker-create-influxdb-node/influx-admin-query.png" alt="influx-admin-query.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/InfluxDB/" rel="tag"># InfluxDB</a>
+              <a href="/tags/Node-RED/" rel="tag"># Node-RED</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/02/15/beagleboneblack-chromebook-usb-internet/" rel="prev" title="BeagleBone BlackとHP Chromebook 11 - Part2: インターネットに接続する">
+      <i class="fa fa-chevron-left"></i> BeagleBone BlackとHP Chromebook 11 - Part2: インターネットに接続する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/02/17/express-ifttt-webhook-requestbin/" rel="next" title="IFTTTでYoをトリガーに任意のWebhookに通知する">
+      IFTTTでYoをトリガーに任意のWebhookに通知する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cannot-find-module-‘influx’"><span class="nav-number">1.</span> <span class="nav-text">Cannot find module ‘influx’</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InfluxDBのnode"><span class="nav-number">2.</span> <span class="nav-text">InfluxDBのnode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerイメージの作成と起動"><span class="nav-number">3.</span> <span class="nav-text">Dockerイメージの作成と起動</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-REDでflowの作成"><span class="nav-number">4.</span> <span class="nav-text">Node-REDでflowの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#input-inject"><span class="nav-number">4.1.</span> <span class="nav-text">input:inject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#storage-influx"><span class="nav-number">4.2.</span> <span class="nav-text">storage:influx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デプロイと実行"><span class="nav-number">4.3.</span> <span class="nav-text">デプロイと実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InfluxDBの管理画面"><span class="nav-number">5.</span> <span class="nav-text">InfluxDBの管理画面</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

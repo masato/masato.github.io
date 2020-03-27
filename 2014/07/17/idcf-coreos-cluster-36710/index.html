@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IDCFクラウドにCoreOSクラスタを構築する - Part3 セットアップで成功したときのCoreOSのバージョンを記録していないのですが、またインストールに失敗するようになりました。今回はバージョンを確認して記録します。CoreOSの367.1.0をbeta channelでIDCFクラウドでディスクにインストールすると、discoveryに失敗してしまいます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue">
+<meta property="og:url" content="http://masato.github.io/2014/07/17/idcf-coreos-cluster-36710/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IDCFクラウドにCoreOSクラスタを構築する - Part3 セットアップで成功したときのCoreOSのバージョンを記録していないのですが、またインストールに失敗するようになりました。今回はバージョンを確認して記録します。CoreOSの367.1.0をbeta channelでIDCFクラウドでディスクにインストールすると、discoveryに失敗してしまいます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-07-17T13:39:42.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.671Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="IDCFクラウド">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/07/17/idcf-coreos-cluster-36710/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/07/17/idcf-coreos-cluster-36710/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 17 2014 22:39:42" itemprop="dateCreated datePublished" datetime="2014-07-17T22:39:42+09:00">Jul 17 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">IDCFクラウドにCoreOSクラスタを構築する - Part3 セットアップで成功したときのCoreOSのバージョンを記録していないのですが、またインストールに失敗するようになりました。今回はバージョンを確認して記録します。CoreOSの367.1.0をbeta channelでIDCFクラウドでディスクにインストールすると、discoveryに失敗してしまいます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-09-22</code>: <a href="/2014/09/22/kubernetes-fleet-rudder-on-idcf/">Kubernetes on CoreOS with Fleet and Rudder on IDCFクラウド - Part5: FleetとRudderで再作成する</a></li>
+<li><code>Update 2014-07-19</code>: <a href="/2014/07/19/idcf-coreos-cluster-re-setting-up/">IDCFクラウドにCoreOSクラスタを構築する - Part5: 再セットアップ</a></li>
+<li><code>Update 2014-08-18</code>: <a href="/2014/08/15/deis-in-idcf-cloud-deploy/">IDCFクラウドでCoreOSをISOからインストールする</a></li>
+</ul>
+<p><a href="/2014/07/15/idcf-coreos-cluster-setting-up/">IDCFクラウドにCoreOSクラスタを構築する - Part3: セットアップ</a>で成功したときのCoreOSのバージョンを記録していないのですが、またインストールに失敗するようになりました。</p>
+<p>今回はバージョンを確認して記録します。<br>CoreOSの367.1.0を<code>beta channel</code>でIDCFクラウドでディスクにインストールすると、discoveryに失敗してしまいます。</p>
+<a id="more"></a>
+
+
+<h3 id="CoreOS-Stable-Release"><a href="#CoreOS-Stable-Release" class="headerlink" title="CoreOS Stable Release"></a>CoreOS Stable Release</h3><ul>
+<li><code>Updated 2014-08-18</code>: <a href="https://coreos.com/blog/stable-release/" target="_blank" rel="noopener">CoreOS Stable Release</a><br><code>367.1.0</code>は、<code>Stable Channel</code>としてリリースされました。</li>
+</ul>
+<h3 id="CoreOSのバージョン確認"><a href="#CoreOSのバージョン確認" class="headerlink" title="CoreOSのバージョン確認"></a>CoreOSのバージョン確認</h3><p>インスタンスはCoreOSの367.1.0を<code>beta channel</code>でインストールしています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/os-release</span><br><span class="line">NAME=CoreOS</span><br><span class="line">ID=coreos</span><br><span class="line">VERSION=367.1.0</span><br><span class="line">VERSION_ID=367.1.0</span><br><span class="line">BUILD_ID=</span><br><span class="line">PRETTY_NAME=<span class="string">"CoreOS 367.1.0"</span></span><br><span class="line">ANSI_COLOR=<span class="string">"1;32"</span></span><br><span class="line">HOME_URL=<span class="string">"https://coreos.com/"</span></span><br><span class="line">BUG_REPORT_URL=<span class="string">"https://github.com/coreos/bugs/issues"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="journalctlでログの確認"><a href="#journalctlでログの確認" class="headerlink" title="journalctlでログの確認"></a>journalctlでログの確認</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ journalctl -u etcd.service</span><br><span class="line">...</span><br><span class="line">CRITICAL  | failed sanitizing configuration: Advertised URL: parse :4001: missing protocol scheme</span><br></pre></td></tr></table></figure>
+
+<h3 id="systemctlでunitファイルの確認"><a href="#systemctlでunitファイルの確認" class="headerlink" title="systemctlでunitファイルの確認"></a>systemctlでunitファイルの確認</h3><p>systemctlでunitファイルを読むと、<code>ETCD_ADDR</code>と<code>ETCD_PEER_ADDR</code>がポートだけでURLが書かれていません。<br>367.1.0では、<code>COREOS_PRIVATE_IP</code>が入らないようです。</p>
+<p>systemdのunitファイルは以下のディレクトリにあります。</p>
+<p><code>/usr/lib64/systemd/system/</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ systemctl cat etcd.service</span><br><span class="line"><span class="comment"># /usr/lib64/systemd/system/etcd.service</span></span><br><span class="line">[Unit]</span><br><span class="line">Description=etcd</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=etcd</span><br><span class="line">PermissionsStartOnly=<span class="literal">true</span></span><br><span class="line">Environment=ETCD_DATA_DIR=/var/lib/etcd ETCD_NAME=default</span><br><span class="line">ExecStart=/usr/bin/etcd</span><br><span class="line">Restart=always</span><br><span class="line">RestartSec=10s</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line"><span class="comment"># /run/systemd/system/etcd.service.d/20-cloudinit.conf</span></span><br><span class="line">[Service]</span><br><span class="line">Environment=<span class="string">"ETCD_ADDR=:4001"</span></span><br><span class="line">Environment=<span class="string">"ETCD_DISCOVERY=https://discovery.etcd.io/ed724cf0abd2d02abf985f57b5</span></span><br><span class="line"><span class="string">Environment="</span>ETCD_NAME=75aa20edd64b40488cccd0b5f3d419d4<span class="string">"</span></span><br><span class="line"><span class="string">Environment="</span>ETCD_PEER_ADDR=:7001<span class="string">"</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/coreos/bugs/issues/65" target="_blank" rel="noopener">missing /etc/environment file</a>のissueを読むと、確かに<code>/etc/environment</code>ファイルが見つかりません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /usr/share/oem/bin/coreos-setup-environment</span><br><span class="line">cat: /usr/share/oem/bin/coreos-setup-environment: No such file or directory</span><br><span class="line">$ cat /etc/environment</span><br><span class="line">cat: /etc/environment: No such file or directory</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/coreos/bugs/issues/67" target="_blank" rel="noopener">No IP data in cloudinit on OpenStack</a>でOpenStackでも同様のissueがあります。</p>
+<blockquote>
+<p>Same problem here, COREOS_PRIVATE_IP is empty using 367.1.0 on openstack with cloud-init.</p>
+</blockquote>
+<p>/etc/environmentは明示的に作成する必要があるようです。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">COREOS_PUBLIC_IPV4=$public_ipv4</span></span><br><span class="line">        <span class="string">COREOS_PRIVATE_IPV4=$private_ipv4</span></span><br></pre></td></tr></table></figure>
+
+<p>そういえば、<a href="http://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">Installing CoreOS to Disk</a>に以下のような記述がありました。<br>なんのことかわからなかったのですが、どうもこのことらしいです。</p>
+<blockquote>
+<p>Note: The $private_ipv4 and $public_ipv4 substitution variables referenced in other documents are not supported when installing via the coreos-install script.</p>
+</blockquote>
+<h3 id="cloud-config-yamlの再実行"><a href="#cloud-config-yamlの再実行" class="headerlink" title="cloud-config.yamlの再実行"></a>cloud-config.yamlの再実行</h3><p>また、CoreOSをディスクにインストールするときに使ったcloud-config.yamlは、<code>/var/lib/coreos-install/user_data</code>にインストールされます。この設定はboot毎に再読み込みされるそうです。</p>
+<blockquote>
+<p>The installation script will process your cloud-config.yaml file specified with the -c flag and place it onto disk. It will be installed to /var/lib/coreos-install/user_data and evaluated on every boot. Cloud-config is not the only supported format for this file — running a script is also available.</p>
+</blockquote>
+<p>ディスクにインストールした後でも、discoveryのTOKENを変更したい場合は、<br><code>/var/lib/coreos-install/user_data</code>を編集してrebootすれば反映してくれそうなのですが。。。</p>
+<h3 id="rebootで失敗"><a href="#rebootで失敗" class="headerlink" title="rebootで失敗"></a>rebootで失敗</h3><p><code>/var/lib/coreos-install/user_data</code>を編集して<code>COREOS_PRIVATE_IPV4</code>を記入後にrebootします。</p>
+<p>残念ながら、reboot後にUnitの起動が失敗してしまいました。<br>このUnitファイルはみつからないので、まだ意味がわかりません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">CoreOS (beta)</span><br><span class="line">Failed Units: 1</span><br><span class="line">  user-cloudinit@var-lib-coreos\x2dinstall-user_data.service</span><br></pre></td></tr></table></figure>
+
+<p><code>/run/systemd/system/etcd.service.d/20-cloudinit.conf</code>がなくなっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /run/systemd/system/etcd.service.d/20-cloudinit.conf</span><br><span class="line">cat: /run/systemd/system/etcd.service.d/20-cloudinit.conf: No such file or directory</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/environment</code>ファイルも生成されていません。<br>その代わり、<code>/cloudinit-tempxxxx</code>のファイルが作成されるようになりました。でもempty。</p>
+<figure class="highlight bash"><figcaption><span>/cloudinit-temp850627980</span></figcaption><table><tr><td class="code"><pre><span class="line">COREOS_PUBLIC_IPV4=</span><br><span class="line">COREOS_PRIVATE_IPV4=</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="write-filesの書式が違っていた"><a href="#write-filesの書式が違っていた" class="headerlink" title="write_filesの書式が違っていた"></a>write_filesの書式が違っていた</h3><p><a href="http://coreos.com/docs/cluster-management/setup/cloudinit-cloud-config/" target="_blank" rel="noopener">Using Cloud-Config</a>のページで書式を確認すると、<code>write_files</code>の書き方を間違えていました。正しくは<code>-name:</code>でなく<code>-path:</code>です。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/fleet/fleet.conf</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0644</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">verbosity=1</span></span><br><span class="line">      <span class="string">metadata="region=us-west,type=ssd"</span></span><br></pre></td></tr></table></figure>
+
+<p><code>/var/lib/coreos-install/user_data</code>を編集してrebootします。</p>
+<figure class="highlight yaml"><figcaption><span>/var/lib/coreos-install/user_data</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">COREOS_PUBLIC_IPV4=$public_ipv4</span></span><br><span class="line">        <span class="string">COREOS_PRIVATE_IPV4=$private_ipv4</span></span><br></pre></td></tr></table></figure>
+
+
+<p>reboot後確認すると、<code>/etc/environment</code>ファイルはできましたが、まだ値が入りません。</p>
+<figure class="highlight bash"><figcaption><span>/etc/environment</span></figcaption><table><tr><td class="code"><pre><span class="line">COREOS_PUBLIC_IPV4=</span><br><span class="line">COREOS_PRIVATE_IPV4=</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="手動でプライベートIPアドレスを指定"><a href="#手動でプライベートIPアドレスを指定" class="headerlink" title="手動でプライベートIPアドレスを指定"></a>手動でプライベートIPアドレスを指定</h3><ul>
+<li><code>Update 2014-07-23</code></li>
+</ul>
+<p>ifconfigでIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ifconfig ens32 | awk <span class="string">'/inet /&#123;print $2&#125;'</span></span><br><span class="line">10.1.0.174</span><br></pre></td></tr></table></figure>
+
+<p>確認したIPアドレスを記述します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/environment</span></figcaption><table><tr><td class="code"><pre><span class="line">COREOS_PUBLIC_IPV4=</span><br><span class="line">COREOS_PRIVATE_IPV4=10.1.0.174</span><br></pre></td></tr></table></figure>
+
+<p>rebootすると、fleetctlが使えるようになりました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fleetctl list-machines</span><br><span class="line">MACHINE         IP              METADATA</span><br><span class="line">0ba88b13...     10.1.0.174      -</span><br></pre></td></tr></table></figure>
+
+<p><code>discovery.etcd.io</code>にもノードが追加されるようになりました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://discovery.etcd.io/ed724cf0abd2d02abf985f57b53d6cf4</span><br><span class="line">&#123;<span class="string">"action"</span>:<span class="string">"get"</span>,<span class="string">"node"</span>:&#123;<span class="string">"key"</span>:<span class="string">"/_etcd/registry/ed724cf0abd2d02abf985f57b53d6cf4"</span>,<span class="string">"dir"</span>:<span class="literal">true</span>,<span class="string">"nodes"</span>:[&#123;<span class="string">"key"</span>:<span class="string">"/_etcd/registry/ed724cf0abd2d02abf985f57b53d6cf4/0ba88b13eef245cc89d1dd880fd8f7fa"</span>,<span class="string">"value"</span>:<span class="string">"http://10.1.0.174:7001"</span>,<span class="string">"expiration"</span>:<span class="string">"2014-07-30T04:43:25.881316985Z"</span>,<span class="string">"ttl"</span>:604662,<span class="string">"modifiedIndex"</span>:57181290,<span class="string">"createdIndex"</span>:57181290&#125;],<span class="string">"modifiedIndex"</span>:56074323,<span class="string">"createdIndex"</span>:56074323&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>$public_ipv4 と $private_ipv4は、<a href="https://github.com/coreos/coreos-cloudinit" target="_blank" rel="noopener">coreos-cloudinit</a>が直接EC2のmetadataやOpenStackのconfig-driveから取得するように変わったようです。</p>
+<p>IDCFクラウドではuser_dataが取得できないので、$public_ipv4 と $private_ipv4が空になっているようです。</p>
+<blockquote>
+<p>This was intended but we should probably revise it if folks are depending on the old contents of /etc/environment. For EC2/OpenStack instances we moved the detection of $public_ipv4 and $private_ipv4 directly into coreos-cloudinit so that it would work gracefully with both EC2-style metadata services and config drive. The old /usr/share/oem/bin/coreos-setup-environment shipped with those images hung if no metadata service was available, breaking config drive based OpenStack systems.</p>
+</blockquote>
+<h3 id="教訓"><a href="#教訓" class="headerlink" title="教訓"></a>教訓</h3><p>ドキュメントは普通に全部読むこと。特にCoreOSのドキュメントは頻繁に更新されます。<br>issuesを読むこと。きっとだれか同じ状況で困ってます。<br>CoreOSの変更はアグレッシブ。ばさっと大きな変更をしてきます。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/07/16/hexo-draft-writing/" rel="prev" title="Hexoでドラフトをプレビューする">
+      <i class="fa fa-chevron-left"></i> Hexoでドラフトをプレビューする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/07/18/docker-reverse-proxy/" rel="next" title="DockerのHTTP Routing: Part2: リバースプロキシ調査">
+      DockerのHTTP Routing: Part2: リバースプロキシ調査 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOS-Stable-Release"><span class="nav-number">1.</span> <span class="nav-text">CoreOS Stable Release</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSのバージョン確認"><span class="nav-number">2.</span> <span class="nav-text">CoreOSのバージョン確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#journalctlでログの確認"><span class="nav-number">3.</span> <span class="nav-text">journalctlでログの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#systemctlでunitファイルの確認"><span class="nav-number">4.</span> <span class="nav-text">systemctlでunitファイルの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cloud-config-yamlの再実行"><span class="nav-number">5.</span> <span class="nav-text">cloud-config.yamlの再実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rebootで失敗"><span class="nav-number">6.</span> <span class="nav-text">rebootで失敗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#write-filesの書式が違っていた"><span class="nav-number">7.</span> <span class="nav-text">write_filesの書式が違っていた</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手動でプライベートIPアドレスを指定"><span class="nav-number">8.</span> <span class="nav-text">手動でプライベートIPアドレスを指定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#教訓"><span class="nav-number">9.</span> <span class="nav-text">教訓</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

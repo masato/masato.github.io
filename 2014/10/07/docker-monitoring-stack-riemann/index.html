@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Docker監視環境 - Part1 cAdvisor, collectd, Riemann, InfluxDB, Grafanaで決めたアーキテクチャのPoCをしていきます。最初にRiemannを構築します。RiemannはClojureらしい分散システムの監視ツールです。似たようなストリーム処理のフレームワークにLaminaやStormがあります。Stormのようなクラスタでビッグデータを処理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker監視環境 - Part2: Riemannの構築">
+<meta property="og:url" content="http://masato.github.io/2014/10/07/docker-monitoring-stack-riemann/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Docker監視環境 - Part1 cAdvisor, collectd, Riemann, InfluxDB, Grafanaで決めたアーキテクチャのPoCをしていきます。最初にRiemannを構築します。RiemannはClojureらしい分散システムの監視ツールです。似たようなストリーム処理のフレームワークにLaminaやStormがあります。Stormのようなクラスタでビッグデータを処理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/10/07/docker-monitoring-stack-riemann/riemann.png">
+<meta property="article:published_time" content="2014-10-06T16:35:44.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.599Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Clojure">
+<meta property="article:tag" content="Riemann">
+<meta property="article:tag" content="Docker監視環境">
+<meta property="article:tag" content="Ruby">
+<meta property="article:tag" content="StreamProcessing">
+<meta property="article:tag" content="MeasureAllTheThings">
+<meta property="article:tag" content="clostack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/10/07/docker-monitoring-stack-riemann/riemann.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/10/07/docker-monitoring-stack-riemann/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Docker監視環境 - Part2: Riemannの構築 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/10/07/docker-monitoring-stack-riemann/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker監視環境 - Part2: Riemannの構築
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 7 2014 01:35:44" itemprop="dateCreated datePublished" datetime="2014-10-07T01:35:44+09:00">Oct 7 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Docker監視環境 - Part1 cAdvisor, collectd, Riemann, InfluxDB, Grafanaで決めたアーキテクチャのPoCをしていきます。最初にRiemannを構築します。RiemannはClojureらしい分散システムの監視ツールです。似たようなストリーム処理のフレームワークにLaminaやStormがあります。Stormのようなクラスタでビッグデータを処理するほどでもなく、Do-it-yourself CloudWatch-style alarms using Riemannにあるような用途が主です。system metricsとapplication metricsの収集 ブラウザで可視化とクエリ実行 閾値を監視してnotificationやtriggerを実行 clostackを使ってCloudStackでオートスケールなんておもしろうそうです。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-10-08</code>: <a href="/2014/10/08/docker-monitoring-stack-cadvisor-influxdb-grafana/">Docker監視環境 - Part3: cAdvisor,InfluxDB,Grafanaの構築</a></li>
+</ul>
+<p><a href="/2014/09/26/docker-monitoring-stack-prepare/">Docker監視環境 - Part1: cAdvisor, collectd, Riemann, InfluxDB, Grafana</a>で決めたアーキテクチャのPoCをしていきます。最初に<a href="https://github.com/aphyr/riemann" target="_blank" rel="noopener">Riemann</a>を構築します。<br>RiemannはClojureらしい分散システムの監視ツールです。似たようなストリーム処理のフレームワークに<a href="https://github.com/ztellman/lamina" target="_blank" rel="noopener">Lamina</a>や<a href="https://github.com/nathanmarz/storm" target="_blank" rel="noopener">Storm</a>があります。<br>Stormのようなクラスタでビッグデータを処理するほどでもなく、<a href="http://cloudierthanthou.wordpress.com/2014/01/09/do-it-yourself-cloudwatch-style-alarms-using-riemann/" target="_blank" rel="noopener">Do-it-yourself CloudWatch-style alarms using Riemann</a>にあるような用途が主です。</p>
+<ul>
+<li><code>system metrics</code>と<code>application metrics</code>の収集</li>
+<li>ブラウザで可視化とクエリ実行</li>
+<li>閾値を監視してnotificationやtriggerを実行</li>
+</ul>
+<p><a href="https://github.com/pyr/clostack" target="_blank" rel="noopener">clostack</a>を使ってCloudStackでオートスケールなんておもしろうそうです。</p>
+<a id="more"></a>
+
+<h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p>RiemannのDockerイメージを作成するプロジェクトの構成です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree ~/docker_apps/riemann</span><br><span class="line">~docker_apps/riemann</span><br><span class="line">├── Dockerfile</span><br><span class="line">└── riemann.config</span><br></pre></td></tr></table></figure>
+
+<p>ダッシュボードの<a href="https://github.com/aphyr/riemann-dash" target="_blank" rel="noopener">Riemann-Dash</a>イメージを作成するプロジェクトです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree ~/docker_apps/riemann-health/</span><br><span class="line">~/docker_apps/riemann-health/</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── Gemfile</span><br><span class="line">└── Gemfile.lock</span><br></pre></td></tr></table></figure>
+
+<p>もう一つRubyで書かれた<code>system metrics</code>を収集するriemann-healthを使うため、<a href="https://github.com/aphyr/riemann-tools" target="_blank" rel="noopener">Riemann Tools</a>のコンテナを用意します。</p>
+<h3 id="RiemannのDockerfile"><a href="#RiemannのDockerfile" class="headerlink" title="RiemannのDockerfile"></a>RiemannのDockerfile</h3><p><a href="httpのs://github.com/patrickod/riemann-docker">patrickod/riemann</a>を参考にしてDockerfileを書いていきます。<br><code>2014-10-06</code>現在で最新バージョンは<code>0.2.6</code>です。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/riemann/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">ROM ubuntu:14.04</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y curl default-jre-headless</span><br><span class="line"><span class="comment"># Download the latest .deb and install</span></span><br><span class="line">RUN curl http://aphyr.com/riemann/riemann_0.2.6_all.deb &gt; /tmp/riemann_0.2.6_all.deb</span><br><span class="line">RUN dpkg -i /tmp/riemann_0.2.6_all.deb</span><br><span class="line"><span class="comment"># Expose the ports for inbound events and websockets</span></span><br><span class="line">EXPOSE 5555</span><br><span class="line">EXPOSE 5555/udp</span><br><span class="line">EXPOSE 5556</span><br><span class="line"><span class="comment"># Share the config directory as a volume</span></span><br><span class="line">VOLUME /etc/riemann</span><br><span class="line">ADD riemann.config /etc/riemann/riemann.config</span><br><span class="line"><span class="comment"># Set the hostname in /etc/hosts so that Riemann doesn't die due to unknownHostException</span></span><br><span class="line">RUN <span class="built_in">echo</span> 127.0.0.1 $(hostname) &gt; /etc/hosts</span><br><span class="line">CMD [<span class="string">"/usr/bin/riemann"</span>,<span class="string">"/etc/riemann/riemann.config"</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="riemann-config"><a href="#riemann-config" class="headerlink" title="riemann.config"></a>riemann.config</h3><p>設定ファイルは試行錯誤でなるべく単純に書きました。Dockerで動かすのでサーバーは<code>0.0.0.0</code>にバインドして、Dockerの外からアクセスできるようにします。</p>
+<figure class="highlight clj"><figcaption><span>~/docker_apps/riemann/riemann.config</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">logging/init</span> &#123;<span class="symbol">:file</span> <span class="string">"/etc/riemann/riemann.log"</span> <span class="symbol">:console</span> <span class="literal">true</span>&#125;)</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">let</span></span> [host <span class="string">"0.0.0.0"</span>]</span><br><span class="line">  (<span class="name">tcp-server</span> <span class="symbol">:host</span> host)</span><br><span class="line">  (<span class="name">udp-server</span> <span class="symbol">:host</span> host)</span><br><span class="line">  (<span class="name">ws-server</span> <span class="symbol">:host</span> host))</span><br><span class="line"></span><br><span class="line">(<span class="name">periodically-expire</span> <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">let</span></span> [index (<span class="name">tap</span> <span class="symbol">:index</span> (<span class="name">index</span>))]</span><br><span class="line">  (<span class="name">streams</span></span><br><span class="line">    index</span><br><span class="line">    (<span class="name">with</span> &#123;<span class="symbol">:metric</span> <span class="number">1</span> <span class="symbol">:host</span> <span class="literal">nil</span> <span class="symbol">:state</span> <span class="string">"ok"</span> <span class="symbol">:service</span> <span class="string">"events/sec"</span>&#125;</span><br><span class="line">      (<span class="name">rate</span> <span class="number">5</span> index))</span><br><span class="line">    (<span class="name">expired</span></span><br><span class="line">      (<span class="name"><span class="builtin-name">fn</span></span> [event] (<span class="name">info</span> <span class="string">"expired"</span> event)))))</span><br><span class="line"></span><br><span class="line">(<span class="name">streams</span></span><br><span class="line">        prn)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Riemannコンテナの起動"><a href="#Riemannコンテナの起動" class="headerlink" title="Riemannコンテナの起動"></a>Riemannコンテナの起動</h3><p>イメージをビルドしてRiemannコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/riemann</span><br><span class="line">$ docker build -t masato/riemann .</span><br><span class="line">$ docker run -it --name riemann --rm -v $(<span class="built_in">pwd</span>):/etc/riemann -p 5556:5556 -p 5555:5555  masato/riemann</span><br></pre></td></tr></table></figure>
+
+<h3 id="Riemann-Dashコンテナの起動"><a href="#Riemann-Dashコンテナの起動" class="headerlink" title="Riemann-Dashコンテナの起動"></a>Riemann-Dashコンテナの起動</h3><p><a href="https://github.com/aphyr/riemann-dash" target="_blank" rel="noopener">Riemann-Dash</a>はSinatraのアプリです。Thinサーバーで起動しています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --name riemann-dash --rm -p 4567:4567 davidkelley/riemann-dash</span><br><span class="line">== Sinatra/1.4.5 has taken the stage on 4567 <span class="keyword">for</span> development with backup from Thin</span><br></pre></td></tr></table></figure>
+
+<h3 id="Riemann-Toolsコンテナの起動"><a href="#Riemann-Toolsコンテナの起動" class="headerlink" title="Riemann Toolsコンテナの起動"></a>Riemann Toolsコンテナの起動</h3><p><a href="http://www.businesswire.com/news/home/20140924005223/en/Docker-Adds-11-Top-Language-Stacks-Docker" target="_blank" rel="noopener">Docker Adds 11 Top Language Stacks to Docker Hub Registry</a>によるとRubyのオフィシャルイメージも追加されたので、<a href="https://github.com/aphyr/riemann-tools" target="_blank" rel="noopener">Riemann Tools</a>用のDockerfileで使ってみます。</p>
+<p><code>riemann-health run</code>は<code>--host</code>オプションでDockerホストのIPアドレスを指定します。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/riemann-health/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ruby:2.1.3-onbuild</span><br><span class="line">RUN gem install riemann-tools --no-doc</span><br><span class="line">CMD [<span class="string">"riemann-health"</span>,<span class="string">"--host"</span>,<span class="string">"10.1.1.32"</span>]</span><br></pre></td></tr></table></figure>
+
+<p>ONBUILDで追加されるGemfileで<code>riemann-tools</code>をインストールします。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/riemann-health/Gemfile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">source</span> <span class="string">'https://rubygems.org'</span></span><br><span class="line">gem <span class="string">'riemann-tools'</span></span><br></pre></td></tr></table></figure>
+
+<p>同じくONBUILDで追加されるGemfile.lockです。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/riemann-health/Gemfile.lock</span></figcaption><table><tr><td class="code"><pre><span class="line">GEM</span><br><span class="line">  remote: https://rubygems.org/</span><br><span class="line">  specs:</span><br><span class="line">    beefcake (1.0.0)</span><br><span class="line">    builder (3.2.2)</span><br><span class="line">    excon (0.40.0)</span><br><span class="line">    faraday (0.9.0)</span><br><span class="line">      multipart-post (&gt;= 1.2, &lt; 3)</span><br><span class="line">    fog (1.23.0)</span><br><span class="line">      fog-brightbox</span><br><span class="line">      fog-core (~&gt; 1.23)</span><br><span class="line">      fog-json</span><br><span class="line">      fog-softlayer</span><br><span class="line">      ipaddress (~&gt; 0.5)</span><br><span class="line">      nokogiri (~&gt; 1.5, &gt;= 1.5.11)</span><br><span class="line">    fog-brightbox (0.5.1)</span><br><span class="line">      fog-core (~&gt; 1.22)</span><br><span class="line">      fog-json</span><br><span class="line">      inflecto</span><br><span class="line">    fog-core (1.24.0)</span><br><span class="line">      builder</span><br><span class="line">      excon (~&gt; 0.38)</span><br><span class="line">      formatador (~&gt; 0.2)</span><br><span class="line">      mime-types</span><br><span class="line">      net-scp (~&gt; 1.1)</span><br><span class="line">      net-ssh (&gt;= 2.1.3)</span><br><span class="line">    fog-json (1.0.0)</span><br><span class="line">      multi_json (~&gt; 1.0)</span><br><span class="line">    fog-softlayer (0.3.19)</span><br><span class="line">      fog-core</span><br><span class="line">      fog-json</span><br><span class="line">    formatador (0.2.5)</span><br><span class="line">    inflecto (0.0.2)</span><br><span class="line">    ipaddress (0.8.0)</span><br><span class="line">    mime-types (2.3)</span><br><span class="line">    mini_portile (0.6.0)</span><br><span class="line">    mtrc (0.0.4)</span><br><span class="line">    multi_json (1.10.1)</span><br><span class="line">    multipart-post (2.0.0)</span><br><span class="line">    munin-ruby (0.2.5)</span><br><span class="line">    net-scp (1.2.1)</span><br><span class="line">      net-ssh (&gt;= 2.6.5)</span><br><span class="line">    net-ssh (2.9.1)</span><br><span class="line">    nokogiri (1.6.3.1)</span><br><span class="line">      mini_portile (= 0.6.0)</span><br><span class="line">    riemann-client (0.2.3)</span><br><span class="line">      beefcake (&gt;= 0.3.5)</span><br><span class="line">      mtrc (&gt;= 0.0.4)</span><br><span class="line">      trollop (&gt;= 1.16.2)</span><br><span class="line">    riemann-tools (0.2.2)</span><br><span class="line">      faraday (&gt;= 0.8.5)</span><br><span class="line">      fog (&gt;= 1.4.0)</span><br><span class="line">      munin-ruby (&gt;= 0.2.1)</span><br><span class="line">      nokogiri (&gt;= 1.5.6)</span><br><span class="line">      riemann-client (&gt;= 0.2.2)</span><br><span class="line">      trollop (&gt;= 1.16.2)</span><br><span class="line">      yajl-ruby (&gt;= 1.1.0)</span><br><span class="line">    trollop (2.0)</span><br><span class="line">    yajl-ruby (1.2.1)</span><br><span class="line"></span><br><span class="line">PLATFORMS</span><br><span class="line">  ruby</span><br><span class="line"></span><br><span class="line">DEPENDENCIES</span><br><span class="line">  riemann-tools</span><br></pre></td></tr></table></figure>
+
+<p>buildとrunを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t masato/riemann-health .</span><br><span class="line">...</span><br><span class="line">Step 3 : CMD [<span class="string">"riemann-health"</span>,<span class="string">"--host"</span>,<span class="string">"10.1.1.32"</span>]</span><br><span class="line"> ---&gt; Running <span class="keyword">in</span> f5a6e5cfcacb</span><br><span class="line"> ---&gt; bfa01e66fe51</span><br><span class="line">Removing intermediate container f5a6e5cfcacb</span><br><span class="line">Successfully built bfa01e66fe51</span><br><span class="line">$ docker run --name riemann-health --rm -it masato/riemann-health</span><br></pre></td></tr></table></figure>
+
+<h3 id="IPアドレスの確認"><a href="#IPアドレスの確認" class="headerlink" title="IPアドレスの確認"></a>IPアドレスの確認</h3><p>コンテナのIPアドレスの確認をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> riemann</span><br><span class="line">172.17.1.12</span><br><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> riemann-dash</span><br><span class="line">172.17.1.13</span><br><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123;.NetworkSettings.IPAddress &#125;&#125;"</span> riemann-health</span><br><span class="line">172.17.1.24</span><br></pre></td></tr></table></figure>
+
+<h3 id="Riemann-Dash確認"><a href="#Riemann-Dash確認" class="headerlink" title="Riemann-Dash確認"></a>Riemann-Dash確認</h3><p>ブラウザでThinで起動しているSinatraを表示します。</p>
+<p><a href="http://172.17.1.13:4567" target="_blank" rel="noopener">http://172.17.1.13:4567</a></p>
+<p>以下の手順ですべてのメトリクスを表示する設定をいれます。</p>
+<ol>
+<li>大きなRiemannの文字をクリックしてアクティブにする</li>
+<li>キーボードのeを押す</li>
+<li>セレクトボックスからGridを選択</li>
+<li>queryフィールドにtrueを入れる</li>
+<li>Applyボタンを押す</li>
+</ol>
+<img src="/2014/10/07/docker-monitoring-stack-riemann/riemann.png" class="center">
+
+
+<p>4ebef3433a61が<code>riemann-health</code>で<code>system metrics</code>をriemannに送信しているコンテナです。<br>ae55fc1b437dgがriemannサーバーが起動しているコンテナです。</p>
+<p>最後の行のnilはよくわかりません。riemann.configの設定が間違っている気がしますが。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                             COMMAND                CREATED             STATUS              PORTS                                                      NAMES</span><br><span class="line">4ebef3433a61        masato/riemann-health:latest      <span class="string">"riemann-health --ho   37 minutes ago      Up 37 minutes                                                                  riemann-health</span></span><br><span class="line"><span class="string">bd3ff7613a4f        davidkelley/riemann-dash:latest   "</span>riemann-dash<span class="string">"         About an hour ago   Up About an hour    0.0.0.0:4567-&gt;4567/tcp                                     riemann-dash</span></span><br><span class="line"><span class="string">ae55fc1b437d        0ff641514409                      "</span>/usr/bin/riemann /e   About an hour ago   Up About an hour    5555/udp, 0.0.0.0:5555-&gt;5555/tcp, 0.0.0.0:5556-&gt;5556/tcp   riemann</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Clojure/" rel="tag"># Clojure</a>
+              <a href="/tags/Riemann/" rel="tag"># Riemann</a>
+              <a href="/tags/Docker%E7%9B%A3%E8%A6%96%E7%92%B0%E5%A2%83/" rel="tag"># Docker監視環境</a>
+              <a href="/tags/Ruby/" rel="tag"># Ruby</a>
+              <a href="/tags/StreamProcessing/" rel="tag"># StreamProcessing</a>
+              <a href="/tags/MeasureAllTheThings/" rel="tag"># MeasureAllTheThings</a>
+              <a href="/tags/clostack/" rel="tag"># clostack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/10/06/docker-devenv-emacs24-eclim-java8-failed-spring-boot/" rel="prev" title="Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う">
+      <i class="fa fa-chevron-left"></i> Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/10/08/docker-monitoring-stack-cadvisor-influxdb-grafana/" rel="next" title="Docker監視環境 - Part3: cAdvisor, InfluxDB, Grafanaの構築">
+      Docker監視環境 - Part3: cAdvisor, InfluxDB, Grafanaの構築 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RiemannのDockerfile"><span class="nav-number">2.</span> <span class="nav-text">RiemannのDockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#riemann-config"><span class="nav-number">3.</span> <span class="nav-text">riemann.config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Riemannコンテナの起動"><span class="nav-number">4.</span> <span class="nav-text">Riemannコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Riemann-Dashコンテナの起動"><span class="nav-number">5.</span> <span class="nav-text">Riemann-Dashコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Riemann-Toolsコンテナの起動"><span class="nav-number">6.</span> <span class="nav-text">Riemann Toolsコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPアドレスの確認"><span class="nav-number">7.</span> <span class="nav-text">IPアドレスの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Riemann-Dash確認"><span class="nav-number">8.</span> <span class="nav-text">Riemann-Dash確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

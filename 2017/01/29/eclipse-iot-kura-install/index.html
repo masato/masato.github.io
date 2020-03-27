@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IoT Gatewayについて調査をしていくつかのプロダクトを試しました。Eclipse Kuraが今のところ実績もあり使いやすそうです。Eclipse IoTプロジェクトの一つで、Raspberry PiやBeagle Bone Black上でIoT Gatewayとして動作するOSGiのオープンソースフレームワークです。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする">
+<meta property="og:url" content="http://masato.github.io/2017/01/29/eclipse-iot-kura-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IoT Gatewayについて調査をしていくつかのプロダクトを試しました。Eclipse Kuraが今のところ実績もあり使いやすそうです。Eclipse IoTプロジェクトの一つで、Raspberry PiやBeagle Bone Black上でIoT Gatewayとして動作するOSGiのオープンソースフレームワークです。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/01/29/eclipse-iot-kura-install/kapua-console.png">
+<meta property="article:published_time" content="2017-01-29T06:48:28.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.634Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="EclipseIoT">
+<meta property="article:tag" content="EclipseKura">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/01/29/eclipse-iot-kura-install/kapua-console.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/01/29/eclipse-iot-kura-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/01/29/eclipse-iot-kura-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 29 2017 15:48:28" itemprop="dateCreated datePublished" datetime="2017-01-29T15:48:28+09:00">Jan 29 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/EclipseIoT/" itemprop="url" rel="index"><span itemprop="name">EclipseIoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">IoT Gatewayについて調査をしていくつかのプロダクトを試しました。Eclipse Kuraが今のところ実績もあり使いやすそうです。Eclipse IoTプロジェクトの一つで、Raspberry PiやBeagle Bone Black上でIoT Gatewayとして動作するOSGiのオープンソースフレームワークです。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　<a href="http://qiita.com/masato/items/912a447698f172dbb45b" target="_blank" rel="noopener">IoT Gatewayについて</a>調査をしていくつかのプロダクトを試しました。<a href="http://www.eclipse.org/kura/" target="_blank" rel="noopener">Eclipse Kura</a>が今のところ実績もあり使いやすそうです。<a href="http://iot.eclipse.org/" target="_blank" rel="noopener">Eclipse IoTプロジェクト</a>の一つで、Raspberry PiやBeagle Bone Black上でIoT Gatewayとして動作する<a href="https://www.osgi.org/" target="_blank" rel="noopener">OSGi</a>のオープンソースフレームワークです。Eclipse Kuraを拡張した<a href="http://www.eurotech.com/jp/products/software+services/everyware+software+framework" target="_blank" rel="noopener">ESF</a>とハードウェアの<a href="http://www.eurotech.com/jp/products/software+services/m2m+products" target="_blank" rel="noopener">ReliaGATE</a>シリーズも<a href="http://www.eurotech.com/" target="_blank" rel="noopener">Eurotech</a>から提供されています。プロダクション環境でサポートが必要な場合はライセンスを購入すると安心できそうです。</p>
+<a id="more"></a>
+
+<p>　<a href="https://iot.eclipse.org/" target="_blank" rel="noopener">Eclipse IoT</a>プロジェクトは他にも<a href="https://projects.eclipse.org/proposals/eclipse-kapua" target="_blank" rel="noopener">Eclipse Kapua</a>、<a href="https://projects.eclipse.org/projects/iot.hono" target="_blank" rel="noopener">Eclipse Hono</a>、<a href="http://www.eclipse.org/vorto/" target="_blank" rel="noopener">Eclipse Vorto</a>、<a href="http://www.eclipse.org/leshan/" target="_blank" rel="noopener">Eclipse Leshan</a>といったクラウドのバックエンド側プロジェクトもあります。<a href="https://www.redhat.com/en" target="_blank" rel="noopener">Red Hat</a>、<a href="http://www.eurotech.com/en/" target="_blank" rel="noopener">Eurotech</a>、<a href="http://www.bosch.com/en/com/home/index.php" target="_blank" rel="noopener">Bosh</a>、<a href="https://www.ge.com/digital/" target="_blank" rel="noopener">GE Digital</a>といった企業が乱立気味のIoTプラットフォームの相互接続性と、デバイスからのデータをエンタープライズのアプリケーションに統合することを目標にオープンソースで開発を進めています。バックエンドサービスは<a href="https://www.cloudfoundry.org/" target="_blank" rel="noopener">Cloud Foundry</a>や<a href="https://www.openshift.com/" target="_blank" rel="noopener">OpanShift</a>といった最近のDockerベースのクラウドプラットフォーム上で動作することにも注目です。</p>
+<p>　まずは身近なところから、Raspberry Pi 2にEclipse Kuraをインストールすることから始めます。</p>
+<h2 id="Raspbian-Jessie-Lite"><a href="#Raspbian-Jessie-Lite" class="headerlink" title="Raspbian Jessie Lite"></a>Raspbian Jessie Lite</h2><p>　Raspbianのセットアップ方法は<a href="https://www.raspberrypi.org/documentation/installation/installing-images/" target="_blank" rel="noopener">オフィシャル</a>をはじめにたくさん記事がありますが、2016-11-25の<a href="http://downloads.raspberrypi.org/raspbian/release_notes.txt" target="_blank" rel="noopener">リリース</a>からSSHがデフォルトで無効になり注意が必要です。SDカードにイメージを焼いた状態のままではSSHで接続することができません。</p>
+<blockquote>
+<p>2016-11-25:</p>
+</blockquote>
+<ul>
+<li>SSH disabled by default; can be enabled by creating a file with name “ssh” in boot partition</li>
+</ul>
+<p>　ローカルの作業用PCとRaspberry Pi 2を有線LANで接続してヘッドレスインストールする例を簡単にまとめておきます。そのほかには無線LAN USBアダプターなどが必要です。</p>
+<ul>
+<li><p><a href="https://www.amazon.co.jp/dp/B00ESA34GA/" target="_blank" rel="noopener">無線LAN USBアダプター</a></p>
+</li>
+<li><p><a href="https://www.amazon.co.jp/dp/B00LVH885U/" target="_blank" rel="noopener">有線LAN USBアダプター</a></p>
+</li>
+<li><p><a href="https://www.amazon.co.jp/dp/B008RVY4GK/" target="_blank" rel="noopener">LANケーブル</a></p>
+</li>
+</ul>
+<h3 id="SDカードにイメージを焼く"><a href="#SDカードにイメージを焼く" class="headerlink" title="SDカードにイメージを焼く"></a>SDカードにイメージを焼く</h3><p>　SDカードをUSBアダプタに挿して作業用PCに接続します。Fat32でフォーマットされたSDカードのデバイス名を確認してアンマウントします。この例では/dev/disk2です。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>diskutil list</span><br><span class="line"><span class="variable">$ </span>diskutil unmountDisk /dev/disk2</span><br></pre></td></tr></table></figure>
+
+<p>　Raspbian Jessie Liteを<a href="https://www.raspberrypi.org/downloads/raspbian/" target="_blank" rel="noopener">ダウンロードページ</a>から取得してイメージを解凍します。</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">$ cd ~/Downloads</span><br><span class="line">$ wget https://downloads.raspberrypi.org/raspbian/images/raspbian<span class="string">-2017</span><span class="string">-01</span><span class="string">-10</span>/2017<span class="string">-01</span><span class="string">-11</span>-raspbian-jessie.zip</span><br><span class="line">$ unzip 2017<span class="string">-01</span><span class="string">-11</span>-raspbian-jessie.zip</span><br></pre></td></tr></table></figure>
+
+<p>　イメージをSDカードに焼きます。確認したデバイス名に<code>r</code>をつけて<code>/dev/rdisk2</code>を指定します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo dd bs&#x3D;1m if&#x3D;2017-01-11-raspbian-jessie-lite.img of&#x3D;&#x2F;dev&#x2F;rdisk2</span><br></pre></td></tr></table></figure>
+
+<p>　Windows 10でRasbianイメージのSDカードを作る場合は<a href="https://ja.osdn.net/projects/sfnet_win32diskimager/" target="_blank" rel="noopener">Win32 Disk Imager</a>が便利です。</p>
+<h3 id="SSHを有効にする"><a href="#SSHを有効にする" class="headerlink" title="SSHを有効にする"></a>SSHを有効にする</h3><p>　SSHはデフォルトで無効になっています。macOSのボリュームにマウントした状態でsshファイルを作り有効にします。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ touch <span class="regexp">/Volumes/</span>boot<span class="regexp">/ssh</span></span><br></pre></td></tr></table></figure>
+
+<p>　Windows 10には<code>touch</code>に相当するコマンドがないため、SDカードのDドライブに移動して<code>COPY</code>コマンドで代用します。エクスプローラーからDドライブに直接ファイルを作成する場合は<code>.txt</code>など拡張子をつけないように注意します。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> d:</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> copy /y nul ssh</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">exit</span></span></span><br></pre></td></tr></table></figure>
+
+<p>　SDカードをアンマウントして取り出します。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ diskutil unmountDisk <span class="regexp">/dev/</span>disk2</span><br></pre></td></tr></table></figure>
+
+<p>　SDカードをRaspberry Pi 2にさして電源を入れます。macOSとLANケーブルで直接つなぎます。最新のRaspbianはデフォルトでmDNSが有効になりmacOSやWindows10から<code>raspberrypi.local</code>のホスト名で簡単に接続できます。</p>
+<figure class="highlight julia"><table><tr><td class="code"><pre><span class="line">$ ssh <span class="literal">pi</span><span class="meta">@raspberrypi</span>.<span class="keyword">local</span></span><br></pre></td></tr></table></figure>
+
+<p>　ユーザー名は<code>pi</code>、パスワードは<code>raspbian</code>が設定されています。SSHのデフォルトが無効なのは変更せずにこのまま使う人が多いためらしく、忘れずにパスワードを変更します。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>passwd</span><br></pre></td></tr></table></figure>
+
+<p>　公開鍵を<code>~/.ssh/authorized_keys</code>に追加しSSH接続で利用します。</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="symbol">$</span> mkdir ~/.ssh</span><br><span class="line"><span class="symbol">$</span> chmod <span class="number">700</span> ~/.ssh</span><br><span class="line"><span class="symbol">$</span> cat &lt;&lt;EOF &gt; ~/.ssh/authorized_keys</span><br><span class="line"><span class="function"><span class="title">ssh</span></span>-rsa AAAAB...</span><br><span class="line">EOF</span><br><span class="line"><span class="symbol">$</span> chmod <span class="number">600</span> ~/.ssh/authorized_keys</span><br><span class="line"><span class="symbol">$</span> exit</span><br></pre></td></tr></table></figure>
+
+<h3 id="初期設定"><a href="#初期設定" class="headerlink" title="初期設定"></a>初期設定</h3><p>　raspi-configから初期設定を行います。</p>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line">$ sudo raspi-<span class="built_in">config</span></span><br></pre></td></tr></table></figure>
+
+<p>　ファイルシステムの拡張は必ず行います。localeとtimezoneはユーザー環境にあわせて設定します。</p>
+<ul>
+<li>1 Expand Filesystem</li>
+<li>4 Internationalisation Options<ul>
+<li>I1 Change Locale -&gt; en_GB.UTF-8のまま</li>
+<li>I2 Change Timezone -&gt; Asia -&gt; Tokyo</li>
+</ul>
+</li>
+</ul>
+<p>　localeを<code>jp_JP.UTF-8</code>にすると文字化けする場合があるので<code>en_GB.UTF-8</code>のまま使います。一度rebootします。</p>
+<p>　Raspberry Piに日本語キーボードを使う場合はレイアウトを変更します。SSH接続では不要ですが、Windows 10とRaspberry Piを有線LANで接続するとmDNSの<code>raspberrypi.local</code>でうまくSSH接続できないことがあります。キーボードとディスプレイが必要になる場合があるため設定します。</p>
+<ul>
+<li>4 Localisation Options<ul>
+<li>I3 Change Keyboard Layout  -&gt; Generic 105-key (Intl) PC -&gt; Japanese -&gt;  The default for the keyboard layout -&gt;  No compose key</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sudo reboot</span><br></pre></td></tr></table></figure>
+
+<h3 id="無線LAN"><a href="#無線LAN" class="headerlink" title="無線LAN"></a>無線LAN</h3><p>　Raspberry Pi 2には無線LANが内蔵されていません。USBの無線LANアダプタを用意しておきます。wlan0で利用する無線LANのアクセスポイントをスキャンしてESSIDを確認します。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ sudo iwlist wlan0 scan <span class="string">| grep ESSID</span></span><br></pre></td></tr></table></figure>
+
+<p>　wpa_passphraseコマンドにESSIDとパスワードを渡し、出力を<code>wpa_supplicant.conf</code>に追記します。(例の<code>[</code>と<code>]</code>は不要です。)</p>
+<figure class="highlight autohotkey"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c 'wp<span class="built_in">a_passphrase</span> [ESSID] [パスワード] &gt;&gt; /etc/wp<span class="built_in">a_supplicant</span>/wp<span class="built_in">a_supplicant</span>.conf'</span><br></pre></td></tr></table></figure>
+
+<p>　アクセスポイントを複数指定する場合は<code>priority</code>で接続する優先度を指定します。数字が大きいほど有線されます。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">country&#x3D;GB</span><br><span class="line">ctrl_interface&#x3D;DIR&#x3D;&#x2F;var&#x2F;run&#x2F;wpa_supplicant GROUP&#x3D;netdev</span><br><span class="line">update_config&#x3D;1</span><br><span class="line">network&#x3D;&#123;</span><br><span class="line">        ssid&#x3D;&quot;xxx&quot;</span><br><span class="line">        #psk&#x3D;&quot;xxx&quot;</span><br><span class="line">        psk&#x3D;xxx</span><br><span class="line">        priority&#x3D;0</span><br><span class="line">&#125;</span><br><span class="line">network&#x3D;&#123;</span><br><span class="line">        ssid&#x3D;&quot;xxx&quot;</span><br><span class="line">        #psk&#x3D;&quot;xxx&quot;</span><br><span class="line">        psk&#x3D;xxx</span><br><span class="line">        priority&#x3D;1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　wlan0のインタフェースにDHCPと先ほどのwpa_supplicant.confを設定します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">auto lo</span><br><span class="line">iface lo inet loopback</span><br><span class="line"></span><br><span class="line">iface eth0 inet manual</span><br><span class="line"></span><br><span class="line">allow-hotplug wlan0</span><br><span class="line">iface wlan0 inet dhcp</span><br><span class="line">    wpa-conf &#x2F;etc&#x2F;wpa_supplicant&#x2F;wpa_supplicant.conf</span><br></pre></td></tr></table></figure>
+
+<p>　wlan0を再起動してDHCPでIPアドレスを取得します。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sudo ifdown wlan0</span><br><span class="line"><span class="variable">$ </span>sudo ifup wlan0</span><br></pre></td></tr></table></figure>
+
+<p> <code>ip</code>コマンドなどを使いwlan0が正常に起動しているか確認します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo iwconfig wlan0</span><br><span class="line">$<span class="built_in"> ip </span>addr show wlan0</span><br><span class="line">$<span class="built_in"> ping </span>-c 1 www.yahoo.co.jp</span><br></pre></td></tr></table></figure>
+
+<h2 id="パッケージの更新"><a href="#パッケージの更新" class="headerlink" title="パッケージの更新"></a>パッケージの更新</h2><p>　ネットワークがつながるようになったので以降の作業を進める前にインストールされているパッケージを更新します。</p>
+<h3 id="apt-get-ミラーサイト"><a href="#apt-get-ミラーサイト" class="headerlink" title="apt-get ミラーサイト"></a>apt-get ミラーサイト</h3><p>　apt-getのデフォルトは<code>mirrordirector.raspbian.org</code>のリポジトリに接続します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">deb http:&#x2F;&#x2F;mirrordirector.raspbian.org&#x2F;raspbian&#x2F; jessie main contrib non-free rpi</span><br><span class="line"># Uncomment line below then &#39;apt-get update&#39; to enable &#39;apt-get source&#39;</span><br><span class="line">#deb-src http:&#x2F;&#x2F;archive.raspbian.org&#x2F;raspbian&#x2F; jessie main contrib non-free rpi</span><br></pre></td></tr></table></figure>
+
+<p>　なるべく近くのミラーサイトを<a href="http://www.raspbian.org/RaspbianMirrors" target="_blank" rel="noopener">RaspbianMirrors</a>から選びます。今回は<a href="http://ftp.jaist.ac.jp/raspbian" target="_blank" rel="noopener">JAIST</a>にしました。</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">$ sudo sed -i<span class="string">".bak"</span> -e <span class="string">"s/mirrordirector.raspbian.org/ftp.jaist.ac.jp/g"</span> /etc/apt/sources.<span class="built_in">list</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="パッケージ更新"><a href="#パッケージ更新" class="headerlink" title="パッケージ更新"></a>パッケージ更新</h3><p> パッケージリストを更新してパッケージを最新の状態にします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> update &amp;&amp; sudo apt-<span class="builtin-name">get</span> dist-upgrade -y</span><br></pre></td></tr></table></figure>
+
+<p>　nanoエディタが使いづらい場合はvimをインストールしてファイルを編集します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> update &amp;&amp; sudo apt-<span class="builtin-name">get</span> install vim -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eclipse-Kuraのインストール"><a href="#Eclipse-Kuraのインストール" class="headerlink" title="Eclipse Kuraのインストール"></a>Eclipse Kuraのインストール</h2><p>　Raspbianの初期設定が終わったところでようやくEclipse Kuraのインストールを始めていきます。</p>
+<h3 id="OpenJDK-8"><a href="#OpenJDK-8" class="headerlink" title="OpenJDK 8"></a>OpenJDK 8</h3><p>　Eclipse Kuraの動作には<a href="https://wiki.eclipse.org/Kura/Getting_Started#Java" target="_blank" rel="noopener">JDK 7以上</a>が必要です。最新の<a href="http://openjdk.java.net/" target="_blank" rel="noopener">Open JDK 8</a>を使います。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get <span class="keyword">update</span> &amp;&amp; sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> -y openjdk<span class="number">-8</span>-jre-headless</span><br><span class="line">$ <span class="keyword">java</span> -<span class="keyword">version</span></span><br><span class="line">openjdk <span class="keyword">version</span> <span class="string">"1.8.0_40-internal"</span></span><br><span class="line">OpenJDK Runtime Environment (<span class="keyword">build</span> <span class="number">1.8</span><span class="number">.0</span>_40-internal-b04)</span><br><span class="line">OpenJDK Zero VM (<span class="keyword">build</span> <span class="number">25.40</span>-b08, interpreted <span class="keyword">mode</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Eclipse-Kura-2-0-2"><a href="#Eclipse-Kura-2-0-2" class="headerlink" title="Eclipse Kura 2.0.2"></a>Eclipse Kura 2.0.2</h3><p>　<a href="https://eclipse.github.io/kura/doc/raspberry-pi-quick-start.html" target="_blank" rel="noopener">Raspberry Pi Quick Start</a>の手順に従いKuraをインストールします。</p>
+<p>　dhcpcd5 パッケージはKuraと互換性がないため削除します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> purge -y dhcpcd5</span><br></pre></td></tr></table></figure>
+
+<p>　NetworkManagerもKuraと競合するためインストールされていないことを確認します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> <span class="builtin-name">remove</span> -y network-manager</span><br></pre></td></tr></table></figure>
+
+<p>　パッケージの依存関係を解決してKuraをインストールするために<a href="https://launchpad.net/gdebi" target="_blank" rel="noopener">GDebi</a>をインストールします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> update &amp;&amp; sudo apt-<span class="builtin-name">get</span> install -y gdebi-core</span><br></pre></td></tr></table></figure>
+
+<p>　<a href="https://projects.eclipse.org/projects/iot.kura/releases/2.0.2" target="_blank" rel="noopener">Eclipse Kura 2.0.2</a>をダウンロードして使います。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ wget http:<span class="comment">//eclipse.stu.edu.tw/kura/releases/2.0.2/kura_2.0.2_raspberry-pi-2_installer.deb</span></span><br><span class="line">$ sudo gdebi kura_2<span class="number">.0</span><span class="number">.2</span>_raspberry-pi<span class="number">-2</span>_installer.deb</span><br></pre></td></tr></table></figure>
+
+<p>　rebootするとEclipse Kuraが起動します。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sudo reboot</span><br></pre></td></tr></table></figure>
+
+<p>　Eclipse Kuraの起動には時間がかかるためSSH接続したらログを</p>
+<figure class="highlight gams"><table><tr><td class="code"><pre><span class="line"><span class="symbol">$</span> sudo tail /var/<span class="built-in">log</span>/kura.<span class="built-in">log</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Eclipse-Kura-WebUI"><a href="#Eclipse-Kura-WebUI" class="headerlink" title="Eclipse Kura WebUI"></a>Eclipse Kura WebUI</h2><p>　Raspberry PiにWebブラウザから以下のURLに接続するとWebコンソールが表示されます。</p>
+<p>Eclipse Kura WebUI<br><a href="http://raspberrypi.local/kura" target="_blank" rel="noopener">http://raspberrypi.local/kura</a></p>
+<p>　Basic認証のユーザー名とパスワードはadminです。</p>
+<ul>
+<li>username: admin</li>
+<li>password: admin</li>
+</ul>
+<p>　Cloud ServiceやNetwork設定はこれからですが、とりあえずEclipse Kuraのインストールは終了です。</p>
+<p><img src="/2017/01/29/eclipse-iot-kura-install/kapua-console.png" alt="kapua-console.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/EclipseIoT/" rel="tag"># EclipseIoT</a>
+              <a href="/tags/EclipseKura/" rel="tag"># EclipseKura</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/12/iphone-health-data-steps-csv/" rel="prev" title="iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする">
+      <i class="fa fa-chevron-left"></i> iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/02/01/eclipse-iot-eclipse-neon2-setup/" rel="next" title="Eclipse IoT の紹介 - Part2: macOS SierraにEclipse Neon.2をインストールする">
+      Eclipse IoT の紹介 - Part2: macOS SierraにEclipse Neon.2をインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspbian-Jessie-Lite"><span class="nav-number">1.</span> <span class="nav-text">Raspbian Jessie Lite</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDカードにイメージを焼く"><span class="nav-number">1.1.</span> <span class="nav-text">SDカードにイメージを焼く</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHを有効にする"><span class="nav-number">1.2.</span> <span class="nav-text">SSHを有効にする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初期設定"><span class="nav-number">1.3.</span> <span class="nav-text">初期設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#無線LAN"><span class="nav-number">1.4.</span> <span class="nav-text">無線LAN</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#パッケージの更新"><span class="nav-number">2.</span> <span class="nav-text">パッケージの更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apt-get-ミラーサイト"><span class="nav-number">2.1.</span> <span class="nav-text">apt-get ミラーサイト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#パッケージ更新"><span class="nav-number">2.2.</span> <span class="nav-text">パッケージ更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse-Kuraのインストール"><span class="nav-number">3.</span> <span class="nav-text">Eclipse Kuraのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenJDK-8"><span class="nav-number">3.1.</span> <span class="nav-text">OpenJDK 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse-Kura-2-0-2"><span class="nav-number">3.2.</span> <span class="nav-text">Eclipse Kura 2.0.2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse-Kura-WebUI"><span class="nav-number">4.</span> <span class="nav-text">Eclipse Kura WebUI</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前回はkonashi.jsのアプリをFramework7で書いてHTML5でネイティブ風な画面を作成しました。このコードをForkしてフィジカル・コンピューティングのお試しをiPhoneアプリのmyThingsとkonashi.jsを使って書いてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="myThingsをはじめよう - Part9: konashiをmyThingsのトリガーとアクションに使う">
+<meta property="og:url" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="前回はkonashi.jsのアプリをFramework7で書いてHTML5でネイティブ風な画面を作成しました。このコードをForkしてフィジカル・コンピューティングのお試しをiPhoneアプリのmyThingsとkonashi.jsを使って書いてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-f7-mythings.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-recipe1.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-trigger.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-twitter-action.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-tweet.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-recipe2.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-gmail.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-action.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-led-on.png">
+<meta property="article:published_time" content="2015-09-22T12:24:23.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.776Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Framework7">
+<meta property="article:tag" content="myThings">
+<meta property="article:tag" content="konashi">
+<meta property="article:tag" content="RawGit">
+<meta property="article:tag" content="フィジカル・コンピューティング">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/konashi-f7-mythings.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>myThingsをはじめよう - Part9: konashiをmyThingsのトリガーとアクションに使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/09/22/mythings-idcfchannel-konashi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          myThingsをはじめよう - Part9: konashiをmyThingsのトリガーとアクションに使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Sep 22 2015 21:24:23" itemprop="dateCreated datePublished" datetime="2015-09-22T21:24:23+09:00">Sep 22 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">前回はkonashi.jsのアプリをFramework7で書いてHTML5でネイティブ風な画面を作成しました。このコードをForkしてフィジカル・コンピューティングのお試しをiPhoneアプリのmyThingsとkonashi.jsを使って書いてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://qiita.com/masato/items/cfef50d16173db8aca42" target="_blank" rel="noopener">前回</a>は<a href="http://konashi.ux-xu.com/kjs/" target="_blank" rel="noopener">konashi.js</a>のアプリを<a href="http://www.idangero.us/framework7" target="_blank" rel="noopener">Framework7</a>で書いてHTML5でネイティブ風な画面を作成しました。このコードをForkしてフィジカル・コンピューティングのお試しをiPhoneアプリのmyThingsとkonashi.jsを使って書いてみます。</p>
+<a id="more"></a>
+
+<h2 id="myThingsとkonashiのフィジカル・コンピューティング"><a href="#myThingsとkonashiのフィジカル・コンピューティング" class="headerlink" title="myThingsとkonashiのフィジカル・コンピューティング"></a>myThingsとkonashiのフィジカル・コンピューティング</h2><p><a href="https://en.wikipedia.org/wiki/Physical_computing" target="_blank" rel="noopener">フィジカル・コンピューティング</a>とはニューヨーク大学 Dan O’Sullivan 教授が提案した、人間の行動や生活環境によりそったコンピュータとの意思疎通の方法を模索する考え方です。コンピュータにセンサーなどの入出力デバイスをつなぎ、人間と情報をやりとりすることで生活を便利にしたり新しいユーザー体験を生み出すことができるようです。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://konashi.ux-xu.com/documents/#specs-supportDevice" target="_blank" rel="noopener">Hardware Introduction</a></li>
+<li><a href="http://engineer.typemag.jp/article/konashijs" target="_blank" rel="noopener">フィジカル・コンピューティングはここまで来た！ 「スマホで操作できるガジェット」をアプリで自作できるkonashi.jsを知る</a></li>
+</ul>
+<p><a href="http://mythings.yahoo.co.jp/" target="_blank" rel="noopener">myThings</a>も<a href="http://konashi.ux-xu.com/" target="_blank" rel="noopener">konashi</a>もコネクテッドデバイスをスマホから操作できるという共通した特徴を持っています。この2つをあわせて使ってみるときっと新しいユーザー体験を発見できると思います。</p>
+<h2 id="trigger-1とaction-1の確認"><a href="#trigger-1とaction-1の確認" class="headerlink" title="trigger-1とaction-1の確認"></a>trigger-1とaction-1の確認</h2><p>IDCFチャンネルサーバーの仮想マシンにログインして<code>list</code>コマンドを実行します。今回使用するtrigger-1とaction-1のuuidとtokenを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose/</span><br><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line">...</span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ d74ebedf │ 21c83792-b25e-4ae7-a627-714af57a1a4b │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">...</span><br><span class="line">│ action-1  │ 8a781e76 │ 3a78814a-6879-4543-bacf-9a206cd951a6 │</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="jsdo-it"><a href="#jsdo-it" class="headerlink" title="jsdo.it"></a>jsdo.it</h2><p><a href="http://jsdo.it/" target="_blank" rel="noopener">jsdo.it</a>に<a href="http://jsdo.it/ma6ato/euTg" target="_blank" rel="noopener">myThingsからLチカのアクションとスイッチのトリガー</a>という「コード」を作成しました。<a href="/2015/09/15/konashi20-framework7/">前回</a>作成した<a href="http://jsdo.it/ma6ato/mDsk" target="_blank" rel="noopener">myThingsからLチカ</a>をForkしています。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-f7-mythings.png" alt="konashi-f7-mythings.png"></p>
+<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><p><a href="http://www.idangero.us/framework7/#.VgFQXSDtmko" target="_blank" rel="noopener">Framework7</a>のCSSとJavaScriptを<a href="http://rawgit.com/" target="_blank" rel="noopener">Rawgit</a>からロードします。CDNに公開されていないパッケージをjsdo.itから使う場合に便利です。</p>
+<p><a href="http://meshblu.octoblu.com/" target="_blank" rel="noopener">Meshblu</a>のJavaScript用ライブラリは<a href="https://cdn.octoblu.com/js/meshblu/latest/meshblu.bundle.js" target="_blank" rel="noopener">こちら</a>のCDNから利用できます。NPMの<a href="https://github.com/octoblu/meshblu-npm" target="_blank" rel="noopener">meshblu-npm</a>を<a href="http://browserify.org/" target="_blank" rel="noopener">browserify</a>したものが公開されています。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-capable"</span> <span class="attr">content</span>=<span class="string">"yes"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-status-bar-style"</span> <span class="attr">content</span>=<span class="string">"black"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- Framework7 css --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.min.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.colors.min.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>myThings F7<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"statusbar-overlay"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"panel-overlay"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"panel panel-left panel-reveal"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Left panel content goes here<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"views"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"view view-main"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"navbar"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"navbar-inner"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"center sliding"</span>&gt;</span>myThings F7<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"link icon-only open-panel"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-bars-blue"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pages navbar-through toolbar-through"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">data-page</span>=<span class="string">"index"</span> <span class="attr">class</span>=<span class="string">"page"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"page-content"</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block"</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"btn-find"</span> <span class="attr">class</span>=<span class="string">"find button button-big"</span>&gt;</span>Find konashi<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"pio-setting"</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block-title"</span>&gt;</span>PIO: Output Settings<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-block"</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-toggle"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>LED2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-input"</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">"label-switch"</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"toggle"</span> <span class="attr">data-pin</span>=<span class="string">"1"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"checkbox"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-toggle"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>LED3<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-input"</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">"label-switch"</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"toggle"</span> <span class="attr">data-pin</span>=<span class="string">"2"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"checkbox"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block-title"</span>&gt;</span>PIO: Input Settings<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-block"</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-settings"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>S1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-after"</span> <span class="attr">id</span>=<span class="string">"s1-status"</span>&gt;</span>OFF<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- for Framework7 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- meshblu --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"https://cdn.octoblu.com/js/meshblu/latest/meshblu.bundle.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- for konashijs --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://konashi.ux-xu.com/kjs/konashi-bridge.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>最初にkonashi.jsからロードするJavaScriptの全文です。Meshbluのデバイスのuuidやtokenは環境に応じて変更します。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">Framework7, $$</span>)</span>&#123;</span><br><span class="line">    $$(<span class="string">'.toggle'</span>).on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> pin = $$(e.currentTarget).data(<span class="string">"pin"</span>);</span><br><span class="line">        <span class="keyword">var</span> value = $$(<span class="keyword">this</span>).find(<span class="string">'input'</span>).prop(<span class="string">'checked'</span>) ? k.HIGH : k.LOW;</span><br><span class="line">        k.digitalWrite(pin, value);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    $$(<span class="string">"#btn-find"</span>).on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>($$(<span class="string">"#btn-find"</span>).hasClass(<span class="string">"find"</span>))&#123;</span><br><span class="line">            k.find();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            k.disconnect();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// change find button</span></span><br><span class="line">            $$(<span class="string">"#btn-find"</span>)</span><br><span class="line">              .addClass(<span class="string">"find"</span>)</span><br><span class="line">              .html(<span class="string">"Find konashi"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// hide pio list</span></span><br><span class="line">            $$(<span class="string">"#pio-setting"</span>).hide();</span><br><span class="line">            $$(<span class="string">"#s1-status"</span>).html(<span class="string">"OFF"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> server = <span class="string">'210.140.162.58'</span>,</span><br><span class="line">        port = <span class="number">80</span>,</span><br><span class="line">        protocol = <span class="string">'websocket'</span>,</span><br><span class="line">        trigger_uuid = <span class="string">'21c83792-b25e-4ae7-a627-714af57a1a4b'</span>,</span><br><span class="line">        trigger_token = <span class="string">'d74ebedf'</span>,</span><br><span class="line">        action_uuid = <span class="string">'3a78814a-6879-4543-bacf-9a206cd951a6'</span>,</span><br><span class="line">        action_token = <span class="string">'8a781e76'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> conn;</span><br><span class="line"></span><br><span class="line">    k.on(<span class="string">"ready"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// change find button</span></span><br><span class="line">        $$(<span class="string">"#btn-find"</span>)</span><br><span class="line">          .removeClass(<span class="string">"find"</span>)</span><br><span class="line">          .html(<span class="string">"Disconnect konashi"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// show pio list</span></span><br><span class="line">        $$(<span class="string">"#pio-setting"</span>).show();</span><br><span class="line"></span><br><span class="line">        k.pinModeAll(<span class="number">254</span>);</span><br><span class="line"></span><br><span class="line">        conn = meshblu.createConnection(&#123;</span><br><span class="line">            <span class="string">'uuid'</span>: trigger_uuid,</span><br><span class="line">            <span class="string">'token'</span>: trigger_token,</span><br><span class="line">            <span class="string">'server'</span>: server,</span><br><span class="line">            <span class="string">'port'</span>: port</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        conn.on(<span class="string">'notReady'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            k.log(<span class="string">'UUID FAILED AUTHENTICATION!'</span>);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        conn.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">            k.log(<span class="string">'READY!!'</span>);</span><br><span class="line"></span><br><span class="line">            conn.subscribe(&#123;</span><br><span class="line">                <span class="string">'uuid'</span>: action_uuid,</span><br><span class="line">                <span class="string">'token'</span>: action_token</span><br><span class="line">            &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">                k.log(data);</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            conn.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">message</span>)</span>&#123;</span><br><span class="line">                k.log(message.payload.message);</span><br><span class="line">                <span class="keyword">var</span> value = message.payload === <span class="string">'led-on'</span> ? k.HIGH : k.LOW;</span><br><span class="line"></span><br><span class="line">                k.digitalWrite(k.LED3, value);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    k.updatePioInput( <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(data % <span class="number">2</span>)&#123;</span><br><span class="line">            $$(<span class="string">"#s1-status"</span>).html(<span class="string">"ON"</span>);</span><br><span class="line">            conn.data(&#123;</span><br><span class="line">                <span class="string">'uuid'</span>: trigger_uuid,</span><br><span class="line">                <span class="string">'trigger'</span>: <span class="string">'on'</span></span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $$(<span class="string">"#s1-status"</span>).html(<span class="string">"OFF"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//k.showDebugLog();</span></span><br><span class="line">&#125;)(Framework7, Dom7);</span><br></pre></td></tr></table></figure>
+
+<p><code>k.on(&quot;ready&quot;)</code>のコールバックでkonashiとiPhoneが接続できた後に、IDCFチャンネルサーバーのMeshbluにtrigger-1のuuidを使ってWebSocketで接続します。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">conn = meshblu.createConnection(&#123;</span><br><span class="line">    <span class="string">'uuid'</span>: trigger_uuid,</span><br><span class="line">    <span class="string">'token'</span>: trigger_token,</span><br><span class="line">    <span class="string">'server'</span>: server,</span><br><span class="line">    <span class="string">'port'</span>: port</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>Meshbluに接続すると次にaction-1のuuidでWebSocketのsubscribeをします。ここではmyThingsのトリガーから「led-on」のメッセージを受信した場合にLED3を点灯し、それ以外で消灯します。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">conn.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    k.log(<span class="string">'READY!!'</span>);</span><br><span class="line"></span><br><span class="line">    conn.subscribe(&#123;</span><br><span class="line">        <span class="string">'uuid'</span>: action_uuid,</span><br><span class="line">        <span class="string">'token'</span>: action_token</span><br><span class="line">    &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        k.log(data);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    conn.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">message</span>)</span>&#123;</span><br><span class="line">        k.log(message.payload.message);</span><br><span class="line">        <span class="keyword">var</span> value = message.payload === <span class="string">'led-on'</span> ? k.HIGH : k.LOW;</span><br><span class="line"></span><br><span class="line">        k.digitalWrite(k.LED3, value);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>konashiのタクトスイッチを押すと、WebSocketクライアントから<code>data</code>のAPIに任意のデータを送信します。myThingsの組合せに設定した「IDCF」チャンネルの<code>trigger-1</code>のトリガーが発火され、同様に組合せに設定されたアクションが実行されます。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">k.updatePioInput( <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(data % <span class="number">2</span>)&#123;</span><br><span class="line">        $$(<span class="string">"#s1-status"</span>).html(<span class="string">"ON"</span>);</span><br><span class="line">        conn.data(&#123;</span><br><span class="line">            <span class="string">'uuid'</span>: trigger_uuid,</span><br><span class="line">            <span class="string">'trigger'</span>: <span class="string">'on'</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        $$(<span class="string">"#s1-status"</span>).html(<span class="string">"OFF"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><p>スタイルシートはkonaashiがiPhoneと接続、切断に応じて画面のコントロール表示を切り替えます。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#pio-setting</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="konashiをmyThingsのトリガーに使う"><a href="#konashiをmyThingsのトリガーに使う" class="headerlink" title="konashiをmyThingsのトリガーに使う"></a>konashiをmyThingsのトリガーに使う</h2><p>konashiのタクトスイッチを押す(ON)と、myThingsの組合せでトリガーに選択した「IDCF」チャンネルのtrigger-1が発火され、アクションに設定した「Twitter」チャンネルを実行するサンプルです。</p>
+<h3 id="組合せの作成"><a href="#組合せの作成" class="headerlink" title="組合せの作成"></a>組合せの作成</h3><p>myThingsアプリでトリガーにIDCF、アクションにTwitterを選択して組み合わせを作成します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-recipe1.png" alt="konashi-idcf-recipe1.png"></p>
+<h3 id="IDCFのトリガー"><a href="#IDCFのトリガー" class="headerlink" title="IDCFのトリガー"></a>IDCFのトリガー</h3><p>「IDCF」チャンネルのトリガーはtrigger-1を選択します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-trigger.png" alt="konashi-idcf-trigger.png"></p>
+<p>trigger-1はkonashi.jsのJavaScriptからMeshbluへの接続に使っています。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">conn = meshblu.createConnection(&#123;</span><br><span class="line">    <span class="string">'uuid'</span>: trigger_uuid,</span><br><span class="line">    <span class="string">'token'</span>: trigger_token,</span><br><span class="line">    <span class="string">'server'</span>: server,</span><br><span class="line">    <span class="string">'port'</span>: port</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Twitterのアクション"><a href="#Twitterのアクション" class="headerlink" title="Twitterのアクション"></a>Twitterのアクション</h3><p>ツイート内容は任意のメッセージを登録します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-twitter-action.png" alt="konashi-twitter-action.png"></p>
+<h3 id="手動実行"><a href="#手動実行" class="headerlink" title="手動実行"></a>手動実行</h3><p>konashi.jsはバックグラウンドで実行できないので、myThingsアプリの「手動実行」ボタンと同時に使うことはできません。15分待つか別のスマホからmyThingsアプリを起動して使います。</p>
+<p>konashiのタクトスイッチを押したあと、組み合わせの「手動実行」ボタンを押すとアクションに設定してあるメッセージがツイートされます。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-tweet.png" alt="konashi-tweet.png"></p>
+<h2 id="konashiをmyThingsのアクションに使う"><a href="#konashiをmyThingsのアクションに使う" class="headerlink" title="konashiをmyThingsのアクションに使う"></a>konashiをmyThingsのアクションに使う</h2><p>myThingsの組合せでトリガーの「Gmail」で設定するように、Gmailが特定の誰かからメールを受信すると、アクションに選択した「IDCF」チャンネルのaction-1が実行されます。メールの件名の応じてkonashiのLED3が点灯と消灯をするサンプルです。</p>
+<h3 id="組合せの作成-1"><a href="#組合せの作成-1" class="headerlink" title="組合せの作成"></a>組合せの作成</h3><p>myThingsアプリでトリガーにGmail、アクションにIDCFを選択して組み合わせを作成します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-recipe2.png" alt="konashi-idcf-recipe2.png"></p>
+<h3 id="Gmailのトリガー"><a href="#Gmailのトリガー" class="headerlink" title="Gmailのトリガー"></a>Gmailのトリガー</h3><p>Gmailのトリガー条件は「特定の誰かからメールを受信したら」を選択します。トリガーとして使うメールアドレスを登録します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-gmail.png" alt="konashi-idcf-gmail.png"></p>
+<h3 id="IDCFのアクション"><a href="#IDCFのアクション" class="headerlink" title="IDCFのアクション"></a>IDCFのアクション</h3><p>IDCFのアクションはaction-1を選択します。メッセージは「候補選択」からGmailのを設定します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-idcf-action.png" alt="konashi-idcf-action.png"></p>
+<h3 id="手動実行-1"><a href="#手動実行-1" class="headerlink" title="手動実行"></a>手動実行</h3><p>トリガー条件に設定したメールアドレスからmyThingsと連携したGmailのメールアドレスにメールを送信します。件名を「led-on」とするとLED3が点灯します。それ以外の場合はLED3が消灯します。</p>
+<p><img src="/2015/09/22/mythings-idcfchannel-konashi/konashi-led-on.png" alt="konashi-led-on.png"></p>
+<p>Gmailでメールの受信を確認したら、作成した組合せの「手動実行」ボタンを押すとLED3が点灯または消灯します。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Framework7/" rel="tag"># Framework7</a>
+              <a href="/tags/myThings/" rel="tag"># myThings</a>
+              <a href="/tags/konashi/" rel="tag"># konashi</a>
+              <a href="/tags/RawGit/" rel="tag"># RawGit</a>
+              <a href="/tags/%E3%83%95%E3%82%A3%E3%82%B8%E3%82%AB%E3%83%AB%E3%83%BB%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0/" rel="tag"># フィジカル・コンピューティング</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/09/19/docker-container-cli-pattern-idcf-cloud/" rel="prev" title="DockerでIDCFクラウドのCLIを実行する">
+      <i class="fa fa-chevron-left"></i> DockerでIDCFクラウドのCLIを実行する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/12/iphone-health-data-steps-csv/" rel="next" title="iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする">
+      iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#myThingsとkonashiのフィジカル・コンピューティング"><span class="nav-number">1.</span> <span class="nav-text">myThingsとkonashiのフィジカル・コンピューティング</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">1.1.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#trigger-1とaction-1の確認"><span class="nav-number">2.</span> <span class="nav-text">trigger-1とaction-1の確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jsdo-it"><span class="nav-number">3.</span> <span class="nav-text">jsdo.it</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML"><span class="nav-number">3.1.</span> <span class="nav-text">HTML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript"><span class="nav-number">3.2.</span> <span class="nav-text">JavaScript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS"><span class="nav-number">3.3.</span> <span class="nav-text">CSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#konashiをmyThingsのトリガーに使う"><span class="nav-number">4.</span> <span class="nav-text">konashiをmyThingsのトリガーに使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#組合せの作成"><span class="nav-number">4.1.</span> <span class="nav-text">組合せの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFのトリガー"><span class="nav-number">4.2.</span> <span class="nav-text">IDCFのトリガー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Twitterのアクション"><span class="nav-number">4.3.</span> <span class="nav-text">Twitterのアクション</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手動実行"><span class="nav-number">4.4.</span> <span class="nav-text">手動実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#konashiをmyThingsのアクションに使う"><span class="nav-number">5.</span> <span class="nav-text">konashiをmyThingsのアクションに使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#組合せの作成-1"><span class="nav-number">5.1.</span> <span class="nav-text">組合せの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gmailのトリガー"><span class="nav-number">5.2.</span> <span class="nav-text">Gmailのトリガー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFのアクション"><span class="nav-number">5.3.</span> <span class="nav-text">IDCFのアクション</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手動実行-1"><span class="nav-number">5.4.</span> <span class="nav-text">手動実行</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

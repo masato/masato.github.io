@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="EdisonからChromebookのUSBテザリングを使いインターネットに接続することができました。ファームウェアの更新とEdisonの初期設定をして開発の準備をします。EdisonはNode.jsがデフォルトでインストールされているので初期設定が終了したら開発に入ることができます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Intel Edisonの初期設定とChromebookからシリアル接続してWi-Fiの確認をする">
+<meta property="og:url" content="http://masato.github.io/2015/03/06/intel-edison-setting-up/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="EdisonからChromebookのUSBテザリングを使いインターネットに接続することができました。ファームウェアの更新とEdisonの初期設定をして開発の準備をします。EdisonはNode.jsがデフォルトでインストールされているので初期設定が終了したら開発に入ることができます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/03/06/intel-edison-setting-up/edison-moung.png">
+<meta property="og:image" content="http://masato.github.io/2015/03/06/intel-edison-setting-up/port-monitor.png">
+<meta property="og:image" content="http://masato.github.io/2015/03/06/intel-edison-setting-up/ping-test.png">
+<meta property="article:published_time" content="2015-03-06T02:43:23.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.712Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Chromebook">
+<meta property="article:tag" content="IntelEdison">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/03/06/intel-edison-setting-up/edison-moung.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/06/intel-edison-setting-up/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Intel Edisonの初期設定とChromebookからシリアル接続してWi-Fiの確認をする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/06/intel-edison-setting-up/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Intel Edisonの初期設定とChromebookからシリアル接続してWi-Fiの確認をする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 6 2015 11:43:23" itemprop="dateCreated datePublished" datetime="2015-03-06T11:43:23+09:00">Mar 6 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">EdisonからChromebookのUSBテザリングを使いインターネットに接続することができました。ファームウェアの更新とEdisonの初期設定をして開発の準備をします。EdisonはNode.jsがデフォルトでインストールされているので初期設定が終了したら開発に入ることができます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>EdisonからChromebookの<a href="/2015/03/05/intel-edison-chromebook-usb-tethering/">USBテザリング</a>を使いインターネットに接続することができました。ファームウェアの更新とEdisonの初期設定をして開発の準備をします。EdisonはNode.jsがデフォルトでインストールされているので初期設定が終了したら開発に入ることができます。</p>
+<a id="more"></a>
+
+<h2 id="ファームウェアの更新"><a href="#ファームウェアの更新" class="headerlink" title="ファームウェアの更新"></a>ファームウェアの更新</h2><p>工場出荷状態のファームウェアは古いようなので最新のイメージをダウンロードして更新します。</p>
+<h3 id="Chromebookでイメージのダウンロード"><a href="#Chromebookでイメージのダウンロード" class="headerlink" title="Chromebookでイメージのダウンロード"></a>Chromebookでイメージのダウンロード</h3><p>ChromebookとEdisonのJ16のUSBコネクタを接続するとファイルアプリからEdisonの名前でドライブがマウントされます。まだフォルダには何もはいっていません。</p>
+<p><img src="/2015/03/06/intel-edison-setting-up/edison-moung.png" alt="edison-mount.png"></p>
+<p><a href="http://www.intel.com/support/edison/sb/CS-035180.htm" target="_blank" rel="noopener">Intel Edison Software Download</a>サイトから<a href="http://downloadmirror.intel.com/24698/eng/edison-image-ww05-15.zip" target="_blank" rel="noopener">Yocto complete image</a>をダウンロードします。ダウンロードした<code>edison-image-ww05-15.zip</code>をダブルクリックして展開して、中身をすべてEdisonフォルダにコピーします。</p>
+<h3 id="EdisonにSSH接続"><a href="#EdisonにSSH接続" class="headerlink" title="EdisonにSSH接続"></a>EdisonにSSH接続</h3><p>Chromeブラウザを開き、<code>ctrl + alt + t</code>からcroshを起動してshellを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">crosh&gt; shell</span><br></pre></td></tr></table></figure>
+
+<p>EdisonはJ16コネクタをChromebookと接続してUSBテザリングします。Edisonを使いたいときにネットワーク設定をするスクリプトを用意します。</p>
+<figure class="highlight bash"><figcaption><span>~/Downloads/edison-setup.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">sudo sh -c <span class="string">'echo 1 &gt;&gt; /proc/sys/net/ipv4/ip_forward'</span></span><br><span class="line">sudo ifconfig usb0 192.168.2.1 netmask 255.255.255.0</span><br><span class="line">sudo iptables -t nat -A POSTROUTING -o mlan0 -j MASQUERADE</span><br><span class="line">sudo iptables -A FORWARD -i mlan0 -o usb0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT</span><br><span class="line">sudo iptables -A FORWARD -i usb0 -o mlan0 -j ACCEPT</span><br><span class="line">ssh root@192.168.2.15</span><br></pre></td></tr></table></figure>
+
+<p>スクリプトを実行してEdisonにSSH接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ bash ~/Downloads/edison-setup.sh</span><br></pre></td></tr></table></figure>
+
+<p>デフォルトゲートウェイの設定をしてインターネット接続ができることを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ route add default gw 192.168.2.1</span><br><span class="line">$ route -n</span><br><span class="line">$ ping -c 1 www.yahoo.co.jp</span><br></pre></td></tr></table></figure>
+
+<h3 id="Edisonでファームウェアの更新"><a href="#Edisonでファームウェアの更新" class="headerlink" title="Edisonでファームウェアの更新"></a>Edisonでファームウェアの更新</h3><p>ファームウェアの更新前のバージョンは<code>edison-weekly_build_56_2014-08-20_15-54-05</code>です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/version </span><br><span class="line">edison-weekly_build_56_2014-08-20_15-54-05</span><br></pre></td></tr></table></figure>
+
+<p><code>reboot ota</code>コマンドを実行するとEdisonが再起動します。ファームウェアが更新されるのでしばらく待ちます。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>reboot ota</span><br></pre></td></tr></table></figure>
+
+<p>Chromebookからリムーバルデバイスが再認識されるのでEdisonにSSH接続します。更新されたバージョンを確認すると<code>weekly-120</code>でした。<code>configure_edison</code>コマンドを<code>--upgrade</code>フラグを付けて実行すると、ファームウェアは最新版になったようです。今後はコマンドからファームウェアの更新ができるようになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/version </span><br><span class="line">weekly-120</span><br><span class="line">$ configure_edison --upgrade</span><br><span class="line">The latest version is already installed.</span><br></pre></td></tr></table></figure>
+
+<h2 id="初期設定"><a href="#初期設定" class="headerlink" title="初期設定"></a>初期設定</h2><p><code>configure_edison</code>コマンドを<code>--setup</code>フラグを付けて実行して初期設定をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ configure_edison --setup</span><br></pre></td></tr></table></figure>
+
+<h3 id="パスワードとデバイス名"><a href="#パスワードとデバイス名" class="headerlink" title="パスワードとデバイス名"></a>パスワードとデバイス名</h3><p>ダイアログでは最初にパスワード設定をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Configure Edison: Device Password</span><br><span class="line"></span><br><span class="line">Enter a new password (leave empty to abort)</span><br><span class="line">This will be used to connect to the access point and login to the device.</span><br><span class="line">Password:       *********</span><br><span class="line">Please enter the password again:        *********</span><br></pre></td></tr></table></figure>
+
+<p>次にデバイス名を入力します。edisonにしました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Configure Edison: Device Name</span><br><span class="line"></span><br><span class="line">Give this Edison a unique name.</span><br><span class="line">This will be used <span class="keyword">for</span> the access point SSID and mDNS address.</span><br><span class="line">Make it at least five characters long (leave empty to skip): edison</span><br><span class="line">Is edison correct? [Y or N]: Y</span><br><span class="line"></span><br><span class="line">Do you want to <span class="built_in">set</span> up wifi? [Y or N]: Y</span><br></pre></td></tr></table></figure>
+
+<h3 id="Wi-Fiの設定"><a href="#Wi-Fiの設定" class="headerlink" title="Wi-Fiの設定"></a>Wi-Fiの設定</h3><p>次にWi-Fiの設定に入ります。今回の環境ではWi-Fiのアクセスポイントはステルスモードなので、<code>2 (Manually input a hidden SSID)</code>をタイプしてSSIDを手動で入力します。暗号化方式は環境にあわせて設定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Configure Edison: WiFi Connection</span><br><span class="line"></span><br><span class="line">Scanning: 1 seconds left  </span><br><span class="line"></span><br><span class="line">0 :     Rescan <span class="keyword">for</span> networks</span><br><span class="line">1 :     Exit WiFi Setup</span><br><span class="line">2 :     Manually input a hidden SSID</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">Enter 0 to rescan <span class="keyword">for</span> networks.</span><br><span class="line">Enter 1 to <span class="built_in">exit</span>.</span><br><span class="line">Enter 2 to input a hidden network SSID.</span><br><span class="line"></span><br><span class="line">Enter a number between 3 to 6 to choose one of the listed network SSIDs: 2</span><br><span class="line">Please enter the hidden network SSID: xxxx</span><br><span class="line">Is xxxx correct? [Y or N]: Y</span><br><span class="line"></span><br><span class="line">    0: OPEN</span><br><span class="line">    1: WEP</span><br><span class="line">    2: WPA-Personal(PSK)</span><br><span class="line">    3: WPA-Enterprise (EAP)</span><br><span class="line">  </span><br><span class="line">Select the <span class="built_in">type</span> of security [0 to 3]: 2</span><br><span class="line">Password must be between 8 and 63 characters.</span><br><span class="line">What is the network password?: </span><br><span class="line">Initiating connection to xxxx. Please <span class="built_in">wait</span>...</span><br><span class="line">Attempting to <span class="built_in">enable</span> network access, please check <span class="string">'wpa_cli status'</span> after a minute to confirm.</span><br><span class="line">Done. Please connect your laptop or PC to the same network as this device and go to http://xxx.xxx.xxx.xxx or http://edison.local <span class="keyword">in</span> your browser.</span><br></pre></td></tr></table></figure>
+
+<p>ダイアログで入力したWi-Fiの設定はRaspberry Piと同様に<code>wpa_supplicant.conf</code>に保存されます。<code>scan_ssid=1</code>も入っています。</p>
+<figure class="highlight bash"><figcaption><span>/etc/wpa_supplicant/wpa_supplicant.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">ctrl_interface=/var/run/wpa_supplicant</span><br><span class="line">ctrl_interface_group=0</span><br><span class="line">config_methods=virtual_push_button virtual_display push_button keypad</span><br><span class="line">update_config=1</span><br><span class="line">fast_reauth=1</span><br><span class="line">device_name=Edison</span><br><span class="line">manufacturer=Intel</span><br><span class="line">model_name=Edison</span><br><span class="line"></span><br><span class="line">network=&#123;</span><br><span class="line">  ssid=<span class="string">"xxx"</span></span><br><span class="line">  scan_ssid=1</span><br><span class="line">  key_mgmt=WPA-PSK</span><br><span class="line">  pairwise=CCMP TKIP</span><br><span class="line">  group=CCMP TKIP WEP104 WEP40</span><br><span class="line">  eap=TTLS PEAP TLS</span><br><span class="line">  psk=<span class="string">"xxx"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="パッケージの更新"><a href="#パッケージの更新" class="headerlink" title="パッケージの更新"></a>パッケージの更新</h2><p>opkgコマンドを使いパッケージの更新をします。まず<code>opkg update</code>してパッケージのリストを更新します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ opkg update</span><br><span class="line">Downloading http://iotdk.intel.com/repos/1.1/intelgalactic/Packages.</span><br><span class="line">Updated list of available packages <span class="keyword">in</span> /var/lib/opkg/iotkit.</span><br></pre></td></tr></table></figure>
+
+<p><code>opkg upgrade</code>を実行するとlibmraa0とupmパッケージが更新されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ opkg upgrade</span><br><span class="line">...</span><br><span class="line">upm (0.1.9) already install on root.</span><br><span class="line">libmraa0 (0.6.1) already install on root.</span><br><span class="line">Configuring libmraa0.</span><br><span class="line">Configuring upm.</span><br></pre></td></tr></table></figure>
+
+<h2 id="時刻合わせ"><a href="#時刻合わせ" class="headerlink" title="時刻合わせ"></a>時刻合わせ</h2><p>timedatectlコマンドを実行するとタイムゾーンがUTCになっています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ timedatectl</span><br><span class="line">      Local time: Fri 2015-03-06 01:33:41 UTC</span><br><span class="line">  Universal time: Fri 2015-03-06 01:33:41 UTC</span><br><span class="line">        RTC time: Fri 2015-03-06 01:33:41</span><br><span class="line">       Time zone: Universal (UTC, +0000)</span><br><span class="line">     NTP enabled: yes</span><br><span class="line">NTP synchronized: yes</span><br><span class="line"> RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br><span class="line">      DST active: n/a</span><br></pre></td></tr></table></figure>
+
+<p>タイムゾーンを<code>Asia/Tokyo</code>に設定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ timedatectl <span class="built_in">set</span>-timezone Asia/Tokyo</span><br><span class="line">$ timedatectl</span><br><span class="line">      Local time: Fri 2015-03-06 10:34:59 JST</span><br><span class="line">  Universal time: Fri 2015-03-06 01:34:59 UTC</span><br><span class="line">        RTC time: Fri 2015-03-06 01:34:59</span><br><span class="line">       Time zone: Asia/Tokyo (JST, +0900)</span><br><span class="line">     NTP enabled: yes</span><br><span class="line">NTP synchronized: yes</span><br><span class="line"> RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br><span class="line">      DST active: n/a</span><br></pre></td></tr></table></figure>
+
+<h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>EdisonはデフォルトでNode.jsとnpmがデフォルトで使えます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">v0.10.28</span><br><span class="line">$ npm -v</span><br><span class="line">1.4.9</span><br></pre></td></tr></table></figure>
+
+<h2 id="Chromebookからシリアル接続をしてWi-Fiの確認"><a href="#Chromebookからシリアル接続をしてWi-Fiの確認" class="headerlink" title="Chromebookからシリアル接続をしてWi-Fiの確認"></a>Chromebookからシリアル接続をしてWi-Fiの確認</h2><p>ChromebookとJ16コネクタで接続していましたが、シリアル接続の場合はJ3コネクタとつなぎます。J16コネクタは電源アダプタに接続します。Chromeウェブストアから<a href="https://chrome.google.com/webstore/detail/serial-monitor/ohncdkkhephpakbbecnkclhjkmbjnmlo" target="_blank" rel="noopener">Serial Monitor</a>をインストールしてシリアル接続のテストをします。</p>
+<p><img src="/2015/03/06/intel-edison-setting-up/port-monitor.png" alt="port-monitor.png"></p>
+<p>pingコマンドを送信して、インターネット接続の確認ができました。</p>
+<p><img src="/2015/03/06/intel-edison-setting-up/ping-test.png" alt="ping-test.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Chromebook/" rel="tag"># Chromebook</a>
+              <a href="/tags/IntelEdison/" rel="tag"># IntelEdison</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/05/intel-edison-chromebook-usb-tethering/" rel="prev" title="Intel EdisonからChromebookのUSB tetheringを使う">
+      <i class="fa fa-chevron-left"></i> Intel EdisonからChromebookのUSB tetheringを使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/07/chromebook-dev-install-screen-edison/" rel="next" title="Chromebookにdev_installしてScreenでEdisonにシリアル接続する">
+      Chromebookにdev_installしてScreenでEdisonにシリアル接続する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ファームウェアの更新"><span class="nav-number">1.</span> <span class="nav-text">ファームウェアの更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chromebookでイメージのダウンロード"><span class="nav-number">1.1.</span> <span class="nav-text">Chromebookでイメージのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EdisonにSSH接続"><span class="nav-number">1.2.</span> <span class="nav-text">EdisonにSSH接続</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Edisonでファームウェアの更新"><span class="nav-number">1.3.</span> <span class="nav-text">Edisonでファームウェアの更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初期設定"><span class="nav-number">2.</span> <span class="nav-text">初期設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#パスワードとデバイス名"><span class="nav-number">2.1.</span> <span class="nav-text">パスワードとデバイス名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wi-Fiの設定"><span class="nav-number">2.2.</span> <span class="nav-text">Wi-Fiの設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#パッケージの更新"><span class="nav-number">3.</span> <span class="nav-text">パッケージの更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#時刻合わせ"><span class="nav-number">4.</span> <span class="nav-text">時刻合わせ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js"><span class="nav-number">5.</span> <span class="nav-text">Node.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Chromebookからシリアル接続をしてWi-Fiの確認"><span class="nav-number">6.</span> <span class="nav-text">Chromebookからシリアル接続をしてWi-Fiの確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

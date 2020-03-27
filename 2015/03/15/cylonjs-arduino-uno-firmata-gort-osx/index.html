@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="croutonのUbuntuにはNode.jsとCylon.jsをFirmataファームウェアを使って操作する環境を用意しました。OSX Yosemiteにも同じようにNod.jsの開発環境を用意します。FirmataのアップロードはArduino IDEを使わずにGortのCLIから行います。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArduinoのFirmataファームウェアをOSXのCylon.jsから使う">
+<meta property="og:url" content="http://masato.github.io/2015/03/15/cylonjs-arduino-uno-firmata-gort-osx/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="croutonのUbuntuにはNode.jsとCylon.jsをFirmataファームウェアを使って操作する環境を用意しました。OSX Yosemiteにも同じようにNod.jsの開発環境を用意します。FirmataのアップロードはArduino IDEを使わずにGortのCLIから行います。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-03-15T02:28:00.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.578Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Arduino">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="ArduinoUno">
+<meta property="article:tag" content="Gort">
+<meta property="article:tag" content="Firmata">
+<meta property="article:tag" content="Cylonjs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/15/cylonjs-arduino-uno-firmata-gort-osx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ArduinoのFirmataファームウェアをOSXのCylon.jsから使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/15/cylonjs-arduino-uno-firmata-gort-osx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ArduinoのFirmataファームウェアをOSXのCylon.jsから使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 15 2015 11:28:00" itemprop="dateCreated datePublished" datetime="2015-03-15T11:28:00+09:00">Mar 15 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">croutonのUbuntuにはNode.jsとCylon.jsをFirmataファームウェアを使って操作する環境を用意しました。OSX Yosemiteにも同じようにNod.jsの開発環境を用意します。FirmataのアップロードはArduino IDEを使わずにGortのCLIから行います。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/02/23/cylonjs-arduino-uno-firmata-gort/">croutonのUbuntu</a>にはNode.jsとCylon.jsをFirmataファームウェアを使って操作する環境を用意しました。OSX Yosemiteにも同じようにNod.jsの開発環境を用意します。FirmataのアップロードはArduino IDEを使わずに<a href="http://gort.io/" target="_blank" rel="noopener">Gort</a>のCLIから行います。</p>
+<a id="more"></a>
+
+<h2 id="OSXの環境構築"><a href="#OSXの環境構築" class="headerlink" title="OSXの環境構築"></a>OSXの環境構築</h2><p><a href="http://www.arduino.cc/en/Guide/MacOSX" target="_blank" rel="noopener">Getting Started w/ Arduino on Mac OS X</a>を読みながら環境構築をしていきます。</p>
+<h3 id="FTDIのUSBシリアルドライバ"><a href="#FTDIのUSBシリアルドライバ" class="headerlink" title="FTDIのUSBシリアルドライバ"></a>FTDIのUSBシリアルドライバ</h3><p>Arduino UnoとUSBシリアル接続するために、OSXにFTDIのUSBシリアルドライバをインストールします。FTDIの<a href="http://www.ftdichip.com/Drivers/VCP.htm" target="_blank" rel="noopener">VCP Drivers</a>のページから<a href="http://www.ftdichip.com/Drivers/VCP/MacOSX/FTDIUSBSerialDriver_v2_2_18.dmg" target="_blank" rel="noopener">OSX用のインストーラー</a>をダウンロードします。最新バージョンは<code>2.2.18</code>でした。Yosemiteには<code>FTDIUSBSerialDriver_10_4_10_5_10_6_10_7</code>をインストールします。</p>
+<h3 id="Gort"><a href="#Gort" class="headerlink" title="Gort"></a>Gort</h3><p><a href="http://gort.io/" target="_blank" rel="noopener">Gort</a>はArduinoやSparkCoreなどのコネクテッドデバイスのファームウェアを更新するCLIです。OSXの64bit版をダウンロードしてインストールします。Goで書かれているのでバイナリをコピーするだけです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Downloads</span><br><span class="line">$ wget https://s3.amazonaws.com/gort-io/0.3.0/gort_0.3.0_darwin_amd64.zip</span><br><span class="line">$ unzip gort_0.3.0_darwin_amd64.zip</span><br><span class="line">Archive:  /Users/mshimizu/Downloads/gort_0.3.0_darwin_amd64.zip</span><br><span class="line">  inflating: gort_0.3.0_darwin_amd64/gort</span><br><span class="line">  inflating: gort_0.3.0_darwin_amd64/README.md</span><br><span class="line">  inflating: gort_0.3.0_darwin_amd64/LICENSE</span><br><span class="line">$ sudo cp gort_0.3.0_darwin_amd64/gort /usr/<span class="built_in">local</span>/bin/</span><br></pre></td></tr></table></figure>
+
+<p>バージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort --version</span><br><span class="line">gort version 0.3.0</span><br></pre></td></tr></table></figure>
+
+<h3 id="Firmata"><a href="#Firmata" class="headerlink" title="Firmata"></a>Firmata</h3><p><a href="http://arduino.cc/en/reference/firmata" target="_blank" rel="noopener">Firmata</a>ファームウェアをインストールします。Firmataはホストマシンからシリアル通信を使ってArduinoを制御するためのプロトコルです。まずArduino UnoをUSBケーブルで接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort scan serial</span><br><span class="line">/dev/cu.Bluetooth-Incoming-Port		/dev/tty.Bluetooth-Incoming-Port</span><br><span class="line">/dev/cu.Bluetooth-Modem			/dev/tty.Bluetooth-Modem</span><br><span class="line">/dev/cu.iPhoneDragonfly-Wireles		/dev/tty.iPhoneDragonfly-Wireles</span><br><span class="line">/dev/cu.usbmodem1421			/dev/tty.usbmodem1421</span><br></pre></td></tr></table></figure>
+
+<p>Arduinoはavrdudeを使ってファームウェアを書き込むのでホストマシンにavrdudeをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort arduino install</span><br><span class="line">Attempting to install avrdude with Homebrew.</span><br></pre></td></tr></table></figure>
+
+<p>ArduinoにFirmataファームウェアをアップロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort arduino upload firmata /dev/tty.usbmodem1421</span><br><span class="line">avrdude: AVR device initialized and ready to accept instructions</span><br><span class="line">...</span><br><span class="line">avrdude: verifying ...</span><br><span class="line">avrdude: 11452 bytes of flash verified</span><br><span class="line"></span><br><span class="line">avrdude <span class="keyword">done</span>.  Thank you.</span><br></pre></td></tr></table></figure>
+
+<h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><p>OSXの場合<a href="https://github.com/hokaccha/nodebrew" target="_blank" rel="noopener">nodebrew</a>を使ってNode.jsをインストールするのが多いようですが、Ubuntuと同じように<a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">nvm</a>を使います。インストールスクリプトをダウンロードして実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh | bash</span><br></pre></td></tr></table></figure>
+
+<p>自動的に<code>.bash_profile</code>にnvm起動スクリプトの実行が追加されました。</p>
+<figure class="highlight bash"><figcaption><span>~/.bash_profils</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> NVM_DIR=<span class="string">"/Users/mshimizu/.nvm"</span></span><br><span class="line">[ -s <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span> ] &amp;&amp; . <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span>  <span class="comment"># This loads nvm</span></span><br></pre></td></tr></table></figure>
+
+<p>シェルを開き直し、nvmのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nvm --version</span><br><span class="line">0.24.0</span><br></pre></td></tr></table></figure>
+
+<p>Node.jsは0.10の最新版をインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nvm install 0.10</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">Now using node v0.10.37</span><br></pre></td></tr></table></figure>
+
+<p>インストールしたNode.jsを有効にします。npmのバージョンも確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nvm use 0.10</span><br><span class="line">Now using node v0.10.37</span><br><span class="line">$ npm -v</span><br><span class="line">1.4.28</span><br></pre></td></tr></table></figure>
+
+<p>nvmを有効にして直接nodeのコマンドを実行することもできます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nvm run 0.10 --version</span><br><span class="line">Running node v0.10.37</span><br><span class="line">v0.10.37</span><br></pre></td></tr></table></figure>
+
+<h2 id="cylon-firmata"><a href="#cylon-firmata" class="headerlink" title="cylon-firmata"></a>cylon-firmata</h2><p>ホストマシンのOSXにCylon.jsの<a href="https://github.com/hybridgroup/cylon-firmata" target="_blank" rel="noopener">Firmataアダプター</a>をインストールします。最初にプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/node_apps/firmata-led</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p>package.jsonに必要なパッケージを定義します。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/firmata-led/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"firmata-led"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"cylon-firmata"</span>: <span class="string">"0.19.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>npm install</code>でパッケージをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+<h3 id="Lチカ"><a href="#Lチカ" class="headerlink" title="Lチカ"></a>Lチカ</h3><p>Lチカするプログラムを用意します。<code>port</code>は<code>gort scan serial</code>で確認した<code>/dev/tty.usbmodem1421</code>を指定します。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/firmata-led/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">'firmata'</span>, <span class="attr">port</span>: <span class="string">'/dev/tty.usbmodem1421'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="number">13</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    every((<span class="number">1</span>).second(), my.led.toggle);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+
+<p><code>npm start</code>でプログラムを実行します。Arduino Unoの13番ピンのLEDがLチカします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; firmata-led@0.0.1 start /Users/mshimizu/node_apps/firmata-led</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-03-15T03:19:30.103Z]  INFO -- : [Robot 45547] - Initializing connections.</span><br><span class="line">I, [2015-03-15T03:19:30.248Z]  INFO -- : [Robot 45547] - Initializing devices.</span><br><span class="line">I, [2015-03-15T03:19:30.249Z]  INFO -- : [Robot 45547] - Starting connections.</span><br><span class="line">I, [2015-03-15T03:19:33.513Z]  INFO -- : [Robot 45547] - Starting devices.</span><br><span class="line">I, [2015-03-15T03:19:33.514Z]  INFO -- : [Robot 45547] - Working.</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/ArduinoUno/" rel="tag"># ArduinoUno</a>
+              <a href="/tags/Gort/" rel="tag"># Gort</a>
+              <a href="/tags/Firmata/" rel="tag"># Firmata</a>
+              <a href="/tags/Cylonjs/" rel="tag"># Cylonjs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/14/intel-edison-ssci-eaglet-mft-bmp180-i2c/" rel="prev" title="EdisonとSSCI-Eaglet-MFTボードのGroveコネクタからBMP180モジュールとI2C接続する">
+      <i class="fa fa-chevron-left"></i> EdisonとSSCI-Eaglet-MFTボードのGroveコネクタからBMP180モジュールとI2C接続する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/16/meshblu-octoblu-introduction/" rel="next" title="Node.jsでつくるIoT - Part3: OctobluのMeshblu">
+      Node.jsでつくるIoT - Part3: OctobluのMeshblu <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSXの環境構築"><span class="nav-number">1.</span> <span class="nav-text">OSXの環境構築</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FTDIのUSBシリアルドライバ"><span class="nav-number">1.1.</span> <span class="nav-text">FTDIのUSBシリアルドライバ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gort"><span class="nav-number">1.2.</span> <span class="nav-text">Gort</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Firmata"><span class="nav-number">1.3.</span> <span class="nav-text">Firmata</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-js"><span class="nav-number">1.4.</span> <span class="nav-text">Node.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cylon-firmata"><span class="nav-number">2.</span> <span class="nav-text">cylon-firmata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lチカ"><span class="nav-number">2.1.</span> <span class="nav-text">Lチカ</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

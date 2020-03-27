@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Surface3のディスプレイは10.8インチで画面解像度は1920×1280ドットです。デフォルトでは「テキスト、アプリ、その他の項目のサイズを変更する」が150%に設定されています。タブレットモードで使う場合はこれで十分ですが、ノートPCとして使う場合はとても文字が小さく感じます。このままプログラミングで使うと目が疲れてしまうので、フォントを変えたり、OSのテキストサイズを変更する必要がありま">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Surface 3に開発環境をつくる - Part2: Minttyのターミナル">
+<meta property="og:url" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Surface3のディスプレイは10.8インチで画面解像度は1920×1280ドットです。デフォルトでは「テキスト、アプリ、その他の項目のサイズを変更する」が150%に設定されています。タブレットモードで使う場合はこれで十分ですが、ノートPCとして使う場合はとても文字が小さく感じます。このままプログラミングで使うと目が疲れてしまうので、フォントを変えたり、OSのテキストサイズを変更する必要がありま">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/display.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/mingw.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/system-property.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/text.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/window.png">
+<meta property="article:published_time" content="2015-08-01T14:04:52.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.908Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Mintty">
+<meta property="article:tag" content="Surface3">
+<meta property="article:tag" content="Windows10">
+<meta property="article:tag" content="MicrosoftEdge">
+<meta property="article:tag" content="Pocket">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/08/01/surface3-windows10-terminal/display.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/08/01/surface3-windows10-terminal/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Surface 3に開発環境をつくる - Part2: Minttyのターミナル | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/08/01/surface3-windows10-terminal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Surface 3に開発環境をつくる - Part2: Minttyのターミナル
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 1 2015 23:04:52" itemprop="dateCreated datePublished" datetime="2015-08-01T23:04:52+09:00">Aug 1 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Surface3のディスプレイは10.8インチで画面解像度は1920×1280ドットです。デフォルトでは「テキスト、アプリ、その他の項目のサイズを変更する」が150%に設定されています。タブレットモードで使う場合はこれで十分ですが、ノートPCとして使う場合はとても文字が小さく感じます。このままプログラミングで使うと目が疲れてしまうので、フォントを変えたり、OSのテキストサイズを変更する必要があります。コマンドプロンプトは開発環境に適していないので、Minttyをインストールして使います。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Surface3のディスプレイは10.8インチで画面解像度は1920×1280ドットです。デフォルトでは「テキスト、アプリ、その他の項目のサイズを変更する」が150%に設定されています。タブレットモードで使う場合はこれで十分ですが、ノートPCとして使う場合はとても文字が小さく感じます。このままプログラミングで使うと目が疲れてしまうので、フォントを変えたり、OSのテキストサイズを変更する必要があります。コマンドプロンプトは開発環境に適していないので、<a href="http://mintty.github.io/" target="_blank" rel="noopener">Mintty</a>をインストールして使います。</p>
+<a id="more"></a>
+
+<h2 id="OSのテキストサイズ"><a href="#OSのテキストサイズ" class="headerlink" title="OSのテキストサイズ"></a>OSのテキストサイズ</h2><p>Windows10では画面を右端から左にスワイプすると「チャーム」の代わりに「アクションセンター」が表示されます。「すべての設定」をタップすると「設定」画面が表示されます。右上の「システム」をタップすると「ディスプレイのカスタマイズ」画面になります。設定は好みですが、プログラミングで使う場合、テキストのサイズは200%の最大にすると見やすいです。</p>
+<p><img src="/2015/08/01/surface3-windows10-terminal/display.png" alt="display.png"></p>
+<h2 id="Mintty"><a href="#Mintty" class="headerlink" title="Mintty"></a>Mintty</h2><p><a href="http://www.mingw.org/" target="_blank" rel="noopener">MinGW</a>から<a href="http://www.mingw.org/wiki/msys" target="_blank" rel="noopener">MSYS</a>をインストールしたあとに<code>mingw-get</code>コマンドから<a href="http://mintty.github.io/" target="_blank" rel="noopener">Mintty</a>をインストールします。</p>
+<h3 id="MinGW"><a href="#MinGW" class="headerlink" title="MinGW"></a>MinGW</h3><p>mingw-get-setup.exeを<a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download" target="_blank" rel="noopener">ダウンロード</a>して実行します。<a href="http://www.mingw.org/" target="_blank" rel="noopener">MinGW</a>はWindows用のGNUツールです。MinGWからMSYSをインストールしたいのでmsys-base A Basic MSYS Installation (meta)にチェックを入れます。MSYSはWindowsでBashを動かすためのツールです。</p>
+<p><img src="/2015/08/01/surface3-windows10-terminal/mingw.png" alt="mingw.png"></p>
+<h3 id="環境変数"><a href="#環境変数" class="headerlink" title="環境変数"></a>環境変数</h3><p>左下のWindowsボタンからシステムプロパティのダイアログを表示して環境変数ボタンを押します。</p>
+<ul>
+<li>コントロール パネル &gt; システムとセキュリティ &gt; システム &gt; システムの詳細設定 &gt; 環境変数</li>
+</ul>
+<p><img src="/2015/08/01/surface3-windows10-terminal/system-property.png" alt="system-property.png"></p>
+<p>ユーザー環境変数に<code>HOME</code>を作成します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\MinGW\msys\1.0\home\&#123;username&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MSYS"><a href="#MSYS" class="headerlink" title="MSYS"></a>MSYS</h3><p>以下のフォルダにあるmsysを起動します。</p>
+<figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">C:<span class="symbol">\M</span>inGW<span class="symbol">\m</span>sys<span class="symbol">\1</span>.0<span class="symbol">\m</span>sys</span><br></pre></td></tr></table></figure>
+
+<p>シェルが起動するので、updateをした後にminttyをインストールします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ mingw-<span class="builtin-name">get</span> update</span><br><span class="line">$ mingw-<span class="builtin-name">get</span> install mintty</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ricty-Diminishedフォント"><a href="#Ricty-Diminishedフォント" class="headerlink" title="Ricty Diminishedフォント"></a>Ricty Diminishedフォント</h3><p>プログラミングに適したフォントの<a href="https://github.com/yascentur/RictyDiminished" target="_blank" rel="noopener">Ricty Diminished</a>をインストールします。リポジトリのページから<a href="https://github.com/yascentur/RictyDiminished/archive/master.zip" target="_blank" rel="noopener">RictyDiminished-master.zip</a>をダウンロードします。zipを解凍してすべてのフォントをインストールします。</p>
+<h3 id="Minttyの設定"><a href="#Minttyの設定" class="headerlink" title="Minttyの設定"></a>Minttyの設定</h3><p>MSYSのbinにインストールされたminttyを起動します。またminntyを右クリックしてタスクバーとスタート画面にピン留めをしておきます。</p>
+<figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">C:<span class="symbol">\M</span>inGW<span class="symbol">\m</span>sys<span class="symbol">\1</span>.0<span class="symbol">\b</span>in<span class="symbol">\m</span>intty</span><br></pre></td></tr></table></figure>
+
+<p>タイトルバーを右クリックして<code>Options</code>を選択します。好みですが以下のように設定します。</p>
+<ul>
+<li>Text<ul>
+<li>Font: Ricty Dimished Discord: 16-point</li>
+<li>Locale: ja_JP</li>
+<li>Characterset: UTF-8</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2015/08/01/surface3-windows10-terminal/text.png" alt="text.png"></p>
+<ul>
+<li>Window<ul>
+<li>Columns: 100</li>
+<li>Rows: 30</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2015/08/01/surface3-windows10-terminal/window.png" alt="window.png"></p>
+<h2 id="開発環境"><a href="#開発環境" class="headerlink" title="開発環境"></a>開発環境</h2><p>MinttyではエディタとSSHが使えればよいので、vimとopensshをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mincw-get install msys-vim</span><br><span class="line">$ mincw-get install msys-openssh</span><br></pre></td></tr></table></figure>
+
+<p>ssh-keygenコマンドでキーペアを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://gabrielsomoza.com/server-administration/ssh-copy-id-implementation-for-mingw-and-msys/" target="_blank" rel="noopener">ssh-copy-idのシェルスクリプト</a>などを使いログインするサーバーに公開鍵を登録しておきます。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mintty/" rel="tag"># Mintty</a>
+              <a href="/tags/Surface3/" rel="tag"># Surface3</a>
+              <a href="/tags/Windows10/" rel="tag"># Windows10</a>
+              <a href="/tags/MicrosoftEdge/" rel="tag"># MicrosoftEdge</a>
+              <a href="/tags/Pocket/" rel="tag"># Pocket</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/07/31/surface3-windows10-edge-pocket/" rel="prev" title="Surface 3に開発環境をつくる - Part1: Microsoft EdgeにPocketのブックマークレット">
+      <i class="fa fa-chevron-left"></i> Surface 3に開発環境をつくる - Part1: Microsoft EdgeにPocketのブックマークレット
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/08/04/raspberrypi-ngrok/" rel="next" title="Raspberry Piをngrokで公開する - Part1: Expressをpm2から起動する">
+      Raspberry Piをngrokで公開する - Part1: Expressをpm2から起動する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OSのテキストサイズ"><span class="nav-number">1.</span> <span class="nav-text">OSのテキストサイズ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mintty"><span class="nav-number">2.</span> <span class="nav-text">Mintty</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MinGW"><span class="nav-number">2.1.</span> <span class="nav-text">MinGW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#環境変数"><span class="nav-number">2.2.</span> <span class="nav-text">環境変数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSYS"><span class="nav-number">2.3.</span> <span class="nav-text">MSYS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ricty-Diminishedフォント"><span class="nav-number">2.4.</span> <span class="nav-text">Ricty Diminishedフォント</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Minttyの設定"><span class="nav-number">2.5.</span> <span class="nav-text">Minttyの設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#開発環境"><span class="nav-number">3.</span> <span class="nav-text">開発環境</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

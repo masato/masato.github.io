@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="OpenShift Origin 3とKubernetesを試していると、同じRedHatのProject Atomicも気になりAtomic Host上で動かしたくなります。イメージはGet Started with Atomicからダウンロードできるので、VirtualBoxですぐに試すことができます。Atomic HostはCoreOSと比較されSELinuxとrpm-ostree,gear">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Project Atomic First Steps- Part1: Atomic Hostのビルド">
+<meta property="og:url" content="http://masato.github.io/2014/09/14/projectatomic-first-steps-on-idcf-fedora20-build/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="OpenShift Origin 3とKubernetesを試していると、同じRedHatのProject Atomicも気になりAtomic Host上で動かしたくなります。イメージはGet Started with Atomicからダウンロードできるので、VirtualBoxですぐに試すことができます。Atomic HostはCoreOSと比較されSELinuxとrpm-ostree,gear">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-09-13T16:39:17.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.825Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Fedora20">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="ProjectAtomic">
+<meta property="article:tag" content="OVA">
+<meta property="article:tag" content="VMwarePlayer">
+<meta property="article:tag" content="config-drive">
+<meta property="article:tag" content="Minnty">
+<meta property="article:tag" content="ovftool">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/09/14/projectatomic-first-steps-on-idcf-fedora20-build/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Project Atomic First Steps- Part1: Atomic Hostのビルド | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/09/14/projectatomic-first-steps-on-idcf-fedora20-build/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Project Atomic First Steps- Part1: Atomic Hostのビルド
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Sep 14 2014 01:39:17" itemprop="dateCreated datePublished" datetime="2014-09-14T01:39:17+09:00">Sep 14 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">OpenShift Origin 3とKubernetesを試していると、同じRedHatのProject Atomicも気になりAtomic Host上で動かしたくなります。イメージはGet Started with Atomicからダウンロードできるので、VirtualBoxですぐに試すことができます。Atomic HostはCoreOSと比較されSELinuxとrpm-ostree,geardが特徴です。Fedoraはほとんど使ったことがないのでCoreOS vs. Project Atomic A Reviewを読みながら勉強していきます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><code>OpenShift Origin 3</code>とKubernetesを試していると、同じRedHatの<a href="http://www.projectatomic.io/" target="_blank" rel="noopener">Project Atomic</a>も気になり<code>Atomic Host</code>上で動かしたくなります。イメージは<a href="http://www.projectatomic.io/download/" target="_blank" rel="noopener">Get Started with Atomic</a>からダウンロードできるので、VirtualBoxですぐに試すことができます。</p>
+<p><code>Atomic Host</code>はCoreOSと比較され、SELinuxと<a href="https://github.com/projectatomic/rpm-ostree" target="_blank" rel="noopener">rpm-ostree</a>が<a href="https://github.com/openshift/geard" target="_blank" rel="noopener">geard</a>特徴です。Fedoraはほとんど使ったことがないので<a href="https://major.io/2014/05/13/coreos-vs-project-atomic-a-review/" target="_blank" rel="noopener">CoreOS vs. Project Atomic: A Review</a>を読みながら勉強していきます。</p>
+<a id="more"></a>
+
+
+<h3 id="rpm-ostreeをちょっと調べた"><a href="#rpm-ostreeをちょっと調べた" class="headerlink" title="rpm-ostreeをちょっと調べた"></a>rpm-ostreeをちょっと調べた</h3><p>rpm-ostreeは、RPMパッケージで構成されたOSを<code>git fetch</code>と<code>git merge</code>のように管理できる仕組みです。<br>中央リポジトリからアップグレードをfetch &amp;&amp; mergeして、reboot後は新しい/rootで起動する感じです。<br>Gitのように新しいOSの複製と配布がとても簡単になり、この辺りが<code>atomic</code>らしいです。</p>
+<ul>
+<li><p><a href="http://www.projectatomic.io/blog/2014/08/build-your-own-atomic-centos-or-fedora/" target="_blank" rel="noopener">Build Your Own Atomic Image, Updated</a></p>
+</li>
+<li><p><a href="http://www.projectatomic.io/blog/2014/08/centos-7-alpha-builds-for-atomic/" target="_blank" rel="noopener">CentOS 7 Alpha Builds for Atomic</a></p>
+</li>
+</ul>
+<h3 id="Fedora20の準備"><a href="#Fedora20の準備" class="headerlink" title="Fedora20の準備"></a>Fedora20の準備</h3><p><a href="http://www.projectatomic.io/blog/2014/08/build-your-own-atomic-centos-or-fedora/" target="_blank" rel="noopener">CentOS 7</a>でも<code>Atomic Host</code>のビルドができるようになったそうですが、手順通りにFedora20で作業することにします。</p>
+<p>IDCFクラウドの標準テンプレートにはFedora20がないので、ISOをアップロードしてからインスタンスを作成します。</p>
+<h3 id="SELinuxをdisabled"><a href="#SELinuxをdisabled" class="headerlink" title="SELinuxをdisabled"></a>SELinuxをdisabled</h3><p>イメージのビルド作業のために、SELinuxをdisabledにします。</p>
+<figure class="highlight bash"><figcaption><span>/etc/selinux/config</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#SELINUX=enforcing</span></span><br><span class="line">SELINUX=disabled</span><br></pre></td></tr></table></figure>
+
+<p>一度rebootします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># reboot</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="パッケージのダウンロード"><a href="#パッケージのダウンロード" class="headerlink" title="パッケージのダウンロード"></a>パッケージのダウンロード</h3><p><code>Atomic Host</code>ビルド用リポジトリを<code>git clone</code>し、必要なパッケージをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># yum install -y git</span></span><br><span class="line"><span class="comment"># git clone https://github.com/jasonbrooks/byo-atomic.git</span></span><br><span class="line"><span class="comment"># mv byo-atomic/walters-rpm-ostree-fedora-20-i386.repo /etc/yum.repos.d/</span></span><br><span class="line"><span class="comment"># yum install -y rpm-ostree rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase httpd</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="設定ファイルの編集"><a href="#設定ファイルの編集" class="headerlink" title="設定ファイルの編集"></a>設定ファイルの編集</h3><p>/etc/nsswitch.confのバックアップをします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># cp /etc/nsswitch.conf&#123;,.orig&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>passwd:</code>と<code>group:</code>の行を編集します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/nsswitch.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#passwd:     files</span></span><br><span class="line">passwd:     files altfiles</span><br><span class="line">shadow:     files</span><br><span class="line"><span class="comment">#group:      files</span></span><br><span class="line">group:      files altfiles</span><br></pre></td></tr></table></figure>
+
+<p>/etc/libvirt/qemu.confのバックアップをします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># cp /etc/libvirt/qemu.conf&#123;,.orig&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>user = &quot;root&quot;</code>の行をアンコメントします。</p>
+<figure class="highlight bash"><figcaption><span>/etc/libvirt/qemu.conf </span></figcaption><table><tr><td class="code"><pre><span class="line">user = <span class="string">"root"</span></span><br></pre></td></tr></table></figure>
+
+<p>libvirtdをrestartします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># systemctl restart libvirtd</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="rpm-ostreeのリポジトリ"><a href="#rpm-ostreeのリポジトリ" class="headerlink" title="rpm-ostreeのリポジトリ"></a>rpm-ostreeのリポジトリ</h3><p><code>Atomic Host</code>のRPMをアップデートするため、rpm-ostreeのリポジトリを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># mkdir -p /srv/rpm-ostree/repo &amp;&amp; cd /srv/rpm-ostree/ &amp;&amp; sudo ostree --repo=repo init --mode=archive-z2</span></span><br><span class="line"><span class="comment"># cat &gt; /etc/httpd/conf.d/rpm-ostree.conf &lt;&lt;EOF</span></span><br><span class="line">DocumentRoot /srv/rpm-ostree</span><br><span class="line">&lt;Directory <span class="string">"/srv/rpm-ostree"</span>&gt;</span><br><span class="line">Options Indexes FollowSymLinks</span><br><span class="line">AllowOverride None</span><br><span class="line">Require all granted</span><br><span class="line">&lt;/Directory&gt;</span><br><span class="line">EOF</span><br><span class="line"><span class="comment"># systemctl daemon-reload &amp;&amp; \</span></span><br><span class="line">  systemctl <span class="built_in">enable</span> httpd &amp;&amp; \</span><br><span class="line">  systemctl start httpd &amp;&amp; \</span><br><span class="line">  systemctl reload httpd &amp;&amp; \</span><br><span class="line">  firewall-cmd --add-service=http &amp;&amp; \</span><br><span class="line">  firewall-cmd --add-service=http --permanent</span><br></pre></td></tr></table></figure>
+
+<h3 id="Atomic-Hostイメージビルド"><a href="#Atomic-Hostイメージビルド" class="headerlink" title="Atomic Hostイメージビルド"></a>Atomic Hostイメージビルド</h3><p><code>Atomic Host</code>イメージをビルドします。rpm-ostree-toolboxを使いqcow2ファイルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># cd /root/byo-atomic/f20</span></span><br><span class="line"><span class="comment"># rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-server-docker-host.json</span></span><br><span class="line"><span class="comment"># rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/20/x86_64/server/docker-host f20-atomic.qcow2</span></span><br><span class="line">...</span><br><span class="line">Started child process <span class="string">'guestunmount'</span> <span class="string">'-v'</span> <span class="string">'/tmp/rpmostreetoolbox.YG4AMX/mnt'</span>: pid=24463</span><br><span class="line">Awaiting termination of guestmount, watching: /tmp/rpmostreetoolbox.YG4AMX/mnt.guestmount-pid</span><br><span class="line">guestmount pid file successfully deleted</span><br><span class="line">Created: /root/byo-atomic/f20/f20-atomic.qcow2</span><br></pre></td></tr></table></figure>
+
+<h3 id="vmdkファイルにコンバート"><a href="#vmdkファイルにコンバート" class="headerlink" title="vmdkファイルにコンバート"></a>vmdkファイルにコンバート</h3><p>qemu-imgコマンドを使い、qcow2ファイルをvmdkファイルにコンバートします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># qemu-img convert -f qcow2 /root/byo-atomic/f20/f20-atomic.qcow2 -O vmdk c7-atomic.vmdk</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="config-driveの作成"><a href="#config-driveの作成" class="headerlink" title="config-driveの作成"></a>config-driveの作成</h3><p>config-driveは仮想マシン起動時に読み込んで利用する、OSの設定情報を格納したISOファイルです。<br>ISOファイルを仮想マシン起動時に接続すると、<code>meta-data</code>と<code>user-data</code>を読み込み設定をしてくれます。</p>
+<p><code>Atomic Host</code>はrootのパスワードや公開鍵を記述します。この辺りはCoreOSと同じです。</p>
+<p><code>meta-data</code>にはホスト名を指定します。</p>
+<figure class="highlight bash"><figcaption><span>meta-data</span></figcaption><table><tr><td class="code"><pre><span class="line">instance-id: Atomic0</span><br><span class="line"><span class="built_in">local</span>-hostname: atomic-00</span><br></pre></td></tr></table></figure>
+
+<p><code>user-data</code>にはパスワードと公開鍵を指定します。</p>
+<figure class="highlight bash"><figcaption><span>user-data</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line">password: atomic</span><br><span class="line">chpasswd: &#123;expire: False&#125;</span><br><span class="line">ssh_pwauth: True</span><br><span class="line">ssh_authorized_keys</span><br><span class="line">  - ssh-rsa AAAAB3NzaC1yc...</span><br></pre></td></tr></table></figure>
+
+<p>genisoimageコマンドを使いISOファイルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ genisoimage -output atomic0-cidata.iso -volid cidata -joliet -rock -input-charset utf-8 user-data meta-data</span><br><span class="line">Total translation table size: 0</span><br><span class="line">Total rockridge attributes bytes: 331</span><br><span class="line">Total directory bytes: 0</span><br><span class="line">Path table size(bytes): 10</span><br><span class="line">Max brk space used 0</span><br><span class="line">183 extents written (0 MB)</span><br></pre></td></tr></table></figure>
+
+<h3 id="VMware-Playerでvmdkをアタッチして起動"><a href="#VMware-Playerでvmdkをアタッチして起動" class="headerlink" title="VMware Playerでvmdkをアタッチして起動"></a>VMware Playerでvmdkをアタッチして起動</h3><p>Fedora20で作成したc7-atomic.vmdkファイルを、Window7の作業マシンにダウンロードします。<br>以下の手順で仮想マシンを作成します。ディスクイメージを作成したvmdkファイルと入れ替えます。</p>
+<ol>
+<li><code>VMware Player</code>を起動</li>
+<li>新規仮想マシンの作成</li>
+<li>後でOSをインストールを選択</li>
+<li>Linux, 他のLinux 3.xカーネル 64ビットを選択</li>
+<li>仮想マシン名に、AtomicHost</li>
+<li>1GBで、仮想ディスクを単一ファイルとして格納</li>
+<li>c7-atomic.vmdkを<code>Virtual Machines</code>のAtomicHostフォルダにコピー</li>
+<li>仮想マシンの設定の編集</li>
+<li>既存のハードディスクを削除</li>
+<li>既存の仮想ディスクを使用からc7-atomic.vmdkを選択、既存の形式を保持</li>
+<li><code>config-drive</code>のISOファイルをCD/DVD(IDE)にセットし、起動時に接続にチェックを入れる</li>
+<li>仮想マシンを起動</li>
+</ol>
+<h3 id="VMware-Playerコンソール"><a href="#VMware-Playerコンソール" class="headerlink" title="VMware Playerコンソール"></a>VMware Playerコンソール</h3><p><code>VMware Player</code>コンソールから<code>Atomic Host</code>の仮想マシンにログインします。</p>
+<ul>
+<li>login: fedora</li>
+<li>passwd: atomic</li>
+</ul>
+<p>パスワードはconfig-driveに設定した値を使います。</p>
+<h3 id="IDCFクラウドではconfig-driveが使えない"><a href="#IDCFクラウドではconfig-driveが使えない" class="headerlink" title="IDCFクラウドではconfig-driveが使えない"></a>IDCFクラウドではconfig-driveが使えない</h3><p>ovftoolを使いOVAにコンバートしてからIDCFクラウドのテンプレートに登録します。<br>OVAテンプレートからVMを作成するときに、config-driveのISOファイルをマウントします。</p>
+<p>残念ながらIDCFクラウドでは仮想マシンの起動時にconfig-driveを読み込んでくれません。<br><code>user-data</code>を取得できずにOSの設定が完了しないためログインできなくなります。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>Atomic Host</code>をビルドしながら<code>rpm-ostree</code>の役割や<code>rpm-ostree-toolbox</code>コマンドを使ったディスクイメージの作り方など勉強することができました。</p>
+<p><code>config-drive</code>も便利な仕組みです。仮想マシン起動時に<code>user-data</code>を渡してOSの構成管理を初回で終わらせてしまう方法はCoreOSと同じです。<br><code>cloud-config</code>でOSを作成した後のパッケージ管理は中央リポジトリと同期され、個別に設定ファイルの書き換えやパッケージの追加ができなくなります。<code>Project Atomic</code>ではyumの廃止やそれに伴いPythonもインストールしないことも検討されているようです。</p>
+<p>Webスケールで使い捨て可能なインフラが必要な環境では、ChefなどのCMツールを使わずに<code>cloud-config</code>を使った構成管理が今後主流になると思うので慣れておきたいです。</p>
+<p>次回はビルド済みの<code>Atomic Host</code>のダウンロードを使ってIDCFクラウドにデプロイしてみます。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Fedora20/" rel="tag"># Fedora20</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/ProjectAtomic/" rel="tag"># ProjectAtomic</a>
+              <a href="/tags/OVA/" rel="tag"># OVA</a>
+              <a href="/tags/VMwarePlayer/" rel="tag"># VMwarePlayer</a>
+              <a href="/tags/config-drive/" rel="tag"># config-drive</a>
+              <a href="/tags/Minnty/" rel="tag"># Minnty</a>
+              <a href="/tags/ovftool/" rel="tag"># ovftool</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/09/13/openshift-origin-3-on-kubernetes-on-ubuntu/" rel="prev" title="OpenShift Origin v3 on Kubernetes - Part2: Ubuntuにインストール">
+      <i class="fa fa-chevron-left"></i> OpenShift Origin v3 on Kubernetes - Part2: Ubuntuにインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/09/15/projectatomic-first-steps-on-idcf-ova-deploy/" rel="next" title="Project Atomic First Steps - Part2: IDCFクラウドにデプロイ">
+      Project Atomic First Steps - Part2: IDCFクラウドにデプロイ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#rpm-ostreeをちょっと調べた"><span class="nav-number">1.</span> <span class="nav-text">rpm-ostreeをちょっと調べた</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fedora20の準備"><span class="nav-number">2.</span> <span class="nav-text">Fedora20の準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELinuxをdisabled"><span class="nav-number">3.</span> <span class="nav-text">SELinuxをdisabled</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#パッケージのダウンロード"><span class="nav-number">4.</span> <span class="nav-text">パッケージのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定ファイルの編集"><span class="nav-number">5.</span> <span class="nav-text">設定ファイルの編集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rpm-ostreeのリポジトリ"><span class="nav-number">6.</span> <span class="nav-text">rpm-ostreeのリポジトリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Atomic-Hostイメージビルド"><span class="nav-number">7.</span> <span class="nav-text">Atomic Hostイメージビルド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vmdkファイルにコンバート"><span class="nav-number">8.</span> <span class="nav-text">vmdkファイルにコンバート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#config-driveの作成"><span class="nav-number">9.</span> <span class="nav-text">config-driveの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMware-Playerでvmdkをアタッチして起動"><span class="nav-number">10.</span> <span class="nav-text">VMware Playerでvmdkをアタッチして起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMware-Playerコンソール"><span class="nav-number">11.</span> <span class="nav-text">VMware Playerコンソール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFクラウドではconfig-driveが使えない"><span class="nav-number">12.</span> <span class="nav-text">IDCFクラウドではconfig-driveが使えない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">13.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

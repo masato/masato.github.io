@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ブログ用のフォントなども、いつもフォントは悩みます。IDCFクラウド上のLinuxMint17にDartEditorをインストールして開発しているのでですが、xrdpでつないで小さな画面でコードを書いているので、フォントやサイズを変更して使いやすくしたいと思います。ChromebookにUbuntuをインストールしたときは、TakaoPゴシックでしたが、プログラミング用のフォントで有名なRicty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="プログラミング用フォント Ricty Diminished">
+<meta property="og:url" content="http://masato.github.io/2014/06/18/programming-font-ricty-dimished/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ブログ用のフォントなども、いつもフォントは悩みます。IDCFクラウド上のLinuxMint17にDartEditorをインストールして開発しているのでですが、xrdpでつないで小さな画面でコードを書いているので、フォントやサイズを変更して使いやすくしたいと思います。ChromebookにUbuntuをインストールしたときは、TakaoPゴシックでしたが、プログラミング用のフォントで有名なRicty">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-17T15:46:15.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.825Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="LinuxMint17">
+<meta property="article:tag" content="font">
+<meta property="article:tag" content="xrdp">
+<meta property="article:tag" content="DartEditor">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/18/programming-font-ricty-dimished/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>プログラミング用フォント Ricty Diminished | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/18/programming-font-ricty-dimished/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          プログラミング用フォント Ricty Diminished
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 18 2014 00:46:15" itemprop="dateCreated datePublished" datetime="2014-06-18T00:46:15+09:00">Jun 18 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">ブログ用のフォントなども、いつもフォントは悩みます。IDCFクラウド上のLinuxMint17にDartEditorをインストールして開発しているのでですが、xrdpでつないで小さな画面でコードを書いているので、フォントやサイズを変更して使いやすくしたいと思います。ChromebookにUbuntuをインストールしたときは、TakaoPゴシックでしたが、プログラミング用のフォントで有名なRictyもよく使います。Rictyはmonofontなので、日本語をコメントや文字列に入れてもきれいに表示できます。ただIPAのグリフを使っているため、配布ができず、自分でRictyとMigu 1Mを合成するのが面倒なので、新しい環境に入れていませんでしたが、ダウンロードするだけで使えるRicty Diminishedを見つけたので使ってみました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/05/07/font-for-blog/">ブログ用のフォント</a>なども、いつもフォントは悩みます。<a href="/2014/06/02/idcf-linuxmint17-part2/">IDCFクラウド上のLinuxMint17</a>にDartEditorをインストールして開発しているのでですが、xrdpでつないで小さな画面でコードを書いているので、フォントやサイズを変更して使いやすくしたいと思います。</p>
+<p><a href="/2014/05/02/chromebook-ubuntu/">ChromebookにUbuntuをインストール</a>したときは、TakaoPゴシックでしたが、<br>プログラミング用のフォントで有名なRictyもよく使います。</p>
+<p>Rictyはmonospaceなので、日本語をコメントや文字列に入れてもきれいに表示できます。自分でRictyと<code>Migu 1M</code>を合成するのが面倒なので新しい環境に入れていませんでしたが、ダウンロードするだけで使える<a href="http://save.sys.t.u-tokyo.ac.jp/~yusa/fonts/rictydiminished.html" target="_blank" rel="noopener">Ricty Diminished</a>を見つけたので使ってみました。</p>
+<a id="more"></a>
+
+<h3 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h3><p>フォントをダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Downloads</span><br><span class="line">$ wget http://save.sys.t.u-tokyo.ac.jp/~yusa/fonts/archives/RictyDiminished-3.2.3.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>ホームディレクトリに.fontsディレクトリを作成して、インストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/.fonts</span><br><span class="line">$ tar zxvf RictyDiminished-3.2.3.tar.gz -C ~/.fonts</span><br><span class="line">RictyDiminished-Bold.ttf</span><br><span class="line">RictyDiminished-BoldOblique.ttf</span><br><span class="line">RictyDiminished-Oblique.ttf</span><br><span class="line">RictyDiminished-Regular.ttf</span><br><span class="line">RictyDiminishedDiscord-Bold.ttf</span><br><span class="line">RictyDiminishedDiscord-BoldOblique.ttf</span><br><span class="line">RictyDiminishedDiscord-Oblique.ttf</span><br></pre></td></tr></table></figure>
+
+<p>これで、インストール終了です。かんたん。</p>
+<h3 id="MATEでの設定"><a href="#MATEでの設定" class="headerlink" title="MATEでの設定"></a>MATEでの設定</h3><p>LinuxMint17はMATEのデスクトップを使っているので、フォントの設定は以下で行います。</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line">Menu -&gt; 設定 -&gt; 外観の設定&gt; フォント</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>アプリケーション: TakaoExゴシック: 10</li>
+<li>ドキュメント: TakaoExゴシック: 12</li>
+<li>デスクトップ: TakaoExゴシック: 12</li>
+<li>ウィンドウのタイトル: TakaoExゴシック Bold: 10</li>
+<li>固定幅のフォント: Ricty Diminished: 12</li>
+</ul>
+<h3 id="Terminalの設定"><a href="#Terminalの設定" class="headerlink" title="Terminalの設定"></a>Terminalの設定</h3><p>1.5の倍数で設定するときれいに表示できるようです。<br>Terminalのフォントサイズはちょっと大きめにします。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">編集 -&gt; プロファイル -&gt;<span class="built_in"> Default </span>-&gt; 編集 -&gt; Ricty Diminished: 13.5</span><br></pre></td></tr></table></figure>
+
+<h3 id="DartEditorの設定"><a href="#DartEditorの設定" class="headerlink" title="DartEditorの設定"></a>DartEditorの設定</h3><p>プログラミングはなるべく大きな文字で、ウィンドウに表示できる範囲の文字数で書きたいです。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">T<span class="function"><span class="title">ools</span> -&gt;</span> P<span class="function"><span class="title">references</span> -&gt;</span> F<span class="function"><span class="title">onts</span> -&gt;</span> Ricty Dimished :<span class="number">13.5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Chromeの設定"><a href="#Chromeの設定" class="headerlink" title="Chromeの設定"></a>Chromeの設定</h3><p>文章を読む場合、Takao Pゴシックの方が読みやすいです。</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line">設定 -&gt; ウェブコンテンツ -&gt; フォントをカスタマイズ</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>標準フォント: Takao Pゴシック (大)</li>
+<li>Sefifフォント: Takao P明朝</li>
+<li>Sans Serifフォント: Takao Pゴシック</li>
+</ul>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>クラウド開発環境にはOSXのiTermからSSHしているため、EmacsもOSXのきれいなフォントでコーディングできます。<br>WindowsやLinuxMintからもEmacsやエディターを開く場合にも、同様に快適に開発したいです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/LinuxMint17/" rel="tag"># LinuxMint17</a>
+              <a href="/tags/font/" rel="tag"># font</a>
+              <a href="/tags/xrdp/" rel="tag"># xrdp</a>
+              <a href="/tags/DartEditor/" rel="tag"># DartEditor</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/17/introduction-to-dart/" rel="prev" title="Introduction to Dart から見るDartの魅力">
+      <i class="fa fa-chevron-left"></i> Introduction to Dart から見るDartの魅力
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/19/packer-windows-nested-vmware-player-create-ova/" rel="next" title="Packerを使いWindows上でOVAを作成する - Part10: Nested VT-x VMwarePlayerでOVA作成">
+      Packerを使いWindows上でOVAを作成する - Part10: Nested VT-x VMwarePlayerでOVA作成 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール"><span class="nav-number">1.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MATEでの設定"><span class="nav-number">2.</span> <span class="nav-text">MATEでの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Terminalの設定"><span class="nav-number">3.</span> <span class="nav-text">Terminalの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DartEditorの設定"><span class="nav-number">4.</span> <span class="nav-text">DartEditorの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Chromeの設定"><span class="nav-number">5.</span> <span class="nav-text">Chromeの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったの">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reagent入門 - Part3: クライアントとサーバーの通信パターン">
+<meta property="og:url" content="http://masato.github.io/2015/06/19/reagent-client-server-connection/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったの">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-06-19T14:41:16.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.878Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="WebSocket">
+<meta property="article:tag" content="Clojure">
+<meta property="article:tag" content="Ajax">
+<meta property="article:tag" content="ClojureScript">
+<meta property="article:tag" content="Reagent">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/19/reagent-client-server-connection/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Reagent入門 - Part3: クライアントとサーバーの通信パターン | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/19/reagent-client-server-connection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Reagent入門 - Part3: クライアントとサーバーの通信パターン
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 19 2015 23:41:16" itemprop="dateCreated datePublished" datetime="2015-06-19T23:41:16+09:00">Jun 19 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったのでいくつか設計のパターンを調べました。Keeping Client State Up-To-Date In Reagent / Clojurescript Server push of data from Clojure to ClojureScrip</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>を使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったのでいくつか設計のパターンを調べました。</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript" target="_blank" rel="noopener">Keeping Client State Up-To-Date In Reagent / Clojurescript</a></li>
+<li><a href="http://stackoverflow.com/questions/21823002/server-push-of-data-from-clojure-to-clojurescript" target="_blank" rel="noopener">Server push of data from Clojure to ClojureScript</a></li>
+</ul>
+<a id="more"></a>
+
+<h2 id="データベースの同期"><a href="#データベースの同期" class="headerlink" title="データベースの同期"></a>データベースの同期</h2><p>ClojureScriptには<a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>という<a href="http://www.datomic.com/" target="_blank" rel="noopener">Datomic</a>のクライアント版のようなインメモリのデータベースがあります。クライアント側にもデータベースを持つアーキテクチャには、<a href="https://github.com/couchbase/sync_gateway" target="_blank" rel="noopener">Couchbase Sync Gateway</a>の<a href="https://github.com/couchbase/couchbase-lite-ios" target="_blank" rel="noopener">Couchbase Lite</a>や<a href="https://www.meteor.com/" target="_blank" rel="noopener">Meteor</a>の<a href="https://www.meteor.com/mini-databases" target="_blank" rel="noopener">minimongo</a>があります。後者2つはクライアントのデータベースの状態はにautomagicallyな仕組みでサーバーと同期されますが、DataScriptの場合は同期の仕組みを作る必要がありそうです。</p>
+<ul>
+<li><a href="http://tonsky.me/blog/datascript-chat/" target="_blank" rel="noopener">Chatting cats use DataScript for fun</a></li>
+<li><a href="http://tonsky.me/blog/acha-acha/" target="_blank" rel="noopener">Another powered-by-DataScript example</a></li>
+</ul>
+<p>とても便利そうなのですが、ちょっと複雑になりそうで手がでません。</p>
+<h2 id="WebSocketとAjax-REST"><a href="#WebSocketとAjax-REST" class="headerlink" title="WebSocketとAjax (REST)"></a>WebSocketとAjax (REST)</h2><p>ちょうど<a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>や<a href="http://www.actionherojs.com/" target="_blank" rel="noopener">actionhero.js</a>でREST APIとWebSocketを一つのサーバーで提供する設計を試しています。どちらのプロトコルも用途にあわせて使い分けができるようにしたいです。</p>
+<p>WebSocket、Ajax、core.asyncのすべてに対応するライブラリが増えています。</p>
+<ul>
+<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a></li>
+<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a></li>
+<li><a href="https://github.com/james-henderson/chord" target="_blank" rel="noopener">Chord</a></li>
+</ul>
+<p><a href="http://www.luminusweb.net/" target="_blank" rel="noopener">Luminus</a>はClojureScriptを使う場合にReagentを<a href="http://www.luminusweb.net/docs/clojurescript.md#reagent" target="_blank" rel="noopener">推奨</a>しています。Reagentからサーバへ<a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a>を使ってAjax通信をします。おそらく多くのSPAの実装パターンがこれに該当すると思います。</p>
+<ul>
+<li><a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a></li>
+</ul>
+<p>REST APIを提供するライブラリはLiberatorを採用することが多いです。</p>
+<ul>
+<li><a href="http://clojure-liberator.github.io/liberator/" target="_blank" rel="noopener">Liberator</a></li>
+</ul>
+<h2 id="core-async"><a href="#core-async" class="headerlink" title="core.async"></a>core.async</h2><p>まだ<a href="https://github.com/clojure/core.async" target="_blank" rel="noopener">core.async</a>について理解できていないのですが、ClojurScriptとClojureの間をcore.asyncで通信できるようです。</p>
+<ul>
+<li><a href="https://github.com/james-henderson/chord" target="_blank" rel="noopener">Chord</a></li>
+<li><a href="https://github.com/ztellman/aleph" target="_blank" rel="noopener">Aleph</a></li>
+<li><a href="https://github.com/lynaghk/jetty7-websockets-async" target="_blank" rel="noopener">jetty7-websockets-async</a></li>
+</ul>
+<h2 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h2><p><a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a>のサーバーサイドは<a href="https://github.com/tailrecursion/castra" target="_blank" rel="noopener">Castra</a>のRPCライブラリを使います。クライアント側から<code>mkremote</code>関数を使ってサーバー側<code>defrpc</code>関数を実行するようです。</p>
+<p><a href="http://hoplon.discoursehosting.net/t/comparing-reagent/393" target="_blank" rel="noopener">Comparing Reagent</a>にReagentとの比較があります。<a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a>はClojur/ClojureScriptを使いやすく統合するために<a href="https://github.com/boot-clj/boot" target="_blank" rel="noopener">Boot</a>を採用してビルドや開発環境が充実しています。</p>
+<h2 id="フルスタック"><a href="#フルスタック" class="headerlink" title="フルスタック"></a>フルスタック</h2><p>Clojure / ClojureScriptのフルスタックフレームワークを調べてみました。Reagentに対応していない場合もあります。</p>
+<ul>
+<li><p><a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a></p>
+</li>
+<li><p><a href="http://www.luminusweb.net/" target="_blank" rel="noopener">Luminus</a></p>
+</li>
+<li><p><a href="https://github.com/enterlab/rente" target="_blank" rel="noopener">Rente</a></p>
+<ul>
+<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a>: WebSocket / Ajax</li>
+<li><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>: React</li>
+<li><a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>: CSS</li>
+</ul>
+</li>
+<li><p><a href="https://github.com/sveri/closp" target="_blank" rel="noopener">closp</a></p>
+<ul>
+<li><a href="http://www.h2database.com/html/main.html" target="_blank" rel="noopener">H2</a>: relational database</li>
+<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a>: async http server</li>
+<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
+<li><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>: React</li>
+<li><a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>: client side database</li>
+<li><a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>: CSS</li>
+<li><a href="https://github.com/yogthos/Selmer" target="_blank" rel="noopener">Selmer</a>: template engine</li>
+</ul>
+</li>
+<li><p><a href="https://github.com/thegeez/clj-crud" target="_blank" rel="noopener">clj-crud</a></p>
+<ul>
+<li><a href="https://github.com/ring-clojure/ring" target="_blank" rel="noopener">Ring</a>: http server</li>
+<li><a href="https://github.com/weavejester/compojure" target="_blank" rel="noopener">Compojure</a>: routing</li>
+<li><a href="http://clojure-liberator.github.io/liberator/" target="_blank" rel="noopener">Liberator</a>: request flow</li>
+<li><a href="https://github.com/cgrand/enlive" target="_blank" rel="noopener">Enlive</a>: template</li>
+<li><a href="https://github.com/levand/quiescent" target="_blank" rel="noopener">Quiescent</a>: React</li>
+<li><a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a></li>
+<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
+<li><a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>: client side database</li>
+</ul>
+</li>
+<li><p><a href="https://github.com/danielsz/system" target="_blank" rel="noopener">system</a></p>
+<ul>
+<li><a href="http://www.h2database.com/html/main.html" target="_blank" rel="noopener">H2</a>: relational database</li>
+<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a>: async http server</li>
+<li><a href="https://github.com/ztellman/aleph" target="_blank" rel="noopener">Aleph</a>: async http server</li>
+<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a>: WebSocket / Ajax</li>
+<li><a href="http://clojuremongodb.info/" target="_blank" rel="noopener">Monger</a>: MongoDB</li>
+<li><a href="http://www.datomic.com/" target="_blank" rel="noopener">Datomic</a>: Immutable database</li>
+</ul>
+</li>
+<li><p><a href="https://github.com/plexus/chestnut" target="_blank" rel="noopener">Chestnut</a></p>
+<ul>
+<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
+<li><a href="https://github.com/tomjakubowski/weasel" target="_blank" rel="noopener">Weasel</a>: REPL</li>
+<li><a href="https://github.com/omcljs/om" target="_blank" rel="noopener">Om</a>: React</li>
+<li><a href="https://github.com/ring-clojure/ring" target="_blank" rel="noopener">Ring</a>: http server</li>
+<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a> : async http server</li>
+<li><a href="https://github.com/lynaghk/jetty7-websockets-async" target="_blank" rel="noopener">jetty7-websockets-async</a>: async http server</li>
+</ul>
+</li>
+</ul>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p><a href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript" target="_blank" rel="noopener">Keeping Client State Up-To-Date In Reagent / Clojurescript</a>の議論で気にいったパターンはSPAをデータベースのクライアントの1つとみなすデザインです。</p>
+<p>処理に必要なデータはスナップショットとして最初にクライアントに取得します。SPA側でデータを加工したあとにサーバーにsubmitします。SPAが対象のデータをリモートで処理している間の一貫性は保証されますが、処理中に他のクライアントがサーバーのデータ更新をコミットしていればsubmitに失敗して操作をやり直します。</p>
+<p>これは昔からあるアーキテクチャでリッチクライアントと呼ばれていたFlexやGWT、ExtJSなどでよく実装していた手法です。業務系アプリだと意外とうまくいきます。同じレコードを並行して更新させないようにしたり、頻繁にデータを更新しないなど、仕様を工夫するのが現実的なようです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/WebSocket/" rel="tag"># WebSocket</a>
+              <a href="/tags/Clojure/" rel="tag"># Clojure</a>
+              <a href="/tags/Ajax/" rel="tag"># Ajax</a>
+              <a href="/tags/ClojureScript/" rel="tag"># ClojureScript</a>
+              <a href="/tags/Reagent/" rel="tag"># Reagent</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/18/hapijs-socketio-twitter-streaming-api/" rel="prev" title="Hapi.js with Socket.IO - Part2: twitからTwitter Streaming APIを使う">
+      <i class="fa fa-chevron-left"></i> Hapi.js with Socket.IO - Part2: twitからTwitter Streaming APIを使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/20/actionherojs-install/" rel="next" title="actionhero.js入門 - Part1: Getting Started">
+      actionhero.js入門 - Part1: Getting Started <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#データベースの同期"><span class="nav-number">1.</span> <span class="nav-text">データベースの同期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocketとAjax-REST"><span class="nav-number">2.</span> <span class="nav-text">WebSocketとAjax (REST)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-async"><span class="nav-number">3.</span> <span class="nav-text">core.async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC"><span class="nav-number">4.</span> <span class="nav-text">RPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#フルスタック"><span class="nav-number">5.</span> <span class="nav-text">フルスタック</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

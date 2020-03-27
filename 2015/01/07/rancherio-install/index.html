@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IDCFクラウド上に構築したSalt+Docker環境にRancher.ioをデプロイします。Rancher.ioは管理サービスもDockerコンテナとしてデプロイするので、インストールがとても簡単です。salt-masterにManagement Serverを、salt-minionにDocker Nodesをデプロイします。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rancher.ioでDockerコンテナを管理する - Part3: Rancher.ioをインストールする">
+<meta property="og:url" content="http://masato.github.io/2015/01/07/rancherio-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IDCFクラウド上に構築したSalt+Docker環境にRancher.ioをデプロイします。Rancher.ioは管理サービスもDockerコンテナとしてデプロイするので、インストールがとても簡単です。salt-masterにManagement Serverを、salt-minionにDocker Nodesをデプロイします。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-ui-hosts-top.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-basic.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-port.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-command.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-ui-hosts.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-ghost.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-execute-shell.png">
+<meta property="og:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-container-shell.png">
+<meta property="article:published_time" content="2015-01-06T16:29:55.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.830Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Docker管理">
+<meta property="article:tag" content="Salt">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Rancherio">
+<meta property="article:tag" content="Cattle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/01/07/rancherio-install/rancher-ui-hosts-top.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/01/07/rancherio-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Rancher.ioでDockerコンテナを管理する - Part3: Rancher.ioをインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/01/07/rancherio-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rancher.ioでDockerコンテナを管理する - Part3: Rancher.ioをインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 7 2015 01:29:55" itemprop="dateCreated datePublished" datetime="2015-01-07T01:29:55+09:00">Jan 7 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">IDCFクラウド上に構築したSalt+Docker環境にRancher.ioをデプロイします。Rancher.ioは管理サービスもDockerコンテナとしてデプロイするので、インストールがとても簡単です。salt-masterにManagement Serverを、salt-minionにDocker Nodesをデプロイします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>IDCFクラウド上に構築した<a href="/2015/01/06/rancherio-install-salt-docker/">Salt+Docker</a>環境に<a href="https://github.com/rancherio/rancher" target="_blank" rel="noopener">Rancher.io</a>をデプロイします。Rancher.ioは管理サービスもDockerコンテナとしてデプロイするので、インストールがとても簡単です。salt-masterにManagement Serverを、salt-minionにDocker Nodesをデプロイします。</p>
+<a id="more"></a>
+
+
+<h3 id="Saltクラスタの確認"><a href="#Saltクラスタの確認" class="headerlink" title="Saltクラスタの確認"></a>Saltクラスタの確認</h3><p>minionの仮想マシンは以下の2台です。salt.cs3d0idcfcloud.internalの仮想マシンはsalt-masterとsalt-minionを兼用しています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt-key</span><br><span class="line">Accepted Keys:</span><br><span class="line">minion1.cs3d0idcfcloud.internal</span><br><span class="line">salt.cs3d0idcfcloud.internal</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">Rejected Keys:</span><br><span class="line">root@salt:/srv/salt/config/salt<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Management-Serverのインストール"><a href="#Management-Serverのインストール" class="headerlink" title="Management Serverのインストール"></a>Management Serverのインストール</h3><p>salt-masterの仮想マシン(salt.cs3d0idcfcloud.internal)にログインします。Dockerイメージをpullして起動するだけです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo docker pull rancher/server</span><br><span class="line">$ sudo docker run -d -p 8080:8080 rancher/server</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker-Nodesのインストール"><a href="#Docker-Nodesのインストール" class="headerlink" title="Docker Nodesのインストール"></a>Docker Nodesのインストール</h3><p>salt-minionの仮想マシン(minion1.cs3d0idcfcloud.internal)にログインします。こちらもDockerイメージをpullして起動するだけですが、いくつか引数を渡します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo docker pull rancher/agent</span><br><span class="line">$ sudo docker run  -it \</span><br><span class="line">  -e CATTLE_AGENT_IP=<span class="string">"210.140.173.117"</span> \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock rancher/agent \</span><br><span class="line">  http://10.3.0.165:8080</span><br></pre></td></tr></table></figure>
+
+<h3 id="CATTLE-AGENT-IP"><a href="#CATTLE-AGENT-IP" class="headerlink" title="CATTLE_AGENT_IP"></a>CATTLE_AGENT_IP</h3><p>まず、環境変数の<code>CATTLE_AGENT_IP</code>は<code>Docker Nodes</code>の仮想マシンにスタティックNATしたパブリックIPアドレスを指定します。IDCFクラウドの場合アカウントのVLANとインターネットの間にVirtual Routerがあります。仮想マシンのプライベートIPアドレスは直接インターネットの外部から接続できません。あらかじめポータル画面からパブリックIPアドレスの1つをminion1の仮想マシンに対してスタティックNATしておく必要があります。<code>CATTLE_AGENT_IP</code>にはこのスタティックNATを指定して、外部から接続できるIPアドレスを割り当てます。このIPアドレスはRancher.ioのUI(管理画面)に<code>Host</code>のIPアドレスに表示されます。ブラウザからWebSocketを使ったコンソール接続や、cAdvisorを使ったメトリクスの収集に直接使用されます。</p>
+<h3 id="Management-ServerのIPアドレス"><a href="#Management-ServerのIPアドレス" class="headerlink" title="Management ServerのIPアドレス"></a>Management ServerのIPアドレス</h3><p>上記では<code>http://10.3.0.165:8080</code>が<code>Management Server</code>のIPアドレスになります。<code>Docker Nodes</code>からの接続になるためアカウントVLAN内のプライベートIPアドレスで指定します。</p>
+<h3 id="UI-Rancher-ioの管理画面"><a href="#UI-Rancher-ioの管理画面" class="headerlink" title="UI (Rancher.ioの管理画面)"></a>UI (Rancher.ioの管理画面)</h3><p><code>Docker Nodes</code>のコンテナをsalt-minionで起動してしばらくするとUIにHostとして表示されます。</p>
+<img src="/2015/01/07/rancherio-install/rancher-ui-hosts-top.png" class="center">
+
+<h3 id="Ghostイメージのデプロイ"><a href="#Ghostイメージのデプロイ" class="headerlink" title="Ghostイメージのデプロイ"></a>Ghostイメージのデプロイ</h3><p>サンプルとして<a href="https://registry.hub.docker.com/u/dockerfile/ghost/" target="_blank" rel="noopener">dockerfile/ghost/</a>を使います。通常の<code>docker run</code>コマンドの場合は以下に相当します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -d -p 80:2368 dockerfile/ghost</span><br></pre></td></tr></table></figure>
+
+<h3 id="Create-Containerダイアログ"><a href="#Create-Containerダイアログ" class="headerlink" title="Create Containerダイアログ"></a>Create Containerダイアログ</h3><p>Hostの<code>No container yet.</code>の下のプラスボタンを押して<code>Create Container</code>ダイアログを表示します。</p>
+<p>The BasicタブにDocker Hub Registryから取得するイメージ情報など基本情報を入力します。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-basic.png" class="center">
+
+<p>Portタブに、Dockerホストにマップするポートを入力します。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-port.png" class="center">
+
+<p>Commandタブの<code>As User</code>は必須項目になっています。ブランクだとコンテナが作成できないため参考値の<code>root</code>を指定します。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-command.png" class="center">
+
+<h3 id="cAdvisorのリアルタイムグラフ"><a href="#cAdvisorのリアルタイムグラフ" class="headerlink" title="cAdvisorのリアルタイムグラフ"></a>cAdvisorのリアルタイムグラフ</h3><p>cAdvisorのメトリクスをブラウザからWebSocketでCattle Agent経由で取得します。<code>Docker Nodes</code>のホストと、コンテナのメトリクスがそれぞれリアルタイムで表示されます。</p>
+<p>Hostのグラフです。</p>
+<img src="/2015/01/07/rancherio-install/rancher-ui-hosts.png" class="center">
+
+<p>コンテナのグラフです。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-ghost.png" class="center">
+
+<h3 id="コンテナのシェル操作"><a href="#コンテナのシェル操作" class="headerlink" title="コンテナのシェル操作"></a>コンテナのシェル操作</h3><p>各Containerページの右上、<code>Execute Shell</code>アイコンをクリックするとWebSocket経由でコンテナのシェルを実行することができます。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-execute-shell.png" class="center">
+
+<p>コンテナのコンソールはlibvirtのVNC WebSocketサポートを使っているようです。</p>
+<img src="/2015/01/07/rancherio-install/rancher-container-shell.png" class="center">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker%E7%AE%A1%E7%90%86/" rel="tag"># Docker管理</a>
+              <a href="/tags/Salt/" rel="tag"># Salt</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Rancherio/" rel="tag"># Rancherio</a>
+              <a href="/tags/Cattle/" rel="tag"># Cattle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/01/06/rancherio-install-salt-docker/" rel="prev" title="Rancher.ioでDockerコンテナを管理する - Part2: IDCFクラウドにSaltとDockerをインストールする">
+      <i class="fa fa-chevron-left"></i> Rancher.ioでDockerコンテナを管理する - Part2: IDCFクラウドにSaltとDockerをインストールする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/01/08/cloudant-turorials-references/" rel="next" title="Cloudantのチュートリアル - Part1: はじめに">
+      Cloudantのチュートリアル - Part1: はじめに <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Saltクラスタの確認"><span class="nav-number">1.</span> <span class="nav-text">Saltクラスタの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Management-Serverのインストール"><span class="nav-number">2.</span> <span class="nav-text">Management Serverのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Nodesのインストール"><span class="nav-number">3.</span> <span class="nav-text">Docker Nodesのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CATTLE-AGENT-IP"><span class="nav-number">4.</span> <span class="nav-text">CATTLE_AGENT_IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Management-ServerのIPアドレス"><span class="nav-number">5.</span> <span class="nav-text">Management ServerのIPアドレス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UI-Rancher-ioの管理画面"><span class="nav-number">6.</span> <span class="nav-text">UI (Rancher.ioの管理画面)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ghostイメージのデプロイ"><span class="nav-number">7.</span> <span class="nav-text">Ghostイメージのデプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-Containerダイアログ"><span class="nav-number">8.</span> <span class="nav-text">Create Containerダイアログ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cAdvisorのリアルタイムグラフ"><span class="nav-number">9.</span> <span class="nav-text">cAdvisorのリアルタイムグラフ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナのシェル操作"><span class="nav-number">10.</span> <span class="nav-text">コンテナのシェル操作</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

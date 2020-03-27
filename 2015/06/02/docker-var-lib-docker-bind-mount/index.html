@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に&#x2F;var&#x2F;lib&#x2F;dockerは再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は&#x2F;etc&#x2F;fstabの記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerの&#x2F;var&#x2F;lib&#x2F;dockerを移動する">
+<meta property="og:url" content="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に&#x2F;var&#x2F;lib&#x2F;dockerは再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は&#x2F;etc&#x2F;fstabの記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワ">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-06-02T12:56:48.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.602Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="DockerCompose">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Dockerの/var/lib/dockerを移動する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dockerの/var/lib/dockerを移動する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 2 2015 21:56:48" itemprop="dateCreated datePublished" datetime="2015-06-02T21:56:48+09:00">Jun 2 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に/var/lib/dockerは再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は/etc/fstabの記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワードを忘れてしまいシングルモードで起動する必要があったりと、作業には十分注意が必要です。以下のサイトを参考にしました。最初に読んでいたサイトはmountのbindオプションの使い方が間違っていて混乱してしまいました。Moving docker images location to different partition Moving Docker "stuff" to a Different Drive</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に<code>/var/lib/docker</code>は再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は<code>/etc/fstab</code>の記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワードを忘れてしまいシングルモードで起動する必要があったりと、作業には十分注意が必要です。</p>
+<p>以下のサイトを参考にしました。最初に読んでいたサイトはmountのbindオプションの使い方が間違っていて混乱してしまいました。</p>
+<ul>
+<li><a href="http://alexander.holbreich.org/2014/07/moving-docker-images-different-partition/" target="_blank" rel="noopener">Moving docker images location to different partition</a></li>
+<li><a href="http://peterjolson.com/moving-docker-stuff-to-a-different-drive/" target="_blank" rel="noopener">Moving Docker “stuff” to a Different Drive</a></li>
+</ul>
+<a id="more"></a>
+
+<h2 id="環境のバージョン"><a href="#環境のバージョン" class="headerlink" title="環境のバージョン"></a>環境のバージョン</h2><p>最初に作業環境のDockerやOSのバージョンを確認します。</p>
+<p>Dockerのバージョン</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker version</span><br><span class="line">Client version: 1.6.2</span><br><span class="line">Client API version: 1.18</span><br><span class="line">Go version (client): go1.4.2</span><br><span class="line">Git commit (client): 7c8fca2</span><br><span class="line">OS/Arch (client): linux/amd64</span><br><span class="line">Server version: 1.6.2</span><br><span class="line">Server API version: 1.18</span><br><span class="line">Go version (server): go1.4.2</span><br><span class="line">Git commit (server): 7c8fca2</span><br><span class="line">OS/Arch (server): linux/amd64</span><br></pre></td></tr></table></figure>
+
+<p>カーネル</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.13.0-33-generic (buildd@tipua) (gcc version 4.8.2 (Ubuntu 4.8.2-19ubuntu1) ) <span class="comment">#58-Ubuntu SMP Tue Jul 29 16:45:05 UTC 2014</span></span><br></pre></td></tr></table></figure>
+
+<p>Ubuntu 14.04.2</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/lsb-release</span><br><span class="line">NAME=<span class="string">"Ubuntu"</span></span><br><span class="line">VERSION=<span class="string">"14.04.2 LTS, Trusty Tahr"</span></span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">PRETTY_NAME=<span class="string">"Ubuntu 14.04.2 LTS"</span></span><br><span class="line">VERSION_ID=<span class="string">"14.04"</span></span><br><span class="line">HOME_URL=<span class="string">"http://www.ubuntu.com/"</span></span><br><span class="line">SUPPORT_URL=<span class="string">"http://help.ubuntu.com/"</span></span><br><span class="line">BUG_REPORT_URL=<span class="string">"http://bugs.launchpad.net/ubuntu/"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="ディスクの追加"><a href="#ディスクの追加" class="headerlink" title="ディスクの追加"></a>ディスクの追加</h2><p>作業前のディスクの使用状況です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda1        15G  4.1G  9.9G  29% /</span><br><span class="line">none            4.0K     0  4.0K   0% /sys/fs/cgroup</span><br><span class="line">udev            2.0G  4.0K  2.0G   1% /dev</span><br><span class="line">tmpfs           395M  816K  394M   1% /run</span><br><span class="line">none            5.0M     0  5.0M   0% /run/lock</span><br><span class="line">none            2.0G  476K  2.0G   1% /run/shm</span><br><span class="line">none            100M     0  100M   0% /run/user</span><br></pre></td></tr></table></figure>
+
+<p>40GBのディスクを追加した状態です。今回はクラウド上ですがfdiskでデバイスが認識されたことがわかります。まだパーティションありません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 16.1 GB, 16106127360 bytes</span><br><span class="line">255 heads, 63 sectors/track, 1958 cylinders, total 31457280 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x000db9c4</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *        2048    31455231    15726592   83  Linux</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb: 42.9 GB, 42949672960 bytes</span><br><span class="line">255 heads, 63 sectors/track, 5221 cylinders, total 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x00000000</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb doesn<span class="string">'t contain a valid partition table</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="パーティションの作成"><a href="#パーティションの作成" class="headerlink" title="パーティションの作成"></a>パーティションの作成</h3><p>fdiskでパーティションを作成します。コマンドとしては<code>n、p、[Enter]x3回、w</code>をキーを入力します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk /dev/sdb</span><br><span class="line">Device contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabel</span><br><span class="line">Building a new DOS disklabel with disk identifier 0xef0c9f8a.</span><br><span class="line">Changes will remain <span class="keyword">in</span> memory only, until you decide to write them.</span><br><span class="line">After that, of course, the previous content won<span class="string">'t be recoverable.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Command (m for help): n</span></span><br><span class="line"><span class="string">Partition type:</span></span><br><span class="line"><span class="string">   p   primary (0 primary, 0 extended, 4 free)</span></span><br><span class="line"><span class="string">   e   extended</span></span><br><span class="line"><span class="string">Select (default p): p</span></span><br><span class="line"><span class="string">Partition number (1-4, default 1):</span></span><br><span class="line"><span class="string">Using default value 1</span></span><br><span class="line"><span class="string">First sector (2048-83886079, default 2048):</span></span><br><span class="line"><span class="string">Using default value 2048</span></span><br><span class="line"><span class="string">Last sector, +sectors or +size&#123;K,M,G&#125; (2048-83886079, default 83886079):</span></span><br><span class="line"><span class="string">Using default value 83886079</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Command (m for help): w</span></span><br><span class="line"><span class="string">The partition table has been altered!</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Calling ioctl() to re-read partition table.</span></span><br><span class="line"><span class="string">Syncing disks.</span></span><br></pre></td></tr></table></figure>
+
+<p>パーティション作成の確認をします。<code>/dev/sdb1</code>が作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk -l</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 16.1 GB, 16106127360 bytes</span><br><span class="line">255 heads, 63 sectors/track, 1958 cylinders, total 31457280 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0x000db9c4</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *        2048    31455231    15726592   83  Linux</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb: 42.9 GB, 42949672960 bytes</span><br><span class="line">171 heads, 5 sectors/track, 98112 cylinders, total 83886080 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk identifier: 0xef0c9f8a</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sdb1            2048    83886079    41942016   83  Linux</span><br></pre></td></tr></table></figure>
+
+<h3 id="ファイルシステムの作成"><a href="#ファイルシステムの作成" class="headerlink" title="ファイルシステムの作成"></a>ファイルシステムの作成</h3><p>既存ファイルシステムはext4なので同じタイプで作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -T</span><br><span class="line">Filesystem     Type     1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/sda1      ext4      15348720 4212380  10333628  29% /</span><br><span class="line">none           tmpfs            4       0         4   0% /sys/fs/cgroup</span><br><span class="line">udev           devtmpfs   2009748       4   2009744   1% /dev</span><br><span class="line">tmpfs          tmpfs       404100     820    403280   1% /run</span><br><span class="line">none           tmpfs         5120       0      5120   0% /run/lock</span><br><span class="line">none           tmpfs      2020484     476   2020008   1% /run/shm</span><br><span class="line">none           tmpfs       102400       0    102400   0% /run/user</span><br></pre></td></tr></table></figure>
+
+<p>ext4のファイルシステムを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkfs.ext4 /dev/sdb1</span><br><span class="line">mke2fs 1.42.9 (4-Feb-2014)</span><br><span class="line">Filesystem label=</span><br><span class="line">OS <span class="built_in">type</span>: Linux</span><br><span class="line">Block size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Fragment size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Stride=0 blocks, Stripe width=0 blocks</span><br><span class="line">2621440 inodes, 10485504 blocks</span><br><span class="line">524275 blocks (5.00%) reserved <span class="keyword">for</span> the super user</span><br><span class="line">First data block=0</span><br><span class="line">Maximum filesystem blocks=4294967296</span><br><span class="line">320 block groups</span><br><span class="line">32768 blocks per group, 32768 fragments per group</span><br><span class="line">8192 inodes per group</span><br><span class="line">Superblock backups stored on blocks:</span><br><span class="line">true32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,</span><br><span class="line">true4096000, 7962624</span><br><span class="line"></span><br><span class="line">Allocating group tables: <span class="keyword">done</span></span><br><span class="line">Writing inode tables: <span class="keyword">done</span></span><br><span class="line">Creating journal (32768 blocks): <span class="keyword">done</span></span><br><span class="line">Writing superblocks and filesystem accounting information: <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="パーティションのマウント"><a href="#パーティションのマウント" class="headerlink" title="パーティションのマウント"></a>パーティションのマウント</h2><p>新しくパーティションをマウントしてDockerの<code>/var/lib/docker</code>を移動していきます。まずDockerを停止します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo service docker stop</span><br><span class="line">docker stop/waiting</span><br></pre></td></tr></table></figure>
+
+<p>パーティションをマウントするディレクトリを作成します。Ubuntuは<code>/media</code>に作ることが多いです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /media/data</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/fstab</code>の編集は危険なので必ずパックアップをとります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cp -ip /etc/fstab&#123;,.`date +%Y%m%d`&#125;</span><br></pre></td></tr></table></figure>
+
+<p>パーティションの UUID を<code>blkid</code>コマンドで確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo  blkid | grep sdb1</span><br><span class="line">/dev/sdb1: UUID=<span class="string">"d45eaaab-e223-4162-96b3-fefea9392cad"</span> TYPE=<span class="string">"ext4"</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/fstab</code>に新しいパーティションのUUIDを追加します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/fstab</span></figcaption><table><tr><td class="code"><pre><span class="line">UUID=ed7bdb81-136d-458b-8121-2c4e5d3f569f /               ext4    errors=remount-ro 0       1</span><br><span class="line">/dev/fd0        /media/floppy0  auto    rw,user,noauto,<span class="built_in">exec</span>,utf8 0       0</span><br><span class="line"></span><br><span class="line">UUID=d45eaaab-e223-4162-96b3-fefea9392cad /media/data ext4 defaults 0  2</span><br></pre></td></tr></table></figure>
+
+<p>いつも忘れるのですが、4,5,6列目は以下のように設定しました。</p>
+<ul>
+<li>4列目: デフォルト</li>
+<li>5列目: 0: dumpする</li>
+<li>6列目: 2: fsckする</li>
+</ul>
+<p><code>/etc/fstab</code>の設定を再マウントします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mount -a</span><br></pre></td></tr></table></figure>
+
+<p><code>/dev/sdb1</code>のデバイスがマウントされました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda1        15G  4.1G  9.9G  29% /</span><br><span class="line">none            4.0K     0  4.0K   0% /sys/fs/cgroup</span><br><span class="line">udev            2.0G  8.0K  2.0G   1% /dev</span><br><span class="line">tmpfs           395M  792K  394M   1% /run</span><br><span class="line">none            5.0M     0  5.0M   0% /run/lock</span><br><span class="line">none            2.0G     0  2.0G   0% /run/shm</span><br><span class="line">none            100M     0  100M   0% /run/user</span><br><span class="line">/dev/sdb1        40G   48M   38G   1% /media/data</span><br></pre></td></tr></table></figure>
+
+<h2 id="var-lib-dockerの移動"><a href="#var-lib-dockerの移動" class="headerlink" title="/var/lib/dockerの移動"></a>/var/lib/dockerの移動</h2><h3 id="rsyncでディレクトリをコピー"><a href="#rsyncでディレクトリをコピー" class="headerlink" title="rsyncでディレクトリをコピー"></a>rsyncでディレクトリをコピー</h3><p><code>rsync</code>で<code>/var/lib/docker</code>のファイルを新しいディレクトリにコピーします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /media/data/docker</span><br><span class="line">$ sudo rsync -aXS /var/lib/docker/. /media/data/docker/</span><br></pre></td></tr></table></figure>
+
+<p><code>rsync</code>が終了して、<code>/var/lib/docker</code>と<code>/media/data/docker/</code>が同じ内容になりました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo du -sch /var/lib/docker/*</span><br><span class="line">2.1G	/var/lib/docker/aufs</span><br><span class="line">140K	/var/lib/docker/containers</span><br><span class="line">808K	/var/lib/docker/graph</span><br><span class="line">15M	/var/lib/docker/init</span><br><span class="line">12K	/var/lib/docker/linkgraph.db</span><br><span class="line">4.0K	/var/lib/docker/repositories-aufs</span><br><span class="line">4.0K	/var/lib/docker/tmp</span><br><span class="line">8.0K	/var/lib/docker/trust</span><br><span class="line">44K	/var/lib/docker/volumes</span><br><span class="line">2.2G	total</span><br><span class="line">$ sudo du -sch /media/data/docker/*</span><br><span class="line">2.1G	/media/data/docker/aufs</span><br><span class="line">140K	/media/data/docker/containers</span><br><span class="line">808K	/media/data/docker/graph</span><br><span class="line">15M	/media/data/docker/init</span><br><span class="line">12K	/media/data/docker/linkgraph.db</span><br><span class="line">4.0K	/media/data/docker/repositories-aufs</span><br><span class="line">4.0K	/media/data/docker/tmp</span><br><span class="line">8.0K	/media/data/docker/trust</span><br><span class="line">44K	/media/data/docker/volumes</span><br><span class="line">2.1G	total</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="ディレクトリのマウント"><a href="#ディレクトリのマウント" class="headerlink" title="ディレクトリのマウント"></a>ディレクトリのマウント</h2><p>オリジナルの<code>/var/lib/docker</code>を念のためリネームしてバックアップします。その後ディレクトリを空にして作り直します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mv /var/lib/docker /var/lib/docker.bak</span><br><span class="line">$ sudo mkdir /var/lib/docker</span><br></pre></td></tr></table></figure>
+
+<p><code>/var/lib/docker</code>は空のディレクトリの状態です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ls /media/data/docker/</span><br><span class="line">aufs        graph  linkgraph.db       tmp    volumes</span><br><span class="line">containers  init   repositories-aufs  trust</span><br><span class="line">$ ls /var/lib/docker</span><br></pre></td></tr></table></figure>
+
+<p><code>/media/data/docker</code>を<code>/var/lib/docker</code>にbindオプションを付けてマウントします。<a href="http://wiki.bit-hive.com/north/pg/BIND%A5%AA%A5%D7%A5%B7%A5%E7%A5%F3%A4%C7%A4%CEmount" target="_blank" rel="noopener">BINDオプションでのmount</a>に詳しく解説してくれています。mountのbindオプションを使うと任意のディレクトリを独自のファイルシステムとしてアタッチすることができます。ディレクトリのあるデバイスのパーティションがマウントされている必要があります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mount -o <span class="built_in">bind</span>  /media/data/docker /var/lib/docker</span><br><span class="line">$ sudo du -sch /var/lib/docker/*</span><br><span class="line">2.1G	/var/lib/docker/aufs</span><br><span class="line">140K	/var/lib/docker/containers</span><br><span class="line">808K	/var/lib/docker/graph</span><br><span class="line">15M	/var/lib/docker/init</span><br><span class="line">12K	/var/lib/docker/linkgraph.db</span><br><span class="line">4.0K	/var/lib/docker/repositories-aufs</span><br><span class="line">4.0K	/var/lib/docker/tmp</span><br><span class="line">8.0K	/var/lib/docker/trust</span><br><span class="line">44K	/var/lib/docker/volumes</span><br><span class="line">2.1G	total</span><br></pre></td></tr></table></figure>
+
+<p><code>/media/data/docker</code>ディレクトリが<code>/var/lib/docker</code>にマウントされました。最初はこれをfstabに逆で書いてしてしまい起動しなくなってしまいました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -ha</span><br><span class="line">Filesystem       Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda1            15G  4.1G  9.9G  29% /</span><br><span class="line">...</span><br><span class="line">/dev/sdb1            40G  2.2G   36G   6% /media/data</span><br><span class="line">/media/data/docker   40G  2.2G   36G   6% /var/lib/docker</span><br></pre></td></tr></table></figure>
+
+<p><code>/etc/fstab</code>を編集して再起動後も有効にします。</p>
+<figure class="highlight bash"><figcaption><span>/etc/fstab</span></figcaption><table><tr><td class="code"><pre><span class="line">/media/data/docker /var/lib/docker  none <span class="built_in">bind</span> 0 0</span><br></pre></td></tr></table></figure>
+
+<p>mountをリロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mount -a</span><br></pre></td></tr></table></figure>
+
+<h2 id="移動先からDockerを起動して確認"><a href="#移動先からDockerを起動して確認" class="headerlink" title="移動先からDockerを起動して確認"></a>移動先からDockerを起動して確認</h2><h3 id="aufsだけ古いディレクトリで増加してしまう"><a href="#aufsだけ古いディレクトリで増加してしまう" class="headerlink" title="aufsだけ古いディレクトリで増加してしまう"></a>aufsだけ古いディレクトリで増加してしまう</h3><p>Dockerを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo service docker start</span><br><span class="line">docker start/running, process 4276</span><br></pre></td></tr></table></figure>
+
+<p><code>/var/lib/docker/aufs</code>だけ4.3Gに増加してしまいました。 <code>/media/data/docker/aufs</code>は変化していません。aufsは以前の場所のままのようです。この状態で新しいイメージを<code>docker pull</code>しても<code>/var/lib/docker</code>は増加しません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo du -sch /var/lib/docker/*</span><br><span class="line">4.3G	/var/lib/docker/aufs</span><br><span class="line">168K	/var/lib/docker/containers</span><br><span class="line">808K	/var/lib/docker/graph</span><br><span class="line">15M	/var/lib/docker/init</span><br><span class="line">12K	/var/lib/docker/linkgraph.db</span><br><span class="line">4.0K	/var/lib/docker/repositories-aufs</span><br><span class="line">4.0K	/var/lib/docker/tmp</span><br><span class="line">8.0K	/var/lib/docker/trust</span><br><span class="line">44K	/var/lib/docker/volumes</span><br><span class="line">4.3G	total</span><br><span class="line">$ sudo du -sch /media/data/docker/*</span><br><span class="line">2.1G	/media/data/docker/aufs</span><br><span class="line">168K	/media/data/docker/containers</span><br><span class="line">808K	/media/data/docker/graph</span><br><span class="line">15M	/media/data/docker/init</span><br><span class="line">12K	/media/data/docker/linkgraph.db</span><br><span class="line">4.0K	/media/data/docker/repositories-aufs</span><br><span class="line">4.0K	/media/data/docker/tmp</span><br><span class="line">8.0K	/media/data/docker/trust</span><br><span class="line">44K	/media/data/docker/volumes</span><br><span class="line">2.1G	total</span><br></pre></td></tr></table></figure>
+
+<p>aufsが増えた原因は、docker-compose.ymlのサービスを<code>restart: always</code>にしているのでDockerの起動時に開始したためです。すでに作成済みのコンテナはmountのbindオプションだけではうまく移動できないみたいです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose ps</span><br><span class="line">      Name             Command             State              Ports</span><br><span class="line">-------------------------------------------------------------------------</span><br><span class="line">meshblucompose_m   npm start          Up                 0.0.0.0:1883-&gt;18</span><br><span class="line">eshblu_1                                                 83/tcp, 9000/tcp</span><br><span class="line">meshblucompose_m   /entrypoint.sh     Up                 27017/tcp</span><br><span class="line">ongo_1             mongod</span><br><span class="line">meshblucompose_o   nginx -c /etc/ng   Up</span><br><span class="line">penresty_run_1     inx/nginx. ...</span><br><span class="line">meshblucompose_r   /entrypoint.sh     Up                 6379/tcp</span><br><span class="line">edis_1             redis-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="DOCKER-OPTSに追加する"><a href="#DOCKER-OPTSに追加する" class="headerlink" title="DOCKER_OPTSに追加する"></a>DOCKER_OPTSに追加する</h3><p>Dockerのオプションに新しい<code>/var/lib/docker</code>のディレクトリを指定する必要がありました。Dockerを停止してから設定ファイルに追記します。</p>
+<figure class="highlight bash"><figcaption><span>/etc/default/docker</span></figcaption><table><tr><td class="code"><pre><span class="line">DOCKER_OPTS=<span class="string">"-g /media/data/docker"</span></span><br></pre></td></tr></table></figure>
+
+<p>Dockerを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo service docker start</span><br><span class="line">docker start/running, process 5786</span><br></pre></td></tr></table></figure>
+
+<p>ようやく<code>/var/lib/docker</code>が増加せず、<code>/media/data/docker/</code>のディレクトリのaufsが増加しました。<code>/var/lib/docker</code>の移動ができました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo du -sch /var/lib/docker/*</span><br><span class="line">2.1G	/var/lib/docker/aufs</span><br><span class="line">180K	/var/lib/docker/containers</span><br><span class="line">808K	/var/lib/docker/graph</span><br><span class="line">15M	/var/lib/docker/init</span><br><span class="line">12K	/var/lib/docker/linkgraph.db</span><br><span class="line">4.0K	/var/lib/docker/repositories-aufs</span><br><span class="line">4.0K	/var/lib/docker/tmp</span><br><span class="line">8.0K	/var/lib/docker/trust</span><br><span class="line">44K	/var/lib/docker/volumes</span><br><span class="line">2.1G	total</span><br><span class="line">$ sudo du -sch /media/data/docker/*</span><br><span class="line">4.3G	/media/data/docker/aufs</span><br><span class="line">180K	/media/data/docker/containers</span><br><span class="line">808K	/media/data/docker/graph</span><br><span class="line">15M	/media/data/docker/init</span><br><span class="line">12K	/media/data/docker/linkgraph.db</span><br><span class="line">4.0K	/media/data/docker/repositories-aufs</span><br><span class="line">4.0K	/media/data/docker/tmp</span><br><span class="line">8.0K	/media/data/docker/trust</span><br><span class="line">44K	/media/data/docker/volumes</span><br><span class="line">4.3G	total</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/01/nodejs-gmail-with-attachment/" rel="prev" title="Node.jsからGmailの添付ファイルを送信する">
+      <i class="fa fa-chevron-left"></i> Node.jsからGmailの添付ファイルを送信する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/" rel="next" title="InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml">
+      InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#環境のバージョン"><span class="nav-number">1.</span> <span class="nav-text">環境のバージョン</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ディスクの追加"><span class="nav-number">2.</span> <span class="nav-text">ディスクの追加</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#パーティションの作成"><span class="nav-number">2.1.</span> <span class="nav-text">パーティションの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ファイルシステムの作成"><span class="nav-number">2.2.</span> <span class="nav-text">ファイルシステムの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#パーティションのマウント"><span class="nav-number">3.</span> <span class="nav-text">パーティションのマウント</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#var-lib-dockerの移動"><span class="nav-number">4.</span> <span class="nav-text">&#x2F;var&#x2F;lib&#x2F;dockerの移動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rsyncでディレクトリをコピー"><span class="nav-number">4.1.</span> <span class="nav-text">rsyncでディレクトリをコピー</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ディレクトリのマウント"><span class="nav-number">5.</span> <span class="nav-text">ディレクトリのマウント</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移動先からDockerを起動して確認"><span class="nav-number">6.</span> <span class="nav-text">移動先からDockerを起動して確認</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#aufsだけ古いディレクトリで増加してしまう"><span class="nav-number">6.1.</span> <span class="nav-text">aufsだけ古いディレクトリで増加してしまう</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOCKER-OPTSに追加する"><span class="nav-number">6.2.</span> <span class="nav-text">DOCKER_OPTSに追加する</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

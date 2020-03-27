@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RenteはReagent(React)とSenteを使ったClojureScriptのフレームワークです。サーバーとの通信はWebSocketとAjax、core.asyncが使えます。デンマークのEnterlabという会社がcommitも盛んに開発しています。Eclipse Public License](https:&#x2F;&#x2F;ja.wikipedia.org&#x2F;wiki&#x2F;Eclipse_Public">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reagent入門 - Part5: Renteをインストール">
+<meta property="og:url" content="http://masato.github.io/2015/06/23/reagent-rente-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="RenteはReagent(React)とSenteを使ったClojureScriptのフレームワークです。サーバーとの通信はWebSocketとAjax、core.asyncが使えます。デンマークのEnterlabという会社がcommitも盛んに開発しています。Eclipse Public License](https:&#x2F;&#x2F;ja.wikipedia.org&#x2F;wiki&#x2F;Eclipse_Public">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/06/23/reagent-rente-install/rente.png">
+<meta property="og:image" content="http://masato.github.io/2015/06/23/reagent-rente-install/rente-callback.png">
+<meta property="og:image" content="http://masato.github.io/2015/06/23/reagent-rente-install/rente-pushevent.png">
+<meta property="article:published_time" content="2015-06-22T15:15:32.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.881Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="Clojure">
+<meta property="article:tag" content="ClojureScript">
+<meta property="article:tag" content="Figwheel">
+<meta property="article:tag" content="Reagent">
+<meta property="article:tag" content="SPA">
+<meta property="article:tag" content="Rente">
+<meta property="article:tag" content="Sente">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/06/23/reagent-rente-install/rente.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/23/reagent-rente-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Reagent入門 - Part5: Renteをインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/23/reagent-rente-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Reagent入門 - Part5: Renteをインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 23 2015 00:15:32" itemprop="dateCreated datePublished" datetime="2015-06-23T00:15:32+09:00">Jun 23 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">RenteはReagent(React)とSenteを使ったClojureScriptのフレームワークです。サーバーとの通信はWebSocketとAjax、core.asyncが使えます。デンマークのEnterlabという会社がcommitも盛んに開発しています。Eclipse Public License](https://ja.wikipedia.org/wiki/Eclipse_Public_License)です。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://github.com/enterlab/rente" target="_blank" rel="noopener">Rente</a>は<a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent(React)</a>と<a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a>を使ったClojureScriptのフレームワークです。サーバーとの通信はWebSocketとAjax、<a href="https://github.com/clojure/core.async" target="_blank" rel="noopener">core.async</a>が使えます。デンマークの<a href="http://enterlab.com/" target="_blank" rel="noopener">Enterlab</a>という会社がcommitも盛んに開発しています。<a href="https://ja.wikipedia.org/wiki/Eclipse_Public_License" target="_blank" rel="noopener">Eclipse Public License</a>です。</p>
+<a id="more"></a>
+
+<h2 id="Clojureプロジェクトのおさらい"><a href="#Clojureプロジェクトのおさらい" class="headerlink" title="Clojureプロジェクトのおさらい"></a>Clojureプロジェクトのおさらい</h2><p>以前のDockerイメージは破棄して新しいプロジェクトを作ります。1ヶ月経つとClojure用のDockerfileとdocker-compose.ymlも少し変わりました。</p>
+<h3 id="Dockerfileとdocker-compose-yml"><a href="#Dockerfileとdocker-compose-yml" class="headerlink" title="Dockerfileとdocker-compose.yml"></a>Dockerfileとdocker-compose.yml</h3><p>ビルドツールは<a href="http://leiningen.org/" target="_blank" rel="noopener">Leiningen</a>に加えて<a href="https://github.com/boot-clj/boot" target="_blank" rel="noopener">Boot</a>もインストールして使えるようにしています。</p>
+<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">ADD https://github.com/boot-clj/boot/releases/download/2.0.0/boot.sh /tmp/</span><br><span class="line">RUN mv /tmp/boot.sh /usr/<span class="built_in">local</span>/bin/boot2 &amp;&amp; \</span><br><span class="line">    chmod 755 /usr/<span class="built_in">local</span>/bin/boot2</span><br><span class="line"></span><br><span class="line">ADD https://clojars.org/repo/tailrecursion/boot/1.1.1/boot-1.1.1.jar /tmp/</span><br><span class="line">RUN mv /tmp/boot-1.1.1.jar /usr/<span class="built_in">local</span>/bin/boot1 &amp;&amp; \</span><br><span class="line">    chmod 755 /usr/<span class="built_in">local</span>/bin/boot1</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">"lein"</span>]</span><br><span class="line">CMD []</span><br></pre></td></tr></table></figure>
+
+<p>ローカルのClojureイメージをビルドし直します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker pull clojure</span><br><span class="line">$ docker build -t masato/clojure .</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose.ymlでは、DockerコンテナのタイムゾーンをDockerホストに合わています。</p>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">masato/clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/docker-rente</span></span><br><span class="line"><span class="attr">rente:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8080</span><span class="string">:8080</span></span><br><span class="line"><span class="attr">figwheel:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3449</span><span class="string">:3449</span></span><br><span class="line"><span class="attr">boot1:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["boot1"]</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8000</span><span class="string">:8000</span></span><br><span class="line"><span class="attr">boot:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["boot2"]</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5000</span><span class="string">:5000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">4449</span><span class="string">:4449</span></span><br><span class="line"><span class="attr">bash:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["bash"]</span></span><br></pre></td></tr></table></figure>
+
+<p><code>~/.bashrc</code>にdocker-composeコマンドのエイリアスを作成して再読込します。</p>
+<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> lein=<span class="string">'docker-compose run --rm --service-ports lein'</span></span><br><span class="line"><span class="built_in">alias</span> figwheel=<span class="string">'docker-compose run --rm --service-ports figwheel'</span></span><br><span class="line"><span class="built_in">alias</span> rente=<span class="string">'docker-compose run --rm --service-ports rente'</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Renteのインストール"><a href="#Renteのインストール" class="headerlink" title="Renteのインストール"></a>Renteのインストール</h2><h3 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h3><p>とりあえず<a href="https://github.com/enterlab/rente" target="_blank" rel="noopener">Rente</a>をインストールして動かしてみます。リポジトリをcloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/enterlab/rente docker-rente</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose.ymlの<code>working_dir</code>にcloneしたディレクトリを指定します。</p>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">masato/clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/docker-rente</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<p>Dockerホストはクラウド上で起動しているので、リモートから<a href="https://github.com/bhauman/lein-figwheel/" target="_blank" rel="noopener">Figwheel</a>の3449ポートにWebSocketで接続できるようにpublic IPアドレスを指定します。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/docker-rente/dev/start.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> rente.start</span><br><span class="line">  (<span class="symbol">:require</span> [figwheel.client <span class="symbol">:as</span> fw]</span><br><span class="line">            [rente.client.app <span class="symbol">:as</span> app]))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name">fw/watch-and-reload</span></span><br><span class="line"> <span class="symbol">:websocket-url</span> <span class="string">"ws://xxx.xxx.xxx.xxx:3449/figwheel-ws"</span></span><br><span class="line"> <span class="symbol">:jsload-callback</span> #(<span class="name"><span class="builtin-name">swap!</span></span> app/state update-in [<span class="symbol">:re-render-flip</span>] not))</span><br><span class="line"></span><br><span class="line">(<span class="name">app/main</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="アプリの起動"><a href="#アプリの起動" class="headerlink" title="アプリの起動"></a>アプリの起動</h3><p>ClojureScriptの開発用に<a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a>を起動します。<code>~/.bashrc</code>に定義したdocker-compose用のエイリアスを使っているので、実際のコマンドは<code>lein figwheel</code>になります。ライブリロード用のWebSocketサーバーが3449ポートで起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ figwheel figwheel</span><br><span class="line">...</span><br><span class="line">Figwheel: Starting server at http://localhost:3449</span><br><span class="line">Focusing on build ids: client</span><br><span class="line">Compiling <span class="string">"resources/public/js/app.js"</span> from [<span class="string">"src/rente/client"</span> <span class="string">"dev"</span>]...</span><br><span class="line">Successfully compiled <span class="string">"resources/public/js/app.js"</span> <span class="keyword">in</span> 1.742 seconds.</span><br><span class="line">Started Figwheel autobuilder</span><br><span class="line">Figwheel: focusing on build-ids (client)</span><br><span class="line">Compiling <span class="string">"resources/public/js/app.js"</span> from [<span class="string">"src/rente/client"</span> <span class="string">"dev"</span>]...</span><br><span class="line">Successfully compiled <span class="string">"resources/public/js/app.js"</span> <span class="keyword">in</span> 0.749 seconds.</span><br><span class="line">notifying browser that file changed:  resources/public/js/app.js</span><br><span class="line">notifying browser that file changed:  dev-resources/public/js/out/goog/deps.js</span><br></pre></td></tr></table></figure>
+
+<p>別のシェルを開いてアプリを実行します。こちらもdocker-composeのサービスなので実際には<code>lein run</code>を実行しています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ rente run</span><br><span class="line">2015-06-22T14:34:25,607Z [main] INFO  rente.run - rente started</span><br></pre></td></tr></table></figure>
+
+<p>DockerホストにブラウザからRenteサーバーが起動している8080ポートに接続します。</p>
+<p><a href="http://xxx.xxx.xxx.xxx:8080/" target="_blank" rel="noopener">http://xxx.xxx.xxx.xxx:8080/</a></p>
+<p><img src="/2015/06/23/reagent-rente-install/rente.png" alt="rente.png"></p>
+<p><a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>を使っているように見えませんが、3.3.4がロードされているようです。</p>
+<h3 id="Send-Message-Callback"><a href="#Send-Message-Callback" class="headerlink" title="Send Message Callback"></a>Send Message Callback</h3><p><code>Send Message Callback</code>ボタンを押して動作確認します。</p>
+<p>テンプレートが生成したClojureScriptの<code>views.cljs</code>は以下のようになっています。ボタンの<code>on-click</code>イベントで<code>socket/test-socket-callback</code>が発火されています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/docker-rente/src/rente/client/views.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> rente.client.views</span><br><span class="line">  (<span class="symbol">:require</span> [rente.client.ws <span class="symbol">:as</span> socket]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> main [data]</span><br><span class="line">  [<span class="symbol">:div</span></span><br><span class="line">   [<span class="symbol">:h1</span> (<span class="symbol">:title</span> @data)]</span><br><span class="line">   [<span class="symbol">:span</span> <span class="string">"Hello world! This is reagent!"</span>]</span><br><span class="line">   [<span class="symbol">:br</span>]</span><br><span class="line">   [<span class="symbol">:span</span> <span class="string">"And sente seems to work too.."</span>]</span><br><span class="line">   [<span class="symbol">:br</span>]</span><br><span class="line">   [<span class="symbol">:span</span> <span class="string">"And figwheel.. w00t!"</span>]</span><br><span class="line">   [<span class="symbol">:br</span>]</span><br><span class="line">   [<span class="symbol">:button</span> &#123;<span class="symbol">:on-click</span> socket/test-socket-callback&#125; <span class="string">"Send Message Callback"</span>]</span><br><span class="line">   [<span class="symbol">:br</span>]</span><br><span class="line">   [<span class="symbol">:button</span> &#123;<span class="symbol">:on-click</span> socket/test-socket-event&#125; <span class="string">"Send Message Event"</span>]</span><br><span class="line">   ])</span><br></pre></td></tr></table></figure>
+
+<p>コールバックを定義しているClojureScriptは以下です。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/docker-rente/src/rente/client/ws.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> test-socket-callback []</span><br><span class="line">  (<span class="name">chsk-send!</span></span><br><span class="line">    [<span class="symbol">:rente/testevent</span> &#123;<span class="symbol">:message</span> <span class="string">"Hello socket Callback!"</span>&#125;]</span><br><span class="line">    <span class="number">2000</span></span><br><span class="line">    #(<span class="name">js/console.log</span> <span class="string">"CALLBACK from server: "</span> (<span class="name">pr-str</span> %))))</span><br></pre></td></tr></table></figure>
+
+<p>ボタンを押すとブラウザのコンソールにコールバックのメッセージが出力されます。</p>
+<p><img src="/2015/06/23/reagent-rente-install/rente-callback.png" alt="rente-callback.png"></p>
+<h3 id="Send-Message-Event"><a href="#Send-Message-Event" class="headerlink" title="Send Message Event"></a>Send Message Event</h3><p><code>Send Message Event</code>も同様にコールバック関数は次のようになっています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/docker-rente/src/rente/client/ws.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> test-socket-event []</span><br><span class="line">  (<span class="name">chsk-send!</span> [<span class="symbol">:rente/testevent</span> &#123;<span class="symbol">:message</span> <span class="string">"Hello socket Event!"</span>&#125;]))</span><br></pre></td></tr></table></figure>
+
+<p>ボタンを押すとブラウザのコンソールにコールバックのメッセージが出力されました。</p>
+<p><img src="/2015/06/23/reagent-rente-install/rente-pushevent.png" alt="rente-pushevent.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/Clojure/" rel="tag"># Clojure</a>
+              <a href="/tags/ClojureScript/" rel="tag"># ClojureScript</a>
+              <a href="/tags/Figwheel/" rel="tag"># Figwheel</a>
+              <a href="/tags/Reagent/" rel="tag"># Reagent</a>
+              <a href="/tags/SPA/" rel="tag"># SPA</a>
+              <a href="/tags/Rente/" rel="tag"># Rente</a>
+              <a href="/tags/Sente/" rel="tag"># Sente</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/22/reagent-form-bootstrap/" rel="prev" title="Reagent入門 - Part4: SPAとフォームの要件">
+      <i class="fa fa-chevron-left"></i> Reagent入門 - Part4: SPAとフォームの要件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/24/cloud9-on-idcf-go-martini/" rel="next" title="Cloud9 on Docker - Part3: GoとMartiniをインストール">
+      Cloud9 on Docker - Part3: GoとMartiniをインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Clojureプロジェクトのおさらい"><span class="nav-number">1.</span> <span class="nav-text">Clojureプロジェクトのおさらい</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfileとdocker-compose-yml"><span class="nav-number">1.1.</span> <span class="nav-text">Dockerfileとdocker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Renteのインストール"><span class="nav-number">2.</span> <span class="nav-text">Renteのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール"><span class="nav-number">2.1.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#アプリの起動"><span class="nav-number">2.2.</span> <span class="nav-text">アプリの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Send-Message-Callback"><span class="nav-number">2.3.</span> <span class="nav-text">Send Message Callback</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Send-Message-Event"><span class="nav-number">2.4.</span> <span class="nav-text">Send Message Event</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

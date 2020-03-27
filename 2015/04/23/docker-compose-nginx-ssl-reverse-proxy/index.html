@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Nginxのnginx.confではLuaなどを使わないと環境変数を読み込めません。Dockerのリンクを使う場合はコンテナの起動時に設定された環境変数をsedなどで置換する起動スクリプトを用意してnginx.confを使っていました。Docker Composeのlinksを使うとコンテナの&#x2F;etc&#x2F;hostsにエントリを作成してくれます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker Composeを使ってNginxのSSLリバースプロキシを起動する">
+<meta property="og:url" content="http://masato.github.io/2015/04/23/docker-compose-nginx-ssl-reverse-proxy/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Nginxのnginx.confではLuaなどを使わないと環境変数を読み込めません。Dockerのリンクを使う場合はコンテナの起動時に設定された環境変数をsedなどで置換する起動スクリプトを用意してnginx.confを使っていました。Docker Composeのlinksを使うとコンテナの&#x2F;etc&#x2F;hostsにエントリを作成してくれます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-04-23T08:24:30.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.588Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="DockerCompose">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="OpenResty">
+<meta property="article:tag" content="node-static">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/04/23/docker-compose-nginx-ssl-reverse-proxy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Docker Composeを使ってNginxのSSLリバースプロキシを起動する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/04/23/docker-compose-nginx-ssl-reverse-proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker Composeを使ってNginxのSSLリバースプロキシを起動する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Apr 23 2015 17:24:30" itemprop="dateCreated datePublished" datetime="2015-04-23T17:24:30+09:00">Apr 23 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Docker/" itemprop="url" rel="index"><span itemprop="name">Docker</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Nginxのnginx.confではLuaなどを使わないと環境変数を読み込めません。Dockerのリンクを使う場合はコンテナの起動時に設定された環境変数をsedなどで置換する起動スクリプトを用意してnginx.confを使っていました。Docker Composeのlinksを使うとコンテナの/etc/hostsにエントリを作成してくれます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Nginxの<code>nginx.conf</code>ではLuaなどを使わないと環境変数を読み込めません。Dockerのリンクを使う場合はコンテナの起動時に設定された環境変数をsedなどで置換する起動スクリプトを用意して<code>nginx.conf</code>を使っていました。Docker Composeの<code>links</code>を使うとコンテナの<code>/etc/hosts</code>に<a href="http://docs.docker.com/compose/yml/#links" target="_blank" rel="noopener">エントリを作成</a>してくれます。</p>
+<a id="more"></a>
+
+<h2 id="OpenResty"><a href="#OpenResty" class="headerlink" title="OpenResty"></a>OpenResty</h2><p>Nginxのリバースプロキシは後でLuaでHTTPヘッダの制御やAPIのアクセスコントロールをしたいのでOpenRestyを使います。Dockerイメージは<a href="https://registry.hub.docker.com/u/tenstartups/openresty/" target="_blank" rel="noopener">tenstartups/openresty</a>がミニマルで良さそうです。</p>
+<h2 id="コンテナを個別に起動する場合"><a href="#コンテナを個別に起動する場合" class="headerlink" title="コンテナを個別に起動する場合"></a>コンテナを個別に起動する場合</h2><p>最初にDocker Composeではなく通常のDockerの使い方でリバースプロキシとHTTPサーバーを<code>docker run</code>でそれぞれ起動します。<br>OpenRestyで使うSSL証明書はDockerホスト上に自己署名で作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /opt/nginx/certs</span><br><span class="line">$ <span class="built_in">cd</span> /opt/nginx/certs</span><br><span class="line">$ openssl genrsa -out server.key 4096</span><br><span class="line">$ openssl req -new -batch -key server.key -out server.csr</span><br><span class="line">$ openssl x509 -req -days 3650 -<span class="keyword">in</span> server.csr -signkey server.key -out server.crt</span><br></pre></td></tr></table></figure>
+
+<p><code>nginx.conf</code>も同様にDockerホスト上に用意してコンテナの<code>/opt/nginx</code>ディレクトリをコンテナにマウントします。<code>proxy_pass</code>のプロキシ先は<a href="https://github.com/cloudhead/node-static" target="_blank" rel="noopener">node-static</a>のコンテナを用意します。node-staciはDockerホストにポートマップします。今回は確認用なのでDockerホストを固定で指定しておきます。</p>
+<figure class="highlight bash"><figcaption><span>/opt/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">daemon off;</span><br><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  256;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        <span class="built_in">return</span> 301 https://<span class="variable">$host</span><span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line"></span><br><span class="line">        listen 443;</span><br><span class="line">        server_name www.example.com;</span><br><span class="line"></span><br><span class="line">        access_log /proc/self/fd/1;</span><br><span class="line">        error_log /proc/self/fd/2;</span><br><span class="line"></span><br><span class="line">        ssl_certificate           /etc/nginx/certs/server.crt;</span><br><span class="line">        ssl_certificate_key    /etc/nginx/certs/server.key;</span><br><span class="line"></span><br><span class="line">       ssl on;</span><br><span class="line">       ssl_prefer_server_ciphers on;</span><br><span class="line">       ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">       ssl_ciphers <span class="string">"ECDHE+RSAGCM:ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:!EXPORT:!DES:!3DES:!MD5:!DSS"</span>;</span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_set_header        Host <span class="variable">$host</span>;</span><br><span class="line">            proxy_set_header        X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">            proxy_set_header        X-Forwarded-Host <span class="variable">$host</span>;</span><br><span class="line">            proxy_set_header        X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">            proxy_set_header        X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">            proxy_pass                 http://10.3.0.165:8080;</span><br><span class="line">            proxy_redirect http:// https://;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HTTPサーバー-node-static"><a href="#HTTPサーバー-node-static" class="headerlink" title="HTTPサーバー (node-static)"></a>HTTPサーバー (node-static)</h3><p>node-staticのDockerイメージを用意します。</p>
+<figure class="highlight bash"><figcaption><span>~/node_apps/node-static/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs-runtime</span><br><span class="line">VOLUME /app/public</span><br></pre></td></tr></table></figure>
+
+<p><code>app.js</code>は8080ポートでLISTENして起動します。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/node-static/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="keyword">static</span> = <span class="built_in">require</span>(<span class="string">'node-static'</span>);</span><br><span class="line"><span class="keyword">var</span> file = <span class="keyword">new</span> <span class="keyword">static</span>.Server(<span class="string">'./public'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'http'</span>).createServer(<span class="function"><span class="keyword">function</span> (<span class="params">request, response</span>) </span>&#123;</span><br><span class="line">    request.addListener(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        file.serve(request, response);</span><br><span class="line">    &#125;).resume();</span><br><span class="line">&#125;).listen(<span class="number">8080</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"Server running at http://localhost:8080"</span>);</span><br></pre></td></tr></table></figure>
+
+<p><code>package.json</code>からnode-staticのパッケージをインストールします。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/node-static/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"node-static-app"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"node-static app"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"node-static"</span>: <span class="string">"0.7.6"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>index.html</code>はふつうのHello Worldです。</p>
+<figure class="highlight html"><figcaption><span>~/node_apps/node-static/public/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>hello world<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">p</span>&gt;</span>hello world<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>node-staticのイメージをビルドして起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span>  ~/node_apps/node-static/p</span><br><span class="line">$ docker pull google/nodejs-runtime</span><br><span class="line">$ docker build -t node-static .</span><br><span class="line">$ docker run --name node-static \</span><br><span class="line">  -d \</span><br><span class="line">  -p 8080:8080 \</span><br><span class="line">  -v <span class="variable">$PWD</span>/public:/app/public \</span><br><span class="line">  node-static</span><br></pre></td></tr></table></figure>
+
+<p>openrestyのコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull tenstartups/openresty</span><br><span class="line">$ docker run --name nginx \</span><br><span class="line">  -d \</span><br><span class="line">  -p 80:80 \</span><br><span class="line">  -p 443:443 \</span><br><span class="line">  -v /opt/nginx:/etc/nginx \</span><br><span class="line">  tenstartups/openresty</span><br></pre></td></tr></table></figure>
+
+<p>Dockerコンテナからcurlに<code>--insecure</code>フラグを付けてOpenRestyがSSLターミネーションとリバースプロキシが動作していることを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://localhost --insecure</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"ja"</span>&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;hello world&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">   &lt;p&gt;hello world&lt;/p&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Docker-Composeを使う場合"><a href="#Docker-Composeを使う場合" class="headerlink" title="Docker Composeを使う場合"></a>Docker Composeを使う場合</h2><p>次にDocker Composeを使って2つのコンテナをオーケストレーションしてみます。<code>docker-compose.yml</code>を用意します。<code>openresty</code>コンテナに<code>nodestatic</code>コンテナをリンクします。</p>
+<figure class="highlight yaml"><figcaption><span>~/node_apps/node-static/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">nodestatic:</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line"><span class="attr">openresty:</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">tenstartups/openresty</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"80:80"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"443:443"</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/opt/nginx:/etc/nginx</span> </span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">node-static</span></span><br></pre></td></tr></table></figure>
+
+<p>Docker Composeのlinksを使うとコンテナの<code>/etc/hosts</code>経由で名前解決できるようになります。<code>nginx.conf</code>のプロキシ先のホスト名をDocker Composeでリンクしたコンテナの名前に変更します。</p>
+<figure class="highlight bash"><figcaption><span>/opt/nginx/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">proxy_pass                 http://nodestatic:8080;</span><br></pre></td></tr></table></figure>
+
+<p><code>docker-compose</code>コマンドから2つのコンテナをupします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d</span><br><span class="line">Creating nodestatic_nodestatic_1...</span><br><span class="line">Creating nodestatic_openresty_1...</span><br></pre></td></tr></table></figure>
+
+<p>以下のようにコンテナが起動しました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose ps</span><br><span class="line">         Name                     Command                    State                     Ports</span><br><span class="line">-----------------------------------------------------------------------------------------------------</span><br><span class="line">nodestatic_nodestatic_1   /nodejs/bin/npm start     Up                        8080/tcp</span><br><span class="line">nodestatic_openresty_1    ./entrypoint nginx -c     Up                        0.0.0.0:443-&gt;443/tcp,</span><br><span class="line">                          /etc ...                                            0.0.0.0:80-&gt;80/tcp</span><br></pre></td></tr></table></figure>
+
+<p>Dockerホストからcurlでリバースプロキシを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://localhost --insecure</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"ja"</span>&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">    &lt;title&gt;hello world&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">   &lt;p&gt;hello world&lt;/p&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/OpenResty/" rel="tag"># OpenResty</a>
+              <a href="/tags/node-static/" rel="tag"># node-static</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/04/22/docker-container-cli-pattern/" rel="prev" title="Dockerコンテナ上でCLIを実行するデザインパターン">
+      <i class="fa fa-chevron-left"></i> Dockerコンテナ上でCLIを実行するデザインパターン
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/04/24/sane-stack-emberjs-salisjs-docker-compose-quickstart/" rel="next" title="Sane Stackを使いEmber.jsとSails.jsアプリをDocker Compose上で開発する">
+      Sane Stackを使いEmber.jsとSails.jsアプリをDocker Compose上で開発する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenResty"><span class="nav-number">1.</span> <span class="nav-text">OpenResty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#コンテナを個別に起動する場合"><span class="nav-number">2.</span> <span class="nav-text">コンテナを個別に起動する場合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPサーバー-node-static"><span class="nav-number">2.1.</span> <span class="nav-text">HTTPサーバー (node-static)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Composeを使う場合"><span class="nav-number">3.</span> <span class="nav-text">Docker Composeを使う場合</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

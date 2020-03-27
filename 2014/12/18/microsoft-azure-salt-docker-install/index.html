@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Microsoft Azureに作成した仮想マシンにsalt-masterをインストールします。同様の手順でsalt-minion用の仮想マシンも作成してインストールをします。このSaltクラスタにはmasterとminionのどちらもDockerをインストールします。Saltの設定ファイルのひな形はsalt-configのリポジトリにpushしてあります。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft AzureにSalt環境を構築する - Part3: SaltとDockerをインストール">
+<meta property="og:url" content="http://masato.github.io/2014/12/18/microsoft-azure-salt-docker-install/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Microsoft Azureに作成した仮想マシンにsalt-masterをインストールします。同様の手順でsalt-minion用の仮想マシンも作成してインストールをします。このSaltクラスタにはmasterとminionのどちらもDockerをインストールします。Saltの設定ファイルのひな形はsalt-configのリポジトリにpushしてあります。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-12-17T15:28:12.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.765Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Salt">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Azure">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/12/18/microsoft-azure-salt-docker-install/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Microsoft AzureにSalt環境を構築する - Part3: SaltとDockerをインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/12/18/microsoft-azure-salt-docker-install/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Microsoft AzureにSalt環境を構築する - Part3: SaltとDockerをインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 18 2014 00:28:12" itemprop="dateCreated datePublished" datetime="2014-12-18T00:28:12+09:00">Dec 18 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Microsoft Azureに作成した仮想マシンにsalt-masterをインストールします。同様の手順でsalt-minion用の仮想マシンも作成してインストールをします。このSaltクラスタにはmasterとminionのどちらもDockerをインストールします。Saltの設定ファイルのひな形はsalt-configのリポジトリにpushしてあります。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Microsoft Azureに作成した<a href="2014/12/17/microsoft-azure-create-vm/">仮想マシン</a>にsalt-masterをインストールします。同様の手順でsalt-minion用の仮想マシンも作成してインストールをします。このSaltクラスタにはmasterとminionのどちらもDockerをインストールします。Saltの設定ファイルのひな形は<a href="https://github.com/masato/salt-config" target="_blank" rel="noopener">salt-config</a>のリポジトリにpushしてあります。</p>
+<a id="more"></a>
+
+<h3 id="SSHで接続する"><a href="#SSHで接続する" class="headerlink" title="SSHで接続する"></a>SSHで接続する</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -A azureuser@masato-salt.cloudapp.net -i .ssh/azure.key -o IdentitiesOnly=yes</span><br><span class="line">...</span><br><span class="line">Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-40-generic x86_64)</span><br><span class="line">...</span><br><span class="line">azureuser@masato-salt:~$</span><br></pre></td></tr></table></figure>
+
+<h3 id="etc-hostsに追加"><a href="#etc-hostsに追加" class="headerlink" title="/etc/hostsに追加"></a>/etc/hostsに追加</h3><p><a href="http://askubuntu.com/questions/59458/error-message-when-i-run-sudo-unable-to-resolve-host-none" target="_blank" rel="noopener">Error message when I run sudo: unable to resolve host (none)</a>を参考にして、/etc/hostsに自分のhostnameを追加して名前解決ができるようにします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo vi /etc/hosts</span><br><span class="line">127.0.0.1 localhost</span><br><span class="line">127.0.1.1 masato-salt</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Gitのインストール"><a href="#Gitのインストール" class="headerlink" title="Gitのインストール"></a>Gitのインストール</h3><p>Gitをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install -y git</span><br></pre></td></tr></table></figure>
+
+<h3 id="Salt設定リポジトリのclone"><a href="#Salt設定リポジトリのclone" class="headerlink" title="Salt設定リポジトリのclone"></a>Salt設定リポジトリのclone</h3><p>Salt構築用のリポジトリをcloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo  git <span class="built_in">clone</span> --recursive https://github.com/masato/salt-config.git /srv/salt/config</span><br><span class="line">$ <span class="built_in">cd</span> /srv/salt/config</span><br></pre></td></tr></table></figure>
+
+<h3 id="salt-masterのインストール"><a href="#salt-masterのインストール" class="headerlink" title="salt-masterのインストール"></a>salt-masterのインストール</h3><h3 id="Pillarの編集"><a href="#Pillarの編集" class="headerlink" title="Pillarの編集"></a>Pillarの編集</h3><p>Pillarのディレクトリに移動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /srv/salt/config/pillar</span><br></pre></td></tr></table></figure>
+
+<p>s3cmdのPillarを記入します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cp s3cmd.sls.sample s3cmd.sls</span><br><span class="line">$ sudo vi s3cmd.sls</span><br><span class="line">s3cmd:</span><br><span class="line">  access_key: xxx</span><br><span class="line">  secret_key: xxx</span><br></pre></td></tr></table></figure>
+
+<p>usersのPillarを記入します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /srv/salt/config/pillar/users</span><br><span class="line">$ sudo cp init.sls.sample init.sls</span><br><span class="line">$ sudo vi init.sls</span><br><span class="line">users:</span><br><span class="line">  mshimizu:</span><br><span class="line">    fullname: Masato Shimizu</span><br><span class="line">    password: xxx</span><br><span class="line">    sudouser: True</span><br><span class="line">    sudo_rules:</span><br><span class="line">      - ALL=(ALL) NOPASSWD:ALL</span><br><span class="line">    groups:</span><br><span class="line">      - docker</span><br><span class="line">    ssh_auth:</span><br><span class="line">      - ssh-rsa AAAA...</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="etc-salt-master-dの作成"><a href="#etc-salt-master-dの作成" class="headerlink" title="/etc/salt/master.dの作成"></a>/etc/salt/master.dの作成</h3><p>/etc/salt/master.dのディレクトリを作成し、master.confをコピーします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /etc/salt/master.d</span><br><span class="line">$ sudo cp /srv/salt/config/etc/salt/master.d/master.conf /etc/salt/master.d</span><br><span class="line">$ cat /etc/salt/master.d/master.conf</span><br><span class="line">pillar_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/pillar</span><br><span class="line"></span><br><span class="line">file_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/salt</span><br><span class="line">    - /srv/salt/config/formulas/users-formula</span><br></pre></td></tr></table></figure>
+
+<h3 id="etc-salt-minion-dの作成"><a href="#etc-salt-minion-dの作成" class="headerlink" title="/etc/salt/minion.dの作成"></a>/etc/salt/minion.dの作成</h3><p>/etc/salt/minion.dを作成し、grains.confを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /etc/salt/minion.d</span><br><span class="line">$ sudo sh -c <span class="string">'cat &lt;&lt;EOF &gt;  /etc/salt/minion.d/grains.conf</span></span><br><span class="line"><span class="string">grains:</span></span><br><span class="line"><span class="string">  roles:</span></span><br><span class="line"><span class="string">    - salt-master</span></span><br><span class="line"><span class="string">EOF'</span></span><br></pre></td></tr></table></figure>
+
+
+<p>同居しているsalt-minionがsalt-masterを探せるように指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /etc/salt/minion.d</span><br><span class="line">$ sudo sh -c <span class="string">'echo "master: masato-salt.masato-salt.l2.internal.cloudapp.net" &gt; /etc/salt/minion.d/master.conf'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="salt-masterのインストール-1"><a href="#salt-masterのインストール-1" class="headerlink" title="salt-masterのインストール"></a>salt-masterのインストール</h3><p>salt-masterをインストールします。このノードにはsalt-minionも同時にインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L http://bootstrap.saltstack.com | sudo sh -s -- -M</span><br><span class="line">...</span><br><span class="line"> *  INFO: Running install_ubuntu_check_services()</span><br><span class="line"> *  INFO: Running install_ubuntu_restart_daemons()</span><br><span class="line">salt-minion stop/waiting</span><br><span class="line">salt-minion start/running, process 4609</span><br><span class="line">salt-master stop/waiting</span><br><span class="line">salt-master start/running, process 4618</span><br><span class="line"> *  INFO: Running daemons_running()</span><br><span class="line"> *  INFO: Salt installed!</span><br></pre></td></tr></table></figure>
+
+<h3 id="salt-minionの公開鍵の承認"><a href="#salt-minionの公開鍵の承認" class="headerlink" title="salt-minionの公開鍵の承認"></a>salt-minionの公開鍵の承認</h3><p>salt-minionの公開鍵を承認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo salt-key -L</span><br><span class="line">Accepted Keys:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">masato-salt</span><br><span class="line">Rejected Keys:</span><br><span class="line">$ sudo salt-key -a masato-salt</span><br><span class="line">The following keys are going to be accepted:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">masato-salt</span><br><span class="line">Proceed? [n/Y] Y</span><br><span class="line">Key <span class="keyword">for</span> minion masato-salt accepted.</span><br></pre></td></tr></table></figure>
+
+<p>salt-minionの公開鍵が登録されたことを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo salt-key -L</span><br><span class="line">Accepted Keys:</span><br><span class="line">masato-salt</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">Rejected Keys:</span><br></pre></td></tr></table></figure>
+
+<h3 id="state-highstate"><a href="#state-highstate" class="headerlink" title="state.highstate"></a>state.highstate</h3><p>state.highstateを実行して、git cloneしたSalt Formulaを適用します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br><span class="line">...</span><br><span class="line">Summary</span><br><span class="line">-------------</span><br><span class="line">Succeeded: 23 (changed=16)</span><br><span class="line">Failed:     0</span><br><span class="line">-------------</span><br><span class="line">Total states run:     23</span><br></pre></td></tr></table></figure>
+
+<h3 id="Dockerの確認"><a href="#Dockerの確認" class="headerlink" title="Dockerの確認"></a>Dockerの確認</h3><p>dockerグループのユーザーになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo su - mshimizu</span><br></pre></td></tr></table></figure>
+
+<p>Dockerのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker version</span><br><span class="line">Client version: 1.4.1</span><br><span class="line">Client API version: 1.16</span><br><span class="line">Go version (client): go1.3.3</span><br><span class="line">Git commit (client): 5bc2ff8</span><br><span class="line">OS/Arch (client): linux/amd64</span><br><span class="line">Server version: 1.4.1</span><br><span class="line">Server API version: 1.16</span><br><span class="line">Go version (server): go1.3.3</span><br><span class="line">Git commit (server): 5bc2ff8</span><br></pre></td></tr></table></figure>
+
+<p>docker psを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</span><br></pre></td></tr></table></figure>
+
+<h3 id="salt-minionのインストール"><a href="#salt-minionのインストール" class="headerlink" title="salt-minionのインストール"></a>salt-minionのインストール</h3><p>salt-minionの仮想マシンを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ azure vm create \</span><br><span class="line">  --vm-size Small \</span><br><span class="line">  --ssh 22 \</span><br><span class="line">  --ssh-cert ~/.ssh/azure-cert.pem \</span><br><span class="line">  --no-ssh-password \</span><br><span class="line">  --virtual-network-name saltvnet \</span><br><span class="line">  --subnet-names salt \</span><br><span class="line">  --affinity-group salt-affinity \</span><br><span class="line">  masato-minion1 \</span><br><span class="line">  b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04_1-LTS-amd64-server-20141125-en-us-30GB \</span><br><span class="line">  azureuser</span><br><span class="line">info:    Executing <span class="built_in">command</span> vm create</span><br><span class="line">- Looking up image b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04_1-LTS-amd64-server-20141125-en-us-+0GB</span><br><span class="line">+ Looking up virtual network</span><br><span class="line">+ Looking up cloud service</span><br><span class="line">warn:    --affinity-group option will be ignored</span><br><span class="line">+ Getting cloud service properties</span><br><span class="line">+ Retrieving storage accounts</span><br><span class="line">+ Configuring certificate</span><br><span class="line">+ Creating VM</span><br><span class="line">info:    vm create <span class="built_in">command</span> OK</span><br></pre></td></tr></table></figure>
+
+<p>SSH接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -A azureuser@masato-minion1.cloudapp.net -i .ssh/azure.key -o IdentitiesOnly=yes</span><br></pre></td></tr></table></figure>
+
+<p>/etc/salt/minion.dを作成し、master.confとgrains.confを編集します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir -p /etc/salt/minion.d</span><br><span class="line">$ sudo sh -c <span class="string">'echo "master: masato-salt.masato-salt.l2.internal.cloudapp.net" &gt; /etc/salt/minion.d/master.conf'</span></span><br><span class="line">$ sudo sh -c <span class="string">'cat &lt;&lt;EOF &gt;  /etc/salt/minion.d/grains.conf</span></span><br><span class="line"><span class="string">grains:</span></span><br><span class="line"><span class="string">  roles:</span></span><br><span class="line"><span class="string">    - dev</span></span><br><span class="line"><span class="string">EOF'</span></span><br></pre></td></tr></table></figure>
+
+<p>salt-minionをbootstrapからインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L https://bootstrap.saltstack.com | sudo sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="salt-masterでsalt-minionの公開鍵を承認"><a href="#salt-masterでsalt-minionの公開鍵を承認" class="headerlink" title="salt-masterでsalt-minionの公開鍵を承認"></a>salt-masterでsalt-minionの公開鍵を承認</h3><p>salt-masterにログインして、salt-minionの公開鍵のを承認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo salt-key -L</span><br><span class="line">$ sudo salt-key -A</span><br></pre></td></tr></table></figure>
+
+<h3 id="state-highstate-1"><a href="#state-highstate-1" class="headerlink" title="state.highstate"></a>state.highstate</h3><p>state.highstateを実行して、git cloneしたSalt Formulaを適用します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br><span class="line">...</span><br><span class="line">Summary</span><br><span class="line">-------------</span><br><span class="line">Succeeded: 23 (changed=16)</span><br><span class="line">Failed:     0</span><br><span class="line">-------------</span><br><span class="line">Total states run:     23</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Salt/" rel="tag"># Salt</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Azure/" rel="tag"># Azure</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/12/17/microsoft-azure-create-vm/" rel="prev" title="Microsoft AzureにSalt環境を構築する - Part2: 仮想マシンを作成">
+      <i class="fa fa-chevron-left"></i> Microsoft AzureにSalt環境を構築する - Part2: 仮想マシンを作成
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/12/19/idcf-coreos-install-from-iso-49450/" rel="next" title="IDCFクラウドにStableのCoreOS 494.5.0をISOからインストールする">
+      IDCFクラウドにStableのCoreOS 494.5.0をISOからインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHで接続する"><span class="nav-number">1.</span> <span class="nav-text">SSHで接続する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etc-hostsに追加"><span class="nav-number">2.</span> <span class="nav-text">&#x2F;etc&#x2F;hostsに追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gitのインストール"><span class="nav-number">3.</span> <span class="nav-text">Gitのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Salt設定リポジトリのclone"><span class="nav-number">4.</span> <span class="nav-text">Salt設定リポジトリのclone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-masterのインストール"><span class="nav-number">5.</span> <span class="nav-text">salt-masterのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pillarの編集"><span class="nav-number">6.</span> <span class="nav-text">Pillarの編集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etc-salt-master-dの作成"><span class="nav-number">7.</span> <span class="nav-text">&#x2F;etc&#x2F;salt&#x2F;master.dの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#etc-salt-minion-dの作成"><span class="nav-number">8.</span> <span class="nav-text">&#x2F;etc&#x2F;salt&#x2F;minion.dの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-masterのインストール-1"><span class="nav-number">9.</span> <span class="nav-text">salt-masterのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-minionの公開鍵の承認"><span class="nav-number">10.</span> <span class="nav-text">salt-minionの公開鍵の承認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-highstate"><span class="nav-number">11.</span> <span class="nav-text">state.highstate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerの確認"><span class="nav-number">12.</span> <span class="nav-text">Dockerの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-minionのインストール"><span class="nav-number">13.</span> <span class="nav-text">salt-minionのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-masterでsalt-minionの公開鍵を承認"><span class="nav-number">14.</span> <span class="nav-text">salt-masterでsalt-minionの公開鍵を承認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-highstate-1"><span class="nav-number">15.</span> <span class="nav-text">state.highstate</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="今更ながらTwitterのデータを検索して遊んでいます。Twitterのデータはリアルタイム性がありメタデータも豊富に定義されています。世界中の人が勝手につぶやいてくれるので、属性をもつランダムなテキストデータを簡単に取得できます。最初にNode.jsのCommander.jsで簡単なCLIのインタフェースを用意します。REST APIのGET search&#x2F;tweetsとStreaming AP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="今更ながらTwitterのデータで楽しく遊ぶ - Part1: Commander.jsとlodashとGmail">
+<meta property="og:url" content="http://masato.github.io/2015/06/04/nodejs-fun-with-twitter-lodah/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="今更ながらTwitterのデータを検索して遊んでいます。Twitterのデータはリアルタイム性がありメタデータも豊富に定義されています。世界中の人が勝手につぶやいてくれるので、属性をもつランダムなテキストデータを簡単に取得できます。最初にNode.jsのCommander.jsで簡単なCLIのインタフェースを用意します。REST APIのGET search&#x2F;tweetsとStreaming AP">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-06-04T02:20:10.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.817Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Twitter">
+<meta property="article:tag" content="Twit">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="Commanderjs">
+<meta property="article:tag" content="lodash">
+<meta property="article:tag" content="Gmail">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/04/nodejs-fun-with-twitter-lodah/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>今更ながらTwitterのデータで楽しく遊ぶ - Part1: Commander.jsとlodashとGmail | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/04/nodejs-fun-with-twitter-lodah/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          今更ながらTwitterのデータで楽しく遊ぶ - Part1: Commander.jsとlodashとGmail
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 4 2015 11:20:10" itemprop="dateCreated datePublished" datetime="2015-06-04T11:20:10+09:00">Jun 4 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">今更ながらTwitterのデータを検索して遊んでいます。Twitterのデータはリアルタイム性がありメタデータも豊富に定義されています。世界中の人が勝手につぶやいてくれるので、属性をもつランダムなテキストデータを簡単に取得できます。最初にNode.jsのCommander.jsで簡単なCLIのインタフェースを用意します。REST APIのGET search/tweetsとStreaming APIのPOST statuses/filterをCLIから試しながらどんなデータが取得できるかプロトタイプします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今更ながらTwitterのデータを検索して遊んでいます。Twitterのデータはリアルタイム性がありメタデータも豊富に定義されています。世界中の人が勝手につぶやいてくれるので、属性をもつランダムなテキストデータを簡単に取得できます。最初にNode.jsの<a href="https://github.com/tj/commander.js" target="_blank" rel="noopener">Commander.js</a>で簡単なCLIのインタフェースを用意します。REST APIの<a href="https://dev.twitter.com/rest/reference/get/search/tweets" target="_blank" rel="noopener">GET search/tweets</a>とStreaming APIの<a href="https://dev.twitter.com/streaming/reference/post/statuses/filter" target="_blank" rel="noopener">POST statuses/filter</a>をCLIから試しながらどんなデータが取得できるかプロトタイプします。</p>
+<a id="more"></a>
+
+<h2 id="プロジェクトと使い方"><a href="#プロジェクトと使い方" class="headerlink" title="プロジェクトと使い方"></a>プロジェクトと使い方</h2><p>作成したプロジェクトは<a href="https://github.com/masato/node-tweet" target="_blank" rel="noopener">リポジトリ</a>にpushしています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/node-tweet</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── app.js</span><br><span class="line">├── commands</span><br><span class="line">│   └── search.js</span><br><span class="line">├── config.json</span><br><span class="line">├── config.json.original</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">├── package.json</span><br><span class="line">├── test.csv</span><br><span class="line">└── utils</span><br><span class="line">    └── gmail.js</span><br></pre></td></tr></table></figure>
+
+<p>カレントディレクトリにシムリンクを作ってからbuildします。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>ln -s /dist/node_modules .</span><br><span class="line"><span class="variable">$ </span>docker-compose build</span><br></pre></td></tr></table></figure>
+
+<h3 id="簡単な使い方"><a href="#簡単な使い方" class="headerlink" title="簡単な使い方"></a>簡単な使い方</h3><p><a href="https://github.com/masato/node-tweet/blob/master/README.md" target="_blank" rel="noopener">README.md</a>に例があります。<a href="https://dev.twitter.com/rest/reference/get/search/tweets" target="_blank" rel="noopener">GET search/tweets</a>はREST APIです。以下のように指定すると、<code>babymetal</code>のキーワードでドイツ語のtweetを10件検索します。検索結果はCSV形式のファイルにして指定したアドレスに添付為てメールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm twitter search <span class="string">"babymetal -filter:retweets"</span> -- -l de -C -e ma6ato@gmail.com</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://dev.twitter.com/streaming/reference/post/statuses/filter" target="_blank" rel="noopener">POST statuses/filter</a>はStreaming APIです。以下のように指定すると、<code>android</code>のキーワードで英語のtweetをストリームで取得して標準出力します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm twitter track android -- -l en</span><br></pre></td></tr></table></figure>
+
+<h2 id="app-js"><a href="#app-js" class="headerlink" title="app.js"></a>app.js</h2><p>app.jsがエントリポイントです。<a href="https://github.com/tj/commander.js" target="_blank" rel="noopener">Commander.js</a>を使いCLIのプログラムを構成します。オプションは<a href="https://dev.twitter.com/rest/reference/get/search/tweets" target="_blank" rel="noopener">GET search/tweets</a>の仕様に加えて、CSVファイル作成と検索結果をGmailで送信する機能のフラグをつけました。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/node-tweet/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> program = <span class="built_in">require</span>(<span class="string">'commander'</span>)</span><br><span class="line">  , search = <span class="built_in">require</span>(<span class="string">'./commands/search.js'</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .version(<span class="string">'0.0.1'</span>)</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .command(<span class="string">'search &lt;query&gt;'</span>)</span><br><span class="line">    .option(<span class="string">'-c, --count [count]'</span>,<span class="string">'number of tweets 1-100'</span>)</span><br><span class="line">    .option(<span class="string">'-r, --result_type [type]'</span>,<span class="string">'result type'</span>)</span><br><span class="line">    .option(<span class="string">'-l, --lang [ISO 639-1]'</span>,<span class="string">'language of tweet'</span>)</span><br><span class="line">    .option(<span class="string">'-L, --locale [ja]'</span>,<span class="string">'language of query'</span>)</span><br><span class="line">    .option(<span class="string">'-e, --email &lt;to&gt;'</span>,<span class="string">'send email'</span>)</span><br><span class="line">    .option(<span class="string">'-C, --csv'</span>,<span class="string">'output csv format'</span>)</span><br><span class="line">    .action(search.commandQuery);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .command(<span class="string">'track &lt;track&gt;'</span>)</span><br><span class="line">    .option(<span class="string">'-l, --language [language]'</span>,<span class="string">'BCP47'</span>,<span class="string">'language of tweet [ja]'</span>,<span class="string">'ja'</span>)</span><br><span class="line">    .action(search.commandTrack);</span><br><span class="line">    </span><br><span class="line">program.parse(process.argv);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (process.argv.length &lt; <span class="number">4</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'You must specify a command'</span>);</span><br><span class="line">    program.help();</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([<span class="string">'search'</span>,<span class="string">'track'</span>].indexOf(process.argv[<span class="number">2</span>]) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(process.argv[<span class="number">2</span>] + <span class="string">'is not a command'</span>);</span><br><span class="line">    program.help();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exports.program = program;</span><br></pre></td></tr></table></figure>
+
+<h2 id="search-js"><a href="#search-js" class="headerlink" title="search.js"></a>search.js</h2><p>search.jsにコマンドを実装します。特に難しいことはしないで<a href="https://github.com/ttezel/twit" target="_blank" rel="noopener">twit</a>のライブラリを実行しています。ここでの目的はTweetデータの中身から使えそうなフィールドを抽出することと、<a href="https://lodash.com/" target="_blank" rel="noopener">lodash</a>の関数合成や他の関数を試してみることです。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/node-tweet/commands/search.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Twit = <span class="built_in">require</span>(<span class="string">'twit'</span>),</span><br><span class="line">    config = <span class="built_in">require</span>(<span class="string">'../config.json'</span>),</span><br><span class="line">    util = <span class="built_in">require</span>(<span class="string">'util'</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">'lodash'</span>),</span><br><span class="line">    moment = <span class="built_in">require</span>(<span class="string">'moment-timezone'</span>),</span><br><span class="line">    json2csv = <span class="built_in">require</span>(<span class="string">'nice-json2csv'</span>),</span><br><span class="line">    mailer = <span class="built_in">require</span>(<span class="string">'../utils/gmail'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">connect</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Twit(&#123;</span><br><span class="line">        consumer_key: config.twitter_key,</span><br><span class="line">        consumer_secret: config.twitter_secret,</span><br><span class="line">        access_token: config.twitter_token,</span><br><span class="line">        access_token_secret: config.twitter_token_secret</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">prettyJson</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">JSON</span>.stringify(data,<span class="literal">null</span>,<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatDate</span>(<span class="params">created_date</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> moment(<span class="keyword">new</span> <span class="built_in">Date</span>(created_date)).tz(<span class="string">"Asia/Tokyo"</span>).format();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createUrl</span>(<span class="params">screen_name,id_str</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> util.format(<span class="string">'https://twitter.com/%s/status/%s'</span>,</span><br><span class="line">                       screen_name,id_str);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pluckPath</span>(<span class="params">data,path,key,suffix</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _.pluck(_.get(data,path),key)</span><br><span class="line">            .map(<span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;<span class="keyword">return</span> suffix+x&#125;)</span><br><span class="line">            .toString();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">extractData</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        id: s.id_str,</span><br><span class="line">        url: createUrl(s.user.screen_name,s.id_str),</span><br><span class="line">        created_at: formatDate(s.created_at),</span><br><span class="line">        lang: s.lang,</span><br><span class="line">        name: s.user.name,</span><br><span class="line">        screen_name: s.user.screen_name,</span><br><span class="line">        user_url: s.user.url || <span class="string">''</span>,</span><br><span class="line">        text: s.text,</span><br><span class="line">        source: s.source,</span><br><span class="line">        expanded_url: _.get(s,<span class="string">'entities.urls[0].expanded_url'</span>,<span class="string">''</span>),</span><br><span class="line">        hashtags: pluckPath(s,<span class="string">'entities.hashtags'</span>,<span class="string">'text'</span>,<span class="string">"#"</span>),</span><br><span class="line">        user_mentions: pluckPath(s,<span class="string">'entities.user_mentions'</span>,<span class="string">'screen_name'</span>,<span class="string">"@"</span>),</span><br><span class="line">        retweeted_status: s.retweeted_status ? <span class="literal">true</span> : <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">searchPrint</span>(<span class="params">csv,email,metadata</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> _.compose(email ? _.curry(mailer.sendWithAttachment)(email,metadata) : <span class="built_in">console</span>.log,</span><br><span class="line">                     csv ? json2csv.convert : prettyJson,</span><br><span class="line">                     _.map);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">commandTrack</span> (<span class="params">track,options</span>) </span>&#123;</span><br><span class="line">    connect()</span><br><span class="line">        .stream(<span class="string">'statuses/filter'</span>, &#123;<span class="attr">track</span>: track, <span class="attr">language</span>: options.language&#125;)</span><br><span class="line">        .on(<span class="string">'tweet'</span>, _.compose(<span class="built_in">console</span>.log, prettyJson, extractData));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">commandQuery</span> (<span class="params">query,options</span>) </span>&#123;</span><br><span class="line">    connect()</span><br><span class="line">        .get(<span class="string">'search/tweets'</span>,&#123; <span class="attr">q</span>: util.format(<span class="string">'%s lang:%s'</span>, query, options.lang),</span><br><span class="line">                               locale: options.locale,</span><br><span class="line">                               count: options.count,</span><br><span class="line">                               result_type: options.result_type&#125;,</span><br><span class="line">             <span class="function"><span class="keyword">function</span>(<span class="params">err, data, response</span>) </span>&#123;</span><br><span class="line">                 <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="built_in">console</span>.log(err);</span><br><span class="line">                 searchPrint(options.csv, options.email,</span><br><span class="line">                             _.pick(data.search_metadata,</span><br><span class="line">                                    [<span class="string">'since_id_str'</span>, <span class="string">'max_id_str'</span>, <span class="string">'query'</span>]))</span><br><span class="line">                 (data.statuses, extractData);</span><br><span class="line">             &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    commandQuery: commandQuery,</span><br><span class="line">    commandTrack: commandTrack</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Commander-jsのoptionは難しい"><a href="#Commander-jsのoptionは難しい" class="headerlink" title="Commander.jsのoptionは難しい"></a>Commander.jsのoptionは難しい</h3><p>Commander.jsの引数の扱い方はちょっと癖があるので思った通りの引数がうまく取得できません。CLIからオプションが未指定の場合は、action()に指定したコマンドの引数のoptionsにundefinedで入ります。リクエストを発行する関数に渡すparamsのオブジェクトは動的に作成することになります。<a href="http://stackoverflow.com/questions/18019854/conditionally-set-a-json-object-property" target="_blank" rel="noopener">Conditionally set a JSON object property</a>によるとstringifyでJSONを文字列にするときにundefinedなフィールドは作成しないようです。</p>
+<p><a href="https://github.com/ttezel/twit/blob/master/lib/twitter.js" target="_blank" rel="noopener">twitter.js</a>でもparamsはstringfyしているのでCommander.jsのoptionsはundefinedなフィールドをそのまま渡しました。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> paramsClone = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(params))</span><br></pre></td></tr></table></figure>
+
+<p><code>--result_type</code>オプションの場合、オプションが1つだけなら<code>&lt;type&gt;</code>と記述するとUNIX的に入力が必要なコマンドになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm twitter search <span class="string">"babymetal -filter:retweets"</span> -- --result_type</span><br><span class="line">  error: option `-r, --result_type &lt;<span class="built_in">type</span>&gt;<span class="string">' argument missing</span></span><br></pre></td></tr></table></figure>
+
+<p>ただし複数のオプションがあると必須が効かなくなり意図しない動作をします。以下の場合<code>recent_type</code>には次のオプションの<code>-l</code>が入ってしまします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm twitter search <span class="string">"babymetal -filter:retweets"</span> -- --result_type -l ja</span><br></pre></td></tr></table></figure>
+
+<p>また最後の引数に<code>recent</code>としてデフォルト値を使う場合、コマンドラインから<code>--recent_type</code>が未指定でも<code>options.result_type</code>の変数に<code>recent</code>が入ってしまいます。未指定の場合は<code>undefined</code>を意図しているのでこれも困ります。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.option(<span class="string">'-r, --result_type [type]'</span>,<span class="string">'result type'</span>,<span class="string">'recent'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>試行錯誤すると以下のように<code>[type]</code>としてデフォルト値を使わないのがよさそうです。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.option(<span class="string">'-r, --result_type [type]'</span>,<span class="string">'result type'</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>--result_type</code>を指定しない場合、<code>options.result_type</code>は<code>undefined</code>になるためparamsをstringifyするときには削除されます。</p>
+<h3 id="lodashで関数型言語"><a href="#lodashで関数型言語" class="headerlink" title="lodashで関数型言語"></a>lodashで関数型言語</h3><p>Node.jsを関数型言語っぽく書くために<a href="https://lodash.com/" target="_blank" rel="noopener">lodash</a>を使っています。ほぼこのプログラムを書いた主な目的になっています。APIで取得したTwitterのリストを加工するときに関数型言語のように扱ってみます。</p>
+<p>関数合成ができるできるcomposeの<a href="https://lodash.com/docs#flowRight" target="_blank" rel="noopener">flowRight</a>が便利です。以下のように<code>on(&#39;tweet&#39;)</code>のコールバックに<code>_.compose</code>で関数合成した関数を指定できます。<code>on(&#39;tweet&#39;)</code>はコールバックの引数にTweetのデータを渡します。右から順番に<code>extractData</code>でJSONから必要なフィールドを抽出して、<code>return</code>を<code>JSON.stringify</code>に渡し、さらにその<code>return</code>を標準出力に渡します。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">commandTrack</span> (<span class="params">track,options</span>) </span>&#123;</span><br><span class="line">    connect()</span><br><span class="line">        .stream(<span class="string">'statuses/filter'</span>, &#123;<span class="attr">track</span>: track, <span class="attr">language</span>: options.language&#125;)</span><br><span class="line">        .on(<span class="string">'tweet'</span>, _.compose(<span class="built_in">console</span>.log, prettyJson, extractData));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="gmail-js"><a href="#gmail-js" class="headerlink" title="gmail.js"></a>gmail.js</h2><p>このモジュールでは<a href="https://github.com/andris9/Nodemailer" target="_blank" rel="noopener">Nodemailer</a>で添付ファイルをGmailで送信しています。この例ではメールアドレスのバリデーションや、メール本文にTweetのメタデータを追加しています。Nodemailerを使うとGmailの添付ファイル送信がとても簡単に書くことができます。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/node-tweet/utils/gmail.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> nodemailer = <span class="built_in">require</span>(<span class="string">'nodemailer'</span>),</span><br><span class="line">    validator = <span class="built_in">require</span>(<span class="string">'validator'</span>),</span><br><span class="line">    config = <span class="built_in">require</span>(<span class="string">'../config.json'</span>),</span><br><span class="line">    util = <span class="built_in">require</span>(<span class="string">'util'</span>),</span><br><span class="line">    moment = <span class="built_in">require</span>(<span class="string">'moment-timezone'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createFilename</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> util.format(<span class="string">'twitter-%s.csv'</span>,</span><br><span class="line">                       moment(<span class="keyword">new</span> <span class="built_in">Date</span>())</span><br><span class="line">                       .tz(<span class="string">"Asia/Tokyo"</span>)</span><br><span class="line">                       .format(<span class="string">'YYYYMMDD-HHmmss'</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">formatMetadata</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">"query:'"</span>,<span class="built_in">decodeURIComponent</span>(data.query.replace(<span class="regexp">/\+/g</span>,<span class="string">' '</span>)),<span class="string">"'\n"</span>,</span><br><span class="line">            <span class="string">"since_id: "</span>,data.since_id_str,<span class="string">"\n"</span>,</span><br><span class="line">            <span class="string">"max_id: "</span>,data.max_id_str,<span class="string">"\n"</span>].join(<span class="string">''</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendWithAttachment</span>(<span class="params">gmail_to,metadata,content</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (! validator.isEmail(gmail_to)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">console</span>.log(<span class="string">'--email is not valide: '</span>, gmail_to);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> transporter = nodemailer.createTransport(&#123;</span><br><span class="line">        service: <span class="string">'Gmail'</span>,</span><br><span class="line">        auth: &#123;</span><br><span class="line">            user: config.gmail_user,</span><br><span class="line">            pass: config.gmail_pass</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> msg = &#123;</span><br><span class="line">        <span class="keyword">from</span>: config.gmail_from,</span><br><span class="line">        to: gmail_to,</span><br><span class="line">        subject: config.gmail_subject,</span><br><span class="line">        text: formatMetadata(metadata),</span><br><span class="line">        attachments: [</span><br><span class="line">            &#123;<span class="attr">filename</span>: createFilename(),</span><br><span class="line">             content: content&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    transporter.sendMail(msg, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'Sending to '</span> + msg.to + <span class="string">' failed: '</span> + err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'Sent to '</span> + msg.to);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports.sendWithAttachment = sendWithAttachment;</span><br></pre></td></tr></table></figure>
+
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>今回のプロトタイプでTwitterのAPIにどのようなパラメータがあり、Tweetデータからどのようなフィールドを取得して加工すると有用なのか使いながらフィードバックを得ることができます。次はジョブをキューしたり、定期的に処理をスケジュール管理できるようにしてみます。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Twitter/" rel="tag"># Twitter</a>
+              <a href="/tags/Twit/" rel="tag"># Twit</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/Commanderjs/" rel="tag"># Commanderjs</a>
+              <a href="/tags/lodash/" rel="tag"># lodash</a>
+              <a href="/tags/Gmail/" rel="tag"># Gmail</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/" rel="prev" title="InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml">
+      <i class="fa fa-chevron-left"></i> InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/05/nodejs-job-queue-schedule/" rel="next" title="Node.jsで使うJobQueueとcron型Scheduleのリソース">
+      Node.jsで使うJobQueueとcron型Scheduleのリソース <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトと使い方"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトと使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#簡単な使い方"><span class="nav-number">1.1.</span> <span class="nav-text">簡単な使い方</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#app-js"><span class="nav-number">2.</span> <span class="nav-text">app.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#search-js"><span class="nav-number">3.</span> <span class="nav-text">search.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Commander-jsのoptionは難しい"><span class="nav-number">3.1.</span> <span class="nav-text">Commander.jsのoptionは難しい</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lodashで関数型言語"><span class="nav-number">3.2.</span> <span class="nav-text">lodashで関数型言語</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gmail-js"><span class="nav-number">4.</span> <span class="nav-text">gmail.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#まとめ"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IDCFクラウドのCoreOSクラスタにCouchbase Server 3.0.1をインストールしました。Couchbase Serverのクラスタに接続するサンプルを書いてみます。ドキュメントサイトにあるJava SDK 2.0を使ってHello Couchbase Exampleを実行してみます。CoreOSの仮装マシンの1台にJava開発環境のコンテナを用意してGradleプロジェクトを作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Couchbase on Docker - Part2: Java SDK 2.0 とGradleでサンプル作成">
+<meta property="og:url" content="http://masato.github.io/2014/12/23/idcf-coreos-couchbase-server-java-sdk-2-0/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="IDCFクラウドのCoreOSクラスタにCouchbase Server 3.0.1をインストールしました。Couchbase Serverのクラスタに接続するサンプルを書いてみます。ドキュメントサイトにあるJava SDK 2.0を使ってHello Couchbase Exampleを実行してみます。CoreOSの仮装マシンの1台にJava開発環境のコンテナを用意してGradleプロジェクトを作">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-12-22T15:05:04.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.686Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Java8">
+<meta property="article:tag" content="Couchbase">
+<meta property="article:tag" content="CouchbaseServer">
+<meta property="article:tag" content="Gradle">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/12/23/idcf-coreos-couchbase-server-java-sdk-2-0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Couchbase on Docker - Part2: Java SDK 2.0 とGradleでサンプル作成 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/12/23/idcf-coreos-couchbase-server-java-sdk-2-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Couchbase on Docker - Part2: Java SDK 2.0 とGradleでサンプル作成
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 23 2014 00:05:04" itemprop="dateCreated datePublished" datetime="2014-12-23T00:05:04+09:00">Dec 23 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">IDCFクラウドのCoreOSクラスタにCouchbase Server 3.0.1をインストールしました。Couchbase Serverのクラスタに接続するサンプルを書いてみます。ドキュメントサイトにあるJava SDK 2.0を使ってHello Couchbase Exampleを実行してみます。CoreOSの仮装マシンの1台にJava開発環境のコンテナを用意してGradleプロジェクトを作成します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>IDCFクラウドのCoreOSクラスタにCouchbase Server 3.0.1を<a href="/2014/12/20/idcf-coreos-couchbase-install/">インストール</a>しました。Couchbase Serverのクラスタに接続するサンプルを書いてみます。ドキュメントサイトにある<a href="http://docs.couchbase.com/developer/java-2.0/java-intro.html" target="_blank" rel="noopener">Java SDK 2.0</a>を使って、<a href="http://docs.couchbase.com/developer/java-2.0/hello-couchbase.html" target="_blank" rel="noopener">Hello Couchbase Example</a>を実行してみます。CoreOSの仮装マシンの1台に、Docker Hub Registryから<a href="https://registry.hub.docker.com/u/masato/baseimage/" target="_blank" rel="noopener">masato/baseimage</a>をpullしてGradleでプロジェクトを作成します。</p>
+<a id="more"></a>
+
+<h3 id="Java開発環境"><a href="#Java開発環境" class="headerlink" title="Java開発環境"></a>Java開発環境</h3><p><a href="https://registry.hub.docker.com/u/dockerfile/java/" target="_blank" rel="noopener">dockerfile/java</a>をpullして使い捨てのコンテナを作ります。<code>$JAVA_HOME</code>を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm dockerfile/java:oracle-java8</span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></span><br><span class="line">/usr/lib/jvm/java-8-oracle</span><br><span class="line">$ java -version</span><br><span class="line">java version <span class="string">"1.8.0_25"</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_25-b17)</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM (build 25.25-b02, mixed mode)</span><br></pre></td></tr></table></figure>
+
+<h3 id="サンプルプロジェクト"><a href="#サンプルプロジェクト" class="headerlink" title="サンプルプロジェクト"></a>サンプルプロジェクト</h3><p>作成したサンプルプロジェクトは<a href="https://github.com/masato/simple-couchbase" target="_blank" rel="noopener">simple-couchbase</a>のリポジトリにあります。<code>git clone</code>したあとgradlewを実行すればGradleの実行環境ができあがります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/simple-couchbase.git</span><br><span class="line">$ <span class="built_in">cd</span> simple-couchbase</span><br><span class="line">$ ./gradlew</span><br></pre></td></tr></table></figure>
+
+<h3 id="CouchMain-java"><a href="#CouchMain-java" class="headerlink" title="CouchMain.java"></a>CouchMain.java</h3><p>Couchbase Serverに接続するアプリのMainクラスです。<code>CouchbaseCluster.create(&quot;10.3.0.193&quot;,&quot;10.3.0.7&quot;,&quot;10.3.0.210&quot;);</code>の様に、引数へCouchbase Serverクラスタの3台のIPアドレスを指定します。</p>
+<figure class="highlight java"><figcaption><span>~/simple-couchbase/src/main/java/example/CouchMain.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> example;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.Cluster;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.CouchbaseCluster;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.Bucket;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.document.json.JsonObject;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.document.Document;</span><br><span class="line"><span class="keyword">import</span> com.couchbase.client.java.document.JsonDocument;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CouchMain</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Cluster cluster = CouchbaseCluster.create(<span class="string">"10.3.0.193"</span>,<span class="string">"10.3.0.7"</span>,<span class="string">"10.3.0.210"</span>);</span><br><span class="line">            Bucket bucket = cluster.openBucket();</span><br><span class="line">            JsonObject user = JsonObject.empty()</span><br><span class="line">                .put(<span class="string">"firstname"</span>, <span class="string">"Walter"</span>)</span><br><span class="line">                .put(<span class="string">"lastname"</span>, <span class="string">"White"</span>)</span><br><span class="line">                .put(<span class="string">"job"</span>, <span class="string">"chemistry teacher"</span>)</span><br><span class="line">                .put(<span class="string">"age"</span>, <span class="number">50</span>);</span><br><span class="line">            JsonDocument doc = JsonDocument.create(<span class="string">"walter"</span>, user);</span><br><span class="line">            JsonDocument response = bucket.upsert(doc);</span><br><span class="line">            JsonDocument walter = bucket.get(<span class="string">"walter"</span>);</span><br><span class="line">            System.out.println(<span class="string">"Found: "</span> + walter);</span><br><span class="line">            cluster.disconnect();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="build-gradle"><a href="#build-gradle" class="headerlink" title="build.gradle"></a>build.gradle</h3><p>build.gradleには<code>apply plugin: &#39;application&#39;</code>と<code>mainClassName = &#39;example.CouchMain&#39;</code>を記述して、runタスクからMainクラスを実行できるようにします。dependenciesにはMavenからjava-client:2.0.2を取得して追加します。</p>
+<figure class="highlight groovy"><figcaption><span>~/simple-couchbase/build.gradle</span></figcaption><table><tr><td class="code"><pre><span class="line">apply <span class="string">plugin:</span> <span class="string">'java'</span></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'application'</span></span><br><span class="line"></span><br><span class="line">mainClassName = <span class="string">'example.CouchMain'</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sourceCompatibility = <span class="number">1.8</span></span><br><span class="line">targetCompatibility = <span class="number">1.8</span></span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile <span class="string">'com.couchbase.client:java-client:2.0.2'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="gradlew-run"><a href="#gradlew-run" class="headerlink" title="./gradlew run"></a>./gradlew run</h3><p>Couchbase ServerにupsertしたJSONをgetして中身を確認することができました。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ cd ~/simple-couchbase</span><br><span class="line">$ ./gradlew clean run</span><br><span class="line"><span class="built_in">..</span>.</span><br><span class="line">Found: JsonDocument&#123;<span class="attribute">id</span>=<span class="string">'walter'</span>, <span class="attribute">cas</span>=255239600078706, <span class="attribute">expiry</span>=0, content=&#123;<span class="string">"firstname"</span>:<span class="string">"Walter"</span>,<span class="string">"job"</span>:<span class="string">"chemistry teacher"</span>,<span class="string">"age"</span>:50,<span class="string">"lastname"</span>:<span class="string">"White"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Java8/" rel="tag"># Java8</a>
+              <a href="/tags/Couchbase/" rel="tag"># Couchbase</a>
+              <a href="/tags/CouchbaseServer/" rel="tag"># CouchbaseServer</a>
+              <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/12/22/mbaas-html5-hybrid-mobile-apps-references/" rel="prev" title="MBaaSとCloud IDEでHTML5ハイブリッドモバイルアプリを開発する - Part1: リファレンス">
+      <i class="fa fa-chevron-left"></i> MBaaSとCloud IDEでHTML5ハイブリッドモバイルアプリを開発する - Part1: リファレンス
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/12/24/nodejs-loopback-docker-getting-started-mongodb/" rel="next" title="Node.js LoopBack on Docker - Part1: MongoDBのコンテナを作成">
+      Node.js LoopBack on Docker - Part1: MongoDBのコンテナを作成 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java開発環境"><span class="nav-number">1.</span> <span class="nav-text">Java開発環境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サンプルプロジェクト"><span class="nav-number">2.</span> <span class="nav-text">サンプルプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CouchMain-java"><span class="nav-number">3.</span> <span class="nav-text">CouchMain.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-gradle"><span class="nav-number">4.</span> <span class="nav-text">build.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradlew-run"><span class="nav-number">5.</span> <span class="nav-text">.&#x2F;gradlew run</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

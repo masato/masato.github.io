@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ArduinoとDHT11デジタル温度センサーからMeshbluのMQTTブローカーにメッセージをpublishするサンプルを作成しました。またWebブラウザから直接メッセージを取得することもできました。これらを組み合わせてリアルタイムにセンシングデータをモニタリングするダッシュボードをfreeboardで作ってみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArduinoからDHT11の温度と湿度データをMQTTで送信してfreeboardに表示する">
+<meta property="og:url" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ArduinoとDHT11デジタル温度センサーからMeshbluのMQTTブローカーにメッセージをpublishするサンプルを作成しました。またWebブラウザから直接メッセージを取得することもできました。これらを組み合わせてリアルタイムにセンシングデータをモニタリングするダッシュボードをfreeboardで作ってみます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/datasource-entry.png">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/my-room-pane.png">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/humidity-gauge.png">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/temerature-spark.png">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/save-freeboard.png">
+<meta property="og:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/freeboard-edit.png">
+<meta property="article:published_time" content="2015-04-27T07:02:52.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.535Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Arduino">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="DHT11">
+<meta property="article:tag" content="センサー">
+<meta property="article:tag" content="freeboard">
+<meta property="article:tag" content="DockerCompose">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/datasource-entry.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ArduinoからDHT11の温度と湿度データをMQTTで送信してfreeboardに表示する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/04/27/arduino-dht11-meshblu-freeboard/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ArduinoからDHT11の温度と湿度データをMQTTで送信してfreeboardに表示する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Apr 27 2015 16:02:52" itemprop="dateCreated datePublished" datetime="2015-04-27T16:02:52+09:00">Apr 27 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">ArduinoとDHT11デジタル温度センサーからMeshbluのMQTTブローカーにメッセージをpublishするサンプルを作成しました。またWebブラウザから直接メッセージを取得することもできました。これらを組み合わせてリアルタイムにセンシングデータをモニタリングするダッシュボードをfreeboardで作ってみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/04/20/arduino-dht11-mqtt-wr702n-meshblu/">ArduinoとDHT11デジタル温度センサー</a>からMeshbluのMQTTブローカーにメッセージをpublishするサンプルを作成しました。また<a href="/2015/04/26/meshblu-mqtt-websocket-javascript-browser/">Webブラウザ</a>から直接メッセージを取得することもできました。これらを組み合わせてリアルタイムにセンシングデータをモニタリングするダッシュボードを<a href="https://github.com/Freeboard/freeboard" target="_blank" rel="noopener">freeboard</a>で作ってみます。</p>
+<a id="more"></a>
+
+
+<h2 id="データソース"><a href="#データソース" class="headerlink" title="データソース"></a>データソース</h2><h3 id="freeboard-mqtt"><a href="#freeboard-mqtt" class="headerlink" title="freeboard-mqtt"></a>freeboard-mqtt</h3><p>最初は<a href="https://github.com/alsm/freeboard-mqtt" target="_blank" rel="noopener">freeboard-mqtt</a>を参考にしてPahoの<a href="http://eclipse.org/paho/clients/js/" target="_blank" rel="noopener">JavaScript Client</a>をfreeboardの<code>external_scripts</code>に指定する方法を試しました。MeshbluのMQTTブローカーだとうまく動作しません。</p>
+<h3 id="freeboardのMeshbluデータソース"><a href="#freeboardのMeshbluデータソース" class="headerlink" title="freeboardのMeshbluデータソース"></a>freeboardのMeshbluデータソース</h3><p>freeboardのソースコードを読んでいると<a href="https://github.com/Freeboard/freeboard/blob/master/plugins/freeboard/freeboard.datasources.js" target="_blank" rel="noopener">freeboard.datasources.js</a>にMeshbluのデータソースが追加されていました。オフィシャルでサポートされているのでうまく行きそうです。</p>
+<h2 id="Arduino-Unoの準備"><a href="#Arduino-Unoの準備" class="headerlink" title="Arduino Unoの準備"></a>Arduino Unoの準備</h2><p>スケッチは<a href="/2015/04/20/arduino-dht11-mqtt-wr702n-meshblu/">前回作成</a>作成したコードを使います。DHT11のセンサーはArduinoのPD2に配線します。 WR702NモバイルルーターとEthernetでつなぎインターネットに接続します。</p>
+<h2 id="freeboardのインストール"><a href="#freeboardのインストール" class="headerlink" title="freeboardのインストール"></a>freeboardのインストール</h2><h3 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h3><p>パブリックの<a href="http://freeboard.github.io/freeboard/" target="_blank" rel="noopener">freeboard</a>にはまだMeshbluのデータソースが追加されていません。ローカルのDockerでfeeboardを起動します。ApachやNginxでも構いませんが<a href="/2015/04/21/docker-node-static-web-server/">テスト用</a>に使っている<a href="https://github.com/cloudhead/node-static" target="_blank" rel="noopener">node-static</a>のコンテナとして起動します。</p>
+<p>まず適当なディレクトリにプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/node_apps/freeboard-static</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<p>publicディレクトリにfreeboardのソースをgit cloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/Freeboard/freeboard.git public</span><br></pre></td></tr></table></figure>
+
+<p>以下のようなプロジェクト構成になります。publicディレクトリにfreeboadがデプロイされています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree -L 1 .</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── app.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── package.json</span><br><span class="line">└── public</span><br></pre></td></tr></table></figure>
+
+<h3 id="ソースコード"><a href="#ソースコード" class="headerlink" title="ソースコード"></a>ソースコード</h3><p>今回は<a href="https://registry.hub.docker.com/u/google/nodejs-runtime/" target="_blank" rel="noopener">google/nodejs-runtime</a>をベースイメージに使います。</p>
+<figure class="highlight bash"><figcaption><span>~/node_apps/freeboard-static/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs-runtime</span><br><span class="line">VOLUME /app/public</span><br></pre></td></tr></table></figure>
+
+<p>コンテナは1つなのでDocker Composeは不要ですが、あとで他のコンテナとオーケストレーションするために最初からDocker Composeにしておきます。</p>
+<figure class="highlight yaml"><figcaption><span>~/node_apps/freeboard-static/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">freeboard:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">80</span><span class="string">:8080</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">$PWD/public:/app/public</span></span><br></pre></td></tr></table></figure>
+
+<p>package.jsonからnode-staticのインストールをします。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/freeboard-static/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"node-static-app"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"node-static app"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"node-static"</span>: <span class="string">"0.7.6"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>メインプログラムです。単純に<code>./public</code>ディレクトリをサーブします。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/freeboard-static/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="keyword">static</span> = <span class="built_in">require</span>(<span class="string">'node-static'</span>);</span><br><span class="line"><span class="keyword">var</span> file = <span class="keyword">new</span> <span class="keyword">static</span>.Server(<span class="string">'./public'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'http'</span>).createServer(<span class="function"><span class="keyword">function</span> (<span class="params">request, response</span>) </span>&#123;</span><br><span class="line">    request.addListener(<span class="string">'end'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        file.serve(request, response);</span><br><span class="line">    &#125;).resume();</span><br><span class="line">&#125;).listen(<span class="number">8080</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"Server running at http://localhost:8080"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Docker Composeからコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="feeboardの設定"><a href="#feeboardの設定" class="headerlink" title="feeboardの設定"></a>feeboardの設定</h2><p>ブラウザからfreeboardを起動しているDockerコンテナに接続します。</p>
+<h3 id="Datasourceの追加"><a href="#Datasourceの追加" class="headerlink" title="Datasourceの追加"></a>Datasourceの追加</h3><p>DATASOURCES &gt; ADD &gt; TYPE &gt; Octobluを選択します。</p>
+<p>UUIDとTOKENはArduinoのスケッチでMQTT publishするときに使った組み合わせを指定します。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/datasource-entry.png" alt="datasource-entry.png"></p>
+<h3 id="Paneの追加"><a href="#Paneの追加" class="headerlink" title="Paneの追加"></a>Paneの追加</h3><p>ADD PANE をクリックしてあたらしくPaneを作成します。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/my-room-pane.png" alt="my-room-pane.png"></p>
+<h3 id="Widgetの追加"><a href="#Widgetの追加" class="headerlink" title="Widgetの追加"></a>Widgetの追加</h3><p>作成したPaneの+ボタンをクリックします。DHT11センサーからは湿度と温度を計測しているので、HumidityとTemperatureの2つのWidgetを作成します。</p>
+<p>湿度のパーセントはゲージの半円グラフで表示します。VALUEの+DATASOURCEボタンをクリックしてJSONデータから取得するデータを指定します。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/humidity-gauge.png" alt="humidity-gauge.png"></p>
+<p>温度のCはテキストと折れ線グラフで表示します。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/temerature-spark.png" alt="temerature-spark.png"></p>
+<h3 id="設定をJSON形式で保存"><a href="#設定をJSON形式で保存" class="headerlink" title="設定をJSON形式で保存"></a>設定をJSON形式で保存</h3><p>最後にこれまでの設定をJSON形式で保存してローカルにダウンロードします。ブラウザをリロードしても設定は消えてしまいます。次回は<code>LOAD FREEBOARD</code>をクリックしてJSONをアップロードします。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/save-freeboard.png" alt="save-freeboard.png"></p>
+<h3 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h3><p>Arduinoからは5秒間隔でDHT11センサーから計測した値をMQTT publishしています。上の工具アイコンをクリックすると編集画面になります。通常はこのダッシュボードの画面を表示します。</p>
+<p><img src="/2015/04/27/arduino-dht11-meshblu-freeboard/freeboard-edit.png" alt="freeboard-edit.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/DHT11/" rel="tag"># DHT11</a>
+              <a href="/tags/%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC/" rel="tag"># センサー</a>
+              <a href="/tags/freeboard/" rel="tag"># freeboard</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/04/26/meshblu-mqtt-websocket-javascript-browser/" rel="prev" title="MeshbluのRESTとMQTTのメッセージをWebブラウザで直接受信する">
+      <i class="fa fa-chevron-left"></i> MeshbluのRESTとMQTTのメッセージをWebブラウザで直接受信する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/04/28/kafka-in-docker-getting-started/" rel="next" title="Kafka in Dockerで分散メッセージングシステムを構築する">
+      Kafka in Dockerで分散メッセージングシステムを構築する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#データソース"><span class="nav-number">1.</span> <span class="nav-text">データソース</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#freeboard-mqtt"><span class="nav-number">1.1.</span> <span class="nav-text">freeboard-mqtt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#freeboardのMeshbluデータソース"><span class="nav-number">1.2.</span> <span class="nav-text">freeboardのMeshbluデータソース</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arduino-Unoの準備"><span class="nav-number">2.</span> <span class="nav-text">Arduino Unoの準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboardのインストール"><span class="nav-number">3.</span> <span class="nav-text">freeboardのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクト"><span class="nav-number">3.1.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ソースコード"><span class="nav-number">3.2.</span> <span class="nav-text">ソースコード</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feeboardの設定"><span class="nav-number">4.</span> <span class="nav-text">feeboardの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Datasourceの追加"><span class="nav-number">4.1.</span> <span class="nav-text">Datasourceの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Paneの追加"><span class="nav-number">4.2.</span> <span class="nav-text">Paneの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Widgetの追加"><span class="nav-number">4.3.</span> <span class="nav-text">Widgetの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定をJSON形式で保存"><span class="nav-number">4.4.</span> <span class="nav-text">設定をJSON形式で保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完成"><span class="nav-number">4.5.</span> <span class="nav-text">完成</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

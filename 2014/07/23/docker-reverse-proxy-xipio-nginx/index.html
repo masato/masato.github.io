@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Passenger Nginx と Node.jsではマルチポートでLISTENするアプリをうまくリバースプロキシできませんでした。簡単なNode.jsアプリをNginxを動かすだけでも時間がかかってしまうので、もっと勉強しないといけないです。今回の目的は、xio.ioを使い、IPアドレスだけでWildcard DNSのテストをすることです。Namecheapで安いドメイン名を買えますが、開発や社">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DockerのHTTP Routing - Part4: xip.io と Nginx と Node.js">
+<meta property="og:url" content="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Passenger Nginx と Node.jsではマルチポートでLISTENするアプリをうまくリバースプロキシできませんでした。簡単なNode.jsアプリをNginxを動かすだけでも時間がかかってしまうので、もっと勉強しないといけないです。今回の目的は、xio.ioを使い、IPアドレスだけでWildcard DNSのテストをすることです。Namecheapで安いドメイン名を買えますが、開発や社">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/nodejs.png">
+<meta property="og:image" content="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/xipio-nginx.png">
+<meta property="article:published_time" content="2014-07-22T15:09:52.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.601Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="runit">
+<meta property="article:tag" content="xipio">
+<meta property="article:tag" content="HTTPRouting">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="nginx-proxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/nodejs.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DockerのHTTP Routing - Part4: xip.io と Nginx と Node.js | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/07/23/docker-reverse-proxy-xipio-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DockerのHTTP Routing - Part4: xip.io と Nginx と Node.js
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 23 2014 00:09:52" itemprop="dateCreated datePublished" datetime="2014-07-23T00:09:52+09:00">Jul 23 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Passenger Nginx と Node.jsではマルチポートでLISTENするアプリをうまくリバースプロキシできませんでした。簡単なNode.jsアプリをNginxを動かすだけでも時間がかかってしまうので、もっと勉強しないといけないです。今回の目的は、xio.ioを使い、IPアドレスだけでWildcard DNSのテストをすることです。Namecheapで安いドメイン名を買えますが、開発や社内利用の場合、ローカルにDNSサーバーを用意しなくても名前解決ができるのはとても便利です。HTTP RoutingしたいDockerコンテナの各ポートを、Node.jsのアプリで見立て、動かしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-07-28</code>: <a href="/2014/07/28/docker-devenv-nginx/">Dockerで開発環境をつくる - Nginx</a></li>
+<li><code>Update 2014-07-29</code>: <a href="/2014/07/29/docker-devenv-nginx-hello-world-again/">Dockerで開発環境をつくる - Nginx Hello World, Again</a></li>
+<li><code>Update 2014-08-05</code>: <a href="/2014/08/05/docker-reverse-proxy-xipio-nginx-confd-sinatra/">DockerのHTTP Routing - Part8: xip.io と Nginx と confd 0.6 で動的リバースプロキシ</a></li>
+</ul>
+<p><a href="/2014/07/22/docker-devenv-passenger-nodejs/">Passenger Nginx と Node.js</a>ではマルチポートでLISTENするアプリをうまくリバースプロキシできませんでした。簡単なNode.jsアプリをNginxを動かすだけでも時間がかかってしまうので、もっと勉強しないといけないです。</p>
+<p>今回の目的は、<a href="http://xip.io/" target="_blank" rel="noopener">xio.io</a>を使い、IPアドレスだけで<code>Wildcard DNS</code>のテストをすることです。Namecheapで安いドメイン名を買えますが、開発や社内利用の場合、ローカルにDNSサーバーを用意しなくても名前解決ができるのはとても便利です。<br><code>HTTP Routing</code>したいDockerコンテナの各ポートを、Node.jsのアプリで見立て、動かしてみます。</p>
+<a id="more"></a>
+
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>最初に完成したDockerfileです。<code>phusion/baseimage</code>を使います。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/xipio/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.11</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker's init process.</span></span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...put your own build instructions here...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># Install an SSH of your choice.</span></span><br><span class="line">ADD my_key.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment"># apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment"># ppa</span></span><br><span class="line">RUN apt-get install -y software-properties-common</span><br><span class="line">RUN add-apt-repository ppa:chris-lea/node.js</span><br><span class="line">RUN apt-get -yqq update</span><br><span class="line"></span><br><span class="line"><span class="comment"># apt-get install</span></span><br><span class="line">RUN apt-get install -y nodejs nginx</span><br><span class="line"></span><br><span class="line"><span class="comment"># deploy Node.js app</span></span><br><span class="line">RUN rm -rf /etc/nginx/sites-enabled/default</span><br><span class="line">ADD webapp.conf /etc/nginx/sites-enabled/</span><br><span class="line">RUN mkdir -p /srv/www/webapp/</span><br><span class="line">ADD app.js /srv/www/webapp/</span><br><span class="line">ADD sv /etc/service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<h3 id="runitの設定ファイル"><a href="#runitの設定ファイル" class="headerlink" title="runitの設定ファイル"></a>runitの設定ファイル</h3><p>Node.jsアプリのrunitの設定ファイルです。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/xipio/sv/nodejs/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /srv/www/webapp</span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> chpst -U www-data node app.js &gt; /var/<span class="built_in">log</span>/nodejs.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>runitのNginxです。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/xipio/sv/nginx/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"></span><br><span class="line"><span class="built_in">exec</span> /usr/sbin/nginx -g <span class="string">"daemon off;"</span></span><br></pre></td></tr></table></figure>
+
+<p>svlogdを使ったログの設定です。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/xipio/sv/nginx/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Node-jsアプリ"><a href="#Node-jsアプリ" class="headerlink" title="Node.jsアプリ"></a>Node.jsアプリ</h3><p>Node.jsで同一プロセスで複数ポートをLISTENするサンプルが<a href="https://groups.google.com/forum/#!topic/nodejs/EK53DqqUKHQ" target="_blank" rel="noopener">Can HttpServer listen to multiple ports?</a>にあったのでサンプルに使ってみます。</p>
+<figure class="highlight plain"><figcaption><span>~/docker_apps/xipio/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line">var http &#x3D; require(&#39;http&#39;)</span><br><span class="line">  , servers &#x3D; [] </span><br><span class="line">  , port &#x3D; 8000;</span><br><span class="line"></span><br><span class="line">function addServer(fn) &#123; </span><br><span class="line">    var s &#x3D; http.createServer(fn);</span><br><span class="line">    s.listen(port);</span><br><span class="line">    servers.push(s); </span><br><span class="line">    port +&#x3D; 1;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">addServer(function(req,resp)&#123; resp.writeHead(200); resp.end(&#39;hi&#39;); &#125;); </span><br><span class="line"></span><br><span class="line">addServer(function(req,resp)&#123; resp.writeHead(200); resp.end(&#39;hello&#39;); &#125;); </span><br><span class="line"></span><br><span class="line">addServer(function(req,resp)&#123; resp.writeHead(200); resp.end(&#39;howdy&#39;); &#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="xip-io用のNginxの設定"><a href="#xip-io用のNginxの設定" class="headerlink" title="xip.io用のNginxの設定"></a>xip.io用のNginxの設定</h3><p>xip.ipのURLにポート番号を埋め込み、<code>server_name</code>の正規表現で動的にパースしてポート番号を抽出します。<br>リクエストに応じて動的にプロキシー先のポートを指定する仕組みになります。</p>
+<figure class="highlight plain"><figcaption><span>~/docker_apps/xipio/webapp.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  server_name ~^p(?&lt;port_name&gt;\d+)\.(.*)\.xip\.io$;</span><br><span class="line"></span><br><span class="line">  location &#x2F; &#123;</span><br><span class="line">    proxy_set_header host $host;</span><br><span class="line">    proxy_set_header x-real-ip $remote_addr;</span><br><span class="line">    proxy_set_header x-forwarded-for $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_pass http:&#x2F;&#x2F;127.0.0.1:$port_name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="build"><a href="#build" class="headerlink" title="build"></a>build</h3><p>Dockerイメージをビルドします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/xipio</span><br><span class="line">$ docker build -t masato/xipio .</span><br></pre></td></tr></table></figure>
+
+<h3 id="Node-jsを直接コールする"><a href="#Node-jsを直接コールする" class="headerlink" title="Node.jsを直接コールする"></a>Node.jsを直接コールする</h3><p>Node.jsのポートマップを3つ指定して、Dockerコンテナを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -p 8000:8000 -p 8001:8001 -p 8002:8002 -t masato/xipio /sbin/</span><br><span class="line">my_init bash</span><br></pre></td></tr></table></figure>
+
+<p>DockerホストのブラウザからNode.jsのポートを指定して確認します。</p>
+<img src="/2014/07/23/docker-reverse-proxy-xipio-nginx/nodejs.png" class="center">
+
+
+<h3 id="xip-ioとNginxのリバースプロキシをつかう"><a href="#xip-ioとNginxのリバースプロキシをつかう" class="headerlink" title="xip.ioとNginxのリバースプロキシをつかう"></a>xip.ioとNginxのリバースプロキシをつかう</h3><p>DockerコンテナのIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect b03feeae6063 | jq -r <span class="string">'.[0] | .NetworkSettings | .IPAddress'</span></span><br><span class="line">172.17.0.207</span><br></pre></td></tr></table></figure>
+
+<p>Nginxの80だけをポートマップしてDockerコンテナを起動する。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -p 80:80 -t masato/xipio /sbin/</span><br><span class="line">my_init bash</span><br></pre></td></tr></table></figure>
+
+<p>Dockerホストから、xip.ioを使ったURLを指定してブラウザで確認します。</p>
+<img src="/2014/07/23/docker-reverse-proxy-xipio-nginx/xipio-nginx.png" class="center">
+
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>xip.ioを使ったURLで、<code>Wildcard DNS</code>と<code>HTTP Routing</code>の確認ができたので社内用の<a href="/tags/AnalyticSandbox/">データ分析環境</a>はxip.ioで束ねて使ってみます。<br>特にクラスタ環境を構築するときはローカルで名前解決が必要な場合が多いので、xip.ioはとても便利な仕組みです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/runit/" rel="tag"># runit</a>
+              <a href="/tags/xipio/" rel="tag"># xipio</a>
+              <a href="/tags/HTTPRouting/" rel="tag"># HTTPRouting</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/nginx-proxy/" rel="tag"># nginx-proxy</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/07/22/docker-devenv-passenger-nodejs/" rel="prev" title="Dockerで開発環境をつくる - Passenger Nginx と Node.js">
+      <i class="fa fa-chevron-left"></i> Dockerで開発環境をつくる - Passenger Nginx と Node.js
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/07/24/docker-reverse-proxy-bouncy/" rel="next" title="DockerのHTTP Routing - Part5: xip.io と bouncy と XRegExp で動的リバースプロキシ">
+      DockerのHTTP Routing - Part5: xip.io と bouncy と XRegExp で動的リバースプロキシ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runitの設定ファイル"><span class="nav-number">2.</span> <span class="nav-text">runitの設定ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-jsアプリ"><span class="nav-number">3.</span> <span class="nav-text">Node.jsアプリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xip-io用のNginxの設定"><span class="nav-number">4.</span> <span class="nav-text">xip.io用のNginxの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build"><span class="nav-number">5.</span> <span class="nav-text">build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-jsを直接コールする"><span class="nav-number">6.</span> <span class="nav-text">Node.jsを直接コールする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xip-ioとNginxのリバースプロキシをつかう"><span class="nav-number">7.</span> <span class="nav-text">xip.ioとNginxのリバースプロキシをつかう</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

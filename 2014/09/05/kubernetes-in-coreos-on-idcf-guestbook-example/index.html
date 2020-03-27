@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="CoreOSクラスタにインストールしたKubernetesに、GuestBook exampleとデプロイして、KubernetesとCoreOSとDockerの動きを確認していきます。Docker管理システムの中でもアーキテクチャがわかりやすく、動作も安定しています。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes in CoreOS with Rudder on IDCFクラウド - Part4: GuestBook example">
+<meta property="og:url" content="http://masato.github.io/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="CoreOSクラスタにインストールしたKubernetesに、GuestBook exampleとデプロイして、KubernetesとCoreOSとDockerの動きを確認していきます。Docker管理システムの中でもアーキテクチャがわかりやすく、動作も安定しています。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/guestbook.png">
+<meta property="article:published_time" content="2014-09-05T00:15:40.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.740Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="Docker管理">
+<meta property="article:tag" content="fleet">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="Rudder">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/guestbook.png">
+
+<link rel="canonical" href="http://masato.github.io/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Kubernetes in CoreOS with Rudder on IDCFクラウド - Part4: GuestBook example | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kubernetes in CoreOS with Rudder on IDCFクラウド - Part4: GuestBook example
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Sep 5 2014 09:15:40" itemprop="dateCreated datePublished" datetime="2014-09-05T09:15:40+09:00">Sep 5 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">CoreOSクラスタにインストールしたKubernetesに、GuestBook exampleとデプロイして、KubernetesとCoreOSとDockerの動きを確認していきます。Docker管理システムの中でもアーキテクチャがわかりやすく、動作も安定しています。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-10-02</code>: <a href="/2014/10/02/kubernetes-fleet-flannel-guestbook/">Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part7: flannel版GuestBook</a></li>
+<li><code>Update 2014-09-27</code>: <a href="/2014/09/27/kubernetes-fleet-rudder-renamed-to-flannel/">Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part6: Rudder renamed to flannel</a></li>
+<li><code>Update 2014-09-22</code>: <a href="/2014/09/22/kubernetes-fleet-rudder-on-idcf/">Kubernetes on CoreOS with Fleet and Rudder on IDCFクラウド - Part5: FleetとRudderで再作成する</a></li>
+</ul>
+<p><a href="/2014/09/04/kubernetes-in-coreos-on-idcf-with-rudder/">CoreOSクラスタにインストールしたKubernetes</a>に、<a href="https://github.com/GoogleCloudPlatform/kubernetes/blob/master/examples/guestbook/README.md" target="_blank" rel="noopener">GuestBook example</a>とデプロイして、KubernetesとCoreOSとDockerの動きを確認していきます。Docker管理システムの中でもアーキテクチャがわかりやすく、動作も安定しています。</p>
+<a id="more"></a>
+
+
+<h3 id="作業マシンにfleetインストール"><a href="#作業マシンにfleetインストール" class="headerlink" title="作業マシンにfleetインストール"></a>作業マシンにfleetインストール</h3><p>Kubernetesクラスタの外側の作業マシンの準備をします。<br>作業マシンからはCoreOSホストに普通にSSH接続できる状態です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/deis</span><br><span class="line">$ ssh core@10.1.0.44</span><br></pre></td></tr></table></figure>
+
+<p>fleetのビルドにはGo1.2以上が必要なのでGoをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install golang</span><br><span class="line">$ go env GOROOT</span><br><span class="line">/usr/lib/go</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"export GOPATH=<span class="variable">$HOME</span>/gocode"</span> &gt;&gt; ~/.profile</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"export PATH=<span class="variable">$PATH</span>:<span class="variable">$GOPATH</span>/bin"</span>  &gt;&gt; ~/.profile</span><br><span class="line">$ <span class="built_in">source</span> ~/.profile</span><br><span class="line">$ go version</span><br><span class="line">go version go1.2.1 linux/amd64</span><br></pre></td></tr></table></figure>
+
+<p>fleetをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/coreos/fleet.git</span><br><span class="line">$ <span class="built_in">cd</span> fleet</span><br><span class="line">$ ./build</span><br><span class="line">$ sudo mv bin/fleetctl /usr/<span class="built_in">local</span>/bin/</span><br></pre></td></tr></table></figure>
+
+<p>トンネル用の環境変数を設定して、fleetctlコマンドでCoreOSホストをリストします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> FLEETCTL_TUNNEL=10.1.0.44</span><br><span class="line">$ fleetctl list-machines</span><br><span class="line">MACHINE		IP		METADATA</span><br><span class="line">4b3c0589...	10.1.0.44	-</span><br><span class="line">f696f27e...	10.1.3.13	-</span><br><span class="line">fdb23eca...	10.1.1.140	-</span><br></pre></td></tr></table></figure>
+
+<p>fleetctl経由で、SSH接続の確認をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl ssh 4b3c0589</span><br><span class="line">CoreOS (stable)</span><br></pre></td></tr></table></figure>
+
+<h3 id="作業マシンにkubecfgをインストール"><a href="#作業マシンにkubecfgをインストール" class="headerlink" title="作業マシンにkubecfgをインストール"></a>作業マシンにkubecfgをインストール</h3><p>作業マシンからCoreOSにインストールしたapiserverへのSSHトンネルを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/deis</span><br><span class="line">$ ssh -f -nNT -L 8080:127.0.0.1:8080 core@10.1.1.140</span><br></pre></td></tr></table></figure>
+
+<p>作業マシンからKubernetesへの接続を確認します。</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><span class="line">$ curl -s http:<span class="comment">//localhost:8080</span></span><br><span class="line"><span class="params">&lt;html&gt;</span><span class="params">&lt;body&gt;</span>Welcome to Kubernetes<span class="params">&lt;/body&gt;</span><span class="params">&lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>作業マシンへ、kubecfg クライアントをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo wget https://storage.googleapis.com/kubernetes/kubecfg -O /usr/<span class="built_in">local</span>/bin/kubecfg</span><br><span class="line">$ sudo chmod +x /usr/<span class="built_in">local</span>/bin/kubecfg</span><br></pre></td></tr></table></figure>
+
+<h3 id="GuestBook-exampleをgit-clone"><a href="#GuestBook-exampleをgit-clone" class="headerlink" title="GuestBook exampleをgit clone"></a>GuestBook exampleをgit clone</h3><p>GuestBook exampleを<code>git clone</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/GoogleCloudPlatform/kubernetes.git</span><br><span class="line">$ <span class="built_in">cd</span> ~/kubernetes/examples/guestbook/</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Master-Podの作成"><a href="#Redis-Master-Podの作成" class="headerlink" title="Redis Master Podの作成"></a>Redis Master Podの作成</h3><p><code>Redis Master Pod</code>の定義ファイルです。</p>
+<figure class="highlight json"><figcaption><span>~/kubernetes/examples/guestbook/redis-master.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"redis-master-2"</span>,</span><br><span class="line">  <span class="attr">"kind"</span>: <span class="string">"Pod"</span>,</span><br><span class="line">  <span class="attr">"apiVersion"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">  <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">    <span class="attr">"manifest"</span>: &#123;</span><br><span class="line">      <span class="attr">"version"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">      <span class="attr">"id"</span>: <span class="string">"redis-master-2"</span>,</span><br><span class="line">      <span class="attr">"containers"</span>: [&#123;</span><br><span class="line">        <span class="attr">"name"</span>: <span class="string">"master"</span>,</span><br><span class="line">        <span class="attr">"image"</span>: <span class="string">"dockerfile/redis"</span>,</span><br><span class="line">        <span class="attr">"ports"</span>: [&#123;</span><br><span class="line">          <span class="attr">"containerPort"</span>: <span class="number">6379</span>,</span><br><span class="line">          <span class="attr">"hostPort"</span>: <span class="number">6379</span></span><br><span class="line">        &#125;]</span><br><span class="line">      &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"labels"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"redis-master"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Podの作成をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg -c redis-master.json create pods</span><br><span class="line">I0903 13:02:30.706396 24249 request.go:287] Waiting <span class="keyword">for</span> completion of /operations/1</span><br><span class="line">Name                Image(s)            Host                Labels</span><br><span class="line">----------          ----------          ----------          ----------</span><br><span class="line">redis-master-2      dockerfile/redis    10.1.0.44/          name=redis-master</span><br></pre></td></tr></table></figure>
+
+<p>CoreOSホストにSSH接続して、psを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl ssh 4b3c0589</span><br><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                     COMMAND             CREATED              STATUS              PORTS                    NAMES</span><br><span class="line">dc14f8169701        kubernetes/pause:latest   /pause              About a minute ago   Up About a minute   0.0.0.0:6379-&gt;6379/tcp   k8s--net.51c76ba5--redis_-_master_-_2.etcd--a28daf81</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Master-Serviceの作成"><a href="#Redis-Master-Serviceの作成" class="headerlink" title="Redis Master Serviceの作成"></a>Redis Master Serviceの作成</h3><p>KubernetesのServiceは、Podへの通信をプロキシーするロードバランサーに該当します。</p>
+<p>Serviceの定義ファイルです。</p>
+<figure class="highlight json"><figcaption><span>~/kubernetes/examples/guestbook/redis-master-service.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"redismaster"</span>,</span><br><span class="line">  <span class="attr">"kind"</span>: <span class="string">"Service"</span>,</span><br><span class="line">  <span class="attr">"apiVersion"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">  <span class="attr">"port"</span>: <span class="number">10000</span>,</span><br><span class="line">  <span class="attr">"selector"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"redis-master"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>servicesの作成をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg -c redis-master-service.json create services</span><br><span class="line">Name                Labels              Selector            Port</span><br><span class="line">----------          ----------          ----------          ----------</span><br><span class="line">redismaster                             name=redis-master   10000</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Slave-ReplicationControllerの作成"><a href="#Redis-Slave-ReplicationControllerの作成" class="headerlink" title="Redis Slave ReplicationControllerの作成"></a>Redis Slave ReplicationControllerの作成</h3><p>ReplicationControllerはレプリカされたPodを作成します。</p>
+<p>ReplicationControllerの定義ファイルです。レプリカ数は2になっています。</p>
+<figure class="highlight json"><figcaption><span>~/kubernetes/examples/guestbook/redis-slave-controller.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"redisSlaveController"</span>,</span><br><span class="line">  <span class="attr">"kind"</span>: <span class="string">"ReplicationController"</span>,</span><br><span class="line">  <span class="attr">"apiVersion"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">  <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">    <span class="attr">"replicas"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"replicaSelector"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"redisslave"</span>&#125;,</span><br><span class="line">    <span class="attr">"podTemplate"</span>: &#123;</span><br><span class="line">      <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">         <span class="attr">"manifest"</span>: &#123;</span><br><span class="line">           <span class="attr">"version"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">           <span class="attr">"id"</span>: <span class="string">"redisSlaveController"</span>,</span><br><span class="line">           <span class="attr">"containers"</span>: [&#123;</span><br><span class="line">             <span class="attr">"name"</span>: <span class="string">"slave"</span>,</span><br><span class="line">             <span class="attr">"image"</span>: <span class="string">"brendanburns/redis-slave"</span>,</span><br><span class="line">             <span class="attr">"ports"</span>: [&#123;<span class="attr">"containerPort"</span>: <span class="number">6379</span>, <span class="attr">"hostPort"</span>: <span class="number">6380</span>&#125;]</span><br><span class="line">           &#125;]</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;,</span><br><span class="line">       <span class="attr">"labels"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"redisslave"</span>&#125;</span><br><span class="line">      &#125;&#125;,</span><br><span class="line">  <span class="attr">"labels"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"redisslave"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>replicationControllersを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg -c redis-slave-controller.json create replicationControllers</span><br><span class="line">I0903 13:09:07.445538 30248 request.go:287] Waiting <span class="keyword">for</span> completion of /operations/3</span><br><span class="line">Name                   Image(s)                   Selector            Replicas</span><br><span class="line">----------             ----------                 ----------          ----------</span><br><span class="line">redisSlaveController   brendanburns/redis-slave   name=redisslave     2</span><br></pre></td></tr></table></figure>
+
+<p>ここまで作成したPodをリストします。redis-master x1 とredis-slave x2のPodが作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg list /pods</span><br><span class="line">Name                                   Image(s)                   Host                Labels</span><br><span class="line">----------                             ----------                 ----------          ----------</span><br><span class="line">redis-master-2                         dockerfile/redis           10.1.0.44/          name=redis-master</span><br><span class="line">0abd9a1f-3320-11e4-a6f3-02001f3a0128   brendanburns/redis-slave   10.1.0.44/          name=redisslave,replicationController=redisSlaveController</span><br><span class="line">0abdead2-3320-11e4-a6f3-02001f3a0128   brendanburns/redis-slave   10.1.3.13/          name=redisslave,replicationController=redisSlaveController</span><br></pre></td></tr></table></figure>
+
+<h3 id="Redis-Slave-Serviceの作成"><a href="#Redis-Slave-Serviceの作成" class="headerlink" title="Redis Slave Serviceの作成"></a>Redis Slave Serviceの作成</h3><p><code>Redis Master</code>と同様に、<code>Redis Slave Pod</code>のロードバランサーを作成します。</p>
+<p>Serviceの定義ファイルです。</p>
+<figure class="highlight json"><figcaption><span>~/kubernetes/examples/guestbook/redis-slave-service.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"redisslave"</span>,</span><br><span class="line">  <span class="attr">"kind"</span>: <span class="string">"Service"</span>,</span><br><span class="line">  <span class="attr">"apiVersion"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">  <span class="attr">"port"</span>: <span class="number">10001</span>,</span><br><span class="line">  <span class="attr">"labels"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"redisslave"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"selector"</span>: &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"redisslave"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>servicesを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg -c redis-slave-service.json create services</span><br><span class="line">Name                Labels              Selector            Port</span><br><span class="line">----------          ----------          ----------          ----------</span><br><span class="line">redisslave          name=redisslave     name=redisslave     10001</span><br></pre></td></tr></table></figure>
+
+<h3 id="Frontend-Podの作成"><a href="#Frontend-Podの作成" class="headerlink" title="Frontend Podの作成"></a>Frontend Podの作成</h3><p>フロントエンドのPHPアプリ用の、レプリカされたPodを作成します。</p>
+<p>ReplicationControllerの定義ファイルです。レプリカ数は3です。</p>
+<figure class="highlight json"><figcaption><span>~/kubernetes/examples/guestbook/frontend-controller.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"frontendController"</span>,</span><br><span class="line">  <span class="attr">"kind"</span>: <span class="string">"ReplicationController"</span>,</span><br><span class="line">  <span class="attr">"apiVersion"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">  <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">    <span class="attr">"replicas"</span>: <span class="number">3</span>,</span><br><span class="line">    <span class="attr">"replicaSelector"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"frontend"</span>&#125;,</span><br><span class="line">    <span class="attr">"podTemplate"</span>: &#123;</span><br><span class="line">      <span class="attr">"desiredState"</span>: &#123;</span><br><span class="line">         <span class="attr">"manifest"</span>: &#123;</span><br><span class="line">           <span class="attr">"version"</span>: <span class="string">"v1beta1"</span>,</span><br><span class="line">           <span class="attr">"id"</span>: <span class="string">"frontendController"</span>,</span><br><span class="line">           <span class="attr">"containers"</span>: [&#123;</span><br><span class="line">             <span class="attr">"name"</span>: <span class="string">"php-redis"</span>,</span><br><span class="line">             <span class="attr">"image"</span>: <span class="string">"brendanburns/php-redis"</span>,</span><br><span class="line">             <span class="attr">"ports"</span>: [&#123;<span class="attr">"containerPort"</span>: <span class="number">80</span>, <span class="attr">"hostPort"</span>: <span class="number">8000</span>&#125;]</span><br><span class="line">           &#125;]</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;,</span><br><span class="line">       <span class="attr">"labels"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"frontend"</span>&#125;</span><br><span class="line">      &#125;&#125;,</span><br><span class="line">  <span class="attr">"labels"</span>: &#123;<span class="attr">"name"</span>: <span class="string">"frontend"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>replicationControllersを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg -c frontend-controller.json create replicationControllers</span><br><span class="line">I0903 13:13:46.143184 01871 request.go:287] Waiting <span class="keyword">for</span> completion of /operations/7</span><br><span class="line">Name                 Image(s)                 Selector            Replicas</span><br><span class="line">----------           ----------               ----------          ----------</span><br><span class="line">frontendController   brendanburns/php-redis   name=frontend       3</span><br></pre></td></tr></table></figure>
+
+<h3 id="Podの確認"><a href="#Podの確認" class="headerlink" title="Podの確認"></a>Podの確認</h3><p>最終的に作成されたPodを一覧します。<br>redis-master x1, redis-slave x2, php-frontend x3が作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg list pods</span><br><span class="line">Name                                   Image(s)                   Host                Labels</span><br><span class="line">----------                             ----------                 ----------          ----------</span><br><span class="line">redis-master-2                         dockerfile/redis           10.1.0.44/          name=redis-master</span><br><span class="line">0abd9a1f-3320-11e4-a6f3-02001f3a0128   brendanburns/redis-slave   10.1.0.44/          name=redisslave,replicationController=redisSlaveController</span><br><span class="line">0abdead2-3320-11e4-a6f3-02001f3a0128   brendanburns/redis-slave   10.1.3.13/          name=redisslave,replicationController=redisSlaveController</span><br><span class="line">b0db656d-3320-11e4-a6f3-02001f3a0128   brendanburns/php-redis     10.1.0.44/          name=frontend,replicationController=frontendController</span><br><span class="line">b0db9a9e-3320-11e4-a6f3-02001f3a0128   brendanburns/php-redis     10.1.3.13/          name=frontend,replicationController=frontendController</span><br><span class="line">b0dbb1cd-3320-11e4-a6f3-02001f3a0128   brendanburns/php-redis     10.1.1.140/         name=frontend,replicationController=frontendController</span><br></pre></td></tr></table></figure>
+
+<p>fleetからはCoreOSクラスタ構成のリストできますが、unitとしては認識されません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl list-machines</span><br><span class="line">MACHINE         IP              METADATA</span><br><span class="line">4b3c0589...     10.1.0.44       -</span><br><span class="line">f696f27e...     10.1.3.13       -</span><br><span class="line">fdb23eca...     10.1.1.140      -</span><br><span class="line">$ fleetctl list-units</span><br><span class="line">UNIT    MACHINE ACTIVE  SUB</span><br></pre></td></tr></table></figure>
+
+<h3 id="ブラウザから確認"><a href="#ブラウザから確認" class="headerlink" title="ブラウザから確認"></a>ブラウザから確認</h3><p><code>kubecfg list pods</code>でphp-frontendがどのCoreOSホストで起動しているか調べます。<br>3台のCoreOSホストのIPアドレスを指定して、ブラウザから確認します。</p>
+<ul>
+<li><a href="http://10.1.0.44:8000" target="_blank" rel="noopener">http://10.1.0.44:8000</a></li>
+<li><a href="http://10.1.3.13:8000" target="_blank" rel="noopener">http://10.1.3.13:8000</a></li>
+<li><a href="http://10.1.1.140:8000" target="_blank" rel="noopener">http://10.1.1.140:8000</a></li>
+</ul>
+<img src="/2014/09/05/kubernetes-in-coreos-on-idcf-guestbook-example/guestbook.png" class="center">
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>KubernetesではPodを分類する仕組みとしてLabelが重要な役割を果たしますが、まだよく理解できていません。<br>LabelでServiceとPodを紐付けるようですが、GuestBookサンプルでは同じ値のラベルが複数登場します。</p>
+<p>Kubernetesのサンプルプリが動くようになったので、次回からアーキテクチャについて調べていこうと思います。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/Docker%E7%AE%A1%E7%90%86/" rel="tag"># Docker管理</a>
+              <a href="/tags/fleet/" rel="tag"># fleet</a>
+              <a href="/tags/Go/" rel="tag"># Go</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/Kubernetes/" rel="tag"># Kubernetes</a>
+              <a href="/tags/Rudder/" rel="tag"># Rudder</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/09/04/kubernetes-in-coreos-on-idcf-with-rudder/" rel="prev" title="Kubernetes in CoreOS with Rudder on IDCFクラウド - Part3: RudderでSDN風なこと">
+      <i class="fa fa-chevron-left"></i> Kubernetes in CoreOS with Rudder on IDCFクラウド - Part3: RudderでSDN風なこと
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/09/06/salt-idcf-docker-states/" rel="next" title="Salt with Docker - Part1: Dockerインストール">
+      Salt with Docker - Part1: Dockerインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンにfleetインストール"><span class="nav-number">1.</span> <span class="nav-text">作業マシンにfleetインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンにkubecfgをインストール"><span class="nav-number">2.</span> <span class="nav-text">作業マシンにkubecfgをインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GuestBook-exampleをgit-clone"><span class="nav-number">3.</span> <span class="nav-text">GuestBook exampleをgit clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Master-Podの作成"><span class="nav-number">4.</span> <span class="nav-text">Redis Master Podの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Master-Serviceの作成"><span class="nav-number">5.</span> <span class="nav-text">Redis Master Serviceの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Slave-ReplicationControllerの作成"><span class="nav-number">6.</span> <span class="nav-text">Redis Slave ReplicationControllerの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Slave-Serviceの作成"><span class="nav-number">7.</span> <span class="nav-text">Redis Slave Serviceの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Frontend-Podの作成"><span class="nav-number">8.</span> <span class="nav-text">Frontend Podの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Podの確認"><span class="nav-number">9.</span> <span class="nav-text">Podの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ブラウザから確認"><span class="nav-number">10.</span> <span class="nav-text">ブラウザから確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">11.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

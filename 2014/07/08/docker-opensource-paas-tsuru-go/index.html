@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ようやくtsuruも少し仕組みがわかるようになってきました。標準ではPython用のイメージしかありませんが、tsuru-adminコマンドを使うとDockerfileを指定して、他のプログラム言語のプラットフォームのイメージを追加できます。basebuilderは、Dockerfileとデプロイスクリプトで構成されています。データベースを使うアプリを作る前に、Goで簡単な&#96;Hello World">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DockerでオープンソースPaaS - Part7: tsuruでGoのHelloWorld">
+<meta property="og:url" content="http://masato.github.io/2014/07/08/docker-opensource-paas-tsuru-go/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ようやくtsuruも少し仕組みがわかるようになってきました。標準ではPython用のイメージしかありませんが、tsuru-adminコマンドを使うとDockerfileを指定して、他のプログラム言語のプラットフォームのイメージを追加できます。basebuilderは、Dockerfileとデプロイスクリプトで構成されています。データベースを使うアプリを作る前に、Goで簡単な&#96;Hello World">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-07-08T14:14:37.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.600Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="HelloWorld">
+<meta property="article:tag" content="DockerPaaS">
+<meta property="article:tag" content="tsuru">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/07/08/docker-opensource-paas-tsuru-go/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DockerでオープンソースPaaS - Part7: tsuruでGoのHelloWorld | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/07/08/docker-opensource-paas-tsuru-go/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DockerでオープンソースPaaS - Part7: tsuruでGoのHelloWorld
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 8 2014 23:14:37" itemprop="dateCreated datePublished" datetime="2014-07-08T23:14:37+09:00">Jul 8 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">ようやくtsuruも少し仕組みがわかるようになってきました。標準ではPython用のイメージしかありませんが、tsuru-adminコマンドを使うとDockerfileを指定して、他のプログラム言語のプラットフォームのイメージを追加できます。basebuilderは、Dockerfileとデプロイスクリプトで構成されています。データベースを使うアプリを作る前に、Goで簡単な`Hello World`を書いて動作確認をします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ようやくtsuruも少し仕組みがわかるようになってきました。標準ではPython用のイメージしかありませんが、<br><a href="http://docs.tsuru.io/en/0.5.2/apps/tsuru-admin/usage.html" target="_blank" rel="noopener">tsuru-admin</a>コマンドを使うとDockerfileを指定して、他のプログラム言語のプラットフォームのイメージを追加できます。<br><a href="https://github.com/tsuru/basebuilder" target="_blank" rel="noopener">basebuilder</a>は、Dockerfileとデプロイスクリプトで構成されています。</p>
+<p>データベースを使うアプリを作る前に、Goで簡単な<code>Hello World</code>を書いて動作確認をします。</p>
+<a id="more"></a>
+
+
+<h3 id="Goプラットフォームの追加"><a href="#Goプラットフォームの追加" class="headerlink" title="Goプラットフォームの追加"></a>Goプラットフォームの追加</h3><p><a href="http://docs.tsuru.io/en/0.5.2/apps/quickstart/go.html" target="_blank" rel="noopener">Go</a>アプリのサンプルがありますが、プラットフォームの追加方法がありません。</p>
+<p><a href="https://github.com/tsuru/basebuilder" target="_blank" rel="noopener">basebuilder</a>からGoのDockerファイルを使います。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># this file describes how to build tsuru go image</span><br><span class="line"># to run it:</span><br><span class="line"># 1- install docker</span><br><span class="line"># 2- run: $ docker build -t tsuru&#x2F;go https:&#x2F;&#x2F;raw.github.com&#x2F;tsuru&#x2F;basebuilder&#x2F;master&#x2F;go&#x2F;Dockerfile</span><br><span class="line"></span><br><span class="line">from	ubuntu:14.04</span><br><span class="line">run	apt-get update</span><br><span class="line">run	apt-get install wget -y --force-yes</span><br><span class="line">run	wget http:&#x2F;&#x2F;github.com&#x2F;tsuru&#x2F;basebuilder&#x2F;tarball&#x2F;master -O basebuilder.tar.gz --no-check-certificate</span><br><span class="line">run	mkdir &#x2F;var&#x2F;lib&#x2F;tsuru</span><br><span class="line">run	tar -xvf basebuilder.tar.gz -C &#x2F;var&#x2F;lib&#x2F;tsuru --strip 1</span><br><span class="line">run	cp &#x2F;var&#x2F;lib&#x2F;tsuru&#x2F;go&#x2F;deploy &#x2F;var&#x2F;lib&#x2F;tsuru</span><br><span class="line">#run	cp &#x2F;var&#x2F;lib&#x2F;tsuru&#x2F;base&#x2F;restart &#x2F;var&#x2F;lib&#x2F;tsuru</span><br><span class="line">run	cp &#x2F;var&#x2F;lib&#x2F;tsuru&#x2F;go&#x2F;start &#x2F;var&#x2F;lib&#x2F;tsuru</span><br><span class="line">run	&#x2F;var&#x2F;lib&#x2F;tsuru&#x2F;go&#x2F;install</span><br><span class="line">run	&#x2F;var&#x2F;lib&#x2F;tsuru&#x2F;base&#x2F;setup</span><br></pre></td></tr></table></figure>
+
+<p>platform-addコマンドでDockerfileのURLを指定してGoプラットフォームを追加します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru-admin platform-add go -d https://raw.githubusercontent.com/tsuru/basebuilder/master/go/Dockerfile</span><br></pre></td></tr></table></figure>
+
+<h3 id="Goアプリの作成"><a href="#Goアプリの作成" class="headerlink" title="Goアプリの作成"></a>Goアプリの作成</h3><p>tsuru上にGoアプリを作成します。helloworldという名前にしました。<br><code>git push</code>するとデプロイ先のリポジトリが表示されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-create helloworld go</span><br><span class="line">App <span class="string">"helloworld"</span> is being created!</span><br><span class="line">Use app-info to check the status of the app and its units.</span><br><span class="line">Your repository <span class="keyword">for</span> <span class="string">"helloworld"</span> project is <span class="string">"git@10.1.1.17:helloworld.git"</span></span><br></pre></td></tr></table></figure>
+
+<p><code>tsuru app-list</code>で確認をします。作成したhelloworldアプリはまだ起動していません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-list</span><br><span class="line">+-----------------+-------------------------+---------------------------+--------+</span><br><span class="line">| Application     | Units State Summary     | Address                   | Ready? |</span><br><span class="line">+-----------------+-------------------------+---------------------------+--------+</span><br><span class="line">| helloworld      | 0 of 0 units <span class="keyword">in</span>-service | helloworld.masato.pw      | Yes    |</span><br><span class="line">| mysql-api       | 1 of 1 units <span class="keyword">in</span>-service | mysql-api.masato.pw       | Yes    |</span><br><span class="line">| tsuru-dashboard | 1 of 1 units <span class="keyword">in</span>-service | tsuru-dashboard.masato.pw | Yes    |</span><br><span class="line">+-----------------+-------------------------+---------------------------+--------+</span><br></pre></td></tr></table></figure>
+
+<h3 id="Goプロジェクト"><a href="#Goプロジェクト" class="headerlink" title="Goプロジェクト"></a>Goプロジェクト</h3><p>プロジェクトを作成して、<code>git init</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/go_apps/hello</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br><span class="line">$ git init</span><br><span class="line">Initialized empty Git repository <span class="keyword">in</span> /home/mshimizu/go_apps/.git/</span><br></pre></td></tr></table></figure>
+
+<p>リクエストが来ると、<code>hello, world</code>を返す簡単なプログラムです。</p>
+<figure class="highlight go"><figcaption><span>~/go_apps/hello/main.go</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    http.HandleFunc(<span class="string">"/"</span>, hello)</span><br><span class="line">    fmt.Println(<span class="string">"listening..."</span>)</span><br><span class="line">    err := http.ListenAndServe(<span class="string">":8888"</span>, <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">hello</span><span class="params">(res http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">    fmt.Fprintln(res, <span class="string">"hello, world"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>変更を<code>git commit</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add .</span><br><span class="line">$ git commit -m <span class="string">'initial commit'</span></span><br></pre></td></tr></table></figure>
+
+<p><code>app-info</code>でtsuruアプリの情報を確認できます。<br>TeamとOwnerはデフォルトのアカウントで作業しています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-info -a helloworld</span><br><span class="line">Application: helloworld</span><br><span class="line">Repository: git@10.1.1.17:helloworld.git</span><br><span class="line">Platform: go</span><br><span class="line">Teams: admin</span><br><span class="line">Address: helloworld.masato.pw</span><br><span class="line">Owner: admin@example.com</span><br><span class="line">Deploys: 0</span><br></pre></td></tr></table></figure>
+
+<p>デプロイ先のremoteリポジトリを追加します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git remote add tsuru git@10.1.1.17:helloworld.git</span><br><span class="line">$ git push tsuru master</span><br><span class="line">...</span><br><span class="line">remote: ---- Starting 1 unit ----</span><br><span class="line">remote:  ---&gt; Started unit 1/1...</span><br><span class="line">remote:</span><br><span class="line">remote:  ---&gt; App will be restarted, please check its logs <span class="keyword">for</span> more details...</span><br><span class="line">remote:</span><br><span class="line">remote:</span><br><span class="line">remote: OK</span><br><span class="line">To git@10.1.1.17:helloworld.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
+
+<h3 id="Procfileの作成"><a href="#Procfileの作成" class="headerlink" title="Procfileの作成"></a>Procfileの作成</h3><p>HerokuのようなProfileを作成して、Goアプリの起動コマンドを記述します。</p>
+<figure class="highlight yml"><figcaption><span>~/go_apps/hello/Proflile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">web:</span> <span class="string">./main</span></span><br></pre></td></tr></table></figure>
+
+<p>Procfileの追加して<code>git push</code>するとデプロイが完了して、アプリが起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add Procfile</span><br><span class="line">$ git commit -m <span class="string">"Procfile: added file"</span></span><br><span class="line">$ git push tsuru master</span><br><span class="line">...</span><br><span class="line">remote: ---- Starting 1 unit ----</span><br><span class="line">remote:  ---&gt; Started unit 1/1...</span><br><span class="line">remote:</span><br><span class="line">remote:  ---&gt; App will be restarted, please check its logs <span class="keyword">for</span> more details...</span><br><span class="line">remote:</span><br><span class="line">remote:</span><br><span class="line">remote: OK</span><br><span class="line">To git@10.1.1.17:helloworld.git</span><br><span class="line">   696793b..0195778  master -&gt; master</span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p><code>app-list</code>で確認すると、正常にデプロイがされ、アプリが開始しています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-list</span><br><span class="line">Application: helloworld</span><br><span class="line">Repository: git@10.1.1.17:helloworld.git</span><br><span class="line">Platform: go</span><br><span class="line">Teams: admin</span><br><span class="line">Address: helloworld.masato.pw</span><br><span class="line">Owner: admin@example.com</span><br><span class="line">Deploys: 2</span><br><span class="line">Units:</span><br><span class="line">+------------------------------------------------------------------+---------+</span><br><span class="line">| Unit                                                             | State   |</span><br><span class="line">+------------------------------------------------------------------+---------+</span><br><span class="line">| ed5cd59d36b849e6770d32fc57506987ceb6e3df0de6c32094d219c69ae97f90 | started |</span><br><span class="line">+------------------------------------------------------------------+---------+</span><br></pre></td></tr></table></figure>
+
+<p>curlで確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl http://helloworld.masato.pw/</span><br><span class="line">hello, world</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザからの同様に表示されます。</p>
+<p><a href="http://helloworld.masato.pw/" target="_blank" rel="noopener">http://helloworld.masato.pw/</a></p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>一度言語のプラットフォームを作成してしまえば、簡単にGoアプリが動きます。<br>これはなかなかおもしろいです。気軽に使い捨てのアプリをデプロイできます。</p>
+<p>アプリのデプロイと動作確認ができたので、最後はDjangoかRailsでデータベースサービスを利用した<br>アプリをtsuruにデプロイしてみようと思います。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Go/" rel="tag"># Go</a>
+              <a href="/tags/HelloWorld/" rel="tag"># HelloWorld</a>
+              <a href="/tags/DockerPaaS/" rel="tag"># DockerPaaS</a>
+              <a href="/tags/tsuru/" rel="tag"># tsuru</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/07/07/docker-opensource-service-discovery-dns/" rel="prev" title="DockerでオープンソースPaaS - Part6: DNS Forwrding">
+      <i class="fa fa-chevron-left"></i> DockerでオープンソースPaaS - Part6: DNS Forwrding
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/07/09/docker-analytic-sandbox-rstudio-server/" rel="next" title="Dockerでデータ分析環境 - Part1: Ubuntu14.04にRStudio Serverをインストール">
+      Dockerでデータ分析環境 - Part1: Ubuntu14.04にRStudio Serverをインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Goプラットフォームの追加"><span class="nav-number">1.</span> <span class="nav-text">Goプラットフォームの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Goアプリの作成"><span class="nav-number">2.</span> <span class="nav-text">Goアプリの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Goプロジェクト"><span class="nav-number">3.</span> <span class="nav-text">Goプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Procfileの作成"><span class="nav-number">4.</span> <span class="nav-text">Procfileの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">5.</span> <span class="nav-text">確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

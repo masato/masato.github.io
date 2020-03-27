@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="I give up to continue to use a docker-gen, although it is convenient for us to create a Nginx config file automatically. If a docker-gen unit has been killed every other related units are killed. I de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Switching Docker Reverse Proxy from dockge-gen to OpenResty">
+<meta property="og:url" content="http://masato.github.io/2014/11/14/switching-docker-reverse-proxy-from-docker-gen-to-openresty/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="I give up to continue to use a docker-gen, although it is convenient for us to create a Nginx config file automatically. If a docker-gen unit has been killed every other related units are killed. I de">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-11-14T14:29:07.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.909Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="HTTPRouting">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="OpenResty">
+<meta property="article:tag" content="docker-gen">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/11/14/switching-docker-reverse-proxy-from-docker-gen-to-openresty/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Switching Docker Reverse Proxy from dockge-gen to OpenResty | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/11/14/switching-docker-reverse-proxy-from-docker-gen-to-openresty/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Switching Docker Reverse Proxy from dockge-gen to OpenResty
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Nov 14 2014 23:29:07" itemprop="dateCreated datePublished" datetime="2014-11-14T23:29:07+09:00">Nov 14 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">I give up to continue to use a docker-gen, although it is convenient for us to create a Nginx config file automatically. If a docker-gen unit has been killed every other related units are killed. I decide to switch our reverse proxy from docker-gen and nginx to OpenResty and Redis combination.</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p> I give up to continue to use a docker-gen, although it is convenient for us to create a Nginx config file automatically. If a docker-gen unit has been killed every other related units are killed. I decide to switch our reverse proxy from docker-gen and nginx to OpenResty and Redis combination.</p>
+<a id="more"></a>
+
+<h3 id="Create-Project"><a href="#Create-Project" class="headerlink" title="Create Project"></a>Create Project</h3><p>The openresty-moin project directory contains Dockerfile which extends <a href="https://github.com/3scale/docker-openresty" target="_blank" rel="noopener">3scale/openresty</a>. The directory structure is below.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree .~/docker_apps/openresty-moin</span><br><span class="line">~/docker_apps/openresty-moin</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── nginx</span><br><span class="line">│   ├── certs</span><br><span class="line">│   │   ├── ssl.crt</span><br><span class="line">│   │   └── ssl.key</span><br><span class="line">│   └── nginx.conf</span><br><span class="line">└── openresty.conf</span><br></pre></td></tr></table></figure>
+
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>The Dockerfile is simply extends parent image. Allowing access from remote redis-client, I use sed command to  <code>/etc/redis/redis.conf</code>.</p>
+<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM 3scale/openresty</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">RUN mkdir -p /opt/nginx/certs &amp;&amp; mkdir -p /opt/nginx/www</span><br><span class="line">RUN sed -i <span class="string">'s/bind 127.0.0.1/bind 0.0.0.0/g'</span> /etc/redis/redis.conf</span><br><span class="line">ADD openresty.conf /etc/supervisor/conf.d/openresty.conf</span><br><span class="line">ADD nginx /opt/nginx</span><br><span class="line">VOLUME [<span class="string">"/opt/nginx"</span>]</span><br><span class="line">EXPOSE 80 443 6379</span><br></pre></td></tr></table></figure>
+
+<p>Because this container contains SSL Certificate, we shoud put a Docker images to a private registry.</p>
+<h3 id="openresty-conf"><a href="#openresty-conf" class="headerlink" title="openresty.conf"></a>openresty.conf</h3><p>The openresty.conf file is copied to ‘/etc/supervisor/conf.d’ and used as a Supervispr config file. This config file runs Nginx in foregroud.</p>
+<figure class="highlight bash"><figcaption><span>openresty.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:openresty]</span><br><span class="line"><span class="built_in">command</span>=/opt/openresty/nginx/sbin/nginx -p /opt/nginx/www -c /opt/nginx/nginx.conf -g <span class="string">'daemon off;'</span></span><br><span class="line">autorestart=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="nginx-conf"><a href="#nginx-conf" class="headerlink" title="nginx.conf"></a>nginx.conf</h3><p>The nginx.conf file is used in the Supvervisor config file with -c flag. This nginx.conf forces HTTP connections redirect to HTTPS. Using a enbedded Lua script it determines a upstream URL from Reds record dynamically.</p>
+<figure class="highlight bash"><figcaption><span>nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">worker_processes  1;</span><br><span class="line">error_log  /dev/stderr debug;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  256;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">      listen 80;</span><br><span class="line">      <span class="built_in">return</span> 301 https:/<span class="variable">$host</span><span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen  443 ssl deferred;</span><br><span class="line">        client_max_body_size 20M;</span><br><span class="line">        ssl on;</span><br><span class="line">        ssl_certificate /opt/nginx/certs/ssl.crt;</span><br><span class="line">        ssl_certificate_key /opt/nginx/certs/ssl.key;</span><br><span class="line">        error_log /proc/self/fd/2;</span><br><span class="line">        access_log /proc/self/fd/1;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        proxy_buffer_size 64K;</span><br><span class="line">        proxy_buffers 32 48K;</span><br><span class="line">        proxy_busy_buffers_size 256K;</span><br><span class="line">        ssl_protocols        SSLv3 TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">        ssl_ciphers RC4:HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        keepalive_timeout    60;</span><br><span class="line">        ssl_session_cache    shared:SSL:10m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;</span><br><span class="line">        proxy_set_header        Accept-Encoding   <span class="string">""</span>;</span><br><span class="line">        proxy_set_header        Host            <span class="variable">$host</span>;</span><br><span class="line">        proxy_set_header        X-Real-IP       <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header        X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        proxy_set_header        X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">        add_header              Front-End-Https   on;</span><br><span class="line">        proxy_redirect     off;</span><br><span class="line">        location / &#123;</span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$upstream</span> <span class="string">""</span>;</span><br><span class="line">            rewrite_by_lua <span class="string">'</span></span><br><span class="line"><span class="string">               local res = ngx.location.capture("/redis")</span></span><br><span class="line"><span class="string">               if res.status == ngx.HTTP_OK then</span></span><br><span class="line"><span class="string">                  ngx.var.upstream       = res.body</span></span><br><span class="line"><span class="string">               else</span></span><br><span class="line"><span class="string">                  ngx.exit(ngx.HTTP_FORBIDDEN)</span></span><br><span class="line"><span class="string">               end</span></span><br><span class="line"><span class="string">            '</span>;</span><br><span class="line">            proxy_pass http://<span class="variable">$upstream</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        location /redis &#123;</span><br><span class="line">             internal;</span><br><span class="line">             <span class="built_in">set</span>            <span class="variable">$redis_key</span> <span class="variable">$host</span>;</span><br><span class="line">             redis_pass     127.0.0.1:6379;</span><br><span class="line">             default_type   text/html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="OpenResty-unit-file"><a href="#OpenResty-unit-file" class="headerlink" title="OpenResty unit file"></a>OpenResty unit file</h3><p>Finally I cerate a OpenResty unit file which replaces docker-gen and Nginx unit files.  In order to avoid  docker-gen related complex unit dpendencies, I compile a handy single OpenResty container.</p>
+<figure class="highlight bash"><figcaption><span>openresty-moin@.service</span></figcaption><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=OpenResty Service</span><br><span class="line">Requires=moinmoin@%i.service</span><br><span class="line">After=moinmoin@%i.service</span><br><span class="line">[Service]</span><br><span class="line">TimeoutStartSec=0</span><br><span class="line">ExecStartPre=-/usr/bin/docker <span class="built_in">kill</span> %p%i</span><br><span class="line">ExecStartPre=-/usr/bin/docker rm -v %p%i</span><br><span class="line">ExecStartPre=/usr/bin/docker pull xxx.xxx.xxx.xxx:5000/openresty-moin</span><br><span class="line">ExecStart=/usr/bin/docker run --name %p%i \</span><br><span class="line">  -p 443:443 \</span><br><span class="line">  xxx.xxx.xxx.xxx:5000/openresty-moin</span><br><span class="line">ExecStop=/usr/bin/docker <span class="built_in">kill</span> %p%i</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">[X-Fleet]</span><br><span class="line">Conflicts=%p@*.service</span><br><span class="line">MachineMetadata=role=moin</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/HTTPRouting/" rel="tag"># HTTPRouting</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/OpenResty/" rel="tag"># OpenResty</a>
+              <a href="/tags/docker-gen/" rel="tag"># docker-gen</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/11/13/micro-services-and-nodejs-references/" rel="prev" title="Micro-Services and Node.js references">
+      <i class="fa fa-chevron-left"></i> Micro-Services and Node.js references
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/11/15/fleet-systemd-unit-section-reference/" rel="next" title="Fleet and Systemd Unit section references">
+      Fleet and Systemd Unit section references <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-Project"><span class="nav-number">1.</span> <span class="nav-text">Create Project</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openresty-conf"><span class="nav-number">3.</span> <span class="nav-text">openresty.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx-conf"><span class="nav-number">4.</span> <span class="nav-text">nginx.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenResty-unit-file"><span class="nav-number">5.</span> <span class="nav-text">OpenResty unit file</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

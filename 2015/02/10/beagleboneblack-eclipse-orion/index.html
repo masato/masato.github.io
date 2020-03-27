@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="BeagleBone BlackのファームウェアにAngstromを使う場合はデフォルトでWebブラウザ上で動作するIDEのCloud9がインストールされています。前回SDカードのUbuntu14.04.1にNode.jsとnpmをインストールしました。Cloud9の代わりにEclise Orionを使ってみます。OrionはCloud Foundryと連携が強化されIBM DevOps Serv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeagleBone BlackのUbuntu14.04.1にEclipse Orionをインストールする">
+<meta property="og:url" content="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="BeagleBone BlackのファームウェアにAngstromを使う場合はデフォルトでWebブラウザ上で動作するIDEのCloud9がインストールされています。前回SDカードのUbuntu14.04.1にNode.jsとnpmをインストールしました。Cloud9の代わりにEclise Orionを使ってみます。OrionはCloud Foundryと連携が強化されIBM DevOps Serv">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/eclipse-orion-start.png">
+<meta property="og:image" content="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/console-is-undefined.png">
+<meta property="og:image" content="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/hello-world.png">
+<meta property="article:published_time" content="2015-02-09T15:23:31.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.550Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Nodejs">
+<meta property="article:tag" content="BeagleBoneBlack">
+<meta property="article:tag" content="EclipseOrion">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="pm2">
+<meta property="article:tag" content="npm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/eclipse-orion-start.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeagleBone BlackのUbuntu14.04.1にEclipse Orionをインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/02/10/beagleboneblack-eclipse-orion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeagleBone BlackのUbuntu14.04.1にEclipse Orionをインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 10 2015 00:23:31" itemprop="dateCreated datePublished" datetime="2015-02-10T00:23:31+09:00">Feb 10 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">BeagleBone BlackのファームウェアにAngstromを使う場合はデフォルトでWebブラウザ上で動作するIDEのCloud9がインストールされています。前回SDカードのUbuntu14.04.1にNode.jsとnpmをインストールしました。Cloud9の代わりにEclise Orionを使ってみます。OrionはCloud Foundryと連携が強化されIBM DevOps Servicesでも採用されています。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>BeagleBone Blackのファームウェアに<a href="http://beagleboard.org/latest-images" target="_blank" rel="noopener">Angstrom</a>を使う場合はデフォルトでWebブラウザ上で動作するIDEの<a href="https://github.com/ajaxorg/cloud9" target="_blank" rel="noopener">Cloud9</a>がインストールされています。<a href="/2015/02/09/beagleboneblack-nodejs-npm/">前回</a>SDカードのUbuntu14.04.1にNode.jsとnpmをインストールしました。Cloud9の代わりに<a href="http://eclipse.org/orion/" target="_blank" rel="noopener">Eclise Orion</a>を使ってみます。OrionはCloud Foundryと連携が強化されIBM DevOps Servicesでも採用されています。</p>
+<a id="more"></a>
+
+<h2 id="Eclipse-Orionのインストール"><a href="#Eclipse-Orionのインストール" class="headerlink" title="Eclipse Orionのインストール"></a>Eclipse Orionのインストール</h2><p>Node.jsとnpmのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">v0.10.25</span><br><span class="line">$ npm -v</span><br><span class="line">1.3.10</span><br></pre></td></tr></table></figure>
+
+<h3 id="CERT-NOT-YET-VALIDのエラーが発生する"><a href="#CERT-NOT-YET-VALIDのエラーが発生する" class="headerlink" title="CERT_NOT_YET_VALIDのエラーが発生する"></a>CERT_NOT_YET_VALIDのエラーが発生する</h3><p>orionをnpmでインストールしようとすると<code>CERT_NOT_YET_VALID</code>エラーが発生しました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install orion --production</span><br><span class="line">npm http GET https://registry.npmjs.org/orion</span><br><span class="line">npm http GET https://registry.npmjs.org/orion</span><br><span class="line">npm http GET https://registry.npmjs.org/orion</span><br><span class="line">npm ERR! Error: CERT_NOT_YET_VALID</span><br><span class="line">npm ERR!     at SecurePair.&lt;anonymous&gt; (tls.js:1370:32)</span><br><span class="line">npm ERR!     at SecurePair.EventEmitter.emit (events.js:92:17)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="ntpdateで時間をあわせる"><a href="#ntpdateで時間をあわせる" class="headerlink" title="ntpdateで時間をあわせる"></a>ntpdateで時間をあわせる</h3><p>CERT_NOT_YET_VALIDのエラーは時間がずれていると発生するようです。BeagleBone Blackはバッテリを搭載していないため、電源を入れていないとシステムクロックがずれてしまいます。ntpdateをしてシステムクロックの時間をあわせます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ntpdate -b -s -u pool.ntp.org</span><br></pre></td></tr></table></figure>
+
+<h3 id="インストールと起動"><a href="#インストールと起動" class="headerlink" title="インストールと起動"></a>インストールと起動</h3><p>インストールし直します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install orion --production</span><br></pre></td></tr></table></figure>
+
+<p><code>npm start</code>でOrionサーバーを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start orion</span><br><span class="line"></span><br><span class="line">&gt; orion@0.0.34 start /home/ubuntu/node_modules/orion</span><br><span class="line">&gt; node server.js</span><br><span class="line"></span><br><span class="line">Could not find npm <span class="keyword">in</span> the following locations:</span><br><span class="line">/usr/bin/../lib/node_modules/npm/bin/npm-cli.js</span><br><span class="line">/usr/bin/./node_modules/npm/bin/npm-cli.js</span><br><span class="line">Please add or modify the npm_path <span class="keyword">in</span> the orion.conf file and restart the server.</span><br><span class="line"></span><br><span class="line">Using workspace: /home/ubuntu/node_modules/orion/.workspace</span><br><span class="line">Listening on port 8081...</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザでOrionの起動を確認します。</p>
+<p><a href="http://192.168.7.2:8081/" target="_blank" rel="noopener">http://192.168.7.2:8081/</a></p>
+<p><img src="/2015/02/10/beagleboneblack-eclipse-orion/eclipse-orion-start.png" alt="eclipse-orion-start.png"></p>
+<h3 id="Orionをデモナイズ"><a href="#Orionをデモナイズ" class="headerlink" title="Orionをデモナイズ"></a>Orionをデモナイズ</h3><p>一度Orionのプロセスを停止します。pm2にアプリを登録するスクリプトを実行します。</p>
+<figure class="highlight bash"><figcaption><span>~/pm2_orion.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">read</span> -d <span class="string">''</span> my_json &lt;&lt;_EOF_</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>       : <span class="string">"orion"</span>,</span><br><span class="line">  <span class="string">"script"</span>     : <span class="string">"/home/ubuntu/node_modules/orion/server.js"</span></span><br><span class="line">&#125;</span><br><span class="line">_EOF_</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$my_json</span> | pm2 start -</span><br></pre></td></tr></table></figure>
+
+<p>pm2を開始してから、Cloud9を起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod u+x pm2_orion.sh</span><br><span class="line">$ ./pm2_orion.sh</span><br><span class="line">[PM2] Process launched</span><br><span class="line">┌──────────┬────┬──────┬──────┬────────┬───────────┬────────┬────────────┬──────────┐</span><br><span class="line">│ App name │ id │ mode │ PID  │ status │ restarted │ uptime │     memory │ watching │</span><br><span class="line">├──────────┼────┼──────┼──────┼────────┼───────────┼────────┼────────────┼──────────┤</span><br><span class="line">│ orion    │ 1  │ fork │ 1898 │ online │         0 │ 0s     │ 4.117 MB   │ disabled │</span><br><span class="line">└──────────┴────┴──────┴──────┴────────┴───────────┴────────┴────────────┴──────────┘</span><br><span class="line"> Use `pm2 info &lt;id|name&gt;` to get more details about an app</span><br></pre></td></tr></table></figure>
+
+<p>OS再起動後もpm2に登録したプロセスが起動するようにinitスクリプトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pm2 startup ubuntu -u ubuntu</span><br><span class="line">$ sudo /etc/init.d/pm2-init.sh restart</span><br></pre></td></tr></table></figure>
+
+<p>すでにinitスクリプトを作成している場合は、OS再起動後のためにプロセスをsaveします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pm2 save</span><br><span class="line">[PM2] Dumping processes</span><br></pre></td></tr></table></figure>
+
+<h2 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h2><h3 id="Editor画面"><a href="#Editor画面" class="headerlink" title="Editor画面"></a>Editor画面</h3><p>簡単なNode.jsのスクリプトを作成して実行してみます。</p>
+<p>Editorから「hello」フォルダを作成します。</p>
+<ul>
+<li>File &gt; New &gt; Folder &gt; hello</li>
+</ul>
+<p>helloフォルダを選択し、「world.js」ファイルを作成します。</p>
+<ul>
+<li>New &gt; File &gt; world.js</li>
+</ul>
+<p>console.logのコードを書くと警告が表示されました。</p>
+<p><img src="/2015/02/10/beagleboneblack-eclipse-orion/console-is-undefined.png" alt="console-is-undefined.png"></p>
+<figure class="highlight js"><figcaption><span>world.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello world"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>OrionはJavaScriptのバリデーションと文法チェックに<a href="http://eslint.org/" target="_blank" rel="noopener">ESLint</a>を採用しています。画面のガイドにしたがって、eslint-envディレクティブを追加します。</p>
+<figure class="highlight js"><figcaption><span>world.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello world"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Shell画面"><a href="#Shell画面" class="headerlink" title="Shell画面"></a>Shell画面</h3><p>左メニューからShellを選択します。画面下のコンソールから作成したスクリプトを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">» node start hello.js</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2015/02/10/beagleboneblack-eclipse-orion/hello-world.png" alt="hello-world.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
+              <a href="/tags/BeagleBoneBlack/" rel="tag"># BeagleBoneBlack</a>
+              <a href="/tags/EclipseOrion/" rel="tag"># EclipseOrion</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/pm2/" rel="tag"># pm2</a>
+              <a href="/tags/npm/" rel="tag"># npm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/02/09/beagleboneblack-nodejs-npm/" rel="prev" title="BeagleBone BlackのUbuntu14.04.1にNode.jsとnpmをインストールする">
+      <i class="fa fa-chevron-left"></i> BeagleBone BlackのUbuntu14.04.1にNode.jsとnpmをインストールする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/02/11/influxdb-grafana-dweet-example-on-docker/" rel="next" title="DockerのInfluxDBとGrafanaでdweet.ioのデータを可視化する">
+      DockerのInfluxDBとGrafanaでdweet.ioのデータを可視化する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse-Orionのインストール"><span class="nav-number">1.</span> <span class="nav-text">Eclipse Orionのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CERT-NOT-YET-VALIDのエラーが発生する"><span class="nav-number">1.1.</span> <span class="nav-text">CERT_NOT_YET_VALIDのエラーが発生する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ntpdateで時間をあわせる"><span class="nav-number">1.2.</span> <span class="nav-text">ntpdateで時間をあわせる</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールと起動"><span class="nav-number">1.3.</span> <span class="nav-text">インストールと起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Orionをデモナイズ"><span class="nav-number">1.4.</span> <span class="nav-text">Orionをデモナイズ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hello-world"><span class="nav-number">2.</span> <span class="nav-text">hello world</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Editor画面"><span class="nav-number">2.1.</span> <span class="nav-text">Editor画面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Shell画面"><span class="nav-number">2.2.</span> <span class="nav-text">Shell画面</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

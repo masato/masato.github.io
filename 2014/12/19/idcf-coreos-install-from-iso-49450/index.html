@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="久しぶりにIDCFクラウドにCoreOSをISOからインストールします。手順は以前と同じです。今回の用途はCouchbase Serverクラスタを構築するため、AWS CloudFormationのcloud-configを参考にしてインストールします。最近はetcdを専用に1つしか作らないことが多かったですが、通常通りにすべてのCoreOSの仮想マシンにetcdをインストールします。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドにStableのCoreOS 494.5.0をISOからインストールする">
+<meta property="og:url" content="http://masato.github.io/2014/12/19/idcf-coreos-install-from-iso-49450/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="久しぶりにIDCFクラウドにCoreOSをISOからインストールします。手順は以前と同じです。今回の用途はCouchbase Serverクラスタを構築するため、AWS CloudFormationのcloud-configを参考にしてインストールします。最近はetcdを専用に1つしか作らないことが多かったですが、通常通りにすべてのCoreOSの仮想マシンにetcdをインストールします。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-12-19T14:03:11.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.688Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="idcf-compute-api">
+<meta property="article:tag" content="jq">
+<meta property="article:tag" content="Couchbase">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/12/19/idcf-coreos-install-from-iso-49450/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドにStableのCoreOS 494.5.0をISOからインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/12/19/idcf-coreos-install-from-iso-49450/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドにStableのCoreOS 494.5.0をISOからインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 19 2014 23:03:11" itemprop="dateCreated datePublished" datetime="2014-12-19T23:03:11+09:00">Dec 19 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">久しぶりにIDCFクラウドにCoreOSをISOからインストールします。手順は以前と同じです。今回の用途はCouchbase Serverクラスタを構築するため、AWS CloudFormationのcloud-configを参考にしてインストールします。最近はetcdを専用に1つしか作らないことが多かったですが、通常通りにすべてのCoreOSの仮想マシンにetcdをインストールします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>久しぶりにIDCFクラウドにCoreOSをISOからインストールします。手順は<a href="/2014/08/18/idcf-coreos-install-from-iso/">以前</a>と同じです。今回の用途はCouchbase Serverクラスタを構築するため、AWS CloudFormationの<a href="http://tleyden-misc.s3.amazonaws.com/couchbase-coreos/coreos-stable-pv.template" target="_blank" rel="noopener">cloud-config</a>を参考にしてインストールします。最近はetcdを専用に1つしか作らないことが多かったですが、通常通りにすべてのCoreOSの仮想マシンにetcdをインストールします。</p>
+<a id="more"></a>
+
+<h3 id="Couchbase-Server用のCoreOSクラスタ"><a href="#Couchbase-Server用のCoreOSクラスタ" class="headerlink" title="Couchbase Server用のCoreOSクラスタ"></a>Couchbase Server用のCoreOSクラスタ</h3><p>CoreOSの使い方はCouchbase LabsオフィシャルのDockerイメージを参考にします。</p>
+<ul>
+<li><a href="http://tleyden.github.io/blog/2014/11/01/running-couchbase-cluster-under-coreos-on-aws/" target="_blank" rel="noopener">Running Couchbase Cluster Under CoreOS on AWS</a></li>
+<li><a href="https://registry.hub.docker.com/u/tleyden5iwx/couchbase-server-3.0.1/" target="_blank" rel="noopener">tleyden5iwx/couchbase-server-3.0.1</a></li>
+<li><a href="https://github.com/couchbaselabs/couchbase-server-docker" target="_blank" rel="noopener">couchbase-server-docker</a></li>
+</ul>
+<h3 id="ISOの登録について"><a href="#ISOの登録について" class="headerlink" title="ISOの登録について"></a>ISOの登録について</h3><p>現在の<a href="https://coreos.com/docs/running-coreos/platforms/iso/" target="_blank" rel="noopener">CoreOSのISO</a>は、Stableの494.5.0でした。まずIDCFクラウドにISOを登録してからCoreOSの仮想マシンを作成します。</p>
+<ul>
+<li>ISO名: coreos_49450</li>
+<li>説明: coreos_49450</li>
+<li>URL: <a href="http://stable.release.core-os.net/amd64-usr/current/coreos_production_iso_image.iso" target="_blank" rel="noopener">http://stable.release.core-os.net/amd64-usr/current/coreos_production_iso_image.iso</a></li>
+<li>ゾーン: tesla</li>
+<li>OSタイプ: Other (64-bit)</li>
+<li>エクスポート: 有効</li>
+<li>ブータブル: 有効</li>
+</ul>
+<h3 id="idcf-compute-apiを使ってISOをアップロードする場合"><a href="#idcf-compute-apiを使ってISOをアップロードする場合" class="headerlink" title="idcf-compute-apiを使ってISOをアップロードする場合"></a>idcf-compute-apiを使ってISOをアップロードする場合</h3><p>すべてIDCFクラウドのポータル画面から操作できますが、なるべくCLIを使いたいです。ISOをアップロードするところをCLIを使って実行します。</p>
+<p>ゾーンの確認をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listZones -t=id,name</span><br><span class="line">+--------------------------------------+-------+</span><br><span class="line">| id                                   | name  |</span><br><span class="line">+--------------------------------------+-------+</span><br><span class="line">| a117e75f-d02e-4074-806d-889c61261394 | tesla |</span><br><span class="line">+--------------------------------------+-------+</span><br></pre></td></tr></table></figure>
+
+<p>OSタイプを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listOsTypes | jq <span class="string">'.listostypesresponse | .ostype[] | select(contains(&#123;description:"Other (64-bit)"&#125;))'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"description"</span>: <span class="string">"Other (64-bit)"</span>,</span><br><span class="line">  <span class="string">"id"</span>: <span class="string">"c213145e-4ada-11e4-bd06-005056812ba5"</span>,</span><br><span class="line">  <span class="string">"oscategoryid"</span>: <span class="string">"c1b5fc37-4ada-11e4-bd06-005056812ba5"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CoreOS 494.5.0のISOをアップロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api registerIso \</span><br><span class="line">  --name=coreos_49450  \</span><br><span class="line">  --displaytext=coreos_49450 \</span><br><span class="line">  --url=http://stable.release.core-os.net/amd64-usr/current/coreos_production_iso_image.iso \</span><br><span class="line">  --zoneid=a117e75f-d02e-4074-806d-889c61261394 \</span><br><span class="line">  --ostypeid=c213145e-4ada-11e4-bd06-005056812ba5 \</span><br><span class="line">  --bootable=<span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>アップロードしたISOを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listIsos -t=id,name,bootable,isready</span><br><span class="line">+--------------------------------------+--------------+----------+---------+</span><br><span class="line">| id                                   | name         | bootable | isready |</span><br><span class="line">+--------------------------------------+--------------+----------+---------+</span><br><span class="line">| 327e3145-0679-4c22-8a06-f1abb7e224cf | coreos_49450 | True     | True    |</span><br><span class="line">+--------------------------------------+--------------+----------+---------+</span><br></pre></td></tr></table></figure>
+
+<h3 id="CoreOSの仮想マシンを作成する"><a href="#CoreOSの仮想マシンを作成する" class="headerlink" title="CoreOSの仮想マシンを作成する"></a>CoreOSの仮想マシンを作成する</h3><p>IDCFクラウドのポータル画面から操作して、アップロードしたISOからCoreOSの仮想マシンを作成します。ISOから起動した仮装マシンにはパスワード認証をするためSSH Keyは指定しません。Running状態になったら、コンソ-ルを開きます。ブラウザで開いたコンソールから、coreユーザーにパスワードを付けてSSH接続でパスワード認証ができるようにします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo passwd core</span><br></pre></td></tr></table></figure>
+
+<h3 id="CoreOSをディスクにインストールする"><a href="#CoreOSをディスクにインストールする" class="headerlink" title="CoreOSをディスクにインストールする"></a>CoreOSをディスクにインストールする</h3><p>さきほどコンソールからパスワードを設定したのでパスワードでSSH接続が可能になっています。ISOから起動した仮想マシンはLive DVDから起動したLinuxと同じでディスクに永続化されません。ディスクにCoreOSをインストールしてから使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh core@10.3.0.47 -o PreferredAuthentications=password</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://tleyden-misc.s3.amazonaws.com/couchbase-coreos/coreos-stable-pv.template" target="_blank" rel="noopener">AWS CloudFormationのテンプレート</a>を参考にして、cloud-config.ymlを作成します。</p>
+<p>discoveryは、<a href="https://discovery.etcd.io/newを実行して、新規に作成します。addrとpeer-addrはCoreOSクラスタは同一のVLAN内に構築するため、仮想マシンのプライベートIPアドレスを指定します。ssh_authorized_keysは任意の公開鍵を指定します。" target="_blank" rel="noopener">https://discovery.etcd.io/newを実行して、新規に作成します。addrとpeer-addrはCoreOSクラスタは同一のVLAN内に構築するため、仮想マシンのプライベートIPアドレスを指定します。ssh_authorized_keysは任意の公開鍵を指定します。</a></p>
+<p><code>write_files</code>の<code>/etc/environment</code>以外の3つがCouchbase Server用のファイルです。Couchbase Serverを使わない場合はこの3つは不要です。</p>
+<figure class="highlight yaml"><figcaption><span>~/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">COREOS_PUBLIC_IPV4=</span></span><br><span class="line">      <span class="string">COREOS_PRIVATE_IPV4=10.3.0.47</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/systemd/system/docker.service.d/increase-ulimit.conf</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">core:core</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0644</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">[Service]</span></span><br><span class="line">      <span class="string">LimitMEMLOCK=infinity</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/var/lib/couchbase/data/.README</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">core:core</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0644</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">Couchbase</span> <span class="string">Data</span> <span class="string">files</span> <span class="string">are</span> <span class="string">stored</span> <span class="string">here</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/var/lib/couchbase/index/.README</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">core:core</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0644</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">Couchbase</span> <span class="string">Index</span> <span class="string">files</span> <span class="string">are</span> <span class="string">stored</span> <span class="string">here</span></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">etcd:</span></span><br><span class="line">    <span class="attr">discovery:</span> <span class="string">https://discovery.etcd.io/d7bd532d2f3b86b050515bf3bdc1d93d</span></span><br><span class="line">    <span class="attr">addr:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.47</span><span class="string">:4001</span></span><br><span class="line">    <span class="attr">peer-addr:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.47</span><span class="string">:7001</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">docker.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">restart</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">timezone.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">Description=timezone</span></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">ExecStart=/usr/bin/ln</span> <span class="string">-sf</span> <span class="string">../usr/share/zoneinfo/Japan</span> <span class="string">/etc/localtime</span></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3NzaC...</span></span><br></pre></td></tr></table></figure>
+
+<p>cloud-conig.ymlを使って、ディスクにCoreOSをインストールし直します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo coreos-install -d /dev/sda -C stable -c ./cloud-config.yml</span><br><span class="line">$ sodo reboot</span><br></pre></td></tr></table></figure>
+
+<p>reboot後、公開鍵を使ってSSH接続ができるようになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -A core@10.3.0.47</span><br></pre></td></tr></table></figure>
+
+<h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>cloud-config.ymlで<code>write_files</code>したファイルを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /var/lib/couchbase/data/.README</span><br><span class="line">Couchbase Data files are stored here</span><br></pre></td></tr></table></figure>
+
+<p>fleetctlでfleetクラスタに仮装マシンが追加されたことを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl list-machines</span><br><span class="line">MACHINE         IP              METADATA</span><br><span class="line">f0f5fcc4...     10.3.0.47       -</span><br></pre></td></tr></table></figure>
+
+<p>最後にIDCFクラウドのポータルから仮想マシンを停止して、ISOをデタッチします。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/idcf-compute-api/" rel="tag"># idcf-compute-api</a>
+              <a href="/tags/jq/" rel="tag"># jq</a>
+              <a href="/tags/Couchbase/" rel="tag"># Couchbase</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/12/18/microsoft-azure-salt-docker-install/" rel="prev" title="Microsoft AzureにSalt環境を構築する - Part3: SaltとDockerをインストール">
+      <i class="fa fa-chevron-left"></i> Microsoft AzureにSalt環境を構築する - Part3: SaltとDockerをインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/12/20/idcf-coreos-couchbase-install/" rel="next" title="Couchbase on Docker - Part1: Couchbase Server 3.0.1クラスタをインストール">
+      Couchbase on Docker - Part1: Couchbase Server 3.0.1クラスタをインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Couchbase-Server用のCoreOSクラスタ"><span class="nav-number">1.</span> <span class="nav-text">Couchbase Server用のCoreOSクラスタ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ISOの登録について"><span class="nav-number">2.</span> <span class="nav-text">ISOの登録について</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#idcf-compute-apiを使ってISOをアップロードする場合"><span class="nav-number">3.</span> <span class="nav-text">idcf-compute-apiを使ってISOをアップロードする場合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSの仮想マシンを作成する"><span class="nav-number">4.</span> <span class="nav-text">CoreOSの仮想マシンを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CoreOSをディスクにインストールする"><span class="nav-number">5.</span> <span class="nav-text">CoreOSをディスクにインストールする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

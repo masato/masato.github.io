@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chromebookにdev_installしてScreenでEdisonにシリアル接続する">
+<meta property="og:url" content="http://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/qemacs.png">
+<meta property="article:published_time" content="2015-03-07T10:02:04.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.559Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Chromebook">
+<meta property="article:tag" content="IntelEdison">
+<meta property="article:tag" content="Screen">
+<meta property="article:tag" content="dev_install">
+<meta property="article:tag" content="Gentoo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/qemacs.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Chromebookにdev_installしてScreenでEdisonにシリアル接続する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Chromebookにdev_installしてScreenでEdisonにシリアル接続する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Mar 7 2015 19:02:04" itemprop="dateCreated datePublished" datetime="2015-03-07T19:02:04+09:00">Mar 7 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。</p>
+<a id="more"></a>
+
+<h2 id="dev-install"><a href="#dev-install" class="headerlink" title="dev_install"></a>dev_install</h2><p><code>cntl-alt-t</code>でcroshを起動してから、shellでrootになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">crosh&gt; shell</span><br><span class="line">$ sudo -i</span><br></pre></td></tr></table></figure>
+
+<p><code>dev_install</code>コマンドを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dev_install</span><br><span class="line">Starting installation of developer packages.</span><br><span class="line">First, we download the necessary files.</span><br><span class="line">Downloading https://commondatastorage.googleapis.com/chromeos-dev-installer/board/daisy_spring/canary-R40-6457.107.0/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100  252k  100  252k    0     0   274k      0 --:--:-- --:--:-- --:--:--  276k</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">...</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/net-misc/dhcp-4.2.2-r2.tbz2</span><br><span class="line">Files downloaded, configuring emerge.</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0</span><br><span class="line">curl: (22) The requested URL returned error: 404 Not Found</span><br><span class="line">Emerge installation complete. Installing additional optional packages.</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">"selected"</span>, <span class="string">"system"</span>, and <span class="string">"world"</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">'/usr/share/portage/config/sets/portage.conf'</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line"> * gmerge-0.0.1-r837.tbz2 MD5 SHA1 size ;-) ...                          [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting info</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_setup</span><br><span class="line"> *    sysroot_build_bin_dir ...                                                                                 [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting chromeos-base/gmerge-0.0.1-r837</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Installing (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos to /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_preinst</span><br><span class="line"> *    wrap_old_config_scripts ...                                                                               [ ok ]</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Recording chromeos-base/gmerge <span class="keyword">in</span> <span class="string">"world"</span> favorites file...</span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br><span class="line">Install virtual/target-os-dev package now? (y/N) </span><br><span class="line">Local copy of remote index is up-to-date and will be used.</span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">"selected"</span>, <span class="string">"system"</span>, and <span class="string">"world"</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">'/usr/share/portage/config/sets/portage.conf'</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 89) net-dialup/lrzsz-0.12.20-r3::portage-stable <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Fetching <span class="string">'/usr/local/portage/packages/net-</span></span><br><span class="line"><span class="string"> * dialup/lrzsz-0.12.20-r3.tbz2'</span> <span class="keyword">in</span> the background. To view fetch</span><br><span class="line"> * progress, run `tail -f /var/<span class="built_in">log</span>/emerge-fetch.log` <span class="keyword">in</span> another</span><br><span class="line"> * terminal.</span><br><span class="line"> * lrzsz-0.12.20-r3.tbz2 MD5 SHA1 size ;-) ...                           [ ok ]</span><br></pre></td></tr></table></figure>
+
+<p>たくさんエラーが出てインストールに失敗したように思いますが、<a href="https://code.google.com/p/chromium/issues/detail?id=410195" target="_blank" rel="noopener">dev_install doesn’t work on Samsung Arm Chromebook 2 (Peach Pi)</a>によると、以下の3つは重大なエラーではないそうです。解かりづらいですが。</p>
+<ul>
+<li>!!! PORTAGE_BINHOST unset, but use is requested.</li>
+<li>emerge: incomplete set configuration, missing set(s): “selected”, “system”, and “world”</li>
+<li>!!! Problem with sandbox binary. Disabling…</li>
+</ul>
+<p>バージョンを確認しても警告がでます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge --version</span><br><span class="line">!!! No gcc found. You probably need to <span class="string">'source /etc/profile'</span></span><br><span class="line">!!! to update the environment of this terminal and possibly</span><br><span class="line">!!! other terminals also.</span><br><span class="line">Portage 2.2.12-r6 (python 2.7.3-final-0, unavailable, [unavailable], unavailable, 3.8.11 armv7l)</span><br></pre></td></tr></table></figure>
+
+<h2 id="QEmacsをインストール"><a href="#QEmacsをインストール" class="headerlink" title="QEmacsをインストール"></a>QEmacsをインストール</h2><p>QEmacsをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge qemacs</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; Recording app-editors/qemacs <span class="keyword">in</span> <span class="string">"world"</span> favorites file...</span><br><span class="line"></span><br><span class="line"> * Messages <span class="keyword">for</span> package app-editors/qemacs-0.4.0_pre20090420 merged to /usr/<span class="built_in">local</span>/:</span><br><span class="line"></span><br><span class="line"> * One or more symlinks to directories have been preserved <span class="keyword">in</span> order to</span><br><span class="line"> * ensure that files installed via these symlinks remain accessible. This</span><br><span class="line"> * indicates that the mentioned symlink(s) may be obsolete remnants of an</span><br><span class="line"> * old install, and it may be appropriate to replace a given symlink with</span><br><span class="line"> * the directory that it points to.</span><br><span class="line"> * </span><br><span class="line"> *      /usr/<span class="built_in">local</span>/usr</span><br><span class="line"> * </span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br></pre></td></tr></table></figure>
+
+<p>バージョンを確認してみます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> qemacs</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/qemacs</span><br><span class="line">$ qemacs --version</span><br><span class="line">QEmacs version 0.4.0dev</span><br><span class="line">Copyright (c) 2000-2003 Fabrice Bellard</span><br><span class="line">Copyright (c) 2000-2008 Charlie Gordon</span><br><span class="line"></span><br><span class="line">QEmacs comes with ABSOLUTELY NO WARRANTY.</span><br><span class="line">You may redistribute copies of QEmacs</span><br><span class="line">under the terms of the GNU Lesser General Public License.</span><br></pre></td></tr></table></figure>
+
+<p>qemacsを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ qemacs</span><br></pre></td></tr></table></figure>
+
+<p>起動に成功しました。日本語は入力できませんがEmacsは使うことができます。</p>
+<p><img src="/2015/03/07/chromebook-dev-install-screen-edison/qemacs.png" alt="qemacs.png"></p>
+<h2 id="Screen"><a href="#Screen" class="headerlink" title="Screen"></a>Screen</h2><p>Screenを使う前に、Chromebookでは<code>/root</code>などはRead-Onlyなのでファイルが書き込めるようにします。sudoでscreenを使いたいので<code>/root/.screen</code>ディレクトリを作成できるようにします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo /usr/share/vboot/bin/make_dev_ssd.sh --remove_rootfs_verification --partitions 4</span><br><span class="line">Kernel B: Disabled rootfs verification.</span><br><span class="line">Backup of Kernel B is stored <span class="keyword">in</span>: /mnt/stateful_partition/backups/kernel_B_20150308_184934.bin</span><br><span class="line">Kernel B: Re-signed with developer keys successfully.</span><br><span class="line">Successfully re-signed 1 of 1 kernel(s)  on device /dev/mmcblk0.</span><br></pre></td></tr></table></figure>
+
+<p>設定後は一度再起動が必要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
+
+<h2 id="EdisonとUSB-Serial接続"><a href="#EdisonとUSB-Serial接続" class="headerlink" title="EdisonとUSB-Serial接続"></a>EdisonとUSB-Serial接続</h2><p>EdisonのJ3コネクタとChromebookをUSB-Serial接続することができました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo screen /dev/ttyUSB0 115200</span><br><span class="line">Poky (Yocto Project Reference Distro) 1.6.1 edison ttyMFD2</span><br><span class="line"></span><br><span class="line">edison login: root</span><br><span class="line">Password: </span><br><span class="line">root@edison:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Chromebook/" rel="tag"># Chromebook</a>
+              <a href="/tags/IntelEdison/" rel="tag"># IntelEdison</a>
+              <a href="/tags/Screen/" rel="tag"># Screen</a>
+              <a href="/tags/dev-install/" rel="tag"># dev_install</a>
+              <a href="/tags/Gentoo/" rel="tag"># Gentoo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/06/intel-edison-setting-up/" rel="prev" title="Intel Edisonの初期設定とChromebookからシリアル接続してWi-Fiの確認をする">
+      <i class="fa fa-chevron-left"></i> Intel Edisonの初期設定とChromebookからシリアル接続してWi-Fiの確認をする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/08/ponte-iot-broker/" rel="next" title="PonteのインストールとMQTT over SSL/TLS設定">
+      PonteのインストールとMQTT over SSL/TLS設定 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dev-install"><span class="nav-number">1.</span> <span class="nav-text">dev_install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QEmacsをインストール"><span class="nav-number">2.</span> <span class="nav-text">QEmacsをインストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Screen"><span class="nav-number">3.</span> <span class="nav-text">Screen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EdisonとUSB-Serial接続"><span class="nav-number">4.</span> <span class="nav-text">EdisonとUSB-Serial接続</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

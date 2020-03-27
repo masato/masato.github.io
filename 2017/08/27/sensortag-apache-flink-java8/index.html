@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SensorTagのセンサーデータをApache FlinkとScala APIを使いウィンドウ集計を試しました。Scala APIとなるべく同じようにJava 8 APIで書き直します。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apache FlinkとJava 8でセンサーデータをウィンドウ集計をする">
+<meta property="og:url" content="http://masato.github.io/2017/08/27/sensortag-apache-flink-java8/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="SensorTagのセンサーデータをApache FlinkとScala APIを使いウィンドウ集計を試しました。Scala APIとなるべく同じようにJava 8 APIで書き直します。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-08-27T05:13:01.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.895Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Scala">
+<meta property="article:tag" content="SensorTag">
+<meta property="article:tag" content="ApacheFlink">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2017/08/27/sensortag-apache-flink-java8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Apache FlinkとJava 8でセンサーデータをウィンドウ集計をする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/08/27/sensortag-apache-flink-java8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Apache FlinkとJava 8でセンサーデータをウィンドウ集計をする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 27 2017 14:13:01" itemprop="dateCreated datePublished" datetime="2017-08-27T14:13:01+09:00">Aug 27 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">SensorTagのセンサーデータをApache FlinkとScala APIを使いウィンドウ集計を試しました。Scala APIとなるべく同じようにJava 8 APIで書き直します。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　SensorTagのセンサーデータをApache FlinkとScala APIを使いウィンドウ集計を<a href="https://masato.github.io/2017/08/10/sensortag-apache-flink-scala/">試しました</a>。<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/dev/scala_api_extensions.html" target="_blank" rel="noopener">Scala API</a>となるべく同じように<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/dev/java8.html" target="_blank" rel="noopener">Java 8 API</a>で書き直します。</p>
+<a id="more"></a>
+
+<h2 id="Mavenアーキタイプ"><a href="#Mavenアーキタイプ" class="headerlink" title="Mavenアーキタイプ"></a>Mavenアーキタイプ</h2><p>　<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/quickstart/java_api_quickstart.html" target="_blank" rel="noopener">Sample Project using the Java API</a>にある<a href="https://mvnrepository.com/artifact/org.apache.flink/flink-quickstart-java" target="_blank" rel="noopener">flink-quickstart-java</a>を使いMavenプロジェクトを作成します。Apache FlinkのバージョンはScalaの時と同じ<code>1.3.2</code>です。<code>groupId</code>や<code>package</code>は環境にあわせて変更してください。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/java_apps &amp;&amp; <span class="built_in">cd</span> ~/java_apps</span><br><span class="line">$ mvn archetype:generate \</span><br><span class="line">    -DarchetypeGroupId=org.apache.flink \</span><br><span class="line">    -DarchetypeArtifactId=flink-quickstart-java \</span><br><span class="line">    -DarchetypeVersion=1.3.2 \</span><br><span class="line">    -DgroupId=streams-flink-java-examples \</span><br><span class="line">    -DartifactId=streams-flink-java-examples \</span><br><span class="line">    -Dversion=0.1 \</span><br><span class="line">    -Dpackage=com.github.masato.streams.flink \</span><br><span class="line">    -DinteractiveMode=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>　プラグインの<a href="https://maven.apache.org/plugins/maven-compiler-plugin/" target="_blank" rel="noopener">maven-compiler-plugin</a>の設定をJava 8 (1.8)に変更します。また<a href="http://www.mojohaus.org/exec-maven-plugin/" target="_blank" rel="noopener">exec-maven-plugin</a>を追加してMavenからFlinkアプリの<code>main()</code>を実行できるようにします。</p>
+<figure class="highlight xml"><figcaption><span>pom.xml</span></figcaption><table><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">...</span><br><span class="line">              <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>exec-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>App<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">goal</span>&gt;</span>exec<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">executable</span>&gt;</span>java<span class="tag">&lt;/<span class="name">executable</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">classpathScope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">classpathScope</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">arguments</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">argument</span>&gt;</span>-cp<span class="tag">&lt;/<span class="name">argument</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">classpath</span>/&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">argument</span>&gt;</span>com.github.masato.streams.flink.WordCount<span class="tag">&lt;/<span class="name">argument</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">arguments</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>　<a href="http://www.mojohaus.org/exec-maven-plugin/examples/example-exec-for-java-programs.html" target="_blank" rel="noopener">execゴール</a>を実行します。<a href="https://github.com/apache/flink/blob/master/flink-quickstart/flink-quickstart-java/src/main/resources/archetype-resources/src/main/java/WordCount.java" target="_blank" rel="noopener">WordCount</a>の例はテキストの単語を数えて標準出力します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mvn clean package <span class="built_in">exec</span>:<span class="built_in">exec</span>@App</span><br><span class="line">...</span><br><span class="line">(is,1)</span><br><span class="line">(a,1)</span><br><span class="line">(<span class="keyword">in</span>,1)</span><br><span class="line">(mind,1)</span><br><span class="line">(or,2)</span><br><span class="line">(against,1)</span><br><span class="line">(arms,1)</span><br><span class="line">(not,1)</span><br><span class="line">(sea,1)</span><br><span class="line">(the,3)</span><br><span class="line">(troubles,1)</span><br><span class="line">(fortune,1)</span><br><span class="line">(take,1)</span><br><span class="line">(to,4)</span><br><span class="line">(and,1)</span><br><span class="line">(arrows,1)</span><br><span class="line">(be,2)</span><br><span class="line">(nobler,1)</span><br><span class="line">(of,2)</span><br><span class="line">(slings,1)</span><br><span class="line">(suffer,1)</span><br><span class="line">(outrageous,1)</span><br><span class="line">(tis,1)</span><br><span class="line">(whether,1)</span><br><span class="line">(question,1)</span><br><span class="line">(that,1)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ウィンドウ集計"><a href="#ウィンドウ集計" class="headerlink" title="ウィンドウ集計"></a>ウィンドウ集計</h2><p>　<a href="https://mvnrepository.com/artifact/org.apache.flink/flink-quickstart-java" target="_blank" rel="noopener">flink-quickstart-java</a>のアーキタイプが作成するJavaコードをすべて削除してから新しいコードを書いていきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ rm src/main/java/com/github/masato/streams/flink/*.java</span><br></pre></td></tr></table></figure>
+<p>　<br>　ソースコードは<a href="https://github.com/masato/streams-flink-java-examples" target="_blank" rel="noopener">リポジトリ</a>にもあります。Scalaで書いた<a href="https://github.com/masato/streams-flink-scala-examples/" target="_blank" rel="noopener">例</a>は一つのファイルでしたがJavaの場合はわかりやすいようにクラスを分けました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree streams-flink-java-examples</span><br><span class="line">streams-flink-java-examples</span><br><span class="line">├── pom.xml</span><br><span class="line">└── src</span><br><span class="line">    └── main</span><br><span class="line">        ├── java</span><br><span class="line">        │   └── com</span><br><span class="line">        │       └── github</span><br><span class="line">        │           └── masato</span><br><span class="line">        │               └── streams</span><br><span class="line">        │                   └── flink</span><br><span class="line">        │                       ├── Accumulator.java</span><br><span class="line">        │                       ├── Aggregate.java</span><br><span class="line">        │                       ├── App.java</span><br><span class="line">        │                       ├── Average.java</span><br><span class="line">        │                       └── Sensor.java</span><br><span class="line">        └── resources</span><br><span class="line">            └── log4j.properties</span><br></pre></td></tr></table></figure>
+
+<h3 id="App-java"><a href="#App-java" class="headerlink" title="App.java"></a>App.java</h3><p> メインメソッドを実装したプログラムの全文です。Scalaで書いた例の<a href="https://github.com/masato/streams-flink-scala-examples/blob/master/src/main/scala/com/github/masato/streams/flink/App.scala" target="_blank" rel="noopener">App.scala</a>と似ていますが<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/api/common/functions/AggregateFunction.html" target="_blank" rel="noopener">AggregateFunction</a>と<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/streaming/api/functions/windowing/WindowFunction.html" target="_blank" rel="noopener">WindowFunction</a>はそれぞれクラスにしました。</p>
+<figure class="highlight java"><figcaption><span>App.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.github.masato.streams.flink;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"><span class="keyword">import</span> java.time.ZoneId;</span><br><span class="line"><span class="keyword">import</span> java.time.ZonedDateTime;</span><br><span class="line"><span class="keyword">import</span> java.time.format.DateTimeFormatter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.TimeCharacteristic;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.functions.source.SourceFunction;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.windowing.time.Time;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.windowing.windows.TimeWindow;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer010;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.util.serialization.JSONDeserializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.util.serialization.SimpleStringSchema;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.node.ObjectNode;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String bootstrapServers = System.getenv(<span class="string">"BOOTSTRAP_SERVERS_CONFIG"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String groupId = System.getenv(<span class="string">"GROUP_ID"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String sourceTopic = System.getenv(<span class="string">"SOURCE_TOPIC"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String sinkTopic = System.getenv(<span class="string">"SINK_TOPIC"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">        props.setProperty(<span class="string">"bootstrap.servers"</span>, bootstrapServers);</span><br><span class="line">        props.setProperty(<span class="string">"group.id"</span>, groupId);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> StreamExecutionEnvironment env =</span><br><span class="line">            StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> DataStream&lt;ObjectNode&gt; events =</span><br><span class="line">                                env.addSource(<span class="keyword">new</span> FlinkKafkaConsumer010&lt;&gt;(</span><br><span class="line">                                  sourceTopic,</span><br><span class="line">                                  <span class="keyword">new</span> JSONDeserializationSchema(),</span><br><span class="line">                                  props)).name(<span class="string">"events"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> SingleOutputStreamOperator&lt;ObjectNode&gt; timestamped =</span><br><span class="line">            events</span><br><span class="line">            .assignTimestampsAndWatermarks(</span><br><span class="line">                <span class="keyword">new</span> BoundedOutOfOrdernessTimestampExtractor&lt;ObjectNode&gt;(Time.seconds(<span class="number">10</span>)) &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">extractTimestamp</span><span class="params">(ObjectNode element)</span> </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> element.get(<span class="string">"time"</span>).asLong() * <span class="number">1000</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">        timestamped</span><br><span class="line">            .map((v) -&gt; &#123;</span><br><span class="line">                    String key =  v.get(<span class="string">"bid"</span>).asText();</span><br><span class="line">                    <span class="keyword">double</span> ambient = v.get(<span class="string">"ambient"</span>).asDouble();</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">new</span> Sensor(key, ambient);</span><br><span class="line">            &#125;)</span><br><span class="line">            .keyBy(v -&gt; v.key)</span><br><span class="line">            .timeWindow(Time.seconds(<span class="number">60</span>))</span><br><span class="line">            .aggregate(<span class="keyword">new</span> Aggregate(), <span class="keyword">new</span> Average())</span><br><span class="line">            .map((v) -&gt; &#123;</span><br><span class="line">                    ZonedDateTime zdt =</span><br><span class="line">                        <span class="keyword">new</span> Date(v.time).toInstant().atZone(ZoneId.systemDefault());</span><br><span class="line">                    String time = fmt.format(zdt);</span><br><span class="line"></span><br><span class="line">                    Map&lt;String, Object&gt; payload = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">                    payload.put(<span class="string">"time"</span>, time);</span><br><span class="line">                    payload.put(<span class="string">"bid"</span>, v.bid);</span><br><span class="line">                    payload.put(<span class="string">"ambient"</span>, v.sum);</span><br><span class="line"></span><br><span class="line">                    String retval = <span class="keyword">new</span> ObjectMapper().writeValueAsString(payload);</span><br><span class="line">                    System.out.println(retval);</span><br><span class="line">                    <span class="keyword">return</span> retval;</span><br><span class="line">                &#125;)</span><br><span class="line">            .addSink(<span class="keyword">new</span> FlinkKafkaProducer010&lt;String&gt;(</span><br><span class="line">                         bootstrapServers,</span><br><span class="line">                         sinkTopic,</span><br><span class="line">                         <span class="keyword">new</span> SimpleStringSchema())</span><br><span class="line">                     ).name(<span class="string">"kafka"</span>);</span><br><span class="line"></span><br><span class="line">        env.execute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sensor-java"><a href="#Sensor-java" class="headerlink" title="Sensor.java"></a>Sensor.java</h3><p>　ScalaではストリームのセンサーデータはBDアドレスをキーにScalaのTupleを作成しました。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">timestamped</span><br><span class="line">  .map &#123; v =&gt;</span><br><span class="line">    <span class="keyword">val</span> key =  v.get(<span class="string">"bid"</span>).asText</span><br><span class="line">    <span class="keyword">val</span> ambient = v.get(<span class="string">"ambient"</span>).asDouble</span><br><span class="line">    (key, ambient)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>　Java 8の場合でもScalaのように<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/api/java/tuple/Tuple2.html" target="_blank" rel="noopener">Tuple2</a>が使えます。しかし<a href="https://brewing.codes/2017/01/31/using-apache-flink-with-java-8/" target="_blank" rel="noopener">Using Apache Flink with Java 8</a>の解説にあるようにEclipse JDTでコンパイルが必要です。または<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/streaming/api/datastream/SingleOutputStreamOperator.html#returns-org.apache.flink.api.common.typeinfo.TypeInformation-" target="_blank" rel="noopener">returns()</a>に<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/api/java/typeutils/TupleTypeInfo.html" target="_blank" rel="noopener">TupleTypeInfo</a>で要素のタイプヒントをJavaクラスで指定しないとエラーになります。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">.map((v) -&gt; &#123;</span><br><span class="line">    <span class="keyword">double</span> ambient = v.get(<span class="string">"value"</span>).get(<span class="string">"ambient"</span>).asDouble();</span><br><span class="line">    String key =  v.get(<span class="string">"sensor"</span>).get(<span class="string">"bid"</span>).asText();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Tuple2&lt;&gt;(key, ambient);</span><br><span class="line">&#125;)</span><br><span class="line">.returns(<span class="keyword">new</span> TupleTypeInfo&lt;&gt;(TypeInformation.of(String<span class="class">.<span class="keyword">class</span>),</span></span><br><span class="line"><span class="class">                             <span class="title">TypeInformation</span>.<span class="title">of</span>(<span class="title">Double</span>.<span class="title">class</span>)))</span></span><br></pre></td></tr></table></figure>
+
+<p>　ちょっと面倒なので普通のPOJOを利用したほうが簡単です。</p>
+<figure class="highlight java"><figcaption><span>Sensor.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.github.masato.streams.flink;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sensor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String key;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">double</span> ambient;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Sensor</span><span class="params">(String key, <span class="keyword">double</span> ambient)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.key = key;</span><br><span class="line">        <span class="keyword">this</span>.ambient = ambient;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Aggregate-java"><a href="#Aggregate-java" class="headerlink" title="Aggregate.java"></a>Aggregate.java</h3><p>　<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/api/common/functions/AggregateFunction.html" target="_blank" rel="noopener">AggregateFunction</a>インタフェースを実装します。Scalaと違いAccumulatorはcaseクラスではありませんがそれ以外はほぼ同じです。</p>
+<figure class="highlight java"><figcaption><span>Aggregate.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.github.masato.streams.flink;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.java.tuple.Tuple2;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.common.functions.AggregateFunction;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Aggregate</span> <span class="keyword">implements</span> <span class="title">AggregateFunction</span>&lt;<span class="title">Sensor</span>, <span class="title">Accumulator</span>, <span class="title">Accumulator</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">3355966737412029618L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Accumulator <span class="title">createAccumulator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Accumulator(<span class="number">0L</span>, <span class="string">""</span>, <span class="number">0.0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Accumulator <span class="title">merge</span><span class="params">(Accumulator a, Accumulator b)</span> </span>&#123;</span><br><span class="line">        a.count += b.count;</span><br><span class="line">        a.sum += b.sum;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Sensor value, Accumulator acc)</span> </span>&#123;</span><br><span class="line">        acc.sum += value.ambient;</span><br><span class="line">        acc.count++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Accumulator <span class="title">getResult</span><span class="params">(Accumulator acc)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> acc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Average-java"><a href="#Average-java" class="headerlink" title="Average.java"></a>Average.java</h3><p>　<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.3/api/java/org/apache/flink/streaming/api/functions/windowing/WindowFunction.html" target="_blank" rel="noopener">WindowFunction</a>の実装です。</p>
+<figure class="highlight java"><figcaption><span>Average.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.github.masato.streams.flink;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.windowing.windows.TimeWindow;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.functions.windowing.WindowFunction;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.util.Collector;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Average</span> <span class="keyword">implements</span> <span class="title">WindowFunction</span>&lt;<span class="title">Accumulator</span>,</span></span><br><span class="line"><span class="class">                                               <span class="title">Accumulator</span>, <span class="title">String</span>, <span class="title">TimeWindow</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">5532466889638450746L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(String key,</span></span></span><br><span class="line"><span class="function"><span class="params">                      TimeWindow window,</span></span></span><br><span class="line"><span class="function"><span class="params">                      Iterable&lt;Accumulator&gt; input,</span></span></span><br><span class="line"><span class="function"><span class="params">                      Collector&lt;Accumulator&gt; out)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Accumulator in = input.iterator().next();</span><br><span class="line">        out.collect(<span class="keyword">new</span> Accumulator(window.getEnd(), key, in.sum/in.count, in.count));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>　Scalaの場合WindowFunctionの<code>apply()</code>実装は<code>aggregate</code>には直接書いてみました。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">.aggregate(<span class="keyword">new</span> <span class="type">Aggregate</span>(),</span><br><span class="line">  ( key: <span class="type">String</span>,</span><br><span class="line">    window: <span class="type">TimeWindow</span>,</span><br><span class="line">    input: <span class="type">Iterable</span>[<span class="type">Accumulator</span>],</span><br><span class="line">    out: <span class="type">Collector</span>[<span class="type">Accumulator</span>] ) =&gt; &#123;</span><br><span class="line">      <span class="keyword">var</span> in = input.iterator.next()</span><br><span class="line">      out.collect(<span class="type">Accumulator</span>(window.getEnd, key, in.sum/in.count, in.count))</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h3><p>　ストリームのSourceはKafkaを利用します。接続情報は<a href="http://www.mojohaus.org/exec-maven-plugin/" target="_blank" rel="noopener">exec-maven-plugin</a>の環境変数に設定します。SensorTagとRaspberry Pi 3の準備、Kafkaクラスタの構築は<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">こちら</a>を参考にしてください。</p>
+<figure class="highlight xml"><figcaption><span>pom.xml</span></figcaption><table><tr><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">...</span><br><span class="line">              <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">              <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>exec-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>App<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                      <span class="tag">&lt;<span class="name">goal</span>&gt;</span>exec<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">executable</span>&gt;</span>java<span class="tag">&lt;/<span class="name">executable</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">classpathScope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">classpathScope</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">arguments</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">argument</span>&gt;</span>-cp<span class="tag">&lt;/<span class="name">argument</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">classpath</span>/&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">argument</span>&gt;</span>com.github.masato.streams.flink.App<span class="tag">&lt;/<span class="name">argument</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">arguments</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">environmentVariables</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">APPLICATION_ID_CONFIG</span>&gt;</span>sensortag<span class="tag">&lt;/<span class="name">APPLICATION_ID_CONFIG</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">BOOTSTRAP_SERVERS_CONFIG</span>&gt;</span>confluent:9092<span class="tag">&lt;/<span class="name">BOOTSTRAP_SERVERS_CONFIG</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">SOURCE_TOPIC</span>&gt;</span>sensortag<span class="tag">&lt;/<span class="name">SOURCE_TOPIC</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">SINK_TOPIC</span>&gt;</span>sensortag-sink<span class="tag">&lt;/<span class="name">SINK_TOPIC</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">GROUP_ID</span>&gt;</span>flinkGroup<span class="tag">&lt;/<span class="name">GROUP_ID</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;/<span class="name">environmentVariables</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h3><p>　Raspberry Pi 3からSensorTagのデータをKafkaに送信したあとにexec-maven-pluginのexecゴールを実行します。</p>
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">$ mvn clean install <span class="keyword">exec</span>:<span class="keyword">exec</span>@App</span><br></pre></td></tr></table></figure>
+
+<p>　周囲温度(ambient)を60秒のタンブリングウィンドウで集計した平均値が標準出力されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"ambient"</span>:28.395833333333332,<span class="string">"time"</span>:<span class="string">"2017-08-28T11:57:00+09:00"</span>,<span class="string">"bid"</span>:<span class="string">"B0:B4:48:BD:DA:03"</span>&#125;</span><br><span class="line">&#123;<span class="string">"ambient"</span>:28.44375,<span class="string">"time"</span>:<span class="string">"2017-08-28T11:58:00+09:00"</span>,<span class="string">"bid"</span>:<span class="string">"B0:B4:48:BD:DA:03"</span>&#125;</span><br><span class="line">&#123;<span class="string">"ambient"</span>:28.46875,<span class="string">"time"</span>:<span class="string">"2017-08-28T11:59:00+09:00"</span>,<span class="string">"bid"</span>:<span class="string">"B0:B4:48:BD:DA:03"</span>&#125;</span><br><span class="line">&#123;<span class="string">"ambient"</span>:28.5,<span class="string">"time"</span>:<span class="string">"2017-08-28T12:00:00+09:00"</span>,<span class="string">"bid"</span>:<span class="string">"B0:B4:48:BD:DA:03"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Scala/" rel="tag"># Scala</a>
+              <a href="/tags/SensorTag/" rel="tag"># SensorTag</a>
+              <a href="/tags/ApacheFlink/" rel="tag"># ApacheFlink</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/10/sensortag-apache-flink-scala/" rel="prev" title="Apache FlinkとScalaでセンサーデータをウィンドウ集計をする">
+      <i class="fa fa-chevron-left"></i> Apache FlinkとScalaでセンサーデータをウィンドウ集計をする
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Mavenアーキタイプ"><span class="nav-number">1.</span> <span class="nav-text">Mavenアーキタイプ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ウィンドウ集計"><span class="nav-number">2.</span> <span class="nav-text">ウィンドウ集計</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#App-java"><span class="nav-number">2.1.</span> <span class="nav-text">App.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sensor-java"><span class="nav-number">2.2.</span> <span class="nav-text">Sensor.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate-java"><span class="nav-number">2.3.</span> <span class="nav-text">Aggregate.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Average-java"><span class="nav-number">2.4.</span> <span class="nav-text">Average.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom-xml"><span class="nav-number">2.5.</span> <span class="nav-text">pom.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#実行"><span class="nav-number">2.6.</span> <span class="nav-text">実行</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RasberryPiが未開封のままなのに、USBで給電とシリアル接続ができるBeagleBone Blackが欲しくなりました。どの販売店も売り切れ状態だったので、ちょっと高いですがヤフオクから落札しました。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeagleBone BlackにUbuntuをインストール">
+<meta property="og:url" content="http://masato.github.io/2014/05/03/beagleboneblack-ubuntu/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="RasberryPiが未開封のままなのに、USBで給電とシリアル接続ができるBeagleBone Blackが欲しくなりました。どの販売店も売り切れ状態だったので、ちょっと高いですがヤフオクから落札しました。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-02T18:22:10.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.552Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="BeagleBoneBlack">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Linux-ARM">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/05/03/beagleboneblack-ubuntu/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeagleBone BlackにUbuntuをインストール | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/05/03/beagleboneblack-ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeagleBone BlackにUbuntuをインストール
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 3 2014 03:22:10" itemprop="dateCreated datePublished" datetime="2014-05-03T03:22:10+09:00">May 3 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">RasberryPiが未開封のままなのに、USBで給電とシリアル接続ができるBeagleBone Blackが欲しくなりました。どの販売店も売り切れ状態だったので、ちょっと高いですがヤフオクから落札しました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://www.raspberrypi.org/" target="_blank" rel="noopener">RasberryPi</a>が未開封のままなのに、USBで給電とシリアル接続ができる<a href="http://beagleboard.org/Products/BeagleBone+Black" target="_blank" rel="noopener">BeagleBone Black</a>が欲しくなりました。どの販売店も売り切れ状態だったので、ちょっと高いですがヤフオクから落札しました。</p>
+<a id="more"></a>
+
+<h3 id="microSDカードのフォーマット"><a href="#microSDカードのフォーマット" class="headerlink" title="microSDカードのフォーマット"></a>microSDカードのフォーマット</h3><p>Windows7のノートPCにCygwinをインストールして作業環境にします。2GB以上のmicroSDカードが必要なので、最近は16GBのmicroSDHCカードでも1,000円以下で購入できました。<a href="https://www.sdcard.org/jp/downloads/formatter_4/" target="_blank" rel="noopener">SD Formatter</a>を使い、オプション設定ボタンから、以下を選択してフォーマットします。</p>
+<ul>
+<li>消去方法: クイックフォーマット</li>
+<li>論理サイズ調整: ON</li>
+</ul>
+<h3 id="Cygwinを使いUbuntuのイメージをコピー"><a href="#Cygwinを使いUbuntuのイメージをコピー" class="headerlink" title="Cygwinを使いUbuntuのイメージをコピー"></a>Cygwinを使いUbuntuのイメージをコピー</h3><p><code>Cygwin64 Terminal</code>を管理者として実行します。16GBのmicroSDカードのデバイス名は/dev/sdcです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /proc/partitions</span><br><span class="line">major minor  <span class="comment">#blocks  name</span></span><br><span class="line"></span><br><span class="line">    8     0 488384323 sda</span><br><span class="line">    8     1     40131 sda1</span><br><span class="line">    8     2  17598464 sda2</span><br><span class="line">    8     3 470743040 sda3</span><br><span class="line">    8    16 102130688 sdb</span><br><span class="line">    8    17   8388608 sdb1</span><br><span class="line">    8    18  93740032 sdb2</span><br><span class="line">    8    32  15482880 sdc</span><br><span class="line">    8    33     98304 sdc1</span><br></pre></td></tr></table></figure>
+
+<p>BeagleBone BlackのリビジョンはA5Bです。 なぜか<code>Trusty(14.04)</code>のイメージだとeMMCへのフラッシュに失敗してしまうので<code>Sausy(13.10)</code>を使うことにします。<a href="http://elinux.org/BeagleBoardUbuntu#eMMC:_BeagleBone_Black" target="_blank" rel="noopener">Embedded Linux Wiki</a>のページに従ってeMMCフラッシュ用のイメージをmicroSDカードにコピーします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget https://rcn-ee.net/deb/flasher/saucy/BBB-eMMC-flasher-ubuntu-13.10-2014-03-27-2gb.img.xz</span><br><span class="line">$ unxz BBB-eMMC-flasher-ubuntu-13.10-2014-03-27-2gb.img.xz</span><br><span class="line">$ dd <span class="keyword">if</span>=./BBB-eMMC-flasher-ubuntu-13.10-2014-03-27-2gb.img of=/dev/sdc</span><br><span class="line">3481600+0 レコード入力</span><br><span class="line">3481600+0 レコード出力</span><br><span class="line">1782579200 バイト (1.8 GB) コピーされました、 552.543 秒、 3.2 MB/秒</span><br></pre></td></tr></table></figure>
+
+<h3 id="eMMCにUbuntuをインストール"><a href="#eMMCにUbuntuをインストール" class="headerlink" title="eMMCにUbuntuをインストール"></a>eMMCにUbuntuをインストール</h3><p>ちょっとわかりずらいですが、以下の手順で行います。SDカードスロットの、すぐ上にあるBootボタンを押しながら電源を入れるとmicroSDカードからBootします。eMMCへのフラッシュには、だいたい1時間くらいかかります。</p>
+<ul>
+<li>microSDカードをBeagleBone Blackに挿入する。</li>
+<li>Bootボタンを押しながら、電源供給用のUSBケーブルをノートPCのUSBポートに接続する。</li>
+<li>LEDが点滅し始めたら、Bootボタンを放す。</li>
+<li>4つのLEDが点灯したら、microSDカードから、起動終了</li>
+<li>ノートPCから、USBケーブルを抜く。</li>
+<li>BeagleBone Blackから、microSDカードを抜く。</li>
+</ul>
+<h3 id="Windows7からUSB経由でネットワーク接続する"><a href="#Windows7からUSB経由でネットワーク接続する" class="headerlink" title="Windows7からUSB経由でネットワーク接続する"></a>Windows7からUSB経由でネットワーク接続する</h3><p>Windowsドライバを<a href="http://beagleboard.org/static/beaglebone/latest/Drivers/Windows/BONE_D64.exe" target="_blank" rel="noopener">ダウンロード</a>します。セキュリティ警告が何度か出ますがインストールできます。PuttyからSSHで接続します。初期ユーザーとパスワードは以下です。</p>
+<ul>
+<li>user: ubuntu</li>
+<li>pass: temppwd</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=13.10</span><br><span class="line">DISTRIB_CODENAME=saucy</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">"Ubuntu 13.10"</span></span><br><span class="line">$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/mmcblk0p2  1.7G  392M  1.2G  25% /</span><br><span class="line">none            4.0K     0  4.0K   0% /sys/fs/cgroup</span><br><span class="line">udev            248M  4.0K  248M   1% /dev</span><br><span class="line">tmpfs            50M  272K   50M   1% /run</span><br><span class="line">none            5.0M     0  5.0M   0% /run/lock</span><br><span class="line">none            249M     0  249M   0% /run/shm</span><br><span class="line">none            100M     0  100M   0% /run/user</span><br><span class="line">/dev/mmcblk0p1   96M   72M   25M  75% /boot/uboot</span><br></pre></td></tr></table></figure>
+
+<h3 id="無線LANの設定"><a href="#無線LANの設定" class="headerlink" title="無線LANの設定"></a>無線LANの設定</h3><p>パッケージのダウンロードなどインターネット接続は無線LANを経由して行います。インタフェースの設定は、DHCPとWPAにしてからupします。pingでインターネットにつながるか確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cp /etc/network/interfaces /etc/network/interfaces-backup</span><br><span class="line">$ sudo vi /etc/network/interfaces</span><br><span class="line">auto wlan0 </span><br><span class="line">iface wlan0 inet dhcp </span><br><span class="line">    wpa-ssid <span class="string">"xxx"</span> </span><br><span class="line">    wpa-psk <span class="string">"xxx"</span></span><br><span class="line">$ sudo ifup wlan0</span><br><span class="line">$ ping -c 5 www.yahoo.co.jp</span><br></pre></td></tr></table></figure>
+
+<h3 id="ファイアウォールの設定"><a href="#ファイアウォールの設定" class="headerlink" title="ファイアウォールの設定"></a>ファイアウォールの設定</h3><p><code>BeagleBone Black</code>には、外からUSB経由のSSH接続だけを許可します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install ufw</span><br><span class="line">$ sudo ufw <span class="built_in">enable</span></span><br><span class="line">$ sudo ufw default DENY</span><br><span class="line">Default incoming policy changed to <span class="string">'deny'</span></span><br><span class="line">(be sure to update your rules accordingly)</span><br><span class="line">$ sudo ufw allow <span class="keyword">in</span> on usb0</span><br><span class="line">Rule added</span><br><span class="line">Rule added (v6)</span><br><span class="line">$ sudo ufw status</span><br><span class="line">Status: active</span><br><span class="line"></span><br><span class="line">To                         Action      From</span><br><span class="line">--                         ------      ----</span><br><span class="line">Anywhere on usb0           ALLOW       Anywhere</span><br><span class="line">Anywhere (v6) on usb0      ALLOW       Anywhere (v6)</span><br></pre></td></tr></table></figure>
+
+<h3 id="その他Ubuntuの初期設定"><a href="#その他Ubuntuの初期設定" class="headerlink" title="その他Ubuntuの初期設定"></a>その他Ubuntuの初期設定</h3><p>Ubuntuのデフォルトのnanoは使いにくいので、vimをエディタに使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install vim</span><br><span class="line">$ sudo update-alternatives --config editor</span><br></pre></td></tr></table></figure>
+
+<p>adminグループは、sudoでパスワードを不要にします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo -i</span><br><span class="line"><span class="comment"># visudo</span></span><br><span class="line"><span class="comment">#%admin ALL=(ALL) ALL</span></span><br><span class="line">%sudo   ALL=(ALL:ALL) ALL</span><br><span class="line">%admin ALL=(ALL) NOPASSWD:ALL</span><br></pre></td></tr></table></figure>
+
+<p>公開鍵を設定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vi ./ssh/authorized_keys</span><br><span class="line">$ chmod 600 ./ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>タイムゾーンをAsia/Tokyoに設定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo dpkg-reconfigure tzdata</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>2時間くらいでUbuntuのインストール作業が終了しました。<code>BeagleBone Black</code>は小さいのでケースに入れて持ち運びも簡単です。USBケーブルが1本あれば電源供給とネットワーク接続ができるのもポイントです。Chromebookも含めてLinux-ARMは消費電力が少なく安価なハードウェアで動作するため、アイデア次第でいろんなことができそうな感じです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/BeagleBoneBlack/" rel="tag"># BeagleBoneBlack</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/Linux-ARM/" rel="tag"># Linux-ARM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/05/02/chromebook-ubuntu/" rel="prev" title="ChromebookにUbuntuをインストール">
+      <i class="fa fa-chevron-left"></i> ChromebookにUbuntuをインストール
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/05/04/beagleboneblack-cloud9/" rel="next" title="BeagleBone BlackにCloud9をインストール">
+      BeagleBone BlackにCloud9をインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#microSDカードのフォーマット"><span class="nav-number">1.</span> <span class="nav-text">microSDカードのフォーマット</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cygwinを使いUbuntuのイメージをコピー"><span class="nav-number">2.</span> <span class="nav-text">Cygwinを使いUbuntuのイメージをコピー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eMMCにUbuntuをインストール"><span class="nav-number">3.</span> <span class="nav-text">eMMCにUbuntuをインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows7からUSB経由でネットワーク接続する"><span class="nav-number">4.</span> <span class="nav-text">Windows7からUSB経由でネットワーク接続する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#無線LANの設定"><span class="nav-number">5.</span> <span class="nav-text">無線LANの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ファイアウォールの設定"><span class="nav-number">6.</span> <span class="nav-text">ファイアウォールの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#その他Ubuntuの初期設定"><span class="nav-number">7.</span> <span class="nav-text">その他Ubuntuの初期設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

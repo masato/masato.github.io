@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Eclipse KuraにインストールするOSGiバンドル開発用にEclipse IDE for Java Developersをインストールします。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eclipse IoT の紹介 - Part2: macOS SierraにEclipse Neon.2をインストールする">
+<meta property="og:url" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Eclipse KuraにインストールするOSGiバンドル開発用にEclipse IDE for Java Developersをインストールします。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/eclipse-downloads.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-formatter.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-formatter-indent.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/xml-formatter.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-cleanup.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-cleanup-tailtrail.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-save-actions.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-save-actions-configure.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/appearance-theme.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/egit.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/general-ssh2.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/m2e-marketplace.png">
+<meta property="og:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/plugin-install.png">
+<meta property="article:published_time" content="2017-02-01T03:25:41.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.604Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Eclipse">
+<meta property="article:tag" content="EclipseIoT">
+<meta property="article:tag" content="EclipseKura">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/eclipse-downloads.png">
+
+<link rel="canonical" href="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Eclipse IoT の紹介 - Part2: macOS SierraにEclipse Neon.2をインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2017/02/01/eclipse-iot-eclipse-neon2-setup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Eclipse IoT の紹介 - Part2: macOS SierraにEclipse Neon.2をインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 1 2017 12:25:41" itemprop="dateCreated datePublished" datetime="2017-02-01T12:25:41+09:00">Feb 1 2017</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+                  , 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/EclipseIoT/" itemprop="url" rel="index"><span itemprop="name">EclipseIoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Eclipse KuraにインストールするOSGiバンドル開発用にEclipse IDE for Java Developersをインストールします。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　<a href="http://www.eclipse.org/kura/" target="_blank" rel="noopener">Eclipse Kura</a>の<a href="https://www.osgi.org/" target="_blank" rel="noopener">OSGi</a>ベースのIoT Gatewayのためのフレームワークです。アプリはjarファイルにマニフェストやリソースファイルを追加してパッケージングしたOSGiバンドルをデプロイして使います。今回はEclipuse Kuraのアプリのプログラミング環境としてmacOS Sierraに<a href="https://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/neon2" target="_blank" rel="noopener">Eclipse IDE for Java Developers</a>をインストールして簡単な初期設定を行います。</p>
+<a id="more"></a>
+
+<h2 id="Java-8"><a href="#Java-8" class="headerlink" title="Java 8"></a>Java 8</h2><p>　macOSのパッケージ管理ツールの<a href="http://brew.sh/" target="_blank" rel="noopener">Homebrew</a>と<a href="https://caskroom.github.io/" target="_blank" rel="noopener">Homebrew Cask</a>からJava 8をインストールします。Oracleの<a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">ダウンロードサイト</a>から直接パッケージをダウンロードすることもできます。</p>
+<p>　まだHombrewを使ったことがない場合はインストールします。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> ruby <span class="literal">-e</span> <span class="string">"<span class="variable">$</span>(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</span></span><br></pre></td></tr></table></figure>
+
+<p>　インストール済みの場合は、古いHombrewとパッケージを更新して最新の状態にします。</p>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">brew </span>update &amp;&amp; <span class="keyword">brew </span>cleanup</span><br></pre></td></tr></table></figure>
+
+<p>　<a href="https://caskroom.github.io/" target="_blank" rel="noopener">Homebrew Cask</a>をインストールします。</p>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">brew </span>install caskroom/cask/<span class="keyword">brew-cask</span></span><br></pre></td></tr></table></figure>
+
+<p>　<a href="https://github.com/caskroom/homebrew-versions" target="_blank" rel="noopener">versions</a>を追加して<code>java</code>を検索します。</p>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">brew </span>tap caskroom/versions</span><br><span class="line">$ <span class="keyword">brew </span>search java</span><br></pre></td></tr></table></figure>
+
+<p>　現在の<code>java</code>パッケージのバージョンは<code>1.8.0_112</code>です。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>brew cask info java</span><br><span class="line"><span class="symbol">java:</span> <span class="number">1.8</span>.0_112-b16</span><br><span class="line"><span class="symbol">https:</span>/<span class="regexp">/www.oracle.com/technetwork</span><span class="regexp">/java/javase</span><span class="regexp">/downloads/jdk</span>8-downloads<span class="number">-2133151</span>.html</span><br><span class="line">Not installed</span><br></pre></td></tr></table></figure>
+
+<p>　Java8をインストールします。</p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">brew </span>cask <span class="keyword">install </span><span class="keyword">java</span></span><br></pre></td></tr></table></figure>
+
+<p>　<code>1.8.0_112</code>のバージョンがインストールされました。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ java -version</span><br><span class="line">java version <span class="string">"1.8.0_112"</span></span><br><span class="line">Java(TM) SE Runtime Environment (build 1.8.0_112-b16)</span><br><span class="line">Java HotSpot(TM) 64-Bit<span class="built_in"> Server </span>VM (build 25.112-b16, mixed mode)</span><br></pre></td></tr></table></figure>
+
+<p>　以下のコマンドを実行すると<code>JAVA_HOME</code>の場所を確認できます。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ <span class="regexp">/usr/</span>libexec/java_home -v <span class="number">1.8</span></span><br><span class="line"><span class="regexp">/Library/</span>Java<span class="regexp">/JavaVirtualMachines/</span>jdk1<span class="number">.8</span><span class="number">.0</span>_112.jdk<span class="regexp">/Contents/</span>Home</span><br></pre></td></tr></table></figure>
+
+<p>　<code>~/.bashrc</code>に環境変数の<code>JAVA_HOME</code>を設定します。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">'export JAVA_HOME=`/usr/libexec/java_home -v 1.8`'</span> &gt;&gt; ~/.bashrc</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">source</span> ~/.bashrc</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></span></span><br><span class="line">/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home</span><br></pre></td></tr></table></figure>
+
+<h2 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h2><p>　Javaアプリのビルドツールの<a href="https://maven.apache.org/" target="_blank" rel="noopener">Maven</a>をインストールします。MavenやGradle、stbなどVMの開発ツールをインストールする場合は<a href="http://sdkman.io/" target="_blank" rel="noopener">SDKMAN!</a>が便利です。</p>
+<p>　SDKMAN!をインストールします。</p>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>curl -s get.sdkman.io | <span class="regexp">/bin/bash</span></span><br></pre></td></tr></table></figure>
+
+<p>　<code>sdk</code>コマンドからMavenをインストールします。</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">$ sdk <span class="keyword">install</span> maven</span><br></pre></td></tr></table></figure>
+
+<p>　<code>3.3.9</code>のバージョンがインストールされました。</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ mvn --version</span><br><span class="line">Apache Maven <span class="number">3.3</span><span class="number">.9</span> (bb52d8502b132ec0a5a3f4c09453c07478323dc5; <span class="number">2015</span><span class="number">-11</span><span class="number">-11</span>T01:<span class="number">41</span>:<span class="number">47</span>+<span class="number">09</span>:<span class="number">00</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Eclipse-Neon-2-4-6-2"><a href="#Eclipse-Neon-2-4-6-2" class="headerlink" title="Eclipse Neon.2 (4.6.2)"></a>Eclipse Neon.2 (4.6.2)</h2><p>　macOS用のインストーラーを<a href="http://www.eclipse.org/downloads/eclipse-packages/" target="_blank" rel="noopener">ダウンロードサイト</a>から取得します。<br>　<br><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/eclipse-downloads.png" alt="eclipse-downloads.png"></p>
+<p>　<code>eclipse-inst-mac64.tar.gz</code>ファイルから解凍した<code>Eclipse Installer</code>を実行します。以下のディレクトリの<code>Eclipse</code>を起動します。</p>
+<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">~<span class="regexp">/eclipse/</span>java-neon/Eclipse</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="初期設定"><a href="#初期設定" class="headerlink" title="初期設定"></a>初期設定</h2><p>　複数人で開発する場合はEclipseの設定を統一しておくとバージョン管理でdiffが正確に取れます。以下の私の好みなのでチームの規約に合わせて設定を確認してください。</p>
+<h3 id="ファイルのタブは空白にする"><a href="#ファイルのタブは空白にする" class="headerlink" title="ファイルのタブは空白にする"></a>ファイルのタブは空白にする</h3><p>　Eclipseの環境設定メニューからJavaのFormatterに新しいプロファイルの作成します。適当に<code>Eclise [myproject]</code>としました。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">E<span class="function"><span class="title">clipse</span> -&gt;</span> 環境設定 -&gt; J<span class="function"><span class="title">ava</span> -&gt;</span> C<span class="function"><span class="title">ode</span> Style -&gt;</span> F<span class="function"><span class="title">ormatter</span> -&gt;</span> N<span class="function"><span class="title">ew</span> -&gt;</span> Eclipse [myproject]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-formatter.png" alt="java-formatter.png"></p>
+<p>　<code>Indentation</code>タブを以下の設定にします。</p>
+<ul>
+<li>Tab policy: Spaces only</li>
+<li>Indentation size: 4</li>
+<li>Tab size: 4</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-formatter-indent.png" alt="java-formatter-indent.png"></p>
+<p>　Mavenで使うpom.xmlなどXMファイルも同様に設定します。</p>
+<figure class="highlight clean"><table><tr><td class="code"><pre><span class="line">Eclipse -&gt; 環境設定 -&gt; XML -&gt; XML Files -&gt; Editor</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Indent using spaces: チェック</li>
+<li>Indentation size: 2 </li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/xml-formatter.png" alt="xml-formatter.png"></p>
+<h3 id="ファイルの末尾は空白除去する"><a href="#ファイルの末尾は空白除去する" class="headerlink" title="ファイルの末尾は空白除去する"></a>ファイルの末尾は空白除去する</h3><p> Java Code Styleに<code>Clean Up</code>に新しいプロファイルの作成します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">E<span class="function"><span class="title">clipse</span> -&gt;</span> 環境設定 -&gt; J<span class="function"><span class="title">ava</span> -&gt;</span> C<span class="function"><span class="title">ode</span> Style -&gt;</span> C<span class="function"><span class="title">lean</span> Up -&gt;</span> N<span class="function"><span class="title">ew</span> -&gt;</span> Eclipse [myproject]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-cleanup.png" alt="java-cleanup.png"></p>
+<ul>
+<li>Remove trailing whitespace: チェック</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-cleanup-tailtrail.png" alt="java-cleanup-tailtrail.png"></p>
+<p>　既存のソースファイルから末尾の空白を除去する場合はこの<code>Clean UP</code>を実行します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">src</span> -&gt;</span> 右クリック -&gt; S<span class="function"><span class="title">ource</span> -&gt;</span> Clean UP</span><br></pre></td></tr></table></figure>
+
+<p>　ファイル保存時に末尾の空白を削除する場合は<code>Save Actions</code>を使います。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">E<span class="function"><span class="title">clipse</span> -&gt;</span> 環境設定 -&gt;　J<span class="function"><span class="title">ava</span> -&gt;</span> E<span class="function"><span class="title">ditor</span> -&gt;</span> Save Actions</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-save-actions.png" alt="java-save-actions.png"></p>
+<ul>
+<li>Perform the selected actions on save: チェック</li>
+</ul>
+<p>　Additional actionsの設定を変更します。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">A<span class="function"><span class="title">dditional</span> actions -&gt;</span> Configure</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Remove trailing whitespace：　チェック</li>
+<li>All lines: チェック</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/java-save-actions-configure.png" alt="java-save-actions-configure.png"></p>
+<h3 id="テーマ"><a href="#テーマ" class="headerlink" title="テーマ"></a>テーマ</h3><p>　Eclipseの外観を<code>Dark</code>テーマを変えたい場合は以下の設定をします。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">E<span class="function"><span class="title">clipse</span> -&gt;</span> 環境設定 -&gt; G<span class="function"><span class="title">eneral</span> -&gt;</span> Apperance</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Theme: Dark</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/appearance-theme.png" alt="appearance-theme.png"></p>
+<h2 id="プラグイン"><a href="#プラグイン" class="headerlink" title="プラグイン"></a>プラグイン</h2><p>　EclipseのプラグインもOSGiバンドルとして配布されています。プラグインも好みですがとりあえず最初に必要なプラグインをいくつかインストールします。</p>
+<h3 id="EGit-プラグイン"><a href="#EGit-プラグイン" class="headerlink" title="EGit プラグイン"></a>EGit プラグイン</h3><p>　<a href="http://www.eclipse.org/egit/" target="_blank" rel="noopener">EGit</a>プラグインはEclipseからGitを操作することができます。EGitのダウンロードサイトを追加します。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Help</span> -&gt; <span class="keyword">Install</span> <span class="keyword">New</span> Software... -&gt; <span class="keyword">Add</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Name: EGit</li>
+<li>Location: <a href="http://download.eclipse.org/egit/updates" target="_blank" rel="noopener">http://download.eclipse.org/egit/updates</a></li>
+</ul>
+<p>　使いたいパッケージをチェックしてインストールします。</p>
+<ul>
+<li>Git integration for Eclipse</li>
+<li>Java implementation of Git</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/egit.png" alt="egit.png"></p>
+<p>　EclipseからSSH経由でGitリポジトリを使う場合は秘密鍵の設定を行います。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">Eclipse -&gt; 環境設定 -&gt; General -&gt;<span class="built_in"> Network </span>Connections -&gt; SSH2</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SSH2 home: ホームディレクトリの<code>~/.ssh</code>など</li>
+<li>Private keys: GitHubに登録してある公開鍵とペアの秘密鍵など</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/general-ssh2.png" alt="general-ssh2.png"></p>
+<p>　Gitパースペクティブを開きます。</p>
+<figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">W<span class="function"><span class="title">indow</span> -&gt;</span> P<span class="function"><span class="title">ersepective</span> -&gt;</span> O<span class="function"><span class="title">pen</span> Persepective -&gt;</span> O<span class="function"><span class="title">ther</span> -&gt;</span> Git</span><br></pre></td></tr></table></figure>
+
+<h3 id="M2Eclipse-m2e-プラグイン"><a href="#M2Eclipse-m2e-プラグイン" class="headerlink" title="M2Eclipse (m2e) プラグイン"></a>M2Eclipse (m2e) プラグイン</h3><p> <a href="http://www.eclipse.org/m2e/" target="_blank" rel="noopener">M2Eclipse</a>はEclipseからMavenコマンドを実行することができます。プラグインはインストール済みですが、ダウンロードサイトを追加しておきます。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Help</span> -&gt; <span class="keyword">Install</span> <span class="keyword">New</span> Software... -&gt; <span class="keyword">Add</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Name: m2e</li>
+<li>Location: <a href="http://download.eclipse.org/technology/m2e/releases" target="_blank" rel="noopener">http://download.eclipse.org/technology/m2e/releases</a></li>
+</ul>
+<h3 id="Maven-SCM-Handler-for-EGit"><a href="#Maven-SCM-Handler-for-EGit" class="headerlink" title="Maven SCM Handler for EGit"></a>Maven SCM Handler for EGit</h3><p>　<a href="https://github.com/tesla/m2eclipse-egit" target="_blank" rel="noopener">Maven SCM Handler for EGit</a>はm2eから直接<code>git clone</code>してのpom.xmlの依存関係を解決してくれます。</p>
+<p>　パッケージエクスプローラーにプロジェクトをインポートするときのダイアログの中で、m2e Marketplaceからインストールします。</p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">Package Explorer &gt; <span class="keyword">Import</span> &gt; Maven &gt; <span class="keyword">Check</span> <span class="keyword">out</span> Maven Projects <span class="keyword">from</span> SCM &gt; m2e Marketplace &gt; m2e-egit</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/m2e-marketplace.png" alt="m2e-marketplace.png"></p>
+<p>　Eclipsをリスタートしてインストール終了です。</p>
+<h3 id="mToolkitプラグイン"><a href="#mToolkitプラグイン" class="headerlink" title="mToolkitプラグイン"></a>mToolkitプラグイン</h3><p>　これから<a href="https://eclipse.github.io/kura/" target="_blank" rel="noopener">Eclipse Kura Documentation</a>を読みながらEclipseで簡単なOSGiのアプリをビルドしていこうと思います。準備としてEclipse Kura上で動作するOSGiコンテナにリモートから接続できる<a href="http://dz.prosyst.com/pdoc/mBS_SDK_8.1/eclipse_plugins/mtoolkit/introduction.html" target="_blank" rel="noopener">mToolkit</a>のプラグインをインストールします。<a href="http://www.bosch.com/en/com/home/index.php" target="_blank" rel="noopener">Bosch</a>グループの<a href="http://www.prosyst.com/" target="_blank" rel="noopener">ProSyst</a>が提供しているOSGi管理ツールの<a href="https://dz.prosyst.com/pdoc/mBS_SDK_8.1/getting_started/stepbystep.html" target="_blank" rel="noopener">mBS SDK</a>に含まれています。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Help</span> -&gt; <span class="keyword">Install</span> <span class="keyword">New</span> Software... -&gt; <span class="keyword">Add</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Name: mtoolkit</li>
+<li>Location: <a href="http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com" target="_blank" rel="noopener">http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com</a></li>
+</ul>
+<ul>
+<li>Group items by category: チェックを外す</li>
+<li>mTooklit: チェック</li>
+</ul>
+<h3 id="Plug-in-Development-Environment-PDE-プラグイン"><a href="#Plug-in-Development-Environment-PDE-プラグイン" class="headerlink" title="Plug-in Development Environment (PDE)　プラグイン"></a>Plug-in Development Environment (PDE)　プラグイン</h3><p>　<a href="http://www.eclipse.org/pde/" target="_blank" rel="noopener">Plug-in Development Environment (PDE)</a>はEclipseのプラグインを開発するためのツールです。OSGiプロジェクトの開発ではComponent Definition (component.xml)を作成するウィザードを利用します。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Help</span> -&gt; <span class="keyword">Install</span> <span class="keyword">New</span> Software...</span><br></pre></td></tr></table></figure>
+
+<p> <code>type filter text</code>フィールドに<code>Eclipse plug-in</code>を入力して検索します。</p>
+<ul>
+<li>Work with: Neon - <a href="http://download.eclipse.org/releases/neon" target="_blank" rel="noopener">http://download.eclipse.org/releases/neon</a></li>
+<li>type filter text: Eclipse plug-in</li>
+<li>Eclipse Plug-in Development Environment: チェック</li>
+</ul>
+<p><img src="/2017/02/01/eclipse-iot-eclipse-neon2-setup/plugin-install.png" alt="plugin-install.png"></p>
+<p>　これでEclipse KuraのOSGiバンドル開発のためのEclipse Neon.2のセットアップは終了です。次回はサンプルプロジェクトをビルドして動かして見ようと思います。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Eclipse/" rel="tag"># Eclipse</a>
+              <a href="/tags/EclipseIoT/" rel="tag"># EclipseIoT</a>
+              <a href="/tags/EclipseKura/" rel="tag"># EclipseKura</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/01/29/eclipse-iot-kura-install/" rel="prev" title="Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする">
+      <i class="fa fa-chevron-left"></i> Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/02/04/idcf-ubuntu-1610-xrdp/" rel="next" title="IDCFクラウドのUbuntu 16.04を16.10にupgradeしてxrdpリモートデスクトップ環境を構築する">
+      IDCFクラウドのUbuntu 16.04を16.10にupgradeしてxrdpリモートデスクトップ環境を構築する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-8"><span class="nav-number">1.</span> <span class="nav-text">Java 8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maven"><span class="nav-number">2.</span> <span class="nav-text">Maven</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eclipse-Neon-2-4-6-2"><span class="nav-number">3.</span> <span class="nav-text">Eclipse Neon.2 (4.6.2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#初期設定"><span class="nav-number">4.</span> <span class="nav-text">初期設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ファイルのタブは空白にする"><span class="nav-number">4.1.</span> <span class="nav-text">ファイルのタブは空白にする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ファイルの末尾は空白除去する"><span class="nav-number">4.2.</span> <span class="nav-text">ファイルの末尾は空白除去する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#テーマ"><span class="nav-number">4.3.</span> <span class="nav-text">テーマ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プラグイン"><span class="nav-number">5.</span> <span class="nav-text">プラグイン</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EGit-プラグイン"><span class="nav-number">5.1.</span> <span class="nav-text">EGit プラグイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#M2Eclipse-m2e-プラグイン"><span class="nav-number">5.2.</span> <span class="nav-text">M2Eclipse (m2e) プラグイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven-SCM-Handler-for-EGit"><span class="nav-number">5.3.</span> <span class="nav-text">Maven SCM Handler for EGit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mToolkitプラグイン"><span class="nav-number">5.4.</span> <span class="nav-text">mToolkitプラグイン</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Plug-in-Development-Environment-PDE-プラグイン"><span class="nav-number">5.5.</span> <span class="nav-text">Plug-in Development Environment (PDE)　プラグイン</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

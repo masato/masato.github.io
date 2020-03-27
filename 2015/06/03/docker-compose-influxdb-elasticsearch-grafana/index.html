@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="温湿度センサのDHT11で計測した温度と湿度をダッシュボードに表示するための環境を用意します。以前dweet.ioからアボガド果樹園のデータを取得したときにDockerコンテナで構築しました。このときはコンテナを個別に作成したのでコンテナの起動が煩雑でした。Docker Composeを使うと1つのYAMLに設定をまとめてdocker-compose upするだけで簡単です。また定義したサービス名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml">
+<meta property="og:url" content="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="温湿度センサのDHT11で計測した温度と湿度をダッシュボードに表示するための環境を用意します。以前dweet.ioからアボガド果樹園のデータを取得したときにDockerコンテナで構築しました。このときはコンテナを個別に作成したのでコンテナの起動が煩雑でした。Docker Composeを使うと1つのYAMLに設定をまとめてdocker-compose upするだけで簡単です。また定義したサービス名">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/influxdb.png">
+<meta property="og:image" content="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/grafana.png">
+<meta property="article:published_time" content="2015-06-03T11:07:12.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.586Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="DHT11">
+<meta property="article:tag" content="DockerCompose">
+<meta property="article:tag" content="InfluxDB">
+<meta property="article:tag" content="ElasticSerach">
+<meta property="article:tag" content="Grafana">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/influxdb.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          InfluxDBとElasticSearchとGrafanaのためdocker-compose.yml
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 3 2015 20:07:12" itemprop="dateCreated datePublished" datetime="2015-06-03T20:07:12+09:00">Jun 3 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">温湿度センサのDHT11で計測した温度と湿度をダッシュボードに表示するための環境を用意します。以前dweet.ioからアボガド果樹園のデータを取得したときにDockerコンテナで構築しました。このときはコンテナを個別に作成したのでコンテナの起動が煩雑でした。Docker Composeを使うと1つのYAMLに設定をまとめてdocker-compose upするだけで簡単です。また定義したサービス名がそれぞれの/etc/hostsに設定してくれます。環境変数に設定するホスト名はこのサービス名を使うことができるのでIPアドレスをinspectしてハードコードする必要がありません。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>温湿度センサのDHT11で計測した温度と湿度をダッシュボードに表示するための環境を用意します。以前dweet.ioからアボガド果樹園のデータを取得したときに<a href="/2015/02/11/influxdb-grafana-dweet-example-on-docker/">Dockerコンテナで構築</a>しました。このときはコンテナを個別に作成したのでコンテナの起動が煩雑でした。Docker Composeを使うと1つのYAMLに設定をまとめて<code>docker-compose up</code>するだけで簡単です。また定義したサービス名がそれぞれの<code>/etc/hosts</code>に設定してくれます。環境変数に設定するホスト名はこのサービス名を使うことができるのでIPアドレスをinspectしてハードコードする必要がありません。</p>
+<a id="more"></a>
+
+<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>適当なディレクトリを作成してdocker-compose.ymlを書くだけです。このディレクトリにはInfluxDBのボリュームをアタッチされます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/influx_apps</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">└── docker-compose.yml</span><br></pre></td></tr></table></figure>
+
+<h2 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h2><p>以下のdocker-compose.ymlを作成してinfluxdb、elasticsearch、grafanaのサービスを定義します。すべて<a href="https://www.tutum.co/" target="_blank" rel="noopener">Tutum</a>がDockerイメージを提供してくれます。</p>
+<ul>
+<li><a href="https://registry.hub.docker.com/u/tutum/influxdb/" target="_blank" rel="noopener">tutum/influxdb</a></li>
+<li><a href="https://registry.hub.docker.com/u/tutum/elasticsearch/" target="_blank" rel="noopener">tutum/elasticsearch</a></li>
+<li><a href="https://registry.hub.docker.com/u/tutum/grafana/" target="_blank" rel="noopener">tutum/grafana</a></li>
+</ul>
+<p>Grafanaのポートだけ他のサービスと競合するのでDockerホストには80から変更して8080にマップしています。</p>
+<figure class="highlight yaml"><figcaption><span>~/influx_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">influxdb:</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">tutum/influxdb</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./influxdb:/data</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">PRE_CREATE_DB=influxdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"8083:8083"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"8086:8086"</span></span><br><span class="line"><span class="attr">elastic:</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">tutum/elasticsearch</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./elastic:/usr/share/elasticsearch/data</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_USER=admin</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_PASS=mypass</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9200:9200"</span></span><br><span class="line"><span class="attr">grafana:</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">tutum/grafana</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"8080:80"</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_PROTO=http</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_HOST=influxdb</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_PORT=8086</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_NAME=dht11</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_USER=root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INFLUXDB_PASS=root</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_PROTO=http</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_HOST=elastic</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_PORT=9200</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_USER=admin</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ELASTICSEARCH_PASS=mypass</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="フォアグラウンドで起動"><a href="#フォアグラウンドで起動" class="headerlink" title="フォアグラウンドで起動"></a>フォアグラウンドで起動</h2><p>コンテナをまとめて起動します。起動シーケンスを確認したいのでフォアグラウンドでテスト起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/influx_apps</span><br><span class="line">$ docker-compose up</span><br></pre></td></tr></table></figure>
+
+<h3 id="InfluxDBのテスト"><a href="#InfluxDBのテスト" class="headerlink" title="InfluxDBのテスト"></a>InfluxDBのテスト</h3><p>コンテナのbashを実行してInfluxDBのバージョンを確認します。<code>0.8.8</code>を使っています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it influxapps_influxdb_1 bash</span><br><span class="line">$ influxdb -v</span><br><span class="line">InfluxDB v0.8.8 (git: afde71e) (leveldb: 1.15)</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://influxdb.com/docs/v0.8/api/reading_and_writing_data.html" target="_blank" rel="noopener">Reading and Writing Data</a>に書いてあるようにテストデータを投入してみます。Dockerホストからcurlで確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -d <span class="string">'[&#123;"name":"foo","columns":["val"],"points":[[23]]&#125;]'</span> <span class="string">'http://localhost:8086/db/influxdb/series?u=root&amp;p=root'</span></span><br></pre></td></tr></table></figure>
+
+<p>レコードをクエリしてみます。POSTしていないデータのtimeとsequence_numberは自動的に入ります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -G <span class="string">'http://localhost:8086/db/influxdb/series?u=root&amp;p=root&amp;pretty=true'</span> --data-urlencode <span class="string">"q=select * from foo"</span></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"foo"</span>,</span><br><span class="line">        <span class="string">"columns"</span>: [</span><br><span class="line">            <span class="string">"time"</span>,</span><br><span class="line">            <span class="string">"sequence_number"</span>,</span><br><span class="line">            <span class="string">"val"</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="string">"points"</span>: [</span><br><span class="line">            [</span><br><span class="line">                1433443454781,</span><br><span class="line">                10001,</span><br><span class="line">                23</span><br><span class="line">            ]</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>リモートからブラウザでDockerホストにアクセスしてInfuxDBの管理画面を表示します。</p>
+<p><a href="http://xxx.xxx.xxx.xxx:8083/" target="_blank" rel="noopener">http://xxx.xxx.xxx.xxx:8083/</a></p>
+<p><img src="/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/influxdb.png" alt="influxdb.png"></p>
+<h3 id="ElasticSearchのテスト"><a href="#ElasticSearchのテスト" class="headerlink" title="ElasticSearchのテスト"></a>ElasticSearchのテスト</h3><p>DockerホストからElasticSerchの起動確認を兼ねてバージョンを表示します。<code>1.3.9</code>を使っています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl admin:mypass@localhost:9200</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"status"</span> : 200,</span><br><span class="line">  <span class="string">"name"</span> : <span class="string">"Abner Jenkins"</span>,</span><br><span class="line">  <span class="string">"version"</span> : &#123;</span><br><span class="line">    <span class="string">"number"</span> : <span class="string">"1.3.9"</span>,</span><br><span class="line">    <span class="string">"build_hash"</span> : <span class="string">"0915c7306e6264ba21a6cb7609b93545ccc32ef1"</span>,</span><br><span class="line">    <span class="string">"build_timestamp"</span> : <span class="string">"2015-02-19T12:34:48Z"</span>,</span><br><span class="line">    <span class="string">"build_snapshot"</span> : <span class="literal">false</span>,</span><br><span class="line">    <span class="string">"lucene_version"</span> : <span class="string">"4.9"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"tagline"</span> : <span class="string">"You</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Grafanaのテスト"><a href="#Grafanaのテスト" class="headerlink" title="Grafanaのテスト"></a>Grafanaのテスト</h3><p>Grafanaは2015/04/20に2.0がリリースされていますが、今回のイメージは<code>1.9.1</code>を使っています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it influxapps_grafana_1 bash</span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$GRAFANA_VERSION</span></span><br><span class="line">1.9.1</span><br></pre></td></tr></table></figure>
+
+<p>Grafanaの管理画面にアクセスするためランダムで生成されるパスワードを標準出力のログから確認します。</p>
+<ul>
+<li>login: admin</li>
+<li>password: 5jG0HLZ09sZQ</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">grafana_1 | =&gt; Creating basic auth <span class="keyword">for</span> <span class="string">"admin"</span> user with random password</span><br><span class="line">grafana_1 | Adding password <span class="keyword">for</span> user admin</span><br><span class="line">grafana_1 | =&gt; Done!</span><br><span class="line">grafana_1 | ========================================================================</span><br><span class="line">grafana_1 | You can now connect to Grafana with the following credential:</span><br><span class="line">grafana_1 |</span><br><span class="line">grafana_1 |     admin:5jG0HLZ09sZQ</span><br><span class="line">grafana_1 |</span><br><span class="line">grafana_1 | ========================================================================</span><br><span class="line">grafana_1 | =&gt; Configuring InfluxDB</span><br><span class="line">grafana_1 | =&gt; InfluxDB has been configured as follows:</span><br><span class="line">grafana_1 |    InfluxDB ADDRESS:  influxdb</span><br><span class="line">grafana_1 |    InfluxDB PORT:     8086</span><br><span class="line">grafana_1 |    InfluxDB DB NAME:  dht11</span><br><span class="line">grafana_1 |    InfluxDB USERNAME: root</span><br><span class="line">grafana_1 |    InfluxDB PASSWORD: root</span><br><span class="line">grafana_1 |    ** Please check your environment variables <span class="keyword">if</span> you find something is misconfigured. **</span><br><span class="line">grafana_1 | =&gt; Done!</span><br><span class="line">grafana_1 | =&gt; Found Elasticsearch settings.</span><br><span class="line">grafana_1 | =&gt; Set Elasticsearch url to <span class="string">"http://admin:mypass@elastic:9200"</span>.</span><br><span class="line">grafana_1 | =&gt; Done!</span><br><span class="line">grafana_1 | =&gt; Starting and running Nginx...</span><br></pre></td></tr></table></figure>
+
+<p>リモートからGrafanaのダッシュボードをブラウザで開きます。通常80ポートですが他のサービスと競合するのでDockerホストには8080でマップしています。</p>
+<p><a href="http://xxx.xxx.xxx.xxx:8080/" target="_blank" rel="noopener">http://xxx.xxx.xxx.xxx:8080/</a></p>
+<p><img src="/2015/06/03/docker-compose-influxdb-elasticsearch-grafana/grafana.png" alt="grafana.png"></p>
+<h2 id="バックグラウンドで起動"><a href="#バックグラウンドで起動" class="headerlink" title="バックグラウンドで起動"></a>バックグラウンドで起動</h2><p>正常に動作しているようなので、コンテナを停止してボリュームも削除してからバックグラウンドで起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose stop</span><br><span class="line">Stopping influxapps_grafana_1...</span><br><span class="line">Stopping influxapps_elastic_1...</span><br><span class="line">Stopping influxapps_influxdb_1...</span><br></pre></td></tr></table></figure>
+
+<p>コンテナを削除します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose rm</span><br><span class="line">Going to remove influxapps_grafana_1, influxapps_elastic_1, influxapps_influxdb_1</span><br><span class="line">Are you sure? [yN] y</span><br><span class="line">Removing influxapps_influxdb_1...</span><br><span class="line">Removing influxapps_elastic_1...</span><br><span class="line">$ sudo rm -fr influxdb/ elastic/</span><br></pre></td></tr></table></figure>
+
+<p>バックグラウンドで起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d</span><br><span class="line">Creating influxapps_influxdb_1...</span><br><span class="line">Creating influxapps_elastic_1...</span><br><span class="line">Creating influxapps_grafana_1...</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザで管理画面のBASIC認証に必要なGrafanaのパスワードは<code>docker-compose logs</code>コマンドで確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose logs grafana</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DHT11/" rel="tag"># DHT11</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
+              <a href="/tags/InfluxDB/" rel="tag"># InfluxDB</a>
+              <a href="/tags/ElasticSerach/" rel="tag"># ElasticSerach</a>
+              <a href="/tags/Grafana/" rel="tag"># Grafana</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/06/02/docker-var-lib-docker-bind-mount/" rel="prev" title="Dockerの/var/lib/dockerを移動する">
+      <i class="fa fa-chevron-left"></i> Dockerの/var/lib/dockerを移動する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/06/04/nodejs-fun-with-twitter-lodah/" rel="next" title="今更ながらTwitterのデータで楽しく遊ぶ - Part1: Commander.jsとlodashとGmail">
+      今更ながらTwitterのデータで楽しく遊ぶ - Part1: Commander.jsとlodashとGmail <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#フォアグラウンドで起動"><span class="nav-number">3.</span> <span class="nav-text">フォアグラウンドで起動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#InfluxDBのテスト"><span class="nav-number">3.1.</span> <span class="nav-text">InfluxDBのテスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ElasticSearchのテスト"><span class="nav-number">3.2.</span> <span class="nav-text">ElasticSearchのテスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Grafanaのテスト"><span class="nav-number">3.3.</span> <span class="nav-text">Grafanaのテスト</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#バックグラウンドで起動"><span class="nav-number">4.</span> <span class="nav-text">バックグラウンドで起動</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

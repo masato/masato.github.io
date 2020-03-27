@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ClojureScriptやそのエコシステムは絶賛開発中のためライブラリの更新がとても盛んに行われています。2015年に出版されている英語の書籍でもすでに情報が古くなっています。最新の情報をネットで調べてもバージョンが違うと内容が異なっているので自分で手を動かして確認する必要があります。FigwheelのQuick Startを例にして最新のClojureScriptの開発方法を勉強していきます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Figwheelで最新のClojureScriptの開発方法を勉強をする">
+<meta property="og:url" content="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ClojureScriptやそのエコシステムは絶賛開発中のためライブラリの更新がとても盛んに行われています。2015年に出版されている英語の書籍でもすでに情報が古くなっています。最新の情報をネットで調べてもバージョンが違うと内容が異なっているので自分で手を動かして確認する必要があります。FigwheelのQuick Startを例にして最新のClojureScriptの開発方法を勉強していきます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/figwheel-println.png">
+<meta property="og:image" content="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/5times.png">
+<meta property="article:published_time" content="2015-05-23T10:50:14.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.562Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="ClojureScript">
+<meta property="article:tag" content="Figwheel">
+<meta property="article:tag" content="Sablono">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/figwheel-println.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Figwheelで最新のClojureScriptの開発方法を勉強をする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/05/23/clojurescript-figwheel-developing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Figwheelで最新のClojureScriptの開発方法を勉強をする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 23 2015 19:50:14" itemprop="dateCreated datePublished" datetime="2015-05-23T19:50:14+09:00">May 23 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">ClojureScriptやそのエコシステムは絶賛開発中のためライブラリの更新がとても盛んに行われています。2015年に出版されている英語の書籍でもすでに情報が古くなっています。最新の情報をネットで調べてもバージョンが違うと内容が異なっているので自分で手を動かして確認する必要があります。FigwheelのQuick Startを例にして最新のClojureScriptの開発方法を勉強していきます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ClojureScriptやそのエコシステムは絶賛開発中のためライブラリの更新がとても盛んに行われています。2015年に出版されている英語の書籍でもすでに情報が古くなっています。最新の情報をネットで調べてもバージョンが違うと内容が異なっているので自分で手を動かして確認する必要があります。<a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a>の<a href="https://github.com/bhauman/lein-figwheel/wiki/Quick-Start" target="_blank" rel="noopener">Quick Start</a>を例にして最新のClojureScriptの開発方法を勉強していきます。</p>
+<a id="more"></a>
+
+<h2 id="Figwheel"><a href="#Figwheel" class="headerlink" title="Figwheel"></a>Figwheel</h2><p><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a>はClojureScritのコードをローカルで編集するとブラウザに自動的にプッシュして最新の状態にしてくれる<a href="http://leiningen.org/" target="_blank" rel="noopener">Leiningen</a>のプラグインです。最近はREPL機能も持つようになってさらに便利になっています。</p>
+<h3 id="figwheel-templateでプロジェクトの作成"><a href="#figwheel-templateでプロジェクトの作成" class="headerlink" title="figwheel templateでプロジェクトの作成"></a>figwheel templateでプロジェクトの作成</h3><p><code>lein new</code>コマンドでfigwheel templateを使いプロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lein new figwheel hello-cljs</span><br></pre></td></tr></table></figure>
+
+<p>templateで作成されるproject.cljのデフォルトは以下のようになっています。<a href="https://github.com/bhauman/lein-figwheel/wiki/Quick-Start" target="_blank" rel="noopener">Quick Start</a>も現在最新版に修正中のようですが内容が古くなっています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> hello-cljs <span class="string">"0.1.0-SNAPSHOT"</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">"FIXME: write this!"</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">"http://example.com/FIXME"</span></span><br><span class="line">  <span class="symbol">:license</span> &#123;<span class="symbol">:name</span> <span class="string">"Eclipse Public License"</span></span><br><span class="line">            <span class="symbol">:url</span> <span class="string">"http://www.eclipse.org/legal/epl-v10.html"</span>&#125;</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">"0.0-3211"</span>]</span><br><span class="line">                 [org.clojure/core.async <span class="string">"0.1.346.0-17112a-alpha"</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-cljsbuild <span class="string">"1.0.5"</span>]</span><br><span class="line">            [lein-figwheel <span class="string">"0.3.1"</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:source-paths</span> [<span class="string">"src"</span>]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:clean-targets</span> <span class="comment">^&#123;:protect false&#125;</span> [<span class="string">"resources/public/js/compiled"</span> <span class="string">"target"</span>]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;</span><br><span class="line">    <span class="symbol">:builds</span> [&#123;<span class="symbol">:id</span> <span class="string">"dev"</span></span><br><span class="line">              <span class="symbol">:source-paths</span> [<span class="string">"src"</span>]</span><br><span class="line">              <span class="symbol">:figwheel</span> &#123; <span class="symbol">:on-jsload</span> <span class="string">"hello-cljs.core/on-js-reload"</span> &#125;</span><br><span class="line"></span><br><span class="line">              <span class="symbol">:compiler</span> &#123;<span class="symbol">:main</span> hello-cljs.core</span><br><span class="line">                         <span class="symbol">:asset-path</span> <span class="string">"js/compiled/out"</span></span><br><span class="line">                         <span class="symbol">:output-to</span> <span class="string">"resources/public/js/compiled/hello_cljs.js"</span></span><br><span class="line">                         <span class="symbol">:output-dir</span> <span class="string">"resources/public/js/compiled/out"</span></span><br><span class="line">                         <span class="symbol">:source-map-timestamp</span> <span class="literal">true</span> &#125;&#125;</span><br><span class="line">             &#123;<span class="symbol">:id</span> <span class="string">"min"</span></span><br><span class="line">              <span class="symbol">:source-paths</span> [<span class="string">"src"</span>]</span><br><span class="line">              <span class="symbol">:compiler</span> &#123;<span class="symbol">:output-to</span> <span class="string">"resources/public/js/compiled/hello_cljs.js"</span></span><br><span class="line">                         <span class="symbol">:main</span> hello-cljs.core</span><br><span class="line">                         <span class="symbol">:optimizations</span> <span class="symbol">:advanced</span></span><br><span class="line">                         <span class="symbol">:pretty-print</span> <span class="literal">false</span>&#125;&#125;]&#125;</span><br><span class="line">  <span class="symbol">:figwheel</span> &#123;</span><br><span class="line">             <span class="comment">;; :http-server-root "public" ;; default and assumes "resources"</span></span><br><span class="line">             <span class="comment">;; :server-port 3449 ;; default</span></span><br><span class="line">             <span class="symbol">:css-dirs</span> [<span class="string">"resources/public/css"</span>] <span class="comment">;; watch and update CSS</span></span><br><span class="line">             &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>以下のようにライブラリのバージョンを上げます。特に<a href="https://github.com/emezeske/lein-cljsbuild/issues/393" target="_blank" rel="noopener">Failed When Compiling by Using Cljs 0.0-3255 #393</a>にあるissueのように、ClojureScriptｍの<code>0.0-3255</code>以降ではClojureのバージョンは<code>1.7.0-beta2</code>以降が必要です。</p>
+<p><code>:cljsbuild</code>ディレクティブではクラウド上の開発環境にローカルのブラウザから接続できるようにWebSocketのホストをパブリックIPアドレスに指定しています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.7.0-beta3"</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">"0.0-3269"</span>]</span><br><span class="line">                 [org.clojure/core.async <span class="string">"0.1.346.0-17112a-alpha"</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-cljsbuild <span class="string">"1.0.5"</span>]</span><br><span class="line">            [lein-figwheel <span class="string">"0.3.3"</span>]]</span><br><span class="line">...</span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;</span><br><span class="line">    <span class="symbol">:builds</span> [&#123;<span class="symbol">:id</span> <span class="string">"dev"</span></span><br><span class="line">              <span class="symbol">:source-paths</span> [<span class="string">"src"</span>]</span><br><span class="line"></span><br><span class="line">              <span class="symbol">:figwheel</span> &#123; <span class="symbol">:on-jsload</span> <span class="string">"hello-cljs.core/on-js-reload"</span></span><br><span class="line">                          <span class="symbol">:websocket-host</span> <span class="string">"210.xxx.xxx.xxx"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="FigwheelのWebサーバーを起動"><a href="#FigwheelのWebサーバーを起動" class="headerlink" title="FigwheelのWebサーバーを起動"></a>FigwheelのWebサーバーを起動</h3><p><code>lein figwheel</code>コマンドでのWebサーバーを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lein figwheel</span><br><span class="line">Figwheel: Starting server at http://localhost:3449</span><br><span class="line">Focusing on build ids: dev</span><br><span class="line">Compiling <span class="string">"resources/public/js/compiled/hello_cljs.js"</span> from [<span class="string">"src"</span>]...</span><br><span class="line">Successfully compiled <span class="string">"resources/public/js/compiled/hello_cljs.js"</span> <span class="keyword">in</span> 14.0 seconds.</span><br><span class="line">Started Figwheel autobuilder</span><br><span class="line"></span><br><span class="line">Launching ClojureScript REPL <span class="keyword">for</span> build: dev</span><br><span class="line">Figwheel Controls:</span><br><span class="line">          (stop-autobuild)                ;; stops Figwheel autobuilder</span><br><span class="line">          (start-autobuild [id ...])      ;; starts autobuilder focused on optional ids</span><br><span class="line">          (switch-to-build id ...)        ;; switches autobuilder to different build</span><br><span class="line">          (reset-autobuild)               ;; stops, cleans, and starts autobuilder</span><br><span class="line">          (build-once [id ...])           ;; builds <span class="built_in">source</span> one time</span><br><span class="line">          (clean-builds [id ..])          ;; deletes compiled cljs target files</span><br><span class="line">          (fig-status)                    ;; displays current state of system</span><br><span class="line">          (add-dep [org.om/om <span class="string">"0.8.1"</span>]) ;; add a dependency. very experimental</span><br><span class="line">  Switch REPL build focus:</span><br><span class="line">          :cljs/quit                      ;; allows you to switch REPL to another build</span><br><span class="line">    Docs: (doc <span class="keyword">function</span>-name-here)</span><br><span class="line">    Exit: Control+C or :cljs/quit</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, *e holds last exception object</span><br><span class="line">Prompt will show when figwheel connects to your application</span><br></pre></td></tr></table></figure>
+
+<p>ローカルのブラウザでFigwheelのサーバーに確認します。</p>
+<p><a href="http://210.xxx.xxx.xxx:3449/" target="_blank" rel="noopener">http://210.xxx.xxx.xxx:3449/</a></p>
+<h3 id="REPL"><a href="#REPL" class="headerlink" title="REPL"></a>REPL</h3><p>ブラウザからWebSocketの接続ができるとREPLが使えるようになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Prompt will show when figwheel connects to your application</span><br><span class="line"></span><br><span class="line">To quit, <span class="built_in">type</span>: :cljs/quit</span><br><span class="line">cljs.user=&gt; cljs.user=&gt;</span><br></pre></td></tr></table></figure>
+
+<p>JavaScriptのDate関数をnewしてみます。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (js/Date.)</span><br><span class="line">#inst "2015-05-24T13:20:18.481-00:00"</span><br></pre></td></tr></table></figure>
+
+<p>Linuxで動作しているREPLからJavaScriptのアラートをブラウザに表示することもできます。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (js/alert "browserにアラートがでます。")</span><br></pre></td></tr></table></figure>
+
+<p>ただしREPLはreadlineが有効になっていないため上アローキーや<code>C-p</code>でヒストリーバックが効きません。<a href="https://github.com/hanslub42/rlwrap" target="_blank" rel="noopener">rlwrap</a>でleinコマンドをラップすると良いらしいですが、Docker Composeで実行するとうまく動作できませんでした。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports lein figwheel</span><br><span class="line">rlwrap: error: My terminal reports width=0 (is it emacs?)  I can<span class="string">'t handle this, sorry!</span></span><br><span class="line"><span class="string">Removing clojureapps_lein_run_1...</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Quick-Startと違うところ"><a href="#Quick-Startと違うところ" class="headerlink" title="Quick Startと違うところ"></a>Quick Startと違うところ</h2><p>figwheel templateで作成されるcore.cljsのデフォルトです。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> ^<span class="symbol">:figwheel-always</span> hello-cljs.core</span><br><span class="line">    (<span class="symbol">:require</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name">println</span> <span class="string">"Edits to this text should show up in your developer console."</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">;; define your app data so that it doesn't get over-written on reload</span></span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defonce</span></span> app-state (<span class="name"><span class="builtin-name">atom</span></span> &#123;<span class="symbol">:text</span> <span class="string">"Hello world!"</span>&#125;))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> on-js-reload []</span><br><span class="line">  <span class="comment">;; optionally touch your app-state to force rerendering depending on</span></span><br><span class="line">  <span class="comment">;; your application</span></span><br><span class="line">  <span class="comment">;; (swap! app-state update-in [:__figwheel_counter] inc)</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="enable-console-print"><a href="#enable-console-print" class="headerlink" title="(enable-console-print!)"></a>(enable-console-print!)</h3><p>Quick StartではJavaScriptのconsoleを使う例になっています。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name">.log</span> js/console <span class="string">"Hey Seymore! wts goin' on?"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>figwheel templateでは<code>(enable-console-print!)</code>が有効になっています。ClojureScriptの<a href="https://github.com/clojure/clojurescript/blob/master/src/main/cljs/cljs/core.cljs#L110" target="_blank" rel="noopener">core.cljs</a>で定義されている関数です。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(defn enable-console-print!</span><br><span class="line">  &quot;Set *print-fn* to console.log&quot;</span><br><span class="line">  []</span><br><span class="line">  (set! *print-newline* false)</span><br><span class="line">  (set! *print-fn*</span><br><span class="line">    (fn [&amp; args]</span><br><span class="line">      (.apply (.-log js&#x2F;console) js&#x2F;console (into-array args)))))</span><br></pre></td></tr></table></figure>
+
+<p>ちなみにスレッド毎に動的束縛が使えるな変数をアスタリスクで囲うことを<code>earmuff</code>と呼ぶそうです。かわいい。。</p>
+<p>println関数を使ってブラウザのコンソールにログを出力してみます。</p>
+<figure class="highlight"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> ^<span class="symbol">:figwheel-always</span> hello-cljs.core</span><br><span class="line">    (<span class="symbol">:require</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line">(<span class="name">println</span> <span class="string">"enable-console-print!を実行するとprintlnが使えます"</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2015/05/23/clojurescript-figwheel-developing/figwheel-println.png" alt="figwheel-println.png"></p>
+<h3 id="on-js-reload関数"><a href="#on-js-reload関数" class="headerlink" title="on-js-reload関数"></a>on-js-reload関数</h3><p>on-js-reload関数をコメントアウトするとフックが呼ばれなくなります。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> on-js-reload []</span><br><span class="line">  <span class="comment">;; optionally touch your app-state to force rerendering depending on</span></span><br><span class="line">  <span class="comment">;; your application</span></span><br><span class="line">  <span class="comment">;; (swap! app-state update-in [:__figwheel_counter] inc)</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザのコンソールに毎回ログがでるので残しておいた方がよさそうです。</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">Figwheel: :<span class="keyword">on</span>-jsload hook 'hello-cljs.core/<span class="keyword">on</span>-js-reload' <span class="keyword">is</span> missing</span><br></pre></td></tr></table></figure>
+
+<h3 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h3><p>figwheel templateでは<code>id=&quot;app&quot;</code>とCSSの読み込みがすでにが定義されています。</p>
+<figure class="highlight html"><figcaption><span>~/clojure_apps/hello-cljs/resources/public/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"css/style.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Figwheel template<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>Checkout your developer console.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"js/compiled/hello_cljs.js"</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Quick-Startしてみる"><a href="#Quick-Startしてみる" class="headerlink" title="Quick Startしてみる"></a>Quick Startしてみる</h2><p><a href="https://github.com/bhauman/lein-figwheel/wiki/Quick-Start" target="_blank" rel="noopener">Quick Start</a>の手順にしたがってプログラムを修正していきます。</p>
+<h3 id="Sablono"><a href="#Sablono" class="headerlink" title="Sablono"></a>Sablono</h3><p>project.cljに<a href="https://github.com/r0man/sablono" target="_blank" rel="noopener">Sablono</a>を追加します。Sablonoは<a href="https://github.com/weavejester/hiccup" target="_blank" rel="noopener">Hiccup</a>風に記述して<a href="https://facebook.github.io/react/" target="_blank" rel="noopener">React</a>用のHTMLをレンダリングできるテンプレートです。<a href="">Om</a></p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.7.0-beta3"</span>]</span><br><span class="line">               [org.clojure/clojurescript <span class="string">"0.0-3269"</span>]</span><br><span class="line">               [org.clojure/core.async <span class="string">"0.1.346.0-17112a-alpha"</span>]</span><br><span class="line">               [sablono <span class="string">"0.3.4"</span>]]</span><br></pre></td></tr></table></figure>
+
+<p><code>lein clean</code>をしてから依存関係をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lein clean</span><br><span class="line">$ lein figwheel</span><br><span class="line">Retrieving sablono/sablono/0.3.4/sablono-0.3.4.pom from clojars</span><br><span class="line">Retrieving sablono/sablono/0.3.4/sablono-0.3.4.jar from clojars</span><br></pre></td></tr></table></figure>
+
+<h3 id="defonce"><a href="#defonce" class="headerlink" title="defonce"></a>defonce</h3><p>Quick Startでは以下のように最初は<code>def</code>で定義してブラウザでリロードするとstateが消えてしまう例が書いてあります。<code>defonce</code>に変更して状stateを保持するようになっています。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">def</span></span> app-state (<span class="name"><span class="builtin-name">atom</span></span> &#123; <span class="symbol">:likes</span> <span class="number">0</span> &#125;))</span><br></pre></td></tr></table></figure>
+
+<p>figwheel templateではデフォルトで<code>defonce</code>を使っています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defonce</span></span> app-state (<span class="name"><span class="builtin-name">atom</span></span> &#123;<span class="symbol">:text</span> <span class="string">"Hello world!"</span>&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>Quick Startのようにatomの変更して<code>:links</code>キーを持つマップにします。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defonce</span></span> app-state (<span class="name"><span class="builtin-name">atom</span></span> &#123;<span class="symbol">:likes</span> <span class="number">0</span>&#125;))</span><br></pre></td></tr></table></figure>
+
+<p><code>defonce</code>は<a href="https://github.com/clojure/clojurescript/blob/master/src/main/clojure/cljs/core.clj#L135" target="_blank" rel="noopener">core.clj</a>に定義されているマクロです。この辺りがClojureらしいところです。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defmacro</span></span> defonce [x init]</span><br><span class="line">  `(<span class="name"><span class="builtin-name">when-not</span></span> (<span class="name">exists?</span> ~x)</span><br><span class="line">     (<span class="name"><span class="builtin-name">def</span></span> ~x ~init)))</span><br></pre></td></tr></table></figure>
+
+<p>core.cljsは以下のようになります。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> ^<span class="symbol">:figwheel-always</span> hello-cljs.core</span><br><span class="line">    (<span class="symbol">:require</span> [sablono.core <span class="symbol">:as</span> sab]</span><br><span class="line">              [hello-cljs.components <span class="symbol">:refer</span> [like-seymore]]))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line">(<span class="name">println</span> <span class="string">"enable-console-print!を実行するとprintlnが使えます"</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defonce</span></span> app-state (<span class="name"><span class="builtin-name">atom</span></span> &#123;<span class="symbol">:likes</span> <span class="number">0</span>&#125;))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> like-seymore [data]</span><br><span class="line">  (<span class="name">sab/html</span> [<span class="symbol">:div</span></span><br><span class="line">             [<span class="symbol">:h1</span> <span class="string">"いいね!の数: "</span> (<span class="symbol">:links</span> @data)]</span><br><span class="line">             [<span class="symbol">:div</span> [<span class="symbol">:a</span> &#123;<span class="symbol">:href</span> <span class="string">"#"</span></span><br><span class="line">                        <span class="symbol">:onClick</span> #(<span class="name"><span class="builtin-name">swap!</span></span> data update-in [<span class="symbol">:links</span>] inc)&#125;</span><br><span class="line">                    <span class="string">"いいね!"</span>]]]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> render! []</span><br><span class="line">  (<span class="name">.render</span> js/React</span><br><span class="line">           (<span class="name">like-seymore</span> app-state)</span><br><span class="line">           (<span class="name">.getElementById</span> js/document <span class="string">"app"</span>)))</span><br><span class="line">(<span class="name"><span class="builtin-name">add-watch</span></span> app-state <span class="symbol">:on-change</span> (<span class="name"><span class="builtin-name">fn</span></span> [_ _ _ _ ] (<span class="name">render!</span>)))</span><br><span class="line"></span><br><span class="line">(<span class="name">render!</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> on-js-reload [])</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザを開き、<code>いいね!</code>のリンクをクリックするとカウントアップします。cljsを編集してコードをプッシュしてもstateは保持されるので0に戻りません。</p>
+<p><img src="/2015/05/23/clojurescript-figwheel-developing/5times.png" alt="5times.png"></p>
+<h2 id="自動リロードの設定"><a href="#自動リロードの設定" class="headerlink" title="自動リロードの設定"></a>自動リロードの設定</h2><h3 id="figwheel-always"><a href="#figwheel-always" class="headerlink" title="^:figwheel-always"></a>^:figwheel-always</h3><p>自動リロードの使い方もQuick Startとtemplateでは違いがあります。テンプレートではcore.cljsのnsの先頭に<code>^:figwheel-always</code>が入っています。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> ^<span class="symbol">:figwheel-always</span> hello-seymore.core</span><br><span class="line">  (<span class="symbol">:require</span> [sablono.core <span class="symbol">:as</span> sab]</span><br><span class="line">            [hello-seymore.components <span class="symbol">:refer</span> [like-seymore]]))</span><br></pre></td></tr></table></figure>
+
+<p><code>^:figwheel-always</code>をnsの先頭に記述するとcljsに変更があるとnamespaceのリロード対象になります。</p>
+<h3 id="cljsの分割"><a href="#cljsの分割" class="headerlink" title="cljsの分割"></a>cljsの分割</h3><p>like-saymore関数を切り出してcomponents.cljsを作成します。ns関数に<code>^:figwheel-always</code>を追加してリロードの対象に追加します。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/src/hello_cljs/components.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> ^<span class="symbol">:figwheel-always</span> hello-cljs.components</span><br><span class="line">    (<span class="symbol">:require</span> [sablono.core <span class="symbol">:as</span> sab]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> like-seymore [data]</span><br><span class="line">  (<span class="name">sab/html</span> [<span class="symbol">:div</span></span><br><span class="line">             [<span class="symbol">:h1</span> <span class="string">"いいね!の数: "</span> (<span class="symbol">:links</span> @data)]</span><br><span class="line">             [<span class="symbol">:div</span> [<span class="symbol">:a</span> &#123;<span class="symbol">:href</span> <span class="string">"#"</span></span><br><span class="line">                        <span class="symbol">:onClick</span> #(<span class="name"><span class="builtin-name">swap!</span></span> data update-in [<span class="symbol">:links</span>] inc)&#125;</span><br><span class="line">                    <span class="string">"いいね!"</span>]]]))</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>^:figwheel-always</code>を使うとcomponents.cljsを編集しただけでもcore.jsもリロードされます。namespace全体がリロードされるのでプログラムが大きくなった時には遅くなりそうなので注意が必要です。</p>
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line">(<span class="string">"hello_cljs/components.js"</span> <span class="string">"hello_cljs/core.js"</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSSのリロードとコンパイル済みのアセット"><a href="#CSSのリロードとコンパイル済みのアセット" class="headerlink" title="CSSのリロードとコンパイル済みのアセット"></a>CSSのリロードとコンパイル済みのアセット</h3><p>コンパイル済みのアセットを<code>resources/public</code>ディレクトリからサーブします。あわせてCSSを修正しても自動リロードされるようにします。こちらもテンプレートではデフォルトでproject.cljに設定が有効になっています。</p>
+<ul>
+<li>asset-path、outputo-to、output-dirの指定</li>
+<li>clean-targetsの指定</li>
+</ul>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-cljs/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">  <span class="symbol">:clean-targets</span> <span class="comment">^&#123;:protect false&#125;</span> [<span class="string">"resources/public/js/compiled"</span> <span class="string">"target"</span>]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;</span><br><span class="line">    <span class="symbol">:builds</span> [&#123;<span class="symbol">:id</span> <span class="string">"dev"</span></span><br><span class="line">              <span class="symbol">:source-paths</span> [<span class="string">"src"</span>]</span><br><span class="line"></span><br><span class="line">              <span class="symbol">:figwheel</span> &#123; <span class="symbol">:on-jsload</span> <span class="string">"test.core/on-js-reload"</span> &#125;</span><br><span class="line"></span><br><span class="line">              <span class="symbol">:compiler</span> &#123;<span class="symbol">:main</span> test.core</span><br><span class="line">                         <span class="symbol">:asset-path</span> <span class="string">"js/compiled/out"</span></span><br><span class="line">                         <span class="symbol">:output-to</span> <span class="string">"resources/public/js/compiled/test.js"</span></span><br><span class="line">                         <span class="symbol">:output-dir</span> <span class="string">"resources/public/js/compiled/out"</span></span><br><span class="line">                         <span class="symbol">:source-map-timestamp</span> <span class="literal">true</span> &#125;&#125;</span><br><span class="line">  <span class="symbol">:figwheel</span> &#123;</span><br><span class="line">             <span class="symbol">:css-dirs</span> [<span class="string">"resources/public/css"</span>] <span class="comment">;; watch and update CSS</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下のようにCSSを記述すると自動的に変更がブラウザにプッシュされます。</p>
+<figure class="highlight css"><figcaption><span>clojure_apps/hello-cljs/resources/public/css/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: yellow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/ClojureScript/" rel="tag"># ClojureScript</a>
+              <a href="/tags/Figwheel/" rel="tag"># Figwheel</a>
+              <a href="/tags/Sablono/" rel="tag"># Sablono</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/05/22/reagent-atoms-components/" rel="prev" title="Reagent入門 - Part2: atomとcomponentとthreading macro">
+      <i class="fa fa-chevron-left"></i> Reagent入門 - Part2: atomとcomponentとthreading macro
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/05/24/clojure-datalog-json-database/" rel="next" title="ClojureでDatalogやJSON Storageを扱うためのリソース">
+      ClojureでDatalogやJSON Storageを扱うためのリソース <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Figwheel"><span class="nav-number">1.</span> <span class="nav-text">Figwheel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#figwheel-templateでプロジェクトの作成"><span class="nav-number">1.1.</span> <span class="nav-text">figwheel templateでプロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FigwheelのWebサーバーを起動"><span class="nav-number">1.2.</span> <span class="nav-text">FigwheelのWebサーバーを起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#REPL"><span class="nav-number">1.3.</span> <span class="nav-text">REPL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Startと違うところ"><span class="nav-number">2.</span> <span class="nav-text">Quick Startと違うところ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#enable-console-print"><span class="nav-number">2.1.</span> <span class="nav-text">(enable-console-print!)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#on-js-reload関数"><span class="nav-number">2.2.</span> <span class="nav-text">on-js-reload関数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-html"><span class="nav-number">2.3.</span> <span class="nav-text">index.html</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Startしてみる"><span class="nav-number">3.</span> <span class="nav-text">Quick Startしてみる</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sablono"><span class="nav-number">3.1.</span> <span class="nav-text">Sablono</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#defonce"><span class="nav-number">3.2.</span> <span class="nav-text">defonce</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自動リロードの設定"><span class="nav-number">4.</span> <span class="nav-text">自動リロードの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#figwheel-always"><span class="nav-number">4.1.</span> <span class="nav-text">^:figwheel-always</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cljsの分割"><span class="nav-number">4.2.</span> <span class="nav-text">cljsの分割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSSのリロードとコンパイル済みのアセット"><span class="nav-number">4.3.</span> <span class="nav-text">CSSのリロードとコンパイル済みのアセット</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

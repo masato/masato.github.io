@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。Dallas one-wire temperature reading on BeagleBone">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeagleBone Blackで1-WireセンサのDS18B20を使う - Part3: DS18B20">
+<meta property="og:url" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="ーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。Dallas one-wire temperature reading on BeagleBone">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
+<meta property="article:published_time" content="2015-07-11T12:06:46.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.550Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="センサー">
+<meta property="article:tag" content="BeagleBoneBlack">
+<meta property="article:tag" content="DS18B20">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeagleBone Blackで1-WireセンサのDS18B20を使う - Part3: DS18B20 | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeagleBone Blackで1-WireセンサのDS18B20を使う - Part3: DS18B20
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 11 2015 21:06:46" itemprop="dateCreated datePublished" datetime="2015-07-11T21:06:46+09:00">Jul 11 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">ーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。Dallas one-wire temperature reading on BeagleBone Black with dto BeagleBone and DS18B20 Temp Sensor</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>カーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。</p>
+<ul>
+<li><a href="http://hipstercircuits.com/dallas-one-wire-temperature-reading-on-beaglebone-black-with-dto/" target="_blank" rel="noopener">Dallas one-wire temperature reading on BeagleBone Black with dto</a></li>
+<li><a href="http://robogoby.blogspot.jp/2014/05/beaglebone-and-ds18b20-temp-sensor.html" target="_blank" rel="noopener">BeagleBone and DS18B20 Temp Sensor</a></li>
+</ul>
+<a id="more"></a>
+
+<h2 id="用意するもの"><a href="#用意するもの" class="headerlink" title="用意するもの"></a>用意するもの</h2><p>DS18B20は赤(VCC)、黄色 (DQ)、黒 (GND)の3本線です。水温を測りたいので防水仕様を購入しました。ミノムシクリップではさんでBeagleBone Blackに配線します。</p>
+<ul>
+<li><a href="http://beagleboard.org/black" target="_blank" rel="noopener">BeagleBone Black</a></li>
+<li><a href="http://victory7.com/?pid=65664796" target="_blank" rel="noopener">1-wire温度センサー DS18B20防水仕様</a></li>
+<li><a href="http://www.amazon.co.jp/dp/B00J2QP22E" target="_blank" rel="noopener">ミノムシ付ジャンパワイヤ</a></li>
+</ul>
+<h3 id="配線"><a href="#配線" class="headerlink" title="配線"></a>配線</h3><p>Fritzingのパーツは4本線ですが、購入したDS18B20は3本線でした。</p>
+<ul>
+<li>DQ  -&gt; P9_22</li>
+<li>GND -&gt; P9_46 (GND)</li>
+<li>VDD -&gt; P9_3  (VDD 5V)</li>
+</ul>
+<p><img src="/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png" alt="ds18b20_bbb.png"></p>
+<h2 id="DeviceTree"><a href="#DeviceTree" class="headerlink" title="DeviceTree"></a>DeviceTree</h2><p>DeviceTreeとはARM Linuxで良く使われるハードウェアの詳細を記述したデータ構造体のことです。ハードウェアの詳細をKernelに書かずにDevice Treeの構造体の外部に記述します。</p>
+<ul>
+<li>Deviece Tree Source (DTS) を作成</li>
+<li>Device Tree Compiler (DTC) でコンパイル</li>
+<li>Device Tree Blob (DTB) のバイナリが作成される</li>
+</ul>
+<h3 id="DTSの作成"><a href="#DTSの作成" class="headerlink" title="DTSの作成"></a>DTSの作成</h3><p>DTSを記述します。<a href="http://hipstercircuits.com/dallas-one-wire-temperature-reading-on-beaglebone-black-with-dto/" target="_blank" rel="noopener">Dallas one-wire temperature reading on BeagleBone Black with dto</a>に掲載されているDTSをコピーしてファイルを作成します。</p>
+<figure class="highlight plain"><figcaption><span>BB-W1-00A0.dts</span></figcaption><table><tr><td class="code"><pre><span class="line">&#x2F;dts-v1&#x2F;;</span><br><span class="line">&#x2F;plugin&#x2F;;</span><br><span class="line"></span><br><span class="line">&#x2F; &#123;</span><br><span class="line">truecompatible &#x3D; &quot;ti,beaglebone&quot;, &quot;ti,beaglebone-black&quot;;</span><br><span class="line"></span><br><span class="line">truepart-number &#x3D; &quot;BB-W1&quot;;</span><br><span class="line">trueversion &#x3D; &quot;00A0&quot;;</span><br><span class="line"></span><br><span class="line">true&#x2F;* state the resources this cape uses *&#x2F;</span><br><span class="line">trueexclusive-use &#x3D;</span><br><span class="line">truetrue&#x2F;* the pin header uses *&#x2F;</span><br><span class="line">truetrue&quot;P9.22&quot;,</span><br><span class="line">truetrue&#x2F;* the hardware IP uses *&#x2F;</span><br><span class="line">truetrue&quot;gpio0_2&quot;;</span><br><span class="line"></span><br><span class="line">truefragment@0 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;am33xx_pinmux&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">truetruetruetruetruedallas_w1_pins: pinmux_dallas_w1_pins &#123;</span><br><span class="line">truetruetruetruetruetruepinctrl-single,pins &#x3D; &lt; 							0x150 0x37 						&gt;;</span><br><span class="line">truetruetruetruetrue&#125;;</span><br><span class="line">               &#125;;</span><br><span class="line">true&#125;;</span><br><span class="line"></span><br><span class="line">truefragment@1 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;ocp&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">truetrue       onewire@0 &#123;</span><br><span class="line">truetruetrue       compatible      &#x3D; &quot;w1-gpio&quot;;</span><br><span class="line">truetruetrue       pinctrl-names   &#x3D; &quot;default&quot;;</span><br><span class="line">truetruetrue       pinctrl-0       &#x3D; &lt;&amp;dallas_w1_pins&gt;;</span><br><span class="line">truetruetrue       status          &#x3D; &quot;okay&quot;;</span><br><span class="line"></span><br><span class="line">truetruetrue       gpios &#x3D; &lt;&amp;gpio1 2 0&gt;;</span><br><span class="line">truetrue       &#125;;</span><br><span class="line">         &#125;;</span><br><span class="line">true&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="DTCでコンパイル"><a href="#DTCでコンパイル" class="headerlink" title="DTCでコンパイル"></a>DTCでコンパイル</h3><p>BeagleBone Blackのカーネル情報を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ uname -a</span><br><span class="line">Linux beagle</span><br><span class="line">bone 3.8.13-bone72 <span class="comment">#1 SMP Tue Jun 16 21:36:04 UTC 2015 armv7l GNU/Linux</span></span><br></pre></td></tr></table></figure>
+
+<p>DTCをインストールします。DTCのバーションは<code>1.4.0</code>でした。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -c https://raw.githubusercontent.com/RobertCNelson/tools/master/pkgs/dtc.sh</span><br><span class="line">$ chmod +x dtc.sh</span><br><span class="line">$ ./dtc.sh</span><br><span class="line">$ dtc -v</span><br><span class="line">Version: DTC 1.4.0-gf345d9e4</span><br></pre></td></tr></table></figure>
+
+<p>コンパイルします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dtc -O dtb -o BB-W1-00A0.dtbo -b 0 -@ BB-W1-00A0.dts</span><br></pre></td></tr></table></figure>
+
+<h3 id="DTBのインストール"><a href="#DTBのインストール" class="headerlink" title="DTBのインストール"></a>DTBのインストール</h3><p>コンパイルして作成したDTBのバイナリをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cp BB-W1-00A0.dtbo /lib/firmware/</span><br></pre></td></tr></table></figure>
+
+<p><code>/sys/devices/bone_capemgr.9/slots</code>への記述は再起動後消えてしますので、とりあえずDS18B20を使うときは毎回実行して有効にします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">'echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots'</span></span><br><span class="line">$ cat /sys/devices/bone_capemgr.9/slots</span><br><span class="line"> 0: 54:PF---</span><br><span class="line"> 1: 55:PF---</span><br><span class="line"> 2: 56:PF---</span><br><span class="line"> 3: 57:PF---</span><br><span class="line"> 4: ff:P-O-L Bone-LT-eMMC-2G,00A0,Texas Instrument,BB-BONE-EMMC-2G</span><br><span class="line"> 5: ff:P-O-L Bone-Black-HDMI,00A0,Texas Instrument,BB-BONELT-HDMI</span><br><span class="line"> 7: ff:P-O-L Override Board Name,00A0,Override Manuf,BB-W1</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="DS18B20"><a href="#DS18B20" class="headerlink" title="DS18B20"></a>DS18B20</h2><p>DS18B20を使ってセンサーデータを取得する場合、<code>/sys/bus/w1/devices/</code>の下にある<code>28-xx</code>のディレクトリに移動します。w1_slaveを読むと温度が計測できます。摂氏28.4度Cです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /sys/bus/w1/devices/</span><br><span class="line">$ ls </span><br><span class="line">28-0414708c9eff  w1_bus_master1</span><br><span class="line">$ <span class="built_in">cd</span> 28-0414708c9eff</span><br><span class="line">$ cat w1_slave</span><br><span class="line">c7 01 55 00 7f ff 0c 10 c3 : crc=c3 YES</span><br><span class="line">c7 01 55 00 7f ff 0c 10 c3 t=28437</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pythonのプログラム"><a href="#Pythonのプログラム" class="headerlink" title="Pythonのプログラム"></a>Pythonのプログラム</h3><p>簡単なPythonプログラムを書いてみます。</p>
+<figure class="highlight python"><figcaption><span>w1_test.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">w1 = <span class="string">"/sys/bus/w1/devices/28-0414708c9eff/w1_slave"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    raw = open(w1, <span class="string">"r"</span>).read()</span><br><span class="line">    celsius = float(raw.split(<span class="string">"t="</span>)[<span class="number">-1</span>])/<span class="number">1000</span></span><br><span class="line">    print(<span class="string">"Temperature is &#123;0:.2f&#125; degrees"</span>.format(celsius))</span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+
+<p>このDebianにはPythonもインストールされていないのでインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install python</span><br></pre></td></tr></table></figure>
+
+<p>5秒間隔で温度を計測し始めました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod +x w1_test.py</span><br><span class="line">$ ./w1_test.py</span><br><span class="line">./w1_test.py</span><br><span class="line">Temperature is 28.12 degrees</span><br><span class="line">Temperature is 28.12 degrees</span><br><span class="line">Temperature is 28.12 degrees</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC/" rel="tag"># センサー</a>
+              <a href="/tags/BeagleBoneBlack/" rel="tag"># BeagleBoneBlack</a>
+              <a href="/tags/DS18B20/" rel="tag"># DS18B20</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/07/10/beagleboneblack-debian78-sdcard/" rel="prev" title="BeagleBone Blackで1-WireセンサのDS18B20を使う - Part2: SDカードにDebian7.8をインストールする">
+      <i class="fa fa-chevron-left"></i> BeagleBone Blackで1-WireセンサのDS18B20を使う - Part2: SDカードにDebian7.8をインストールする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/07/12/meshblu-compose-ds18b20-freeboard/" rel="next" title="MeshbluでオープンソースのIoTをはじめよう - Part3: BeagleBone BlackからDS18B20の温度データをfreeboardに表示する">
+      MeshbluでオープンソースのIoTをはじめよう - Part3: BeagleBone BlackからDS18B20の温度データをfreeboardに表示する <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用意するもの"><span class="nav-number">1.</span> <span class="nav-text">用意するもの</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配線"><span class="nav-number">1.1.</span> <span class="nav-text">配線</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DeviceTree"><span class="nav-number">2.</span> <span class="nav-text">DeviceTree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DTSの作成"><span class="nav-number">2.1.</span> <span class="nav-text">DTSの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DTCでコンパイル"><span class="nav-number">2.2.</span> <span class="nav-text">DTCでコンパイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DTBのインストール"><span class="nav-number">2.3.</span> <span class="nav-text">DTBのインストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DS18B20"><span class="nav-number">3.</span> <span class="nav-text">DS18B20</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのプログラム"><span class="nav-number">3.1.</span> <span class="nav-text">Pythonのプログラム</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Android WearやApple Watchが出始めの頃は楽しんで着けていたのですが、やはり時計は気に入ったものをしたいので活動量計としても使わなくなってしまいました。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする">
+<meta property="og:url" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Android WearやApple Watchが出始めの頃は楽しんで着けていたのですが、やはり時計は気に入ったものをしたいので活動量計としても使わなくなってしまいました。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/health-1.png">
+<meta property="og:image" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/health-2.png">
+<meta property="og:image" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/health-3.png">
+<meta property="og:image" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/health-4.png">
+<meta property="article:published_time" content="2016-12-12T07:46:26.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.720Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="iPhone">
+<meta property="article:tag" content="ヘルスケア">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/health-1.png">
+
+<link rel="canonical" href="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2016/12/12/iphone-health-data-steps-csv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iPhoneのヘルスケアデータから歩数を日別に集計してCSVファイルにする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Dec 12 2016 16:46:26" itemprop="dateCreated datePublished" datetime="2016-12-12T16:46:26+09:00">Dec 12 2016</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Android WearやApple Watchが出始めの頃は楽しんで着けていたのですが、やはり時計は気に入ったものをしたいので活動量計としても使わなくなってしまいました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>　Android WearやApple Watchが出始めの頃は楽しんで着けていたのですが、やはり時計は気に入ったものをしたいので活動量計としても使わなくなってしまいました。活動量計を着けなくても日常持ち歩いているiPhoneには標準でヘルスケアデータを記録できるアプリがインストールされています。データも溜まってきたのでiPhoneから書き出してデータ分析用に使ってみたいと思います。
+　</p>
+<a id="more"></a>
+
+<h2 id="iPhoneからヘルスケアデータを書き出す"><a href="#iPhoneからヘルスケアデータを書き出す" class="headerlink" title="iPhoneからヘルスケアデータを書き出す"></a>iPhoneからヘルスケアデータを書き出す</h2><p>　iPhoneアプリのヘルスケアを開き右上のプロファイルアイコンをタップします。</p>
+<p><img src="/2016/12/12/iphone-health-data-steps-csv/health-1.png" alt="health-1.png"></p>
+<p>　プロファイルページにある<code>ヘルスケアデータを書き出す</code>をタップします。<br>　<br><img src="/2016/12/12/iphone-health-data-steps-csv/health-2.png" alt="healt-2.png"><br>　<br>　確認ダイアログの<code>書き出す</code>をタップします。<br>　<br><img src="/2016/12/12/iphone-health-data-steps-csv/health-3.png" alt="healt-3.png"></p>
+<p>　ヘルスケアデータを書き出したいサービスをタップします。<br>　<br><img src="/2016/12/12/iphone-health-data-steps-csv/health-4.png" alt="healt-4.png"></p>
+<p>　<br>　iCloud Driveを選択すると同期しているPCのiCloud Driveフォルダに<code>書き出したデータ.zip</code>のファイル名でアーカイブが保存されます。
+　</p>
+<h2 id="CSVコンバーター"><a href="#CSVコンバーター" class="headerlink" title="CSVコンバーター"></a>CSVコンバーター</h2><p>　ヘルスケアデータは<code>書き出したデータ.zip</code>の中にあるXML形式の<code>書き出したデータ.xml</code>ファイルです。歩数データはエクセルで管理しているのでコピー＆ペーストしやすいようにCSVにコンバートするスクリプトを書きました。<br>　<br>　<br>　使い方は最初に<a href="https://github.com/masato/health-data-csv.git" target="_blank" rel="noopener">ここ</a>からリポジトリをcloneします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/health-data-csv.git</span><br><span class="line">$ <span class="built_in">cd</span> health-data-csv</span><br></pre></td></tr></table></figure>
+
+<p>　<code>書き出したデータ.zip</code>ファイルをcloneしたディレクトリにコピーします。macOSの場合iCloud Driveは以下のディレクトリになります。パスに半角スペースがあるためダブルクォートします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cp <span class="string">"<span class="variable">$HOME</span>/Library/Mobile Documents/com~apple~CloudDocs/書き出したデータ.zip"</span> .</span><br></pre></td></tr></table></figure>
+
+<p>　<code>convert.py</code>はZipファイルからヘルスケアデータのXMLを取り出し歩数を日別に集計してCSVファイルに出力するPythonスクリプトです。<code>type</code>を<code>HKQuantityTypeIdentifierStepCount</code>に指定して<code>Record</code>要素から歩数データだけ抽出しています。<a href="https://www.amazon.co.jp/dp/4873116554/" target="_blank" rel="noopener">Pythonによるデータ分析入門 ―NumPy、pandasを使ったデータ処理</a>を勉強しているところなのでデータ分析ツールの<a href="http://pandas.pydata.org/" target="_blank" rel="noopener">pandas</a>を使い集計とCSVへの書き出しを実装してみます。<br>　<br>　<a href="http://qiita.com/methane/items/8493c10c19ca3584d31d" target="_blank" rel="noopener">Python 3 で日本語ファイル名が入った zip ファイルを扱う</a>の記事によると<code>書き出したデータ.xml</code>のように日本語ファイル名は<code>cp437</code>でデコードされるようです。</p>
+<figure class="highlight python"><figcaption><span>convert.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> objectify</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> pandas <span class="keyword">import</span> DataFrame</span><br><span class="line"><span class="keyword">from</span> dateutil.parser <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">import</span> sys, os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(argv)</span>:</span></span><br><span class="line"></span><br><span class="line">    parser = argparse.ArgumentParser()</span><br><span class="line">    parser.add_argument(<span class="string">'-f'</span>, <span class="string">'--file'</span>,</span><br><span class="line">                        default=<span class="string">'書き出した.zip'</span>,</span><br><span class="line">                        type=str,</span><br><span class="line">                        help=<span class="string">'zipファイル名 (書き出した.zip)'</span>)</span><br><span class="line">    parser.add_argument(<span class="string">'-s'</span>, <span class="string">'--start'</span>,</span><br><span class="line">                        action=<span class="string">'store'</span>,</span><br><span class="line">                        default=<span class="string">'2016-01-01'</span>,</span><br><span class="line">                        type=str,</span><br><span class="line">                        help=<span class="string">'開始日 (2016-12-01)'</span>)</span><br><span class="line"></span><br><span class="line">    args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(args.file):</span><br><span class="line">        print(<span class="string">'zipファイル名を指定してください。'</span>)</span><br><span class="line">        parser.print_help()</span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    zipfile.ZipFile(args.file).extractall()</span><br><span class="line"></span><br><span class="line">    parsed = objectify.parse(open(<span class="string">'apple_health_export/書き出したデータ.xml'</span></span><br><span class="line">                                  .encode(<span class="string">'utf-8'</span>).decode(<span class="string">'cp437'</span>)))</span><br><span class="line"></span><br><span class="line">    root = parsed.getroot()</span><br><span class="line"></span><br><span class="line">    headers = [<span class="string">'type'</span>, <span class="string">'unit'</span>, <span class="string">'startDate'</span>, <span class="string">'endDate'</span>, <span class="string">'value'</span>]</span><br><span class="line"></span><br><span class="line">    data = [(&#123;k: v <span class="keyword">for</span> k, v <span class="keyword">in</span> elt.attrib.items() <span class="keyword">if</span> k <span class="keyword">in</span> headers&#125;)</span><br><span class="line">            <span class="keyword">for</span> elt <span class="keyword">in</span> root.Record]</span><br><span class="line"></span><br><span class="line">    df = DataFrame(data)</span><br><span class="line">    df.index = pd.to_datetime(df[<span class="string">'startDate'</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 歩数だけ</span></span><br><span class="line">    steps = df[df[<span class="string">'type'</span>] == <span class="string">'HKQuantityTypeIdentifierStepCount'</span>].copy()</span><br><span class="line">    steps[<span class="string">'value'</span>] = steps[<span class="string">'value'</span>].astype(float)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 開始日が条件にある場合スライス</span></span><br><span class="line">    <span class="keyword">if</span> args.start:</span><br><span class="line">        steps = steps.loc[args.start:]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 日別にグループ化して集計</span></span><br><span class="line">    steps_sum = steps.groupby(pd.TimeGrouper(freq=<span class="string">'D'</span>)).sum()</span><br><span class="line"></span><br><span class="line">    steps_sum.T.to_csv(<span class="string">'./steps_&#123;0&#125;.csv'</span>.format(datetime.now().strftime(<span class="string">'%Y%m%d%H%M%S'</span>)),</span><br><span class="line">                       index=<span class="literal">False</span>, float_format=<span class="string">'%.0f'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main(sys.argv[<span class="number">1</span>:])</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pythonスクリプトの実行"><a href="#Pythonスクリプトの実行" class="headerlink" title="Pythonスクリプトの実行"></a>Pythonスクリプトの実行</h2><p>　スクリプトの実行はDockerイメージは<a href="https://github.com/ContinuumIO/docker-images/tree/master/anaconda3" target="_blank" rel="noopener">continuumio/anaconda3</a>を使います。データ分析に<a href="https://www.continuum.io/downloads" target="_blank" rel="noopener">Anaconda</a>を使うDockerイメージです。<a href="http://jupyter.org/" target="_blank" rel="noopener">Jupyter</a>もインストールされています。<br>　<br>　Pythonスクリプトは<code>-f</code>フラグでヘルスケアから書き出したカレントディレクトリにあるzipファイル名を指定します。<code>-s</code>フラグはCSVにコンバートするレコードの開始日を指定できます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull continuumio/anaconda3</span><br><span class="line">$ docker run -it --rm \</span><br><span class="line">  -v <span class="variable">$PWD</span>:/app \</span><br><span class="line">  -w /app \</span><br><span class="line">  continuumio/anaconda3 \</span><br><span class="line">  python convert.py -f 書き出したデータ.zip -s 2016-12-01</span><br></pre></td></tr></table></figure>
+
+
+<p>　カレントディレクトリに「steps_xxx.csv」のような歩数を日別に集計したCSVファイルが作成されました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat steps_20161212013800.csv</span><br><span class="line">2016-12-01,2016-12-02,2016-12-03,2016-12-04,2016-12-05,2016-12-06,2016-12-07,2016-12-08,2016-12-09,2016-12-10,2016-12-11</span><br><span class="line">7217,8815,2260,1828,3711,6980,7839,5079,7197,7112,2958</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/iPhone/" rel="tag"># iPhone</a>
+              <a href="/tags/%E3%83%98%E3%83%AB%E3%82%B9%E3%82%B1%E3%82%A2/" rel="tag"># ヘルスケア</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/09/22/mythings-idcfchannel-konashi/" rel="prev" title="myThingsをはじめよう - Part9: konashiをmyThingsのトリガーとアクションに使う">
+      <i class="fa fa-chevron-left"></i> myThingsをはじめよう - Part9: konashiをmyThingsのトリガーとアクションに使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/29/eclipse-iot-kura-install/" rel="next" title="Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする">
+      Eclipse IoT の紹介 - Part1: Eclipse KuraをRaspberry Piにインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#iPhoneからヘルスケアデータを書き出す"><span class="nav-number">1.</span> <span class="nav-text">iPhoneからヘルスケアデータを書き出す</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSVコンバーター"><span class="nav-number">2.</span> <span class="nav-text">CSVコンバーター</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pythonスクリプトの実行"><span class="nav-number">3.</span> <span class="nav-text">Pythonスクリプトの実行</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

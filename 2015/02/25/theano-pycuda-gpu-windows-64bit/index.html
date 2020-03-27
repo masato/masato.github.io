@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前回構築したTDM-GCCとMinGW-w64で64bitのPython2.7環境にPyCUDAとTheanoをインストールしてGPUを使って計算してみます。Installing Theano with GPU on Windows 64-bitの続きを参考にして構築していきます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows7 64bitにPyCUDAとTheanoをインストールしてGPU計算する">
+<meta property="og:url" content="http://masato.github.io/2015/02/25/theano-pycuda-gpu-windows-64bit/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="前回構築したTDM-GCCとMinGW-w64で64bitのPython2.7環境にPyCUDAとTheanoをインストールしてGPUを使って計算してみます。Installing Theano with GPU on Windows 64-bitの続きを参考にして構築していきます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-02-25T14:52:14.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.909Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Windows7">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="MinGW-w64">
+<meta property="article:tag" content="PyCUDA">
+<meta property="article:tag" content="Theano">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="CUDA">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/02/25/theano-pycuda-gpu-windows-64bit/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Windows7 64bitにPyCUDAとTheanoをインストールしてGPU計算する | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/02/25/theano-pycuda-gpu-windows-64bit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Windows7 64bitにPyCUDAとTheanoをインストールしてGPU計算する
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Feb 25 2015 23:52:14" itemprop="dateCreated datePublished" datetime="2015-02-25T23:52:14+09:00">Feb 25 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">前回構築したTDM-GCCとMinGW-w64で64bitのPython2.7環境にPyCUDAとTheanoをインストールしてGPUを使って計算してみます。Installing Theano with GPU on Windows 64-bitの続きを参考にして構築していきます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2015/02/24/tdm-gcc-mingw-w64-python27-windows7/">前回</a>構築したTDM-GCCとMinGW-w64で64bitのPython2.7環境にPyCUDAとTheanoをインストールしてGPUを使って計算してみます。<a href="http://pavel.surmenok.com/2014/05/31/installing-theano-with-gpu-on-windows-64-bit/" target="_blank" rel="noopener">Installing Theano with GPU on Windows 64-bit</a>の続きを参考にして構築していきます。</p>
+<a id="more"></a>
+
+<h2 id="NumPyとSciPy"><a href="#NumPyとSciPy" class="headerlink" title="NumPyとSciPy"></a>NumPyとSciPy</h2><p>msys.batのショートカットをダブルクリックしてMSYSを起動します。まずMinGW-w64環境にpipをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget --no-check-certificate -O-  https://bootstrap.pypa.io/get-pip.py | python</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.numpy.org/" target="_blank" rel="noopener">NumPy</a>と<a href="http://www.scipy.org/" target="_blank" rel="noopener">SciPy</a>は、<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="noopener">Unofficial Windows Binaries for Python Extension Packages</a>のパッケージを使います。</p>
+<p><a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy" target="_blank" rel="noopener">NumPy</a>は<code>numpy‑1.8.2+mkl‑cp27‑none‑win_amd64.whl</code>をダウンロードしてpip installします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pip install /c/Users/masato/Downloads/numpy-1.8.2+mkl-cp27-none-win_amd64.whl</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy" target="_blank" rel="noopener">SciPy</a>は<code>scipy-0.15.1-cp27-none-win_amd64.whl</code>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pip install /c/Users/masato/Downloads/scipy-0.15.1-cp27-none-win_amd64.whl</span><br></pre></td></tr></table></figure>
+
+<h2 id="PyCUDA"><a href="#PyCUDA" class="headerlink" title="PyCUDA"></a>PyCUDA</h2><p><a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener">CUDA Toolkit 6.5</a>は<a href="/2015/02/19/visual-stuidio-community-2013-cuda-65/">以前</a>に<a href="http://developer.download.nvidia.com/compute/cuda/6_5/rel/installers/cuda_6.5.14_windows_general_64.exe" target="_blank" rel="noopener">Windows 7 64bit版のインストーラー</a>をダウンロードしてインストールしてあります。C/C++のCUDA拡張でプログラムを書くのは大変です。Pythonを使ってコンパイル不要で実行できるのは便利です。<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#pycuda" target="_blank" rel="noopener">PuCUDA</a>は<code>pycuda-2014.1+cuda6519-cp27-none-win_amd64.whl</code>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pip install /c/Users/masato/Downloads/pycuda-2014.1+cuda6519-cp27-none-win_amd64.whl</span><br></pre></td></tr></table></figure>
+
+<h3 id="nvccがcl-exeを見つけられない"><a href="#nvccがcl-exeを見つけられない" class="headerlink" title="nvccがcl.exeを見つけられない"></a>nvccがcl.exeを見つけられない</h3><p><a href="http://stackoverflow.com/questions/8125826/error-compiling-cuda-from-command-prompt" target="_blank" rel="noopener">Error compiling CUDA from Command Prompt</a>を参考にして、 <code>c:\mingw\msys\msys.bat</code>の最初にVisual StudioのPATHを設定します。</p>
+<figure class="highlight bat"><figcaption><span>c:\mingw\msys\msys.bat</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">rem ember value of GOTO: is used to know recursion has happened.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">call</span> "C:\Program Files (x86)\Microsoft Visual Studio <span class="number">12</span>.<span class="number">0</span>\VC\bin\x86_amd64\vcvarsx86_amd64.bat"</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> "%<span class="number">1</span>" == "<span class="keyword">GOTO</span>:" <span class="keyword">goto</span> %<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="UnicodeDecodeErrorがでる"><a href="#UnicodeDecodeErrorがでる" class="headerlink" title="UnicodeDecodeErrorがでる"></a>UnicodeDecodeErrorがでる</h3><p>このままpycudaパッケージを使うと実行時にUnicodeDecodeErrorが出てしまします。<a href="https://github.com/inducer/pycuda/issues/37" target="_blank" rel="noopener">UnicodeDecodeError: ‘utf8’ codec can’t decode byte #37</a>によると、nvccからUTF-8として有効でない文字が出力されているようです。compiler.pyの250行目辺りに以下のコードを追加します。</p>
+<figure class="highlight python"><figcaption><span>c:\Python27\lib\site-packages\pycuda\compiler.py</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">        self._check_arch(arch)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> options <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            options.extend([<span class="string">"-Xcompiler"</span>,<span class="string">"/wd 4819"</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            options = [<span class="string">"-Xcompiler"</span>,<span class="string">"/wd 4819"</span>]</span><br><span class="line">    </span><br><span class="line">        cubin = compile(source, nvcc, options, keep, no_extern_c,</span><br><span class="line">                arch, code, cache_dir, include_dirs)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="テスト"><a href="#テスト" class="headerlink" title="テスト"></a>テスト</h3><p>こちらの<a href="http://documen.tician.de/pycuda/tutorial.html" target="_blank" rel="noopener">Tutorial</a>を参考にしてサンプルコードを用意して実行してみます。</p>
+<figure class="highlight python"><figcaption><span>~/pycuda-test.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pycuda.gpuarray <span class="keyword">as</span> gpuarray</span><br><span class="line"><span class="keyword">import</span> pycuda.driver <span class="keyword">as</span> cuda</span><br><span class="line"><span class="keyword">import</span> pycuda.autoinit</span><br><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line">a_gpu = gpuarray.to_gpu(numpy.random.randn(<span class="number">4</span>,<span class="number">4</span>).astype(numpy.float32))</span><br><span class="line">a_doubled = (<span class="number">2</span>*a_gpu).get()</span><br><span class="line"><span class="keyword">print</span> a_doubled</span><br><span class="line"><span class="keyword">print</span> a_gpu</span><br></pre></td></tr></table></figure>
+
+<p>簡単な配列計算の実行ですが、PyCUDAのインストールに成功したようです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python pycuda-test.py</span><br><span class="line">[[-5.03633499 -1.2504214   0.87832445  0.86452949]</span><br><span class="line"> [ 0.01358639  0.98460299  2.50277209  3.76451278]</span><br><span class="line"> [ 0.14301641 -2.11651611  0.39508429 -0.88320005]</span><br><span class="line"> [ 2.66914272  0.87537336 -1.17862082  1.94231701]]</span><br><span class="line">[[-2.5181675  -0.6252107   0.43916222  0.43226475]</span><br><span class="line"> [ 0.0067932   0.49230149  1.25138605  1.88225639]</span><br><span class="line"> [ 0.07150821 -1.05825806  0.19754215 -0.44160002]</span><br><span class="line"> [ 1.33457136  0.43768668 -0.58931041  0.9711585 ]]</span><br></pre></td></tr></table></figure>
+
+<h2 id="Theano"><a href="#Theano" class="headerlink" title="Theano"></a>Theano</h2><p><a href="http://deeplearning.net/software/theano/" target="_blank" rel="noopener">Theano</a>は最近話題のDeep Learningで使うPythonの数値計算ライブラリです。実行時のC++コード生成と、CUDAでGPU計算もできるのが特徴です。<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/#theano" target="_blank" rel="noopener">Theano</a>は<code>Theano-0.6.0-py2-none-any.whl</code>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pip install /c/Users/masato/Downloads/Theano-0.6.0-py2-none-any.whl</span><br></pre></td></tr></table></figure>
+
+<p>MSYSのホームディレクトリにTheanoの環境設定ファイルを作成します。</p>
+<figure class="highlight bash"><figcaption><span>~/.theanorc</span></figcaption><table><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">device = gpu</span><br><span class="line">floatX = float32</span><br></pre></td></tr></table></figure>
+
+<h3 id="inconsistent-dll-linkage"><a href="#inconsistent-dll-linkage" class="headerlink" title="inconsistent dll linkage"></a>inconsistent dll linkage</h3><p><a href="http://deeplearning.net/software/theano/tutorial/using_gpu.html" target="_blank" rel="noopener">サンプルコード</a>を実行すると、<code>&#39;round&#39; : dll リンクが一貫していません。</code>というエラーがでます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python theano-test.py</span><br><span class="line">...</span><br><span class="line">c:\python27\include\pymath.h(22) : warning C4273: <span class="string">'round'</span> : dll リンクが一貫して</span><br><span class="line">いません。</span><br><span class="line">        c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\math_fun</span><br><span class="line">ctions.h(2455) : <span class="string">'round'</span> の前の定義を確認してください</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/Theano/Theano/issues/2055" target="_blank" rel="noopener">“inconsistent dll linkage” when using Theano with CUDA 6.5 #2055</a>にissueがありました。リポジトリの<a href="https://github.com/Theano/Theano/blob/master/theano/sandbox/cuda/cuda_ndarray.cuh" target="_blank" rel="noopener">cuda_ndarray.cuh</a>はすでに修正済みです。<a href="http://www.lfd.uci.edu/~gohlke/pythonlibs/" target="_blank" rel="noopener">Unofficial Windows Binaries for Python Extension Packages</a>で配布しているパッケージは未対応なので<code>#include &lt;algorithm&gt;</code>を追加します。</p>
+<figure class="highlight plain"><figcaption><span>C:\Python27\Lib\site-packages\theano\sandbox\cuda\cuda_ndarray.cuh</span></figcaption><table><tr><td class="code"><pre><span class="line">#ifndef _CUDA_NDARRAY_H</span><br><span class="line">#define _CUDA_NDARRAY_H</span><br><span class="line"></span><br><span class="line">#include &lt;algorithm&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="テスト-1"><a href="#テスト-1" class="headerlink" title="テスト"></a>テスト</h3><p>最初にtheanoパッケージが正常にインストールされているか確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pip install nose</span><br><span class="line">$ python -c <span class="string">'import theano; print theano.config'</span> | less</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://deeplearning.net/software/theano/tutorial/using_gpu.html" target="_blank" rel="noopener">Testing Theano with GPU</a>あるサンプルコードを実行してみます。</p>
+<figure class="highlight python"><figcaption><span>~/theano-test.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> theano <span class="keyword">import</span> function, config, shared, sandbox</span><br><span class="line"><span class="keyword">import</span> theano.tensor <span class="keyword">as</span> T</span><br><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">vlen = <span class="number">10</span> * <span class="number">30</span> * <span class="number">768</span>  <span class="comment"># 10 x #cores x # threads per core</span></span><br><span class="line">iters = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line">rng = numpy.random.RandomState(<span class="number">22</span>)</span><br><span class="line">x = shared(numpy.asarray(rng.rand(vlen), config.floatX))</span><br><span class="line">f = function([], T.exp(x))</span><br><span class="line"><span class="keyword">print</span> f.maker.fgraph.toposort()</span><br><span class="line">t0 = time.time()</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(iters):</span><br><span class="line">    r = f()</span><br><span class="line">t1 = time.time()</span><br><span class="line"><span class="keyword">print</span> <span class="string">'Looping %d times took'</span> % iters, t1 - t0, <span class="string">'seconds'</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'Result is'</span>, r</span><br><span class="line"><span class="keyword">if</span> numpy.any([isinstance(x.op, T.Elemwise) <span class="keyword">for</span> x <span class="keyword">in</span> f.maker.fgraph.toposort()]):</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Used the cpu'</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Used the gpu'</span></span><br></pre></td></tr></table></figure>
+
+<p>まだ警告がでますが最後に<code>Used the gpu</code>と表示されるのでGPU計算ができているようです。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python theano-test.py</span><br><span class="line">...</span><br><span class="line">c:\python27\include\pymath.h(22) : warning C4273: <span class="string">'round'</span> : dll リンクが一貫して</span><br><span class="line">いません。</span><br><span class="line">        c:\program files\nvidia gpu computing toolkit\cuda\v6.5\include\math_fun</span><br><span class="line">ctions.h(2455) : <span class="string">'round'</span> の前の定義を確認してください</span><br><span class="line">c:\python27\lib\site-packages\numpy\core\include\numpy\npy_1_7_deprecated_api.h(</span><br><span class="line">12) : Warning Msg: Using deprecated NumPy API, <span class="built_in">disable</span> it by <span class="comment">#defining NPY_NO_DE</span></span><br><span class="line">PRECATED_API NPY_1_7_API_VERSION</span><br><span class="line">   ライブラリ C:/Users/masato/AppData/Local/Theano/compiledir_Windows-7-6.1.7601</span><br><span class="line">-SP1-Intel64_Family_6_Model_58_Stepping_9_GenuineIntel-2.7.0-64/tmptykper/73dc8d</span><br><span class="line">0fb3ff37614826ceae3280f478.lib とオブジェクト C:/Users/masato/AppData/Local/Thea</span><br><span class="line">no/compiledir_Windows-7-6.1.7601-SP1-Intel64_Family_6_Model_58_Stepping_9_Genuin</span><br><span class="line">eIntel-2.7.0-64/tmptykper/73dc8d0fb3ff37614826ceae3280f478.exp を作成中</span><br><span class="line"></span><br><span class="line">[GpuElemwise&#123;exp,no_inplace&#125;(&lt;CudaNdarrayType(float32, vector)&gt;), HostFromGpu(Gp</span><br><span class="line">uElemwise&#123;exp,no_inplace&#125;.0)]</span><br><span class="line">Looping 1000 <span class="built_in">times</span> took 1.23299980164 seconds</span><br><span class="line">Result is [ 1.23178029  1.61879349  1.52278066 ...,  2.20771813  2.29967761</span><br><span class="line">  1.62323296]</span><br><span class="line">Used the gpu</span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Windows7/" rel="tag"># Windows7</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/MinGW-w64/" rel="tag"># MinGW-w64</a>
+              <a href="/tags/PyCUDA/" rel="tag"># PyCUDA</a>
+              <a href="/tags/Theano/" rel="tag"># Theano</a>
+              <a href="/tags/GPU/" rel="tag"># GPU</a>
+              <a href="/tags/CUDA/" rel="tag"># CUDA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/02/24/tdm-gcc-mingw-w64-python27-windows7/" rel="prev" title="Windows7にTDM-GCCとMinGW-w64で64bitのPython2.7環境を構築する">
+      <i class="fa fa-chevron-left"></i> Windows7にTDM-GCCとMinGW-w64で64bitのPython2.7環境を構築する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/02/26/raspberrypi-headless-install-usb-serial-on-osx-yosemite/" rel="next" title="Raspberry PiをOSX YosemiteとUSB-Serial接続してヘッドレスインストールと無線LANの設定">
+      Raspberry PiをOSX YosemiteとUSB-Serial接続してヘッドレスインストールと無線LANの設定 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NumPyとSciPy"><span class="nav-number">1.</span> <span class="nav-text">NumPyとSciPy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyCUDA"><span class="nav-number">2.</span> <span class="nav-text">PyCUDA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nvccがcl-exeを見つけられない"><span class="nav-number">2.1.</span> <span class="nav-text">nvccがcl.exeを見つけられない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UnicodeDecodeErrorがでる"><span class="nav-number">2.2.</span> <span class="nav-text">UnicodeDecodeErrorがでる</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#テスト"><span class="nav-number">2.3.</span> <span class="nav-text">テスト</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Theano"><span class="nav-number">3.</span> <span class="nav-text">Theano</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inconsistent-dll-linkage"><span class="nav-number">3.1.</span> <span class="nav-text">inconsistent dll linkage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#テスト-1"><span class="nav-number">3.2.</span> <span class="nav-text">テスト</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

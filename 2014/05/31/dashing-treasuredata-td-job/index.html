@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="昨日はTreasure Data Serviceへtdコマンドから簡単なクエリを実行しました。DashingはSinatraアプリなのでRubyでTreasure Data Serviceにクエリするプログラムを書きます。ちょっとしたDBアクセス用のライブラリも用意してみました。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DashingとTreasure Data - Part3: Rubyのtd-clientを使う">
+<meta property="og:url" content="http://masato.github.io/2014/05/31/dashing-treasuredata-td-job/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="昨日はTreasure Data Serviceへtdコマンドから簡単なクエリを実行しました。DashingはSinatraアプリなのでRubyでTreasure Data Serviceにクエリするプログラムを書きます。ちょっとしたDBアクセス用のライブラリも用意してみました。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-31T01:52:41.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.579Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="AnalyticSandbox">
+<meta property="article:tag" content="TreasureData">
+<meta property="article:tag" content="Dashing">
+<meta property="article:tag" content="DockerEnv">
+<meta property="article:tag" content="Ruby">
+<meta property="article:tag" content="byobu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/05/31/dashing-treasuredata-td-job/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>DashingとTreasure Data - Part3: Rubyのtd-clientを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/05/31/dashing-treasuredata-td-job/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DashingとTreasure Data - Part3: Rubyのtd-clientを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 31 2014 10:52:41" itemprop="dateCreated datePublished" datetime="2014-05-31T10:52:41+09:00">May 31 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">昨日はTreasure Data Serviceへtdコマンドから簡単なクエリを実行しました。DashingはSinatraアプリなのでRubyでTreasure Data Serviceにクエリするプログラムを書きます。ちょっとしたDBアクセス用のライブラリも用意してみました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/05/30/dashing-treasuredata-td/">Part2</a>は<code>Treasure Data Service</code>へtdコマンドから簡単なクエリを実行しました。<br><a href="https://github.com/Shopify/dashing" target="_blank" rel="noopener">Dashing</a>はSinatraアプリなのでRubyで<code>Treasure Data Service</code>にクエリするプログラムを書きます。<br>ちょっとしたDBアクセス用のライブラリも用意してみました。</p>
+<a id="more"></a>
+
+<h2 id="Dockerコンテナ起動"><a href="#Dockerコンテナ起動" class="headerlink" title="Dockerコンテナ起動"></a>Dockerコンテナ起動</h2><p>-eオプションで環境変数を指定してコンテナを起動します。TD_API_KEYには、<code>td apikey:show</code>で確認した値を使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ~/docker_apps/phusion/</span><br><span class="line">$ docker run -t -i -p 3030:3030 -e TD_API_KEY=xxx -v ~/docker_apps/workspaces/dashing:/root/sinatra_apps masato/baseimage:1.0 /sbin/my_init /bin/bash</span><br></pre></td></tr></table></figure>
+
+<h2 id="環境変数の確認"><a href="#環境変数の確認" class="headerlink" title="環境変数の確認"></a>環境変数の確認</h2><p>コンテナに環境変数がセットされていることを確認します。<br>SSH接続すると<code>-eオプション</code>で指定した環境変数が反映されないので、コンテナを起動した<code>/bin/bash</code>のまま作業します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@67413c80299f:/<span class="comment"># echo $TD_API_KEY</span></span><br><span class="line">xxx</span><br></pre></td></tr></table></figure>
+
+<h2 id="byobu"><a href="#byobu" class="headerlink" title="byobu"></a>byobu</h2><p>サーバーアプリを開発する場合、Emacsのmulti-termだけを使うよりも、<br>マルチプレクサでEmacsとサーバーで別ウィンドウで作業すると便利なのでbyobuを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ byobu</span><br><span class="line">$ byobu-config</span><br><span class="line">$ byobu-select-backend </span><br><span class="line">$ byobu-ctrl<span class="_">-a</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Gemfile"><a href="#Gemfile" class="headerlink" title="Gemfile"></a>Gemfile</h2><p>このコンテナでも<code>-vオプション</code>を使い、Dockerホストの共有ディレクトリをマウントして作業します。<br>プロジェクトのディレクトリに移動して確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /root/sinatra_apps/cloud_td</span><br><span class="line">$ ls</span><br><span class="line">Gemfile       README.md  config.ru   history.yml  lib     sql      widgets</span><br><span class="line">Gemfile.lock  assets     dashboards  <span class="built_in">jobs</span>         public  test.rb</span><br></pre></td></tr></table></figure>
+
+<p>Gemfileに<code>td-client</code>を追加します。</p>
+<figure class="highlight ruby"><figcaption><span>/root/sinatra_apps/cloud_td/Gemfile</span></figcaption><table><tr><td class="code"><pre><span class="line">gem <span class="string">'td-client'</span></span><br></pre></td></tr></table></figure>
+
+<p><code>bundle install</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ bundle install</span><br></pre></td></tr></table></figure>
+
+<h2 id="Dashingの起動確認"><a href="#Dashingの起動確認" class="headerlink" title="Dashingの起動確認"></a>Dashingの起動確認</h2><p>とりあえずDashingサーバーを起動して確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dashing server</span><br></pre></td></tr></table></figure>
+
+<p>デフォルトで同梱されているsampleダッシュボードの表示を確認します。<br><code>-vオプション</code>と<code>-eオプション</code>を使って、少しずつ<code>Disposable Infrastructure</code>らしくなってきました。</p>
+<p>http://{Dockerホスト}:3030/sample</p>
+<h2 id="lib-db-client-rb"><a href="#lib-db-client-rb" class="headerlink" title="lib/db_client.rb"></a>lib/db_client.rb</h2><p><code>Treasure Data</code>に接続するコードを、<code>lib</code>ディレクトリに書きました。<br>API_KEYは、<code>docker run</code>の環境変数のオプションに渡している値を使います。一応initializeでオーバーライドできるようにしています。</p>
+<figure class="highlight ruby"><figcaption><span>/root/sinatra_apps/cloud_td/lib/db_client.rb</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> <span class="string">'td-client'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">DBClient</span></span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">TD</span></span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(<span class="symbol">apikey:</span> <span class="literal">nil</span>)</span></span></span><br><span class="line">      apikey = ENV[<span class="string">'TD_API_KEY'</span>] <span class="keyword">unless</span> apikey</span><br><span class="line">      @client = TreasureData::Client.new apikey</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">attr_reader</span> <span class="symbol">:headers</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wait_finished</span> <span class="title">db_name</span>,<span class="title">sql</span>,<span class="title">type</span>, <span class="title">&amp;</span><span class="title">block</span></span></span><br><span class="line">      job = @client.query(db_name, sql,</span><br><span class="line">                          result_url=<span class="literal">nil</span>, priority=<span class="literal">nil</span>, retry_limit=<span class="literal">nil</span>,</span><br><span class="line">                          opts=&#123;<span class="symbol">type:</span> type&#125;)</span><br><span class="line"></span><br><span class="line">      puts <span class="string">"waiting until job_id:<span class="subst">#&#123;job.job_id&#125;</span> finished... "</span></span><br><span class="line">      <span class="keyword">until</span> job.finished?</span><br><span class="line">        sleep <span class="number">2</span></span><br><span class="line">        job.update_progress!</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      job.update_status!</span><br><span class="line">      puts <span class="string">"job_id:<span class="subst">#&#123;job.job_id&#125;</span> finished, status:<span class="subst">#&#123;job.status&#125;</span> "</span></span><br><span class="line"></span><br><span class="line">      block.call(job)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">query</span><span class="params">(db_name, sql, <span class="symbol">type:</span> <span class="literal">nil</span>)</span></span></span><br><span class="line">      type <span class="params">||</span>= <span class="symbol">:hive</span></span><br><span class="line">      results = []</span><br><span class="line">      wait_finished(db_name,sql,type) <span class="keyword">do</span> <span class="params">|job|</span></span><br><span class="line">        job.result_each <span class="keyword">do</span> <span class="params">|row|</span></span><br><span class="line">          results &lt;&lt; &#123;<span class="symbol">label:</span> row[<span class="number">0</span>], <span class="symbol">value:</span> row[<span class="number">1</span>]&#125;</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        @headers = results.map&#123;<span class="params">|m|</span> m[<span class="symbol">:label</span>]&#125; <span class="keyword">unless</span> @headers</span><br><span class="line">      <span class="keyword">end</span></span><br><span class="line">      results</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="job"><a href="#job" class="headerlink" title="job"></a>job</h2><p><a href="/2014/05/30/dashing-treasuredata-td/">前回</a>に<code>Treasure Data Toolbelt</code>で使ったのと同じSQLをヒアドキュメントに書きます。さきほど書いたlibディレクトリ下のコードをrequre_relativeします。</p>
+<p>確認用に、取得したデータは、sampleダッシュボードの右側にある<code>data-id=&quot;buzzwords&quot;</code>のウィジェットを使って表<br>示してみます。<code>data-view=&quot;List&quot;</code>で<code>widgets/list</code>ウィジェットを使っているので、リスト表示のサンプルにちょうど良いです。</p>
+<p><code>send_event</code>の引数で<code>data-id</code>にIDとして<code>list</code>を使います。<br><code>SCHEDULER.every &#39;1d&#39;</code>は、<a href="https://github.com/jmettraux/rufus-scheduler/" target="_blank" rel="noopener">rufus-scheduler</a>を使って、1日1回ジョブを実行する定義です。<br><code>:first_in =&gt; 0</code>とすることで、初回のジョブがDashing起動後すぐに実行されるようにします。</p>
+<figure class="highlight ruby"><figcaption><span>/root/sinatra_apps/cloud_td/jobs/access_count.rb</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">require_relative <span class="string">"../lib/db_client"</span></span><br><span class="line"></span><br><span class="line">client = DBClient::TD.new</span><br><span class="line"></span><br><span class="line">SCHEDULER.every <span class="string">'1d'</span>,<span class="symbol">:first_in</span> =&gt; <span class="number">0</span> <span class="keyword">do</span> <span class="params">|job|</span></span><br><span class="line">  db_name = <span class="string">'clouddb'</span></span><br><span class="line">  sql = &lt;&lt;-EOS</span><br><span class="line">    SELECT TD_TIME_FORMAT(time, <span class="string">'yyyy-MM-dd'</span>, <span class="string">'JST'</span>) AS day,</span><br><span class="line">           COUNT(<span class="number">1</span>) AS cnt</span><br><span class="line">    FROM www_access</span><br><span class="line">    GROUP BY TD_TIME_FORMAT(time, <span class="string">'yyyy-MM-dd'</span>, <span class="string">'JST'</span>)</span><br><span class="line">    ORDER BY day DESC</span><br><span class="line">  EOS</span><br><span class="line"></span><br><span class="line">  results = client.query(db_name,sql)</span><br><span class="line">  send_event(<span class="string">'buzzwords'</span>, &#123; <span class="symbol">items:</span> results &#125;)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>sampleダッシュボードのbuzzwordsのdata-idで、ウィジェットを定義している箇所を確認します。</p>
+<figure class="highlight ruby"><figcaption><span>/root/sinatra_apps/cloud_td/dashboards/sample.rb</span></figcaption><table><tr><td class="code"><pre><span class="line">    &lt;li data-row=<span class="string">"1"</span> data-col=<span class="string">"1"</span> data-sizex=<span class="string">"1"</span> data-sizey=<span class="string">"2"</span>&gt;</span><br><span class="line">      &lt;div data-id=<span class="string">"buzzwords"</span> data-view=<span class="string">"List"</span> data-unordered=<span class="string">"true"</span> data-title=<span class="string">"STATUS COUNT"</span> dat\</span><br><span class="line">a-moreinfo=<span class="string">"# of times said around the office"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/li</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h2><p>デフォルトのsampleダッシュボードの右側に、<code>Treasure Data</code>から取得したデータがリスト形式で表示されることを確認します。<br>http://{Dockerホスト}:3030/sample</p>
+<h2 id="git-push"><a href="#git-push" class="headerlink" title="git push"></a>git push</h2><p>Dockerホストから別のシェルを起動して、SSH接続するためにIPアドレスを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 67413c80299f | jq -r <span class="string">'.[0] | .NetworkSettings | .IPAddress'</span></span><br><span class="line">172.17.0.2</span><br></pre></td></tr></table></figure>
+
+<p>Dockerコンテナには鍵をコピーしていないので、<br>Gitのリモートリポジトリに使っている鍵を、ssh-agentに追加して、コンテナにSSHで接続します。<br>Dockerホストと同じVLAN上に配置している、リモートリポジトリにコンテナ内部からpushします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/private_key</span><br><span class="line">$ ssh -A root@172.17.0.2</span><br><span class="line">$ <span class="built_in">cd</span> ~/sinatra_apps/cloud_td/</span><br><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'add td_client library'</span></span><br><span class="line">$ git push origin master</span><br></pre></td></tr></table></figure>
+
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p>今回はデフォルトのsampleダッシュボードを使って、<code>Treasure Data Service</code>からデータを取得して表示してみました。<br>簡単なDB接続用コードを書いて、複数のジョブからrequireして簡単にSQLを実行できるようにしました。</p>
+<p>sample.rbを参考にしながら、ウィジェットを定義する自分のダッシュボードを作っていくと簡単にカスタマイズできます。</p>
+<p>次回は、<a href="https://github.com/fluent/fluentd/" target="_blank" rel="noopener">fluentd</a>の安定版である<a href="http://docs.treasuredata.com/articles/td-agent" target="_blank" rel="noopener">td-agent</a>を使って、ApacheやTomcatのログをストリームでインポートしてみます。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AnalyticSandbox/" rel="tag"># AnalyticSandbox</a>
+              <a href="/tags/TreasureData/" rel="tag"># TreasureData</a>
+              <a href="/tags/Dashing/" rel="tag"># Dashing</a>
+              <a href="/tags/DockerEnv/" rel="tag"># DockerEnv</a>
+              <a href="/tags/Ruby/" rel="tag"># Ruby</a>
+              <a href="/tags/byobu/" rel="tag"># byobu</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/05/30/dashing-treasuredata-td/" rel="prev" title="DashingとTreasure Data - Part2: Treasure Data Toolbeltのセットアップ">
+      <i class="fa fa-chevron-left"></i> DashingとTreasure Data - Part2: Treasure Data Toolbeltのセットアップ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/01/idcf-linuxmint17-part1/" rel="next" title="IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part1: GUIで開発したい">
+      IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part1: GUIで開発したい <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerコンテナ起動"><span class="nav-number">1.</span> <span class="nav-text">Dockerコンテナ起動</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#環境変数の確認"><span class="nav-number">2.</span> <span class="nav-text">環境変数の確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#byobu"><span class="nav-number">3.</span> <span class="nav-text">byobu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gemfile"><span class="nav-number">4.</span> <span class="nav-text">Gemfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dashingの起動確認"><span class="nav-number">5.</span> <span class="nav-text">Dashingの起動確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lib-db-client-rb"><span class="nav-number">6.</span> <span class="nav-text">lib&#x2F;db_client.rb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#job"><span class="nav-number">7.</span> <span class="nav-text">job</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#確認"><span class="nav-number">8.</span> <span class="nav-text">確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-push"><span class="nav-number">9.</span> <span class="nav-text">git push</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#まとめ"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

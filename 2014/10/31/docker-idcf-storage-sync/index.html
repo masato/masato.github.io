@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="I am using BackUpWordPress for my WordPress blog backup solution. This plugin can create schedules for backup. I make a schedule to backup twice a day. Of course, since I am running my WordPress site">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using Docker for WordPress backup to IDCF Object Storage">
+<meta property="og:url" content="http://masato.github.io/2014/10/31/docker-idcf-storage-sync/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="I am using BackUpWordPress for my WordPress blog backup solution. This plugin can create schedules for backup. I make a schedule to backup twice a day. Of course, since I am running my WordPress site">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-10-31T14:36:00.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.595Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="IDCFCloud">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="s3cmd">
+<meta property="article:tag" content="IDCFObjectStorage">
+<meta property="article:tag" content="WordPress">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/10/31/docker-idcf-storage-sync/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Using Docker for WordPress backup to IDCF Object Storage | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/10/31/docker-idcf-storage-sync/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Using Docker for WordPress backup to IDCF Object Storage
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Oct 31 2014 23:36:00" itemprop="dateCreated datePublished" datetime="2014-10-31T23:36:00+09:00">Oct 31 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>I am using <a href="https://wordpress.org/plugins/backupwordpress/" target="_blank" rel="noopener">BackUpWordPress</a> for my WordPress blog backup solution. This plugin can create schedules for backup. I make a schedule to backup twice a day. Of course, since I am running my WordPress site on Docker, I set up a cron job putting archives to IDCF Object Storage on Docker. I created my repository on Docker Hub Registry.</p>
+<a id="more"></a>
+
+<h3 id="masato-idcf-storage-sync"><a href="#masato-idcf-storage-sync" class="headerlink" title="masato/idcf-storage-sync"></a>masato/idcf-storage-sync</h3><p>For a Docker Hub’s Automated Build Repository, I set a <a href="https://github.com/masato/idcf-storage-sync" target="_blank" rel="noopener">project</a> on GitHub. The Dockerfile is below.</p>
+<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04.1</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN locale-gen ja_JP.UTF-8 &amp;&amp; \</span><br><span class="line">    update-locale LANG=ja_JP.UTF-8 &amp;&amp; \</span><br><span class="line">    ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    DEBIAN_FRONTEND=noninteractive apt-get install -qy \</span><br><span class="line">    python-setuptools python-dateutil python-magic git</span><br><span class="line">RUN git <span class="built_in">clone</span> https://github.com/s3tools/s3cmd.git /s3cmd &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /s3cmd &amp;&amp; python setup.py install</span><br><span class="line">ADD run.sh /run.sh</span><br><span class="line">ADD s3cfg /.s3cfg</span><br><span class="line">CMD [<span class="string">"/run.sh"</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+
+<p>And this is a run.sh which actually runs s3cmd sync. </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">die</span></span>() &#123;</span><br><span class="line">  <span class="built_in">echo</span> &gt;&amp;2 <span class="string">"<span class="variable">$@</span>"</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> s3sync()</span><br><span class="line">&#123;</span><br><span class="line">  s3cmd --config=/.s3cfg --access_key=<span class="string">"<span class="variable">$ACCESS_KEY</span>"</span> --secret_key=<span class="string">"<span class="variable">$SECRET_KEY</span>"</span> sync <span class="variable">$S3CMD_OPTS</span> <span class="string">"<span class="variable">$SRC_DIR</span>"</span> <span class="string">"<span class="variable">$BUCKET_NAME</span>"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">test</span> -n <span class="string">"<span class="variable">$BUCKET_NAME</span>"</span> || die <span class="string">"Please set BUCKET_NAME environment variable"</span></span><br><span class="line"><span class="built_in">test</span> -n <span class="string">"<span class="variable">$ACCESS_KEY</span>"</span> -a -n <span class="string">"<span class="variable">$SECRET_KEY</span>"</span> || die <span class="string">"Please set ACCESS_KEY and SECRET_KEY environment variables"</span></span><br><span class="line"><span class="built_in">test</span> -n <span class="string">"SRC_DIR"</span> || die <span class="string">"Please set SRC_DIR environment variable"</span></span><br><span class="line">s3sync</span><br></pre></td></tr></table></figure>
+
+<p>Then I create a helper shell script file to execute <code>docker run</code> command.</p>
+<figure class="highlight bash"><figcaption><span>~/bin/wp-backup</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"></span><br><span class="line">docker run --rm --name idcf-storage-sync  \</span><br><span class="line">  -e ACCESS_KEY=&#123;ACCESS_KEY&#125;   \</span><br><span class="line">  -e SECRET_KEY=&#123;SECRET_KEY&#125; \</span><br><span class="line">  -e BUCKET_NAME=s3://&#123;BUCKET_NAME&#125;   \</span><br><span class="line">  -e SRC_DIR=&#123;backup_directory&#125;   \</span><br><span class="line">  -e S3CMD_OPTS=<span class="string">"--exclude=* --include=*.zip --delete-removed"</span> \</span><br><span class="line">  --volumes-from &#123;data_volume_container&#125;  \</span><br><span class="line">  masato/idcf-storage-sync &gt;&gt; /tmp/wp-backup.log</span><br><span class="line"><span class="built_in">exit</span> 0</span><br></pre></td></tr></table></figure>
+
+<p>I edit a crontab file to run this script.</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">0 8,20 * * * ~/bin/wp-backup &gt; /dev/null 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IDCFCloud/" rel="tag"># IDCFCloud</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/s3cmd/" rel="tag"># s3cmd</a>
+              <a href="/tags/IDCFObjectStorage/" rel="tag"># IDCFObjectStorage</a>
+              <a href="/tags/WordPress/" rel="tag"># WordPress</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/10/30/spark-core-arrived-and-meet-with-intel-edison/" rel="prev" title="Spark Core an IoT device - Part 4: Finally arrived...although">
+      <i class="fa fa-chevron-left"></i> Spark Core an IoT device - Part 4: Finally arrived...although
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/11/01/bittorrent-sync-with-docker-across-multi-cloud/" rel="next" title="BitTorrent Sync with Docker across multi-cloud">
+      BitTorrent Sync with Docker across multi-cloud <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#masato-idcf-storage-sync"><span class="nav-number">1.</span> <span class="nav-text">masato&#x2F;idcf-storage-sync</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

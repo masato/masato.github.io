@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="jsdo.itで作成したkonashi.jsアプリの画面はZepto.jsを使っていました。ちょっとシンプルなので最近HTML5モバイルアプリの開発で使っているFramework7を使ってLチカとタクトスイッチの画面を作ります。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="konashi 2.0 入門 - Part4: Framework7でネイティブ風に">
+<meta property="og:url" content="http://masato.github.io/2015/09/15/konashi20-framework7/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="jsdo.itで作成したkonashi.jsアプリの画面はZepto.jsを使っていました。ちょっとシンプルなので最近HTML5モバイルアプリの開発で使っているFramework7を使ってLチカとタクトスイッチの画面を作ります。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/rawgit.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/konashi-f7.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/konashi-f7-select.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/konashi-f7-find.png">
+<meta property="og:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/konashi-f7-pio.png">
+<meta property="article:published_time" content="2015-09-15T12:11:22.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.725Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Lチカ">
+<meta property="article:tag" content="Framework7">
+<meta property="article:tag" content="konashi">
+<meta property="article:tag" content="RawGit">
+<meta property="article:tag" content="CDN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/09/15/konashi20-framework7/rawgit.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/09/15/konashi20-framework7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>konashi 2.0 入門 - Part4: Framework7でネイティブ風に | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/09/15/konashi20-framework7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          konashi 2.0 入門 - Part4: Framework7でネイティブ風に
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Sep 15 2015 21:11:22" itemprop="dateCreated datePublished" datetime="2015-09-15T21:11:22+09:00">Sep 15 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">jsdo.itで作成したkonashi.jsアプリの画面はZepto.jsを使っていました。ちょっとシンプルなので最近HTML5モバイルアプリの開発で使っているFramework7を使ってLチカとタクトスイッチの画面を作ります。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://jsdo.it/" target="_blank" rel="noopener">jsdo.it</a>で作成したkonashi.jsアプリの画面は<a href="http://zeptojs.com/" target="_blank" rel="noopener">Zepto.js</a><a href="https://github.com/madrobby/zepto/blob/master/src/touch.js" target="_blank" rel="noopener">touch.js</a>を使っていました。ちょっとシンプルなので最近HTML5モバイルアプリの開発で使っている<a href="http://www.idangero.us/framework7/" target="_blank" rel="noopener">Framework7</a>を使ってLチカとタクトスイッチの画面を作ります。</p>
+<a id="more"></a>
+
+<h2 id="Framework7"><a href="#Framework7" class="headerlink" title="Framework7"></a>Framework7</h2><p><a href="http://www.idangero.us/framework7/#.VfleBiDtmko" target="_blank" rel="noopener">Framework7</a>は、HTML5/JavaScript/CSSといったWebアプリ開発でおなじみのセットを使いiOSやMaterialデザインのネイティブ風なモバイルアプリが開発できるフレームワークです。DOM操作は<a href="http://www.idangero.us/framework7/docs/dom.html" target="_blank" rel="noopener">Dom7</a>という同梱されているライブラリを使えます。ほぼjQuery/Zepto.jsと同じように<code>$$</code>を通して使うことができます。</p>
+<h2 id="RawGitをCDNに使う"><a href="#RawGitをCDNに使う" class="headerlink" title="RawGitをCDNに使う"></a>RawGitをCDNに使う</h2><p>有名なJavaScriptのライブラリはGoogleの<a href="https://developers.google.com/speed/libraries/" target="_blank" rel="noopener">Hosted Libraries</a>などのCDNを通してHTMLからロードすることができます。残念ながらFramework7をCDNから見つけることができなかったので、<a href="https://rawgit.com/" target="_blank" rel="noopener">RawGit</a>を使いGitHubのリポジトリから直接ロードできるようにします。</p>
+<p><a href="http://stackoverflow.com/questions/6551446/can-i-run-html-files-directly-from-github-instead-of-just-viewing-their-source" target="_blank" rel="noopener">Can I run HTML files directly from GitHub, instead of just viewing their source?</a>を参考にして使ってみます。</p>
+<p><a href="https://rawgit.com/" target="_blank" rel="noopener">RawGit</a>をブラウザで開きテキストボックスに公開したいGtHub上のファイルを貼り付けるだけで、HTMLからロードできるURLを作成してくれます。</p>
+<p><img src="/2015/09/15/konashi20-framework7/rawgit.png" alt="rawgit.png"></p>
+<h3 id="Framework7のURL"><a href="#Framework7のURL" class="headerlink" title="Framework7のURL"></a>Framework7のURL</h3><p>例えば、Framework7の<code>framework7.min.js</code>を使いたい場合GitHub上の以下のURLを一番上のテキストボックスに貼り付けます。</p>
+<p><a href="https://github.com/nolimits4web/Framework7/blob/master/dist/js/framework7.min.js" target="_blank" rel="noopener">https://github.com/nolimits4web/Framework7/blob/master/dist/js/framework7.min.js</a></p>
+<p>右側の開発環境用のテキストボックスに以下のURLが作成されます。</p>
+<p><a href="https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js" target="_blank" rel="noopener">https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js</a></p>
+<p>今回必要なURLは以下の3つです。</p>
+<ul>
+<li><p>framework7.min.js<br><a href="https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js" target="_blank" rel="noopener">https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js</a></p>
+</li>
+<li><p>framework7.ios.min.css<br><a href="https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.min.css" target="_blank" rel="noopener">https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.min.css</a></p>
+</li>
+<li><p>framework7.ios.colors.min.css<br><a href="https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.colors.min.css" target="_blank" rel="noopener">https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.colors.min.css</a></p>
+</li>
+</ul>
+<h2 id="コード"><a href="#コード" class="headerlink" title="コード"></a>コード</h2><p>今回作成したjsdo.itのコードは<a href="http://jsdo.it/ma6ato/ItiZ" target="_blank" rel="noopener">こちら</a>です。</p>
+<p><a href="http://jsdo.it/monakaz/w1gz" target="_blank" rel="noopener">LEDをコントロールしちゃおう☆</a>をForkしてFramework7用にコードを編集します。</p>
+<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><p>Framework7の基本のHTMLレイアウトは<a href="http://www.idangero.us/framework7/docs/app-layout.html" target="_blank" rel="noopener">こちら</a>のドキュメントページにあります。</p>
+<p>CSSとJavaScriptのロードは上記の<a href="https://rawgit.com/" target="_blank" rel="noopener">RawGit</a>で作成したURLを使います。また、各コンポーネントのドキュメントもちゃんと用意されているので使いやすいです。</p>
+<ul>
+<li>ボタン: <a href="http://www.idangero.us/framework7/docs/buttons.html" target="_blank" rel="noopener">Buttons</a></li>
+<li>リスト: <a href="http://www.idangero.us/framework7/docs/list-view.html" target="_blank" rel="noopener">List View</a></li>
+<li>スイッチ: <a href="http://www.idangero.us/framework7/docs/form-elements.html" target="_blank" rel="noopener">Form elements</a></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-capable"</span> <span class="attr">content</span>=<span class="string">"yes"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"apple-mobile-web-app-status-bar-style"</span> <span class="attr">content</span>=<span class="string">"black"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- Framework7 css --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.min.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/css/framework7.ios.colors.min.css"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>myThings F7<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"statusbar-overlay"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"panel-overlay"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"panel panel-left panel-reveal"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Left panel content goes here<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"views"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"view view-main"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"navbar"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"navbar-inner"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"center sliding"</span>&gt;</span>myThings F7<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"right"</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">class</span>=<span class="string">"link icon-only open-panel"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-bars"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"pages navbar-through toolbar-through"</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">div</span> <span class="attr">data-page</span>=<span class="string">"index"</span> <span class="attr">class</span>=<span class="string">"page"</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"page-content"</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block"</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#"</span> <span class="attr">id</span>=<span class="string">"btn-find"</span> <span class="attr">class</span>=<span class="string">"find button button-big"</span>&gt;</span>Find konashi<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"pio-setting"</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block-title"</span>&gt;</span>PIO: Output Settings<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-block"</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-toggle"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>LED2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-input"</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">"label-switch"</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"toggle"</span> <span class="attr">data-pin</span>=<span class="string">"1"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span>&gt;</span></span><br><span class="line">                                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"checkbox"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                    <span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"content-block-title"</span>&gt;</span>PIO: Input Settings<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"list-block"</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-settings"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>S1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                                <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-after"</span> <span class="attr">id</span>=<span class="string">"s1-status"</span>&gt;</span>OFF<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- for Framework7 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://rawgit.com/nolimits4web/Framework7/master/dist/js/framework7.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://konashi.ux-xu.com/kjs/konashi-bridge.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h3><p>参考にした<a href="http://jsdo.it/monakaz/w1gz" target="_blank" rel="noopener">コード</a>はjQuery互換の<a href="(http://zeptojs.com/)を使って`$`変数からDOM操作をしていました。Framework7の[Dom7](http://www.idangero.us/framework7/docs/dom.html">Zepto.js</a>は<code>$</code>を<code>$$</code>に置き換えるとそのまま使えました。</p>
+<p>コンポーネントは<a href="https://github.com/madrobby/zepto/blob/master/src/touch.js" target="_blank" rel="noopener">touch.js</a>とAPIが異なっているのでほぼ書き直しています。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">Framework7, $$</span>)</span>&#123;</span><br><span class="line">  $$(<span class="string">'.toggle'</span>).on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> pin = $$(e.currentTarget).data(<span class="string">"pin"</span>);</span><br><span class="line">    <span class="keyword">var</span> value = $$(<span class="string">'input'</span>).prop(<span class="string">'checked'</span>) ? k.HIGH : k.LOW;</span><br><span class="line">    k.digitalWrite(pin, value);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  $$(<span class="string">"#btn-find"</span>).on(<span class="string">"click"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>($$(<span class="string">"#btn-find"</span>).hasClass(<span class="string">"find"</span>))&#123;</span><br><span class="line">      k.find();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      k.disconnect();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// change find button</span></span><br><span class="line">      $$(<span class="string">"#btn-find"</span>)</span><br><span class="line">        .addClass(<span class="string">"find"</span>)</span><br><span class="line">        .html(<span class="string">"Find konashi"</span>)</span><br><span class="line">      ;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// hide pio list</span></span><br><span class="line">      $$(<span class="string">"#pio-setting"</span>).hide();</span><br><span class="line">      $$(<span class="string">"#s1-status"</span>).html(<span class="string">"OFF"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  k.on(<span class="string">"ready"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// change find button</span></span><br><span class="line">    $$(<span class="string">"#btn-find"</span>)</span><br><span class="line">      .removeClass(<span class="string">"find"</span>)</span><br><span class="line">      .html(<span class="string">"Disconnect konashi"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// show pio list</span></span><br><span class="line">    $$(<span class="string">"#pio-setting"</span>).show();</span><br><span class="line"></span><br><span class="line">    k.pinModeAll(<span class="number">254</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  k.updatePioInput( <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(data % <span class="number">2</span>)&#123;</span><br><span class="line">      $$(<span class="string">"#s1-status"</span>).html(<span class="string">"ON"</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      $$(<span class="string">"#s1-status"</span>).html(<span class="string">"OFF"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//k.showDebugLog();</span></span><br><span class="line">&#125;)(Framework7, Dom7);</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><p>konashiが見つかるまでLチカやタクトスイッチの操作画面を非表示にするためのスタイルです。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#pio-setting</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使い方"><a href="#使い方" class="headerlink" title="使い方"></a>使い方</h2><p>iPhoneに<a href="https://itunes.apple.com/jp/app/konashi.js-javascript-html/id652940096" target="_blank" rel="noopener">konashi.js</a>アプリをインストールして起動します。</p>
+<h3 id="jsdo-it-コード検索"><a href="#jsdo-it-コード検索" class="headerlink" title="jsdo.it コード検索"></a>jsdo.it コード検索</h3><p>検索から「Framework7でLチカ」を検索して実行します。</p>
+<p><img src="/2015/09/15/konashi20-framework7/konashi-f7.png" alt="konashi-f7.png"></p>
+<h3 id="Framework7でLチカ"><a href="#Framework7でLチカ" class="headerlink" title="Framework7でLチカ"></a>Framework7でLチカ</h3><p>左側に表示されているプレビューをタップします。</p>
+<p><img src="/2015/09/15/konashi20-framework7/konashi-f7-select.png" alt="konashi-f7-select.png"></p>
+<h3 id="Find-Konashi"><a href="#Find-Konashi" class="headerlink" title="Find Konashi"></a>Find Konashi</h3><p>「Find Konashi」ボタンをタップして自分のdkonashiを選択します。</p>
+<p><img src="/2015/09/15/konashi20-framework7/konashi-f7-find.png" alt="konashi-f7-find.png"></p>
+<h3 id="INPUTとOUTPUTを操作する"><a href="#INPUTとOUTPUTを操作する" class="headerlink" title="INPUTとOUTPUTを操作する"></a>INPUTとOUTPUTを操作する</h3><p>INPUTのLED2スイッチをONにすると、konashiのLED2が点灯します。konashiのタクトスイッチを押したり離したりするとS1の画面表記がON/OFFと変化します。</p>
+<p><img src="/2015/09/15/konashi20-framework7/konashi-f7-pio.png" alt="konashi-f7-pio.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/L%E3%83%81%E3%82%AB/" rel="tag"># Lチカ</a>
+              <a href="/tags/Framework7/" rel="tag"># Framework7</a>
+              <a href="/tags/konashi/" rel="tag"># konashi</a>
+              <a href="/tags/RawGit/" rel="tag"># RawGit</a>
+              <a href="/tags/CDN/" rel="tag"># CDN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/09/14/yql-currency/" rel="prev" title="YQLを使って為替レートを取得する">
+      <i class="fa fa-chevron-left"></i> YQLを使って為替レートを取得する
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/09/16/mythings-idcfchannel-trigger-edge/" rel="next" title="myThingsをはじめよう - Part7: トリガーの閾値監視をRaspberry Piで行う">
+      myThingsをはじめよう - Part7: トリガーの閾値監視をRaspberry Piで行う <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Framework7"><span class="nav-number">1.</span> <span class="nav-text">Framework7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RawGitをCDNに使う"><span class="nav-number">2.</span> <span class="nav-text">RawGitをCDNに使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Framework7のURL"><span class="nav-number">2.1.</span> <span class="nav-text">Framework7のURL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#コード"><span class="nav-number">3.</span> <span class="nav-text">コード</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTML"><span class="nav-number">3.1.</span> <span class="nav-text">HTML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript"><span class="nav-number">3.2.</span> <span class="nav-text">JavaScript</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CSS"><span class="nav-number">3.3.</span> <span class="nav-text">CSS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使い方"><span class="nav-number">4.</span> <span class="nav-text">使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jsdo-it-コード検索"><span class="nav-number">4.1.</span> <span class="nav-text">jsdo.it コード検索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Framework7でLチカ"><span class="nav-number">4.2.</span> <span class="nav-text">Framework7でLチカ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Find-Konashi"><span class="nav-number">4.3.</span> <span class="nav-text">Find Konashi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INPUTとOUTPUTを操作する"><span class="nav-number">4.4.</span> <span class="nav-text">INPUTとOUTPUTを操作する</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

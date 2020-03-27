@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Dockerコンテナのプロダクション運用を考えると、2014-05-23にCoreOSの正式サポートを発表したGCE、OrchardやStackdockのDocker-as-a-Service、DigitalOceanやVultrなどのVPSが候補になります。特にGCEはインスタンス起動がとても速く、gcutilでuser-dataにcloud-configを渡せるのでCoreOSの作成がとても簡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IDCFクラウドでCoreOSをディスクからインストールする">
+<meta property="og:url" content="http://masato.github.io/2014/06/03/idcf-coreos-install-disk/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Dockerコンテナのプロダクション運用を考えると、2014-05-23にCoreOSの正式サポートを発表したGCE、OrchardやStackdockのDocker-as-a-Service、DigitalOceanやVultrなどのVPSが候補になります。特にGCEはインスタンス起動がとても速く、gcutilでuser-dataにcloud-configを渡せるのでCoreOSの作成がとても簡">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-06-03T13:47:22.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.688Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="CoreOS">
+<meta property="article:tag" content="GCE">
+<meta property="article:tag" content="Vultr">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="cloud-config">
+<meta property="article:tag" content="idcf-compute-api">
+<meta property="article:tag" content="ProjectAtomic">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/06/03/idcf-coreos-install-disk/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>IDCFクラウドでCoreOSをディスクからインストールする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/06/03/idcf-coreos-install-disk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IDCFクラウドでCoreOSをディスクからインストールする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jun 3 2014 22:47:22" itemprop="dateCreated datePublished" datetime="2014-06-03T22:47:22+09:00">Jun 3 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Dockerコンテナのプロダクション運用を考えると、2014-05-23にCoreOSの正式サポートを発表したGCE、OrchardやStackdockのDocker-as-a-Service、DigitalOceanやVultrなどのVPSが候補になります。特にGCEはインスタンス起動がとても速く、gcutilでuser-dataにcloud-configを渡せるのでCoreOSの作成がとても簡単です。何回かIDCFクラウドでもCoreOSを使いたくて、ディスクやISOへのインストールを試しましたが、失敗してしまいました。BeagleBoneBlackへUbuntuをインストールしている間に、ディスクにインストールする方法がわかってきたので、また試してみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><code>Update 2014-06-28</code>: <a href="/2014/06/28/idcf-coreos-cluster">IDCFクラウドにCoreOSクラスタを構築する - Part1: CoreOSの準備</a></li>
+<li><code>Update 2014-07-10</code>: <a href="/2014/07/10/idcf-coreos-cluster-discovery">IDCFクラウドにCoreOSクラスタを構築する - Part2: CoreOSのディスカバリ</a></li>
+<li><code>Update 2014-07-15</code>: <a href="/2014/07/15/idcf-coreos-cluster-setting-up">IDCFクラウドにCoreOSクラスタを構築する - Part3: クラスタをセットアップ</a></li>
+<li><code>Update 2014-07-17</code>: <a href="/2014/07/17/idcf-coreos-cluster-36710/">IDCFクラウドにCoreOSクラスタを構築する - Part4: 367.1.0のissue</a></li>
+<li><code>Update 2014-07-19</code>: <a href="/2014/07/19/idcf-coreos-cluster-re-setting-up/">IDCFクラウドにCoreOSクラスタを構築する - Part5: 再セットアップ</a></li>
+<li><code>Update 2014-08-18</code>: <a href="/2014/08/15/deis-in-idcf-cloud-deploy/">IDCFクラウドでCoreOSをISOからインストールする</a></li>
+</ul>
+<p>Dockerコンテナのプロダクション運用を考えると、2014-05-23にCoreOSの正式サポートを<a href="http://googlecloudplatform.blogspot.jp/2014/05/official-coreos-images-are-now-available-on-google-compute-engine.html" target="_blank" rel="noopener">発表</a>したGCE、<br><a href="https://orchardup.com/" target="_blank" rel="noopener">Orchard</a>や<a href="https://stackdock.com/" target="_blank" rel="noopener">Stackdock</a>の<code>Docker-as-a-Service</code>、DigitalOceanや<a href="https://www.vultr.com/" target="_blank" rel="noopener">Vultr</a>などのVPSが候補になります。</p>
+<p>特に<a href="/2014/05/12/gce-coreos-cluster-prepare/">GCE</a>はインスタンス起動がとても速く、gcutilでuser-dataにcloud-configを渡せるのでCoreOSの作成がとても簡単です。</p>
+<p>何回かIDCFクラウドでもCoreOSを使いたくて、<a href="https://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">ディスク</a>や<a href="https://coreos.com/docs/running-coreos/platforms/iso/" target="_blank" rel="noopener">ISO</a>へのインストールを試しましたが、失敗してしまいました。<br><code>BeagleBoneBlack</code>へ<a href="/2014/05/03/beagleboneblack-ubuntu/">Ubuntuをインストール</a>している間に、ディスクにインストールする方法がわかってきたので、また試してみます。</p>
+<h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p>IDCFクラウド上でもCoreOSが動きました！VagrantやGCEで試していたクラスタ構築も次回試します。</p>
+<a id="more"></a>
+
+<h3 id="はじめに"><a href="#はじめに" class="headerlink" title="はじめに"></a>はじめに</h3><p>ディスクへの<a href="https://coreos.com/docs/running-coreos/bare-metal/installing-to-disk/" target="_blank" rel="noopener">インストール手順</a>はいつのまにか更新されていました。<br>ただ、CoreOSのドキュメントは全体的にちょっとインデックスがわかりづらいです。</p>
+<p><a href="http://www.idcf.jp/cloud/docs/" target="_blank" rel="noopener">idcf-compute-api</a>を便利に使うために、非同期ジョブの終了をポーリングして待機するスクリプトを用意しました。</p>
+<figure class="highlight bash"><figcaption><span>~/bin/waitjob</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$1</span>)</span><br><span class="line">  status=$(<span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse.jobstatus'</span>)</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;status&#125;</span> -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 10s</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">"\n"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">".queryasyncjobresultresponse | &#123;jobid: <span class="variable">$1</span>,jobresult&#125;"</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p>実行権限をつけておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod u+x ~/bin/waitjob</span><br></pre></td></tr></table></figure>
+
+<h3 id="ディスクの準備"><a href="#ディスクの準備" class="headerlink" title="ディスクの準備"></a>ディスクの準備</h3><p>作成するディスクの<a href="http://www.idcf.jp/cloud/docs/api/user/listDiskOfferings" target="_blank" rel="noopener">タイプ</a>を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listDiskOfferings -t=id,name</span><br><span class="line">+----+-------------+</span><br><span class="line">| id | name        |</span><br><span class="line">+----+-------------+</span><br><span class="line">| 10 | Custom Disk |</span><br><span class="line">+----+-------------+</span><br></pre></td></tr></table></figure>
+
+<p>80GBの<a href="http://www.idcf.jp/cloud/docs/api/user/createVolume" target="_blank" rel="noopener">ディスクを作成</a>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createVolume \</span><br><span class="line">  --name=coreos_disk \</span><br><span class="line">  --diskofferingid=10 \</span><br><span class="line">  --size=80 \</span><br><span class="line">  --zoneid=1 | jq <span class="string">'.createvolumeresponse | .jobid'</span> )</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobid"</span>: 1084505</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"volume"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"diskofferingname"</span>: <span class="string">"Custom Disk"</span>,</span><br><span class="line">      <span class="string">"diskofferingid"</span>: 10,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos_disk"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 85899345920,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"Allocated"</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>作成したディスクを作業マシンに<a href="http://www.idcf.jp/cloud/docs/api/user/attachVolume" target="_blank" rel="noopener">アタッチ</a>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api attachVolume \</span><br><span class="line">  --id=xxx \</span><br><span class="line">  --virtualmachineid=xxx | jq <span class="string">'.attachvolumeresponse | .jobid'</span>)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobid"</span>: 1084507</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">    <span class="string">"volume"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">      <span class="string">"vmstate"</span>: <span class="string">"Running"</span>,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"type"</span>: <span class="string">"DATADISK"</span>,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"diskofferingname"</span>: <span class="string">"Custom Disk"</span>,</span><br><span class="line">      <span class="string">"diskofferingid"</span>: 10,</span><br><span class="line">...</span><br><span class="line">      <span class="string">"name"</span>: <span class="string">"coreos_disk"</span>,</span><br><span class="line">      <span class="string">"size"</span>: 85899345920,</span><br><span class="line">      <span class="string">"state"</span>: <span class="string">"Ready"</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>一度作業マシンをrebootします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sodo reboot</span><br></pre></td></tr></table></figure>
+
+<p>reboot後に、fdiskでアタッチしたディスクを確認します。80GBが2つありますが、/dev/sdaはブートディスクなので<br>今回追加したディスクは、/dev/sddになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo fdisk -l | grep Disk</span><br><span class="line">....</span><br><span class="line">Disk /dev/sda: 85.9 GB, 85899345920 bytes</span><br><span class="line">Disk /dev/sdb: 107.4 GB, 107374182400 bytes</span><br><span class="line">Disk /dev/sdc: 42.9 GB, 42949672960 bytes</span><br><span class="line">Disk /dev/sdd: 85.9 GB, 85899345920 bytes</span><br></pre></td></tr></table></figure>
+
+<h3 id="インストールスクリプトの実行"><a href="#インストールスクリプトの実行" class="headerlink" title="インストールスクリプトの実行"></a>インストールスクリプトの実行</h3><p>CoreOSの<a href="https://raw.github.com/coreos/init/master/bin/coreos-install" target="_blank" rel="noopener">インストールスクリプト</a>をダウンロードします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/coreos_apps/</span><br><span class="line">$ wget https://raw.githubusercontent.com/coreos/init/master/bin/coreos-install</span><br><span class="line">$ chmod u+x coreos-install</span><br></pre></td></tr></table></figure>
+
+<p>cloud-configを用意します。<br>CoreOSはパスワード認証でSSH接続ができないため、ssh_authorized_keysに接続用の公開鍵を記述します。</p>
+<figure class="highlight bash"><figcaption><span>~/coreos_apps/config</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line">ssh_authorized_keys:</span><br><span class="line">  - ssh-rsa xxx</span><br></pre></td></tr></table></figure>
+
+<p>coreos-installを実行します。-cオプションで先ほど作成したcloud-configを指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./coreos-install -d /dev/sdd -C beta -c ./config</span><br><span class="line">Downloading and verifying coreos_production_image.bin.bz2...</span><br><span class="line">...</span><br><span class="line">Writing coreos_production_image.bin.bz2 to /dev/sdd...</span><br><span class="line">  /tmp/coreos-install.wMnXNZkXfg/coreos_production_image.bin.bz2: <span class="keyword">done</span></span><br><span class="line">Installing cloud-config...</span><br><span class="line">Success! CoreOS beta current is installed on /dev/sdd</span><br></pre></td></tr></table></figure>
+
+<p>CoreOSをインストールしたディスクを作業マシンにmountして中身を確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkdir /coremnt</span><br><span class="line">$ sudo mount -o subvol=root /dev/sdd9 /coremnt/</span><br><span class="line">$ ls -al /coremnt/</span><br></pre></td></tr></table></figure>
+
+<p>cloud-configは、<code>/var/lib/coreos-install/user_data</code>にインストールされています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cat /coremnt/var/lib/coreos-install/user_data</span><br><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line">ssh_authorized_keys:</span><br><span class="line">  - ssh-rsa　xxx</span><br></pre></td></tr></table></figure>
+
+<h3 id="テンプレートの作成"><a href="#テンプレートの作成" class="headerlink" title="テンプレートの作成"></a>テンプレートの作成</h3><p>ディスクを作業マシンからデタッチして、一度スナップショットを作成してからテンプレートを作成します。</p>
+<p>確認のためmountしたCoreOSのディスクをumountします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo umount /coremnt</span><br></pre></td></tr></table></figure>
+
+<p>ディスクを作業マシンから<a href="http://www.idcf.jp/cloud/docs/api/user/detachVolume" target="_blank" rel="noopener">デタッチ</a>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api detachVolume \</span><br><span class="line">  --id=xxx | jq <span class="string">'.detachvolumeresponse | .jobid'</span>)</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/createSnapshot" target="_blank" rel="noopener">スナップショットの取得</a>をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createSnapshot \</span><br><span class="line">  --volumeid=xxx | jq <span class="string">'.createsnapshotresponse | .jobid'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>事前にテンプレートを作成するときの<a href="http://www.idcf.jp/cloud/docs/api/user/listOsTypes" target="_blank" rel="noopener">OSタイプ</a>を確認します。<br>何でもよいですが、<code>Other (64-bit)</code>を使うことにします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listOsTypes -c | grep <span class="string">'Other Linux (64-bit)'</span></span><br><span class="line"><span class="string">"Other Linux (64-bit)"</span>,99,7</span><br></pre></td></tr></table></figure>
+
+<p>最後に、<a href="http://www.idcf.jp/cloud/docs/api/user/createTemplate" target="_blank" rel="noopener">テンプレートの作成</a>をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api createTemplate \</span><br><span class="line">  --snapshotid=xxx \</span><br><span class="line">  --displaytext=coreos-tpl-v2 \</span><br><span class="line">  --name=coreos-tpl-v2 \</span><br><span class="line">  --ostypeid=99 | jq <span class="string">'.createtemplateresponse  | .jobid'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="インスタンスの作成"><a href="#インスタンスの作成" class="headerlink" title="インスタンスの作成"></a>インスタンスの作成</h3><p>予め作成するインスタンスの<a href="http://www.idcf.jp/cloud/docs/api/user/listServiceOfferings" target="_blank" rel="noopener">タイプを確認</a>します。<br>今回はM4 ( 2CPU / 4GB )で作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings | jq <span class="string">'.listserviceofferingsresponse | .serviceoffering[] | select(.name == "M4") | &#123;id,displaytext&#125;'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"displaytext"</span>: <span class="string">"M4 ( 2CPU / 4GB )"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 21</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://www.idcf.jp/cloud/docs/api/user/deployVirtualMachine" target="_blank" rel="noopener">インスタンスの作成</a>をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ waitjob $(idcf-compute-api deployVirtualMachine \</span><br><span class="line">  --serviceofferingid=21 \</span><br><span class="line">  --templateid=xxx \</span><br><span class="line">  --zoneid=1 \</span><br><span class="line">  --name=coreos-v2 \</span><br><span class="line">  --displayname=coreos-v2 \</span><br><span class="line">  --group=mshimizu | jq <span class="string">'.deployvirtualmachineresponse | .jobid'</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="SSHでログインして確認"><a href="#SSHでログインして確認" class="headerlink" title="SSHでログインして確認"></a>SSHでログインして確認</h3><p>作業マシンからSSHで接続します。CoreOSのユーザー名は<code>core</code>です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/private_key</span><br><span class="line">$ ssh -A core@coreos-v2</span><br><span class="line">CoreOS (beta)</span><br><span class="line">core@coreos-v2 ~ $</span><br></pre></td></tr></table></figure>
+
+<p>dockerとfleetのバージョンを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker -v</span><br><span class="line">Docker version 0.11.1, build fb99f99</span><br><span class="line">$ fleet -version</span><br><span class="line">fleet version 0.3.3</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>RedHatが<a href="http://www.projectatomic.io/" target="_blank" rel="noopener">Project Atomic</a>を発表して、軽量OSとコンテナクラスタの分散管理は非常におもしろくなっています。<br><code>Datacenter-as-a-Computer</code>を目指そうとすると、ChromeOSを参考にしているCoreOSの方が楽しそうです。<br>DartやGoも勉強中なので。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoreOS/" rel="tag"># CoreOS</a>
+              <a href="/tags/GCE/" rel="tag"># GCE</a>
+              <a href="/tags/Vultr/" rel="tag"># Vultr</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/cloud-config/" rel="tag"># cloud-config</a>
+              <a href="/tags/idcf-compute-api/" rel="tag"># idcf-compute-api</a>
+              <a href="/tags/ProjectAtomic/" rel="tag"># ProjectAtomic</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/06/02/idcf-linuxmint17-part2/" rel="prev" title="IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part2: インストール編">
+      <i class="fa fa-chevron-left"></i> IDCFクラウドでLinuxMint17 MATEをxrdpから使う - Part2: インストール編
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/06/04/linuxmint17-mate-dart-editor/" rel="next" title="LinuxMint17 MATEにPPAでDart Editorをインストールする">
+      LinuxMint17 MATEにPPAでDart Editorをインストールする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#はじめに"><span class="nav-number">2.</span> <span class="nav-text">はじめに</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ディスクの準備"><span class="nav-number">3.</span> <span class="nav-text">ディスクの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールスクリプトの実行"><span class="nav-number">4.</span> <span class="nav-text">インストールスクリプトの実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#テンプレートの作成"><span class="nav-number">5.</span> <span class="nav-text">テンプレートの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インスタンスの作成"><span class="nav-number">6.</span> <span class="nav-text">インスタンスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHでログインして確認"><span class="nav-number">7.</span> <span class="nav-text">SSHでログインして確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

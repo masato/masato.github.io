@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="GCEにSaltをインストールしましたが、前にAnsibleのCloud Modulesを使っていたのを思い出しました。今回はバージョンは1.6.1の、gceモジュールでSalt MasterをGCEにプロビジョニングしてみます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AnsibleでGCEにSalt Masterをプロビジョニング">
+<meta property="og:url" content="http://masato.github.io/2014/05/19/ansible-gce-salt/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="GCEにSaltをインストールしましたが、前にAnsibleのCloud Modulesを使っていたのを思い出しました。今回はバージョンは1.6.1の、gceモジュールでSalt MasterをGCEにプロビジョニングしてみます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2014-05-19T10:58:23.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.534Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Ansible">
+<meta property="article:tag" content="Salt">
+<meta property="article:tag" content="GCE">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2014/05/19/ansible-gce-salt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>AnsibleでGCEにSalt Masterをプロビジョニング | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2014/05/19/ansible-gce-salt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AnsibleでGCEにSalt Masterをプロビジョニング
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 19 2014 19:58:23" itemprop="dateCreated datePublished" datetime="2014-05-19T19:58:23+09:00">May 19 2014</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">GCEにSaltをインストールしましたが、前にAnsibleのCloud Modulesを使っていたのを思い出しました。今回はバージョンは1.6.1の、gceモジュールでSalt MasterをGCEにプロビジョニングしてみます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2014/05/15/gce-salt-cloud/">GCEにSalt</a>をインストールしましたが、前に<a href="https://github.com/ansible/ansible" target="_blank" rel="noopener">Ansible</a>の<a href="http://docs.ansible.com/list_of_cloud_modules.html" target="_blank" rel="noopener">Cloud Modules</a>を使っていたのを思い出しました。<br>今回はバージョンは1.6.1の、<a href="http://docs.ansible.com/gce_module.html" target="_blank" rel="noopener">gce</a>モジュールで<code>Salt Master</code>をGCEにプロビジョニングしてみます。</p>
+<a id="more"></a>
+
+<h3 id="はじめに"><a href="#はじめに" class="headerlink" title="はじめに"></a>はじめに</h3><p>AnsibleはChefやSaltと違ってクライアントのインストールが不要です。ローカルへの実行もできます。<br><a href="http://docs.ansible.com/guide_gce.html" target="_blank" rel="noopener">Guide</a>と<a href="https://github.com/ansible/ansible/blob/devel/library/cloud/gce" target="_blank" rel="noopener">ソースコード</a>を読みながら作業を進めていきます。</p>
+<p>記述するファイルは少ないのですが、ディレクトリ構造を覚える必要があります。</p>
+<h3 id="GCE用のユーザー"><a href="#GCE用のユーザー" class="headerlink" title="GCE用のユーザー"></a>GCE用のユーザー</h3><p>gceuserにAnsibleの実行環境を作っていきます。プロジェクトを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo su - gceuser</span><br><span class="line">$ mkdir -p ansible_apps/gce</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ansibleのインストール"><a href="#Ansibleのインストール" class="headerlink" title="Ansibleのインストール"></a>Ansibleのインストール</h3><p>Ansibleとlibcloudをインストールします。libcloudは0.14+を使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install ansible apache-libcloud</span><br><span class="line">$ pip search ansible</span><br><span class="line">ansible                   - Radically simple IT automation</span><br><span class="line">  INSTALLED: 1.6.1 (latest)</span><br><span class="line">$ pip search apache-libcloud</span><br><span class="line">  INSTALLED: 0.14.1 (latest)</span><br></pre></td></tr></table></figure>
+
+<h3 id="GCE用クライアントIDの作成"><a href="#GCE用クライアントIDの作成" class="headerlink" title="GCE用クライアントIDの作成"></a>GCE用クライアントIDの作成</h3><p><a href="https://console.developers.google.com/project" target="_blank" rel="noopener">Google Developers Console</a>へログインし、現在使っているプロジェクトIDを開きます。<br>APIと認証 -&gt; 認証情報　-&gt; 新しいクライアントIDを作成 -&gt; サービスアカウント -&gt; と進み、クライアントIDを作成します。<br>salt-cloudで使うサービスアカウントの秘密鍵をダウンロードして、xxx-privatekey.p12の名前で保存します。</p>
+<p>サービスアカウントの鍵を<a href="http://en.wikipedia.org/wiki/PKCS_12" target="_blank" rel="noopener">PKCS12フォーマット</a>からコンバートします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/ansible_apps/gce</span><br><span class="line">$ openssl pkcs12 -<span class="keyword">in</span>  ./xxx-privatekey.p12 -passin pass:notasecret \</span><br><span class="line">-nodes -nocerts |openssl rsa -out ./service_account_private_key</span><br><span class="line">MAC verified OK</span><br><span class="line">writing RSA key</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ansibleプロジェクトディレクトリ"><a href="#Ansibleプロジェクトディレクトリ" class="headerlink" title="Ansibleプロジェクトディレクトリ"></a>Ansibleプロジェクトディレクトリ</h3><p>Ansibleは複数ファイルを書いて構成するので、ディレクトリ構造が重要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/ansible_apps</span><br><span class="line">$ tree gce</span><br><span class="line">gce</span><br><span class="line">├── xxx-privatekey.p12</span><br><span class="line">├── gce.yml</span><br><span class="line">├── hosts</span><br><span class="line">├── roles</span><br><span class="line">│   └── salt</span><br><span class="line">│       └── tasks</span><br><span class="line">│           └── main.yml</span><br><span class="line">└── service_account_private_key</span><br></pre></td></tr></table></figure>
+
+<p>インベントリファイルを作成します。localhostへはローカル接続するように指定します。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[localhost]</span><br><span class="line">localhost ansible_connection&#x3D;local</span><br></pre></td></tr></table></figure>
+
+<p>GCEプロビジョニング用のPlaybookです。ちょっと長いのでvars.ymlなどは分割した方がよさそうですが、<br>わかりやすいように、一つのファイルにしました。ZeroMQのポートも開けています。</p>
+<figure class="highlight yaml"><figcaption><span>~/ansible_apps/gce/gce.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Create</span> <span class="string">a</span> <span class="string">Sault</span> <span class="string">Master</span> <span class="string">instance</span></span><br><span class="line">  <span class="attr">hosts:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">gather_facts:</span> <span class="literal">no</span></span><br><span class="line">  <span class="attr">connection:</span> <span class="string">local</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">vars:</span></span><br><span class="line">    <span class="attr">machine_type:</span> <span class="string">n1-standard-1</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">debian-7</span></span><br><span class="line">    <span class="attr">service_account_email:</span> <span class="string">xxx.gserviceaccount.com</span></span><br><span class="line">    <span class="attr">pem_file:</span> <span class="string">service_account_private_key</span></span><br><span class="line">    <span class="attr">project_id:</span> <span class="string">xxx-xxx-456</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">names:</span> <span class="string">salt-master</span></span><br><span class="line">    <span class="attr">zone:</span> <span class="string">asia-east1-a</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">tasks:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Launch</span> <span class="string">instances</span></span><br><span class="line">      <span class="attr">local_action:</span> <span class="string">gce</span> <span class="string">instance_names"&amp;#123;&amp;#123;</span> <span class="string">names</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">machine_type="&amp;#123;&amp;#123;</span> <span class="string">machine_type</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">image="&amp;#123;&amp;#123;</span> <span class="string">image</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">zone="&amp;#123;&amp;#123;</span> <span class="string">zone</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">service_account_email="&amp;#123;&amp;#123;</span> <span class="string">service_account_email</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">pem_file="&amp;#123;&amp;#123;</span> <span class="string">pem_file</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">project_id="&amp;#123;&amp;#123;</span> <span class="string">project_id</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">      <span class="attr">tags:</span> <span class="string">salt-master</span></span><br><span class="line">      <span class="attr">register:</span> <span class="string">gce</span></span><br><span class="line"></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Wait</span> <span class="string">for</span> <span class="string">SSH</span> <span class="string">to</span> <span class="string">come</span> <span class="string">up</span></span><br><span class="line">      <span class="attr">local_action:</span> <span class="string">wait_for</span> <span class="string">host="&amp;#123;&amp;#123;</span> <span class="string">item.public_ip</span> <span class="string">&amp;#125;&amp;#125;"</span></span><br><span class="line">                    <span class="string">port=22</span></span><br><span class="line">                    <span class="string">delay=10</span></span><br><span class="line">                    <span class="string">timeout=60</span></span><br><span class="line">                    <span class="string">state=started</span></span><br><span class="line">      <span class="attr">with_items:</span> <span class="string">gce.instance_data</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Configure</span> <span class="string">instance(s)</span></span><br><span class="line">  <span class="attr">hosts:</span> <span class="string">launched</span></span><br><span class="line">  <span class="attr">sudo:</span> <span class="literal">True</span></span><br><span class="line">  <span class="attr">roles:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">salt</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Open</span> <span class="string">port</span> <span class="string">for</span> <span class="string">ZeroMQ</span></span><br><span class="line">  <span class="attr">hosts:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">connection:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">gather_facts:</span> <span class="literal">False</span></span><br><span class="line">  <span class="attr">tasks:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Allow</span> <span class="string">ZeroMQ</span> <span class="string">port</span></span><br><span class="line">      <span class="attr">local_action:</span></span><br><span class="line">        <span class="attr">module:</span> <span class="string">gce_net</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">default</span></span><br><span class="line">        <span class="attr">allowed:</span> <span class="string">tcp:4505,4506</span></span><br><span class="line">        <span class="attr">fwname:</span> <span class="string">all-zeromq</span></span><br><span class="line">        <span class="attr">service_account_email:</span> <span class="string">"&amp;#123;&amp;#123; service_account_email &amp;#125;&amp;#125;"</span></span><br><span class="line">        <span class="attr">pem_file:</span> <span class="string">"&amp;#123;&amp;#123; pem_file &amp;#125;&amp;#125;"</span></span><br><span class="line">        <span class="attr">project_id:</span> <span class="string">"&amp;#123;&amp;#123; project_id &amp;#125;&amp;#125;"</span></span><br></pre></td></tr></table></figure>
+
+<p>Salt Masterをインストールするロールを書きます。</p>
+<figure class="highlight yaml"><figcaption><span>~/ansible_apps/gce/roles/salt/tasks/main.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">install</span> <span class="string">Salt</span> <span class="string">Master</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">curl</span> <span class="string">-L</span> <span class="string">http://bootstrap.saltstack.org</span> <span class="string">|</span> <span class="string">sh</span> <span class="string">-s</span> <span class="string">--</span> <span class="string">-M</span> <span class="string">-N</span> <span class="string">git</span> <span class="string">develop</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">install</span> <span class="string">libcloud</span></span><br><span class="line">  <span class="attr">pip:</span> <span class="string">name=apache-libcloud</span></span><br></pre></td></tr></table></figure>
+
+<p>Playbookの実行をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ansible-playbook -i hosts gce.yml</span><br></pre></td></tr></table></figure>
+
+<p>作成したGCEのインスタンスにSSH接続します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gcutil ssh salt-master</span><br><span class="line">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span><br><span class="line">permitted by applicable law.</span><br><span class="line">gceuser@salt-master:~$</span><br></pre></td></tr></table></figure>
+
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>久しぶりにAnsibleを使いましたが、Saltに比べファイル分割が自分にはわかりにくい気がします。<br>最近はDockerfileに慣れているので、Ansible流にモジュールを覚えるのが、やはりChefやPuppetみたいでなんか面倒です。</p>
+<p><code>Docker on GCE with Salt</code>でプロビジョニングするの方が使いやすいようです。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Ansible/" rel="tag"># Ansible</a>
+              <a href="/tags/Salt/" rel="tag"># Salt</a>
+              <a href="/tags/GCE/" rel="tag"># GCE</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/05/19/salt-cloud-docker-provisioning/" rel="prev" title="SaltとDockerでクラウドプロビジョニング">
+      <i class="fa fa-chevron-left"></i> SaltとDockerでクラウドプロビジョニング
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/05/20/idcf-storage/" rel="next" title="IDCFオブジェクトストレージをs3cmdやbotoで使う">
+      IDCFオブジェクトストレージをs3cmdやbotoで使う <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#はじめに"><span class="nav-number">1.</span> <span class="nav-text">はじめに</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCE用のユーザー"><span class="nav-number">2.</span> <span class="nav-text">GCE用のユーザー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ansibleのインストール"><span class="nav-number">3.</span> <span class="nav-text">Ansibleのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GCE用クライアントIDの作成"><span class="nav-number">4.</span> <span class="nav-text">GCE用クライアントIDの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ansibleプロジェクトディレクトリ"><span class="nav-number">5.</span> <span class="nav-text">Ansibleプロジェクトディレクトリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

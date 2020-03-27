@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="サーバーサイドはio.jsとKoa、クライアントサイドはReactを使って、ES6で書くIsomorphicアプリを開発してみようと思います。まずはBoilerplateやチュートリアル、ライブラリなどのリソースを集めてみました。Koa、Reactに加えてBabel、Webpack or Browserifyというのが基本的なアーキテクチャになりそうです。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6で書くIsomorphicアプリ入門 - Part1: リソース">
+<meta property="og:url" content="http://masato.github.io/2015/07/02/iojs-es6-isomorphic-boilerplate/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="サーバーサイドはio.jsとKoa、クライアントサイドはReactを使って、ES6で書くIsomorphicアプリを開発してみようと思います。まずはBoilerplateやチュートリアル、ライブラリなどのリソースを集めてみました。Koa、Reactに加えてBabel、Webpack or Browserifyというのが基本的なアーキテクチャになりそうです。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-07-02T03:44:02.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.714Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="Isomorphic">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="Koa">
+<meta property="article:tag" content="Express">
+<meta property="article:tag" content="Hapijs">
+<meta property="article:tag" content="Webpack">
+<meta property="article:tag" content="packagejson">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/07/02/iojs-es6-isomorphic-boilerplate/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ES6で書くIsomorphicアプリ入門 - Part1: リソース | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/07/02/iojs-es6-isomorphic-boilerplate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ES6で書くIsomorphicアプリ入門 - Part1: リソース
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jul 2 2015 12:44:02" itemprop="dateCreated datePublished" datetime="2015-07-02T12:44:02+09:00">Jul 2 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">サーバーサイドはio.jsとKoa、クライアントサイドはReactを使って、ES6で書くIsomorphicアプリを開発してみようと思います。まずはBoilerplateやチュートリアル、ライブラリなどのリソースを集めてみました。Koa、Reactに加えてBabel、Webpack or Browserifyというのが基本的なアーキテクチャになりそうです。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>サーバーサイドは<a href="https://iojs.org/en/index.html" target="_blank" rel="noopener">io.js</a>と<a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>、クライアントサイドは<a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>を使って、<a href="https://iojs.org/ja/es6.html" target="_blank" rel="noopener">ES6</a>で書くIsomorphicアプリを開発してみようと思います。まずはBoilerplateやチュートリアル、ライブラリなどのリソースを集めてみました。。Koa、Reactに加えて<a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>、<a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a> or <a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>というのが基本的なアーキテクチャになりそうです。</p>
+<a id="more"></a>
+
+<h2 id="Isomorphic-React-Starter"><a href="#Isomorphic-React-Starter" class="headerlink" title="Isomorphic-React-Starter"></a>Isomorphic-React-Starter</h2><p><strong>Update: 2015-08-29</strong></p>
+<p>Webデザインと開発のチュートリアルサイトの<a href="http://www.sitepoint.com/" target="_blank" rel="noopener">SitePoint</a>に、Isomorphicアプリ開発の簡単な<a href="http://www.sitepoint.com/creating-isomorphic-apps-node-js-react-express/" target="_blank" rel="noopener">チュートリアル</a>が掲載されています。Getting Startedにはちょうど良いです。</p>
+<p>また、package.jsonのscriptsフィールドのサンプルが書いてあります。babelでトランスパイラしたりwebpackの開発サーバーを起動するので、こんな感じでまとめることが多いです。</p>
+<figure class="highlight"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">"clean": "rm -rf lib",</span><br><span class="line">"watch-js": "./node_modules/.bin/babel src -d lib --experimental -w",</span><br><span class="line">"dev-server": "node lib/server/webpack",</span><br><span class="line">"server": "nodemon lib/server/server",</span><br><span class="line">"start": "npm run watch-js &amp; npm run dev-server &amp; npm run server",</span><br><span class="line">"build": "npm run clean &amp;&amp; ./node_modules/.bin/babel src -d lib --experimental"</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/sitepoint-editors/Isomorphic-React-Starter" target="_blank" rel="noopener">Isomorphic-React-Starter</a></li>
+<li><a href="http://www.sitepoint.com/creating-isomorphic-apps-node-js-react-express/" target="_blank" rel="noopener">Creating Isomorphic Apps with Node.js, React, and Express</a></li>
+</ul>
+<h3 id="構成"><a href="#構成" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="https://github.com/rackt/react-router" target="_blank" rel="noopener">react-router</a>: Router</li>
+<li><a href="http://jade-lang.com/" target="_blank" rel="noopener">Jade</a>: テンプレート</li>
+</ul>
+<h2 id="The-React-js-Way"><a href="#The-React-js-Way" class="headerlink" title="The React.js Way"></a>The React.js Way</h2><p>ハンガリーの<a href="http://risingstack.com/" target="_blank" rel="noopener">RisingStack</a>のブログに<code>The React.js Way</code>というポストがあります。簡単なReactのチュートリアルとFluxアーキテクチャの説明が書いてあります。リポジトリもそれぞれ公開されているので手を動かしながら勉強ができます。</p>
+<ul>
+<li><a href="http://blog.risingstack.com/the-react-way-getting-started-tutorial" target="_blank" rel="noopener">The React.js Way: Getting Started Tutorial</a></li>
+<li><a href="https://github.com/RisingStack/react-way-getting-started" target="_blank" rel="noopener">react-way-getting-started</a></li>
+<li><a href="http://blog.risingstack.com/the-react-js-way-flux-architecture-with-immutable-js/" target="_blank" rel="noopener">The React.js Way: Flux Architecture with Immutable.js</a></li>
+<li><a href="https://github.com/RisingStack/react-way-immutable-flux" target="_blank" rel="noopener">react-way-immutable-flux</a></li>
+</ul>
+<h3 id="構成-1"><a href="#構成-1" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="http://facebook.github.io/flux/" target="_blank" rel="noopener">Flux</a>: Flux</li>
+<li><a href="https://facebook.github.io/immutable-js/" target="_blank" rel="noopener">Immutable.js</a>: コレクション</li>
+<li><a href="https://facebook.github.io/jest/" target="_blank" rel="noopener">Jest</a>: テスト</li>
+</ul>
+<h2 id="React-Starter-Kit"><a href="#React-Starter-Kit" class="headerlink" title="React Starter Kit"></a>React Starter Kit</h2><p>ロシアの<a href="http://www.kriasoft.com/" target="_blank" rel="noopener">Kriasoft</a>が開発しているReactの<a href="https://github.com/kriasoft/react-starter-kit" target="_blank" rel="noopener">テンプレート</a>です。RisingStackのチュートリアルと似ていますが、<a href="http://www.browsersync.io/" target="_blank" rel="noopener">BrowserSync</a>など<a href="https://github.com/kriasoft/react-starter-kit/blob/master/package.json" target="_blank" rel="noopener">package.json</a>を読むといまどきの開発環境を積極的に使っています。</p>
+<ul>
+<li><a href="http://www.reactstarterkit.com/" target="_blank" rel="noopener">React Starter Kit</a></li>
+</ul>
+<h3 id="構成-2"><a href="#構成-2" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://facebook.github.io/flux/" target="_blank" rel="noopener">Flux</a>: Flux</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="https://facebook.github.io/jest/" target="_blank" rel="noopener">Jest</a>: テスト</li>
+</ul>
+<h2 id="React-Isomorphic-Starterkit"><a href="#React-Isomorphic-Starterkit" class="headerlink" title="React Isomorphic Starterkit"></a>React Isomorphic Starterkit</h2><p><a href="https://github.com/RickWong/react-isomorphic-starterkit" target="_blank" rel="noopener">React Isomorphic Starterkit</a>はサーバーサイドに<a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>を採用しています。RisingStackの<a href="http://blog.risingstack.com/hapi-on-steroids-using-generator-functions-with-hapi/" target="_blank" rel="noopener">Hapi on Steroids - Using Generator Functions with Hapi</a>のポストにもHapi.jsをES6で書くサンプルがあります。</p>
+<ul>
+<li><a href="https://github.com/RickWong/react-isomorphic-starterkit" target="_blank" rel="noopener">React Isomorphic Starterkit</a></li>
+<li><a href="https://gist.github.com/grabbou/ead3e217a5e445929f14" target="_blank" rel="noopener">How to use ES6 generators with Hapi.js &lt;3</a></li>
+</ul>
+<h3 id="構成-3"><a href="#構成-3" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+</ul>
+<h2 id="Este-js"><a href="#Este-js" class="headerlink" title="Este.js"></a>Este.js</h2><p><a href="https://github.com/este/este" target="_blank" rel="noopener">Este.js</a>はAngularJSが苦手な方に良いみたいです。フルスタックの<code>universal funtional</code> webアプリのためのスタータキットです。煽りが刺激的です。<a href="http://learn-reactjs.com/" target="_blank" rel="noopener">Learn React.js</a>によるとチェコの方が開発されています。</p>
+<ul>
+<li><p><a href="https://github.com/este/este" target="_blank" rel="noopener">Este.js</a></p>
+</li>
+<li><p><a href="http://learn-reactjs.com/" target="_blank" rel="noopener">Learn React.js</a></p>
+</li>
+<li><p><a href="https://medium.com/este-js-framework" target="_blank" rel="noopener">Este.js Framework</a></p>
+</li>
+<li><p><a href="https://github.com/steida/este-todomvc" target="_blank" rel="noopener">este-todomvc</a></p>
+</li>
+<li><p><a href="https://medium.com/este-js-framework/whats-wrong-with-angular-js-97b0a787f903" target="_blank" rel="noopener">What’s wrong with Angular 1</a></p>
+</li>
+<li><p><a href="https://medium.com/este-js-framework/what-i-would-recommend-instead-of-angular-js-62b057d8a9e" target="_blank" rel="noopener">What I would recommend instead of Angular.js?</a></p>
+</li>
+</ul>
+<h3 id="構成-4"><a href="#構成-4" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="http://facebook.github.io/flux/" target="_blank" rel="noopener">Flux</a>: Flux</li>
+<li><a href="https://facebook.github.io/immutable-js/" target="_blank" rel="noopener">Immutable.js</a>: コレクション</li>
+</ul>
+<h2 id="react-isomorphic-boilerplate"><a href="#react-isomorphic-boilerplate" class="headerlink" title="react-isomorphic-boilerplate"></a>react-isomorphic-boilerplate</h2><p>Joseph Furlott氏がポストしている2つのチュートリアルは非常にわかりやすく、<a href="https://github.com/jmfurlott/react-isomorphic-boilerplate" target="_blank" rel="noopener">react-isomorphic-boilerplate</a>のウォークスルーになっています。特に<a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>と<a href="https://github.com/rackt/react-router" target="_blank" rel="noopener">react-router</a>の使い方がとても勉強になります。</p>
+<ul>
+<li><p><a href="https://github.com/jmfurlott/react-isomorphic-boilerplate" target="_blank" rel="noopener">react-isomorphic-boilerplate</a></p>
+</li>
+<li><p><a href="http://jmfurlott.com/tutorial-setting-up-a-simple-isomorphic-react-app/" target="_blank" rel="noopener">Tutorial: Setting Up a Simple Isomorphic React app</a></p>
+</li>
+<li><p><a href="http://jmfurlott.com/tutorial-setting-up-a-single-page-react-web-app-with-react-router-and-webpack/" target="_blank" rel="noopener">Tutorial: Setting Up a Single Page React Web App with React-router and Webpack</a></p>
+</li>
+</ul>
+<h3 id="構成-5"><a href="#構成-5" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="https://github.com/rackt/react-router" target="_blank" rel="noopener">react-router</a>: Router</li>
+<li><a href="http://jade-lang.com/" target="_blank" rel="noopener">Jade</a>: テンプレート</li>
+</ul>
+<h2 id="UniversalJS-Boilerplate"><a href="#UniversalJS-Boilerplate" class="headerlink" title="UniversalJS Boilerplate"></a>UniversalJS Boilerplate</h2><p><a href="https://github.com/carlosazaustre/universal-js-boilerplate" target="_blank" rel="noopener">UniversalJS Boilerplate</a>は<code>universal (isomorphic)</code>なwebアプリのためのboilerplateです。</p>
+<ul>
+<li><a href="https://github.com/carlosazaustre/universal-js-boilerplate" target="_blank" rel="noopener">UniversalJS Boilerplate</a></li>
+</ul>
+<h3 id="構成-6"><a href="#構成-6" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>: モジュール管理</li>
+</ul>
+<h2 id="isomorphic-flux-boilerplate"><a href="#isomorphic-flux-boilerplate" class="headerlink" title="isomorphic-flux-boilerplate"></a>isomorphic-flux-boilerplate</h2><p><a href="https://github.com/iam4x/isomorphic-flux-boilerplate" target="_blank" rel="noopener">ES6 Isomorphic Flux/ReactJS Boilerplate</a>はKoaとReactを使うIsomorphicアプリのBoilerplateです。Fluxの実装には<a href="http://alt.js.org/" target="_blank" rel="noopener">Alt</a>を使っています。</p>
+<ul>
+<li><a href="https://github.com/iam4x/isomorphic-flux-boilerplate" target="_blank" rel="noopener">ES6 Isomorphic Flux/ReactJS(Boilerplate</a></li>
+<li><a href="http://isomorphic.iam4x.fr/" target="_blank" rel="noopener">demo</a></li>
+</ul>
+<h3 id="構成-7"><a href="#構成-7" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+<li><a href="http://alt.js.org/" target="_blank" rel="noopener">Alt</a>: Flux</li>
+<li><a href="https://github.com/goatslacker/iso" target="_blank" rel="noopener">Iso</a>: Isomorphicのヘルパー</li>
+</ul>
+<h2 id="ES6-boilerplate-SPA"><a href="#ES6-boilerplate-SPA" class="headerlink" title="ES6 boilerplate SPA"></a>ES6 boilerplate SPA</h2><p><a href="http://isomorphic.iam4x.fr/" target="_blank" rel="noopener">ES6 boilerplate SPA</a>は、ES6でSPAを書くためのBoilerplateです。簡単なhello-worldアプリのサンプルになっています。</p>
+<ul>
+<li><a href="https://github.com/greim/es6-boilerplate" target="_blank" rel="noopener">es6-boilerplate</a></li>
+<li><a href="http://www.reddit.com/r/javascript/comments/2zun7t/boilerplate_single_page_app_using_es6_koa_and/" target="_blank" rel="noopener">Boilerplate single page app using ES6, Koa and React.</a></li>
+</ul>
+<h3 id="構成-8"><a href="#構成-8" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>: モジュール管理</li>
+</ul>
+<h2 id="koa-react-full-example"><a href="#koa-react-full-example" class="headerlink" title="koa-react-full-example"></a>koa-react-full-example</h2><p><a href="https://github.com/dozoisch/koa-react-full-example" target="_blank" rel="noopener">koa-react-full-example</a>は、KoaやReactに加えて、<a href="https://www.npmjs.com/package/passport" target="_blank" rel="noopener">Passport</a>の認証、<a href="http://mongoosejs.com/" target="_blank" rel="noopener">Mongoose</a>のMongoDBなども使う、本格的なアプリのサンプルです。</p>
+<h3 id="構成-9"><a href="#構成-9" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://webpack.github.io/" target="_blank" rel="noopener">Webpack</a>: モジュール管理</li>
+</ul>
+<h2 id="Deku"><a href="#Deku" class="headerlink" title="Deku"></a>Deku</h2><p><a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>はReactのクライアントサイドのalternativeです。サーバーサイドとの依存関係はありませんが、READMEにはKoaを使う例が書いてあります。<a href="https://github.com/dekujs/todomvc" target="_blank" rel="noopener">TodoMVC</a>がサンプル実装です。</p>
+<ul>
+<li><a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a></li>
+<li><a href="https://github.com/dekujs/todomvc" target="_blank" rel="noopener">TodoMVC</a></li>
+</ul>
+<h3 id="構成-10"><a href="#構成-10" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+<li><a href="http://duojs.org/" target="_blank" rel="noopener">Duo</a>: パッケージ管理</li>
+<li><a href="http://browserify.org/" target="_blank" rel="noopener">Browserify</a>: モジュール管理</li>
+</ul>
+<h2 id="horse"><a href="#horse" class="headerlink" title="horse"></a>horse</h2><p><a href="https://github.com/reddit/horse" target="_blank" rel="noopener">horse</a>は<a href="reddit">reddit</a>が開発している、Isomorphicアプリを開発するためのヘルパーパッケージです。<a href="https://github.com/reddit/horse-react" target="_blank" rel="noopener">horse-react</a>がサンプル実装です。</p>
+<ul>
+<li><a href="https://github.com/reddit/horse" target="_blank" rel="noopener">horse</a></li>
+<li><a href="https://github.com/reddit/horse-react" target="_blank" rel="noopener">horse-react</a></li>
+</ul>
+<h3 id="構成-11"><a href="#構成-11" class="headerlink" title="構成"></a>構成</h3><ul>
+<li><a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>: サーバーサイド</li>
+<li><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>: クライアントサイド</li>
+<li><a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>: コンパイラ</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/Isomorphic/" rel="tag"># Isomorphic</a>
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/Koa/" rel="tag"># Koa</a>
+              <a href="/tags/Express/" rel="tag"># Express</a>
+              <a href="/tags/Hapijs/" rel="tag"># Hapijs</a>
+              <a href="/tags/Webpack/" rel="tag"># Webpack</a>
+              <a href="/tags/packagejson/" rel="tag"># packagejson</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/07/01/raspberrypi-bme280-meshblu-mqtt/" rel="prev" title="Raspberry Pi 2からBME280環境センサのデータをPythonでMQTT publishする">
+      <i class="fa fa-chevron-left"></i> Raspberry Pi 2からBME280環境センサのデータをPythonでMQTT publishする
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/07/03/iojs-es6-isomorphic-repl/" rel="next" title="ES6で書くIsomorphicアプリ入門 - Part2: ブラウザから使えるREPL">
+      ES6で書くIsomorphicアプリ入門 - Part2: ブラウザから使えるREPL <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Isomorphic-React-Starter"><span class="nav-number">1.</span> <span class="nav-text">Isomorphic-React-Starter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成"><span class="nav-number">1.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-React-js-Way"><span class="nav-number">2.</span> <span class="nav-text">The React.js Way</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-1"><span class="nav-number">2.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Starter-Kit"><span class="nav-number">3.</span> <span class="nav-text">React Starter Kit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-2"><span class="nav-number">3.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Isomorphic-Starterkit"><span class="nav-number">4.</span> <span class="nav-text">React Isomorphic Starterkit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-3"><span class="nav-number">4.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Este-js"><span class="nav-number">5.</span> <span class="nav-text">Este.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-4"><span class="nav-number">5.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react-isomorphic-boilerplate"><span class="nav-number">6.</span> <span class="nav-text">react-isomorphic-boilerplate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-5"><span class="nav-number">6.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UniversalJS-Boilerplate"><span class="nav-number">7.</span> <span class="nav-text">UniversalJS Boilerplate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-6"><span class="nav-number">7.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#isomorphic-flux-boilerplate"><span class="nav-number">8.</span> <span class="nav-text">isomorphic-flux-boilerplate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-7"><span class="nav-number">8.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES6-boilerplate-SPA"><span class="nav-number">9.</span> <span class="nav-text">ES6 boilerplate SPA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-8"><span class="nav-number">9.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#koa-react-full-example"><span class="nav-number">10.</span> <span class="nav-text">koa-react-full-example</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-9"><span class="nav-number">10.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deku"><span class="nav-number">11.</span> <span class="nav-text">Deku</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-10"><span class="nav-number">11.1.</span> <span class="nav-text">構成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#horse"><span class="nav-number">12.</span> <span class="nav-text">horse</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#構成-11"><span class="nav-number">12.1.</span> <span class="nav-text">構成</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

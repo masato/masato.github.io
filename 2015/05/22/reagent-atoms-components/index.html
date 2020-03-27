@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Reactアプリは親子関係があるcomponentで構成された木構造になります。前回は静的なcomponentを作成しましたが実際のcomponentはstateとpropsを持ちます。Reagentではatomを使いReactのstateを抽象化します。stateとpropsの厳密な区別が不要で、Reactよりも複雑なモデルをcomponentで作成することができます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reagent入門 - Part2: atomとcomponentとthreading macro">
+<meta property="og:url" content="http://masato.github.io/2015/05/22/reagent-atoms-components/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="Reactアプリは親子関係があるcomponentで構成された木構造になります。前回は静的なcomponentを作成しましたが実際のcomponentはstateとpropsを持ちます。Reagentではatomを使いReactのstateを抽象化します。stateとpropsの厳密な区別が不要で、Reactよりも複雑なモデルをcomponentで作成することができます。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2015-05-22T14:49:35.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.878Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="ClojureScript">
+<meta property="article:tag" content="Reagent">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://masato.github.io/2015/05/22/reagent-atoms-components/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Reagent入門 - Part2: atomとcomponentとthreading macro | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/05/22/reagent-atoms-components/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Reagent入門 - Part2: atomとcomponentとthreading macro
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: May 22 2015 23:49:35" itemprop="dateCreated datePublished" datetime="2015-05-22T23:49:35+09:00">May 22 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">Reactアプリは親子関係があるcomponentで構成された木構造になります。前回は静的なcomponentを作成しましたが実際のcomponentはstateとpropsを持ちます。Reagentではatomを使いReactのstateを抽象化します。stateとpropsの厳密な区別が不要で、Reactよりも複雑なモデルをcomponentで作成することができます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://facebook.github.io/react/" target="_blank" rel="noopener">React</a>アプリは親子関係があるcomponentで構成された木構造になります。<a href="/2015/05/22/reagent-tutorials-static-mock/">Part1</a>では静的なcomponentを作成しましたが実際のcomponentはstateとpropsを持ちます。<a href="https://github.com/clojure/clojurescript" target="_blank" rel="noopener">ClojureScript</a>の<a href="http://reagent-project.github.io/" target="_blank" rel="noopener">Reagent</a>では<a href="http://clojure.org/" target="_blank" rel="noopener">Clojure</a>の<a href="https://clojuredocs.org/clojure.core/atom" target="_blank" rel="noopener">atom</a>を拡張したatomを使いReactのstateを抽象化します。stateとpropsの厳密な区別が不要で、Reactよりも複雑なモデルをcomponentで作成することができます。</p>
+<a id="more"></a>
+
+<h2 id="Reactのstateとprops"><a href="#Reactのstateとprops" class="headerlink" title="Reactのstateとprops"></a>Reactのstateとprops</h2><p>Reactアプリはcomopnentで構成します。子componentの共通の親componentがstateを持ち、子componentへpropsとして渡します。stateを持つだけの親componentを作る場合もあります。親が管理をして子は使う関係になります。</p>
+<h3 id="stateの特徴"><a href="#stateの特徴" class="headerlink" title="stateの特徴"></a>stateの特徴</h3><ul>
+<li>値が変化する</li>
+<li>stateが変更されるとcomponentは再描画される</li>
+</ul>
+<h3 id="propsの特徴"><a href="#propsの特徴" class="headerlink" title="propsの特徴"></a>propsの特徴</h3><ul>
+<li>immutableで値が変化しない</li>
+<li>親から渡される値</li>
+<li>stateや他のpropsから計算される値</li>
+</ul>
+<h2 id="atom"><a href="#atom" class="headerlink" title="atom"></a>atom</h2><p>Reagentではstateをatomで抽象化します。</p>
+<ul>
+<li>steteを定義して値の変化を監視する</li>
+<li>イベントハンドラが変化を受け付けて値を更新する</li>
+</ul>
+<h3 id="Reagent独自のatom"><a href="#Reagent独自のatom" class="headerlink" title="Reagent独自のatom"></a>Reagent独自のatom</h3><p>Reagentのatom(ratom)は通常のClojureのatomと同じように動作します。atomの値が変化があると、derefしているすべてのcomponentが自動的に再描画される点が通常のatomとは異なります。</p>
+<h3 id="atomの操作"><a href="#atomの操作" class="headerlink" title="atomの操作"></a>atomの操作</h3><p>副作用の関数を使ってatomの値を更新します。副作用の関数は<a href="https://clojuredocs.org/clojure.core/reset!" target="_blank" rel="noopener">reset!</a>や<a href="https://clojuredocs.org/clojure.core/swap!" target="_blank" rel="noopener">swap!</a>のように<code>!</code>でsuffixされています。</p>
+<h2 id="使い方"><a href="#使い方" class="headerlink" title="使い方"></a>使い方</h2><p>以下のサイトを参考にしてatomとcomponentの使い方を見ていきます。</p>
+<ul>
+<li><a href="http://yogthos.net/posts/2014-07-15-Building-Single-Page-Apps-with-Reagent.html" target="_blank" rel="noopener">BUILDING SINGLE PAGE APPS WITH REAGENT</a></li>
+<li><a href="http://facebook.github.io/react/docs/thinking-in-react.html#step-3-identify-the-minimal-but-complete-representation-of-ui-state" target="_blank" rel="noopener">Step 3: Identify the minimal (but complete) representation of UI state</a></li>
+<li><a href="http://blog.scalac.io/2015/04/02/clojurescript-reactjs-reagent.html" target="_blank" rel="noopener">Functional programming on frontend with React &amp; ClojureScript</a></li>
+</ul>
+<h3 id="globalなatom"><a href="#globalなatom" class="headerlink" title="globalなatom"></a>globalなatom</h3><p>次の例ではdocument全体のstateを管理するglobalなatomを定義しています。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">def</span></span> state (<span class="name"><span class="builtin-name">atom</span></span> &#123;<span class="symbol">:doc</span> &#123;&#125; <span class="symbol">:saved?</span> <span class="literal">false</span>&#125;))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> set-value! [id value]</span><br><span class="line">  (<span class="name"><span class="builtin-name">swap!</span></span> state assoc <span class="symbol">:saved?</span> <span class="literal">false</span>)</span><br><span class="line">  (<span class="name"><span class="builtin-name">swap!</span></span> state assoc-in [<span class="symbol">:doc</span> id] value))</span><br></pre></td></tr></table></figure>
+
+<p>atomの値を参照(deref)する場合は、<code>@state</code>のように<code>@</code>をprefixします。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> get-value [id]</span><br><span class="line">  (<span class="name"><span class="builtin-name">get-in</span></span> @state [<span class="symbol">:doc</span> id]))</span><br></pre></td></tr></table></figure>
+
+<h3 id="home-component"><a href="#home-component" class="headerlink" title="home component"></a>home component</h3><p>home componentが一番親のcomponentになります。input、list、buttonのcomponentを子に持ちます</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(defn home []</span><br><span class="line">  [:div</span><br><span class="line">    [:div.page-header [:h1 &quot;Reagent Form&quot;]]</span><br><span class="line"></span><br><span class="line">    [text-input :first-name &quot;First name&quot;]</span><br><span class="line">    [text-input :last-name &quot;Last name&quot;]</span><br><span class="line">    [selection-list :favorite-drinks &quot;Favorite drinks&quot;</span><br><span class="line">     [:coffee &quot;Coffee&quot;]</span><br><span class="line">     [:beer &quot;Beer&quot;]</span><br><span class="line">     [:crab-juice &quot;Crab juice&quot;]]</span><br><span class="line"></span><br><span class="line">   (if (:saved? @state)</span><br><span class="line">     [:p &quot;Saved&quot;]</span><br><span class="line">     [:button &#123;:type &quot;submit&quot;</span><br><span class="line">              :class &quot;btn btn-default&quot;</span><br><span class="line">              :onClick save-doc&#125;</span><br><span class="line">     &quot;Submit&quot;])])</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="input-component"><a href="#input-component" class="headerlink" title="input component"></a>input component</h3><p><code>text-input</code>関数は<code>row</code>関数を定義してcomponentを作成します。<code>row</code>関数は直接実行せずベクターで定義します。関数の実行はReagentが必要なときに自動的に行います。onChangeイベントが発火されると<code>set-value</code>関数が実行されてinputフィールドの新しいの値でstateを更新します。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> row [label input]</span><br><span class="line">  [<span class="symbol">:div.row</span></span><br><span class="line">    [<span class="symbol">:div.col-md-2</span> [<span class="symbol">:label</span> label]]</span><br><span class="line">    [<span class="symbol">:div.col-md-5</span> input]])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> text-input [id label]</span><br><span class="line">  [row label</span><br><span class="line">   [<span class="symbol">:input</span></span><br><span class="line">     &#123;<span class="symbol">:type</span> <span class="string">"text"</span></span><br><span class="line">       <span class="symbol">:class</span> <span class="string">"form-control"</span></span><br><span class="line">       <span class="symbol">:value</span> (<span class="name">get-value</span> id)</span><br><span class="line">       <span class="symbol">:on-change</span> #(<span class="name">set-value!</span> id (<span class="name"><span class="builtin-name">-&gt;</span></span> % .-target .-value))&#125;]])</span><br></pre></td></tr></table></figure>
+
+<h3 id="gt-threading-macro"><a href="#gt-threading-macro" class="headerlink" title="-&gt; threading macro"></a>-&gt; threading macro</h3><p><code>-&gt;</code> スレッディングマクロは左から右に連続して次の関数の関数を実行します。<a href="http://stackoverflow.com/questions/4579226/what-does-do-in-clojure" target="_blank" rel="noopener">What does -&gt; do in clojure?</a>に例があります。(+ 2 3)の結果の5が次の関数の先頭に送信されます。(- 5 7)を評価するので結果は-2になります。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">-&gt;</span></span> <span class="number">2</span> (<span class="name"><span class="builtin-name">+</span></span> <span class="number">3</span>) (<span class="name"><span class="builtin-name">-</span></span> <span class="number">7</span>))</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="list-component"><a href="#list-component" class="headerlink" title="list component"></a>list component</h3><p>comopnentの中でlocalなatomをletで作成することもできます。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> selection-list [id label &amp; items]</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [selections (<span class="name"><span class="builtin-name">-&gt;&gt;</span></span> items (<span class="name"><span class="builtin-name">map</span></span> (<span class="name"><span class="builtin-name">fn</span></span> [[k]] [k <span class="literal">false</span>])) (<span class="name"><span class="builtin-name">into</span></span> &#123;&#125;) atom)]    </span><br><span class="line">    (<span class="name"><span class="builtin-name">fn</span></span> []</span><br><span class="line">      [<span class="symbol">:div.row</span></span><br><span class="line">       [<span class="symbol">:div.col-md-2</span> [<span class="symbol">:span</span> label]]</span><br><span class="line">       [<span class="symbol">:div.col-md-5</span></span><br><span class="line">        [<span class="symbol">:div.row</span></span><br><span class="line">         (<span class="name"><span class="builtin-name">for</span></span> [[k v] items]</span><br><span class="line">          [list-item id k v selections])]]])))</span><br></pre></td></tr></table></figure>
+
+<p><code>list-item</code>関数はli componentを作成します。onClkickイベントが発火されるとatomのselectionsに新しい値をセットします。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> list-item [id k v selections]</span><br><span class="line">  (<span class="name"><span class="builtin-name">letfn</span></span> [(<span class="name">handle-click!</span> []</span><br><span class="line">            (<span class="name"><span class="builtin-name">swap!</span></span> selections update-in [k] not)</span><br><span class="line">            (<span class="name">set-value!</span> id (<span class="name"><span class="builtin-name">-&gt;&gt;</span></span> @selections</span><br><span class="line">                                (<span class="name"><span class="builtin-name">filter</span></span> second)</span><br><span class="line">                                (<span class="name"><span class="builtin-name">map</span></span> first))))]</span><br><span class="line">    [<span class="symbol">:li</span> &#123;<span class="symbol">:class</span> (<span class="name"><span class="builtin-name">str</span></span> <span class="string">"list-group-item"</span></span><br><span class="line">                      (<span class="name"><span class="builtin-name">if</span></span> (<span class="name">k</span> @selections) <span class="string">" active"</span>))</span><br><span class="line">          <span class="symbol">:on-click</span> handle-click!&#125;</span><br><span class="line">      v]))</span><br></pre></td></tr></table></figure>
+
+<h3 id="gt-gt-threading-macro"><a href="#gt-gt-threading-macro" class="headerlink" title="-&gt;&gt; threading macro"></a>-&gt;&gt; threading macro</h3><p><code>-&gt;&gt;</code> スレッディングマクロは、<code>-&gt;</code> スレッディングマクロと評価の順番が異なります。<code>-&gt;</code>は最初に<code>-&gt;&gt;</code>は最後に挿入されます。<code>(-&gt; 2 (+ 3) (- 7))</code>は<code>-2</code>でしたが、<code>(-&gt;&gt; 2 (+ 3) (- 7))</code>の場合は<code>2</code>になります。<code>(+ 3 2)</code>の結果の<code>5</code>が<code>(- 7 5)</code>のように最後に入ります。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">-&gt;&gt;</span></span> @selections</span><br><span class="line">     (<span class="name"><span class="builtin-name">filter</span></span> second)</span><br><span class="line">     (<span class="name"><span class="builtin-name">map</span></span> first))</span><br></pre></td></tr></table></figure>
+
+<p><code>(filter second @selections)</code>でフィルタした結果のcollectionを<code>(map first coll)</code>します。</p>
+<h3 id="localのatom"><a href="#localのatom" class="headerlink" title="localのatom"></a>localのatom</h3><p>atomのselectionsは<code>selection-list</code>関数内でletを使いlocalのatomとして<code>-&gt;&gt;</code>マクロを使い作成されています。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> selection-list [id label &amp; items]</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [selections (<span class="name"><span class="builtin-name">-&gt;&gt;</span></span> items (<span class="name"><span class="builtin-name">map</span></span> (<span class="name"><span class="builtin-name">fn</span></span> [[k]] [k <span class="literal">false</span>])) (<span class="name"><span class="builtin-name">into</span></span> &#123;&#125;) atom)]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>itemsベクターは以下のような<code>[キーワード シンボル]</code>のベクターを要素に持ちます。ClojureScript REPLを起動して確認してみます。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (def items [[:coffee "Coffee"] [:beer "Beer"] [:crab-juice "Crab juice"]])</span><br><span class="line">[[<span class="symbol">:coffee</span> <span class="string">"Coffee"</span>] [<span class="symbol">:beer</span> <span class="string">"Beer"</span>] [<span class="symbol">:crab-juice</span> <span class="string">"Crab juice"</span>]]</span><br></pre></td></tr></table></figure>
+
+<p><code>-&gt;&gt;</code>マクロでitemsはmap関数の後ろの引数に入ります。<code>[[k]]</code>でベクターをdestructuringして先頭のキーワードを<code>k</code>のシンボルにバインドします。map関数ではitemの要素ごとに<code>[キーワード false]</code>の新しいベクターを返します。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (def items_keys (map (fn [[k]] [k false]) items))</span><br><span class="line">([<span class="symbol">:coffee</span> <span class="literal">false</span>] [<span class="symbol">:beer</span> <span class="literal">false</span>] [<span class="symbol">:crab-juice</span> <span class="literal">false</span>])</span><br></pre></td></tr></table></figure>
+
+<p>map関数の結果のコレクションは<code>-&gt;&gt;</code>マクロで次のinto関数の引数の後ろに入りmapをつくります。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (def items_map (into &#123;&#125; items_keys))</span><br><span class="line">&#123;<span class="symbol">:coffee</span> <span class="literal">false</span>, <span class="symbol">:beer</span> <span class="literal">false</span>, <span class="symbol">:crab-juice</span> <span class="literal">false</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最後にatom関数の引数にmapが渡りatomを作成します。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (require '[reagent.core :as reagent :refer [atom]])</span><br><span class="line"><span class="literal">nil</span></span><br><span class="line">cljs.user=&gt; (def selections (atom items_map))</span><br><span class="line">#&lt;Atom: &#123;:coffee false, :beer false, :crab-juice false&#125;&gt;</span><br><span class="line">cljs.user=&gt; @selections</span><br><span class="line">&#123;<span class="symbol">:coffee</span> <span class="literal">false</span>, <span class="symbol">:beer</span> <span class="literal">false</span>, <span class="symbol">:crab-juice</span> <span class="literal">false</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>:beer</code>のitemがクリックされてonClickイベントが発火されると、selectionsが保持するキーワードに該当するbool値を反転させます。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (swap! selections update-in [:beer] not)</span><br><span class="line">&#123;<span class="symbol">:coffee</span> <span class="literal">false</span>, <span class="symbol">:beer</span> <span class="literal">true</span>, <span class="symbol">:crab-juice</span> <span class="literal">false</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>次の<code>-&gt;&gt;</code>マクロを実行してクリックされた<code>:beer</code>キーワードの値をlocalのatomから取得します。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (-&gt;&gt; @selections (filter second) (map first))</span><br><span class="line">(<span class="symbol">:beer</span>)</span><br></pre></td></tr></table></figure>
+
+<p>globalなatomのstateはドキュメント全体の<code>state</code>を保持しています。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (def state (atom &#123;:doc &#123;&#125; :saved? false&#125;))</span><br><span class="line">#&lt;Atom: &#123;:doc &#123;&#125;, :saved? false&#125;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>list componentの中で保持しているlocalなatomをクリックイベントによって更新したあと、globalなatomのstateを更新します。選択されたitem componentの<code>:beer</code>キーワードとlist componentの<code>:favorite-drinks</code>キーワードを使いglobalのatomを更新します。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">cljs.user=&gt; (swap! state assoc :saved? false)</span><br><span class="line">&#123;<span class="symbol">:doc</span> &#123;&#125;, <span class="symbol">:saved?</span> <span class="literal">false</span>&#125;</span><br><span class="line">cljs.user=&gt; (swap! state assoc-in [:doc :favorite-drinks] :beer))</span><br><span class="line">&#123;<span class="symbol">:doc</span> &#123;<span class="symbol">:favorite-drinks</span> <span class="symbol">:beer</span>&#125;, <span class="symbol">:saved?</span> <span class="literal">false</span>&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/React/" rel="tag"># React</a>
+              <a href="/tags/ClojureScript/" rel="tag"># ClojureScript</a>
+              <a href="/tags/Reagent/" rel="tag"># Reagent</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/05/22/reagent-tutorials-static-mock/" rel="prev" title="Reagent入門 - Part1: コンポーネントのモックを作る">
+      <i class="fa fa-chevron-left"></i> Reagent入門 - Part1: コンポーネントのモックを作る
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/05/23/clojurescript-figwheel-developing/" rel="next" title="Figwheelで最新のClojureScriptの開発方法を勉強をする">
+      Figwheelで最新のClojureScriptの開発方法を勉強をする <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reactのstateとprops"><span class="nav-number">1.</span> <span class="nav-text">Reactのstateとprops</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stateの特徴"><span class="nav-number">1.1.</span> <span class="nav-text">stateの特徴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#propsの特徴"><span class="nav-number">1.2.</span> <span class="nav-text">propsの特徴</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#atom"><span class="nav-number">2.</span> <span class="nav-text">atom</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reagent独自のatom"><span class="nav-number">2.1.</span> <span class="nav-text">Reagent独自のatom</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#atomの操作"><span class="nav-number">2.2.</span> <span class="nav-text">atomの操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使い方"><span class="nav-number">3.</span> <span class="nav-text">使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#globalなatom"><span class="nav-number">3.1.</span> <span class="nav-text">globalなatom</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#home-component"><span class="nav-number">3.2.</span> <span class="nav-text">home component</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#input-component"><span class="nav-number">3.3.</span> <span class="nav-text">input component</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gt-threading-macro"><span class="nav-number">3.4.</span> <span class="nav-text">-&gt; threading macro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list-component"><span class="nav-number">3.5.</span> <span class="nav-text">list component</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gt-gt-threading-macro"><span class="nav-number">3.6.</span> <span class="nav-text">-&gt;&gt; threading macro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localのatom"><span class="nav-number">3.7.</span> <span class="nav-text">localのatom</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

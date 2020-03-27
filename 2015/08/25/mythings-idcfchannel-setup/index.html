@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="myThingsに自分のデバイスを接続することができる「IDCF」チャンネルは、Meshblu IoT Platform を採用しています。またDockerを使い複数のサービスを構成管理しています。はじめてIDCFクラウドを使う方を対象に「IDCF」チャンネル用の仮想マシンをセットアップする手順をまとめます。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="myThingsをはじめよう - Part2: IDCFクラウドに「IDCF」チャンネルをセットアップする">
+<meta property="og:url" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="myThingsに自分のデバイスを接続することができる「IDCF」チャンネルは、Meshblu IoT Platform を採用しています。またDockerを使い複数のサービスを構成管理しています。はじめてIDCFクラウドを使う方を対象に「IDCF」チャンネル用の仮想マシンをセットアップする手順をまとめます。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-type-image.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-ssh.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-hostname.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-create.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-vmlist.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-firewall.png">
+<meta property="og:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-portforward.png">
+<meta property="article:published_time" content="2015-08-25T00:43:38.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.780Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Meshblu">
+<meta property="article:tag" content="IDCFクラウド">
+<meta property="article:tag" content="myThings">
+<meta property="article:tag" content="IDCFチャンネル">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/idcfcloud-type-image.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>myThingsをはじめよう - Part2: IDCFクラウドに「IDCF」チャンネルをセットアップする | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/08/25/mythings-idcfchannel-setup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          myThingsをはじめよう - Part2: IDCFクラウドに「IDCF」チャンネルをセットアップする
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Aug 25 2015 09:43:38" itemprop="dateCreated datePublished" datetime="2015-08-25T09:43:38+09:00">Aug 25 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/IoT/" itemprop="url" rel="index"><span itemprop="name">IoT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">myThingsに自分のデバイスを接続することができる「IDCF」チャンネルは、Meshblu IoT Platform を採用しています。またDockerを使い複数のサービスを構成管理しています。はじめてIDCFクラウドを使う方を対象に「IDCF」チャンネル用の仮想マシンをセットアップする手順をまとめます。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://mythings.yahoo.co.jp/" target="_blank" rel="noopener">myThings</a>に自分のデバイスを接続することができる<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">「IDCF」チャンネル</a>は、<a href="https://github.com/octoblu/meshblu/" target="_blank" rel="noopener">Meshblu</a> IoT Platform を採用しています。また<a href="https://github.com/docker/compose" target="_blank" rel="noopener">Docker Compose</a>を使い複数のサービスを構成管理しています。はじめてIDCFクラウドを使う方を対象に「IDCF」チャンネル用の仮想マシンをセットアップする手順をまとめます。</p>
+<a id="more"></a>
+
+<h2 id="IDCFクラウドに仮想マシンを作成する"><a href="#IDCFクラウドに仮想マシンを作成する" class="headerlink" title="IDCFクラウドに仮想マシンを作成する"></a>IDCFクラウドに仮想マシンを作成する</h2><p>WebブラウザからIDCFクラウドの<a href="https://idcfcloud.com/?cl=cl_gnv" target="_blank" rel="noopener">クラウドコンソール</a>にログインして作業します。左上の「仮想マシンを作成」ボタンをクリックします。</p>
+<h3 id="マシンタイプとイメージ"><a href="#マシンタイプとイメージ" class="headerlink" title="マシンタイプとイメージ"></a>マシンタイプとイメージ</h3><p>最初にUbuntu 14.04の仮想マシンを新規作成します。</p>
+<ul>
+<li>マシンタイプ: light.S1</li>
+<li>イメージ: Ubuntu Server 14.04 LTS 64-bit</li>
+</ul>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-type-image.png" alt="idcfcloud-type-image.png"></p>
+<h3 id="SSH-Key"><a href="#SSH-Key" class="headerlink" title="SSH Key"></a>SSH Key</h3><p>SSH Keyは「おすすめTemplate」から選択したイメージはSSHのパスワードログインができません。まだSSH Keyを登録していない場合は、クラウドコンソール上で作成、またはローカルにあるRSA公開鍵をアップロードしてから選択します。</p>
+<ul>
+<li>ボリューム: デフォルト (なし)</li>
+<li>SSH Key: 選択</li>
+<li>仮想マシン台数: デフォルト (1)</li>
+<li>ネットワークインタフェース: デフォルト</li>
+</ul>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-ssh.png" alt="idcfcloud-ssh.png"></p>
+<h3 id="詳細情報"><a href="#詳細情報" class="headerlink" title="詳細情報"></a>詳細情報</h3><p>マシン名1に任意の名前を付けたあと、「確認画面へ」ボタンをクリックします。</p>
+<ul>
+<li>詳細情報 -&gt; マシン名1: 任意の名前</li>
+</ul>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-hostname.png" alt="idcfcloud-hostname.png"></p>
+<h3 id="仮想マシン作成確認"><a href="#仮想マシン作成確認" class="headerlink" title="仮想マシン作成確認"></a>仮想マシン作成確認</h3><p>最後に作成する仮想マシンの情報を確認します。間違いが無ければ「作成」ボタンをクリックして仮想マシンを作成します。</p>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-create.png" alt="idcfcloud-create.png"></p>
+<p>仮想マシンの一覧画面に戻り、しばらくすると作成した仮想マシンのステータスが「Running」になります。</p>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-vmlist.png" alt="idcfcloud-vmlist.png"></p>
+<h3 id="IPアドレス"><a href="#IPアドレス" class="headerlink" title="IPアドレス"></a>IPアドレス</h3><p>メニューから「IPアドレス」を選択します。はじめての場合は「NAT」列が「ソース」と表示されたIPアドレスが1つ表示されています。「IPアドレス名」をクリックして設定画面を開きます。</p>
+<h3 id="IPアドレス-gt-ファイアウォール"><a href="#IPアドレス-gt-ファイアウォール" class="headerlink" title="IPアドレス &gt; ファイアウォール"></a>IPアドレス &gt; ファイアウォール</h3><p>「ファイアウォール」は4つ登録します。HTTPSはmyThingsサーバーから接続するため「ソースCIDR」は「Any(0.0.0.0/0)」を選択します。</p>
+<p>HTTP、MQTTはデバイスが「IDCF」チャンネルに接続できるように設定します。今回は2つともすべて「Any(0.0.0.0/0)」にしました。</p>
+<p>SSHは作業マシンから「IDCF」チャンネルの仮想マシンにSSH接続できるように設定します。ここでは「My IP」を選択して、現在「クラウドコンソール」を開いている作業マシンの「ソースCIDR」を選択します。</p>
+<ul>
+<li>HTTP: 80 port, ANY</li>
+<li>HTTPS: 443 port, ANY</li>
+<li>MQTT: 1883 port, ANY</li>
+<li>SSH: 22 port, SSHクライアント</li>
+</ul>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-firewall.png" alt="idcfcloud-firewall.png"></p>
+<h3 id="IPアドレス-gt-ポートフォワード"><a href="#IPアドレス-gt-ポートフォワード" class="headerlink" title="IPアドレス &gt; ポートフォワード"></a>IPアドレス &gt; ポートフォワード</h3><p>「ポートフォワード」も同様に4つ登録します。先ほど作成した仮想マシン名を選択して登録していきます。</p>
+<ul>
+<li>HTTP: 80 port</li>
+<li>HTTPS: 443 port</li>
+<li>MQTT: 1883 port</li>
+<li>SSH: 22 port</li>
+</ul>
+<p><img src="/2015/08/25/mythings-idcfchannel-setup/idcfcloud-portforward.png" alt="idcfcloud-portforward.png"></p>
+<p>以上でクラウドコンソール画面から仮想マシンの作成とIPアドレスの設定作業は終了です。</p>
+<h3 id="SSH接続する"><a href="#SSH接続する" class="headerlink" title="SSH接続する"></a>SSH接続する</h3><p>「IPアドレス &gt; ファイアウォール」画面でSSHの接続を登録した作業マシンからSSH接続します。ユーザーは「root」、クラウドコンソール画面で選択した秘密鍵を指定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh root@210.140.162.58 -i ~/.ssh/id_rsa</span><br><span class="line">root@mythings:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="「IDCF」チャンネルをインストールする"><a href="#「IDCF」チャンネルをインストールする" class="headerlink" title="「IDCF」チャンネルをインストールする"></a>「IDCF」チャンネルをインストールする</h2><h3 id="シェルスクリプトの実行"><a href="#シェルスクリプトの実行" class="headerlink" title="シェルスクリプトの実行"></a>シェルスクリプトの実行</h3><p>「IDCF」チャンネルはGitHubのリポジトリからcloneしてインストールします。最初にGitをインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get install -y git</span><br></pre></td></tr></table></figure>
+
+<p>適当なディレクトリを作成して、「IDCF」チャンネルの<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">リポジトリ</a>から<code>git clone</code>します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/iot_apps &amp;&amp; <span class="built_in">cd</span> ~/iot_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/IDCFChannel/meshblu-compose</span><br></pre></td></tr></table></figure>
+
+<p>cloneしたディレクトリに移動してbootstrapのシェルスクリプトを実行してインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> meshblu-compose</span><br><span class="line">$ ./bootstrap.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="インストールの確認"><a href="#インストールの確認" class="headerlink" title="インストールの確認"></a>インストールの確認</h3><p>「IDCF」チャンネルはMeshbluとデータベース、コマンドラインツールなどのDockerイメージを使い、Docker Composeによって構成されています。インストールが成功すると、<code>docker-compose ps</code>コマンドの結果が表示されます。コンテナが4つ起動しました。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose ps</span><br><span class="line">      Name             Command             State              Ports</span><br><span class="line">-------------------------------------------------------------------------</span><br><span class="line">meshblucompose_m   npm start          Up                 0.0.0.0:1883-&gt;18</span><br><span class="line">eshblu_1                                                 83/tcp, 80/tcp</span><br><span class="line">meshblucompose_m   /entrypoint.sh     Up                 27017/tcp</span><br><span class="line">ongo_1             mongod</span><br><span class="line">meshblucompose_o   nginx -c /etc/ng   Up                 0.0.0.0:443-&gt;443</span><br><span class="line">penresty_1         inx/nginx.conf                        /tcp, 0.0.0.0:80</span><br><span class="line">                                                         -&gt;80/tcp</span><br><span class="line">meshblucompose_r   /entrypoint.sh     Up                 6379/tcp</span><br><span class="line">edis_1             redis-server</span><br></pre></td></tr></table></figure>
+
+<p>curlコマンドを実行してMesubluサーバーが起動していることを確認します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://localhost/status</span><br><span class="line">&#123;<span class="string">"meshblu"</span>:<span class="string">"online"</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="サービスの起動と再起動"><a href="#サービスの起動と再起動" class="headerlink" title="サービスの起動と再起動"></a>サービスの起動と再起動</h3><p>停止状態からサービスを起動するときはOpenRestyサービスを<code>up</code>コマンドから起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d openresty</span><br></pre></td></tr></table></figure>
+
+<p>サービスを再起動するときは<code>restart</code>コマンドを実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose restart</span><br></pre></td></tr></table></figure>
+
+<h2 id="デバイスの準備"><a href="#デバイスの準備" class="headerlink" title="デバイスの準備"></a>デバイスの準備</h2><h3 id="「デバイス」について"><a href="#「デバイス」について" class="headerlink" title="「デバイス」について"></a>「デバイス」について</h3><p>MeshbluではHTTP、MQTT、WebSoketを使いメッセージを送受信するクライアントを「デバイス」として管理します。Raspberry PiやWebサービス、コマンドなどがこの「デバイス」に該当します。</p>
+<h3 id="デバイスの登録"><a href="#デバイスの登録" class="headerlink" title="デバイスの登録"></a>デバイスの登録</h3><p>インストール直後はデバイスは登録されていません。最初にdocker-compose.ymlに付属しているコマンドラインツールを使いデバイスを登録します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker-compose run --rm iotutil register</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"register"</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 12749000           │ 847cda3d-7999-4b95-b8ec-af07652cb842 │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>コマンドを実行すると、<code>trigger-[1-5]</code>と<code>action-[1-5]</code>とownerをあわせて合計11個のデバイスが登録されます。標準出力されるownerのデバイスは作成した11個のデバイスすべてにメッセージを送信することができます。デフォルトでは、<code>trigger-[1-5]</code>から<code>action-[1-5]</code>へ末尾が同じ数字の組み合わせのメッセージ送信を許可しています。</p>
+<h3 id="デバイス情報の取得"><a href="#デバイス情報の取得" class="headerlink" title="デバイス情報の取得"></a>デバイス情報の取得</h3><p>登録したデバイスは<code>list</code>コマンドで確認することができます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"list"</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ d286ba8d │ ffa6934d-f1b3-467f-98b3-766b330d436d │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-2 │ 77eecd8e │ 5ebfd5bb-4f51-45a7-a66d-12037352d0c7 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-3 │ 933f5a29 │ f1c63bf4-905f-4065-afbe-ac152fa76806 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-4 │ bc4510e7 │ 75498ace-32eb-4b94-971c-5812db48633d │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-5 │ 0d0ba029 │ 4c6a9051-790a-4f3d-8cdf-2b8faf34e21c │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1  │ 8a83d71f │ b61d3398-ac99-4694-9dc4-dd632faf6f6a │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2  │ 042bef69 │ 16d59d34-a4e0-482d-a96f-ecba3a3ac87a │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-3  │ ec4e5652 │ 9824ee09-7f0f-4fdb-b0e7-13146272056b │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-4  │ db92042d │ eea855c7-0a06-4789-b0b1-4a0f661c34b3 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-5  │ 0338410c │ e40d6036-a326-4b3c-bffc-bc91b1365470 │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><code>show</code>コマンドを実行すると個別のデバイスの情報を表示します。以下は<code>--keyword</code>フラグに<code>action-1</code>を指定した例です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- --keyword action-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"show"</span> <span class="string">"--keyword"</span> <span class="string">"action-3"</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1 │ b6716f76 │ 32d85553-b41d-4a62-8828-b5f1187768ee │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><code>owner</code>コマンドを実行するとownerのデバイス情報を表示します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil owner</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"owner"</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 12749000           │ 847cda3d-7999-4b95-b8ec-af07652cb842 │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="デバイス間のメッセージを許可する"><a href="#デバイス間のメッセージを許可する" class="headerlink" title="デバイス間のメッセージを許可する"></a>デバイス間のメッセージを許可する</h3><p>末尾の番号が同じ番号の場合は、<code>trigger-*</code>から<code>action-*</code>へメッセージが送信できるように設定されています。</p>
+<ul>
+<li>例: triggger-1からaction-1</li>
+</ul>
+<p>任意のデバイス間のメッセージ送信を許可したいときは、以下のコマンドを実行します。action-1からtrigger-3へのメッセージ送信を許可します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil whiten -- -f action-1 -t trigger-3</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"whiten"</span> <span class="string">"-f"</span> <span class="string">"action-1"</span> <span class="string">"-t"</span> <span class="string">"trigger-3"</span></span><br><span class="line"></span><br><span class="line">action-1 can send message to trigger-3</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="デバイスの削除"><a href="#デバイスの削除" class="headerlink" title="デバイスの削除"></a>デバイスの削除</h2><p><code>del</code>コマンドを実行すると登録してあるデバイスをすべて削除できます。削除後は<code>regiser</code>コマンドを実行してデバイスを再作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil del</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"del"</span></span><br><span class="line"></span><br><span class="line">are you sure?: [Yn]:  Y</span><br><span class="line">trigger-1, trigger-2, trigger-3, trigger-4, trigger-5, action-1, action-2, action-3, action-4, action-5, owner are deleted.</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Meshblu/" rel="tag"># Meshblu</a>
+              <a href="/tags/IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89/" rel="tag"># IDCFクラウド</a>
+              <a href="/tags/myThings/" rel="tag"># myThings</a>
+              <a href="/tags/IDCF%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB/" rel="tag"># IDCFチャンネル</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/08/24/konashi20-tact-switch/" rel="prev" title="konashi 2.0 入門 - Part3: タクトスイッチ(S1)を押す">
+      <i class="fa fa-chevron-left"></i> konashi 2.0 入門 - Part3: タクトスイッチ(S1)を押す
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/08/26/mythings-idcfchannel-messaging/" rel="next" title="myThingsをはじめよう - Part3: MQTTブローカーを使う">
+      myThingsをはじめよう - Part3: MQTTブローカーを使う <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IDCFクラウドに仮想マシンを作成する"><span class="nav-number">1.</span> <span class="nav-text">IDCFクラウドに仮想マシンを作成する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#マシンタイプとイメージ"><span class="nav-number">1.1.</span> <span class="nav-text">マシンタイプとイメージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH-Key"><span class="nav-number">1.2.</span> <span class="nav-text">SSH Key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#詳細情報"><span class="nav-number">1.3.</span> <span class="nav-text">詳細情報</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮想マシン作成確認"><span class="nav-number">1.4.</span> <span class="nav-text">仮想マシン作成確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPアドレス"><span class="nav-number">1.5.</span> <span class="nav-text">IPアドレス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPアドレス-gt-ファイアウォール"><span class="nav-number">1.6.</span> <span class="nav-text">IPアドレス &gt; ファイアウォール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IPアドレス-gt-ポートフォワード"><span class="nav-number">1.7.</span> <span class="nav-text">IPアドレス &gt; ポートフォワード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH接続する"><span class="nav-number">1.8.</span> <span class="nav-text">SSH接続する</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#「IDCF」チャンネルをインストールする"><span class="nav-number">2.</span> <span class="nav-text">「IDCF」チャンネルをインストールする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#シェルスクリプトの実行"><span class="nav-number">2.1.</span> <span class="nav-text">シェルスクリプトの実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールの確認"><span class="nav-number">2.2.</span> <span class="nav-text">インストールの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サービスの起動と再起動"><span class="nav-number">2.3.</span> <span class="nav-text">サービスの起動と再起動</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#デバイスの準備"><span class="nav-number">3.</span> <span class="nav-text">デバイスの準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#「デバイス」について"><span class="nav-number">3.1.</span> <span class="nav-text">「デバイス」について</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デバイスの登録"><span class="nav-number">3.2.</span> <span class="nav-text">デバイスの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デバイス情報の取得"><span class="nav-number">3.3.</span> <span class="nav-text">デバイス情報の取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デバイス間のメッセージを許可する"><span class="nav-number">3.4.</span> <span class="nav-text">デバイス間のメッセージを許可する</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#デバイスの削除"><span class="nav-number">4.</span> <span class="nav-text">デバイスの削除</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

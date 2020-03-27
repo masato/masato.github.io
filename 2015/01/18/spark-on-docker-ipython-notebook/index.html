@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="sequenceiq&#x2F;sparkのDockerイメージはCentOS 6.5を使っているので、そのままではIPythonのインスト-ルに失敗してしまいます。SequenceIQにはUbuntuのbaseimageもあります。これから自分でSparkのDockerfileを作ろうと思いましたが、ちょどよいイメージがLogBaseInc&#x2F;docker-spark-ipythonにありました。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark on Dockerで分散型機械学習を始める - Part2: UbuntuでIPython Notebookを使う">
+<meta property="og:url" content="http://masato.github.io/2015/01/18/spark-on-docker-ipython-notebook/index.html">
+<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:description" content="sequenceiq&#x2F;sparkのDockerイメージはCentOS 6.5を使っているので、そのままではIPythonのインスト-ルに失敗してしまいます。SequenceIQにはUbuntuのbaseimageもあります。これから自分でSparkのDockerfileを作ろうと思いましたが、ちょどよいイメージがLogBaseInc&#x2F;docker-spark-ipythonにありました。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://masato.github.io/2015/01/18/spark-on-docker-ipython-notebook/ipython-notebook.png">
+<meta property="article:published_time" content="2015-01-17T15:01:55.000Z">
+<meta property="article:modified_time" content="2020-03-27T22:24:20.906Z">
+<meta property="article:author" content="Masato Shimizu">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="IPythonNotebook">
+<meta property="article:tag" content="Spark">
+<meta property="article:tag" content="PySpark">
+<meta property="article:tag" content="SequenceIQ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://masato.github.io/2015/01/18/spark-on-docker-ipython-notebook/ipython-notebook.png">
+
+<link rel="canonical" href="http://masato.github.io/2015/01/18/spark-on-docker-ipython-notebook/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Spark on Dockerで分散型機械学習を始める - Part2: UbuntuでIPython Notebookを使う | masato's blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-51028199-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">masato's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/01/18/spark-on-docker-ipython-notebook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Masato Shimizu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="masato's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spark on Dockerで分散型機械学習を始める - Part2: UbuntuでIPython Notebookを使う
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: Jan 18 2015 00:01:55" itemprop="dateCreated datePublished" datetime="2015-01-18T00:01:55+09:00">Jan 18 2015</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
+              </span>
+
+          
+            <div class="post-description">sequenceiq/sparkのDockerイメージはCentOS 6.5を使っているので、そのままではIPythonのインスト-ルに失敗してしまいます。SequenceIQにはUbuntuのbaseimageもあります。これから自分でSparkのDockerfileを作ろうと思いましたが、ちょどよいイメージがLogBaseInc/docker-spark-ipythonにありました。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="https://registry.hub.docker.com/u/sequenceiq/spark/" target="_blank" rel="noopener">sequenceiq/spark</a>のDockerイメージはCentOS 6.5を使っているので、そのままではIPythonのインスト-ルに失敗してしまいます。SequenceIQには<a href="https://github.com/sequenceiq/docker-pam/blob/master/ubuntu-14.04/Dockerfile" target="_blank" rel="noopener">Ubuntuのbaseimage</a>もあります。これから自分でSparkのDockerfileを作ろうと思いましたが、ちょどよいイメージが<a href="LogBaseInc/docker-spark-ipython">LogBaseInc/docker-spark-ipython</a>ありました。</p>
+<a id="more"></a>
+
+<h2 id="CentOS-6-5の場合"><a href="#CentOS-6-5の場合" class="headerlink" title="CentOS 6.5の場合"></a>CentOS 6.5の場合</h2><p><a href="https://registry.hub.docker.com/u/sequenceiq/spark/" target="_blank" rel="noopener">sequenceiq/spark</a></p>
+<p>前回作成したDockerコンテナはCentOS 6.5の<a href="https://github.com/sequenceiq/docker-pam/blob/master/centos-6.5/Dockerfile" target="_blank" rel="noopener">baseimage</a>を使っています。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/redhat-release</span><br><span class="line">CentOS release 6.5 (Final)</span><br></pre></td></tr></table></figure>
+
+<p>Pythonのバージョンは2.6.6です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python -V</span><br><span class="line">Python 2.6.6</span><br></pre></td></tr></table></figure>
+
+<p>Python 2.7以上を使わないとiPythonがインストールできません。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://bootstrap.pypa.io/get-pip.py -o - | sudo python</span><br><span class="line">$ sudo pip install ipython</span><br><span class="line">Collecting ipython</span><br><span class="line">  Downloading ipython-2.3.1.tar.gz (11.9MB)</span><br><span class="line">    100% |<span class="comment">################################| 11.9MB 1.1MB/s</span></span><br><span class="line">    ERROR: IPython requires Python version 2.7 or 3.3 or above.</span><br><span class="line">    Complete output from <span class="built_in">command</span> python setup.py egg_info:</span><br><span class="line">    ERROR: IPython requires Python version 2.7 or 3.3 or above.</span><br><span class="line"></span><br><span class="line">    ----------------------------------------</span><br><span class="line">    Command <span class="string">"python setup.py egg_info"</span> failed with error code 1 <span class="keyword">in</span> /tmp/pip-build-bzXfTe/ipython</span><br></pre></td></tr></table></figure>
+
+<h2 id="Ubuntu-14-04-1の場合"><a href="#Ubuntu-14-04-1の場合" class="headerlink" title="Ubuntu 14.04.1の場合"></a>Ubuntu 14.04.1の場合</h2><p><a href="LogBaseInc/docker-spark-ipython">LogBaseInc/docker-spark-ipython</a>を使いDockerコンテナを起動します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull logbase/spark-ipython</span><br><span class="line">$ docker run -d --name spark-ipython -p 8888:8888 logbase/spark-ipython</span><br></pre></td></tr></table></figure>
+
+<p>シェルを起動してバージョンを確認します。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ docker exec -it spark-ipython /bin/bash</span><br><span class="line">$ cat /etc/lsb-release</span><br><span class="line"><span class="attribute">DISTRIB_ID</span>=Ubuntu</span><br><span class="line"><span class="attribute">DISTRIB_RELEASE</span>=14.04</span><br><span class="line"><span class="attribute">DISTRIB_CODENAME</span>=trusty</span><br><span class="line"><span class="attribute">DISTRIB_DESCRIPTION</span>=<span class="string">"Ubuntu 14.04.1 LTS"</span></span><br></pre></td></tr></table></figure>
+
+<p>Pythonのバージョンは2.7.6、IPythonは2.3.1です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python -V</span><br><span class="line">Python 2.7.6</span><br><span class="line">$ ipython -V</span><br><span class="line">2.3.1</span><br></pre></td></tr></table></figure>
+
+<h2 id="IPython-Notebookを使う"><a href="#IPython-Notebookを使う" class="headerlink" title="IPython Notebookを使う"></a>IPython Notebookを使う</h2><p>ngrokを使いDockerホストの8888ポートをトンネルします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm wizardapps/ngrok:latest ngrok $(docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> spark-ipython):8888</span><br></pre></td></tr></table></figure>
+
+<p>ブラウザでIPython Notebookを開いて簡単なテストで動作確認します。</p>
+<p><a href="https://6e7e14f6.ngrok.com/" target="_blank" rel="noopener">https://6e7e14f6.ngrok.com/</a></p>
+<img src="/2015/01/18/spark-on-docker-ipython-notebook/ipython-notebook.png" class="center">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/IPythonNotebook/" rel="tag"># IPythonNotebook</a>
+              <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/PySpark/" rel="tag"># PySpark</a>
+              <a href="/tags/SequenceIQ/" rel="tag"># SequenceIQ</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/01/17/xamarin-android-couchbase-lite/" rel="prev" title="Xamarin StudioとGenymotionでAndroid開発 - Part4: Couchbase Liteアプリを使う">
+      <i class="fa fa-chevron-left"></i> Xamarin StudioとGenymotionでAndroid開発 - Part4: Couchbase Liteアプリを使う
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/01/19/cassandra-on-docker-install/" rel="next" title="Cassandra on DockerでIoT用データストアを用意する - Part1: Single Nodeインストール">
+      Cassandra on DockerでIoT用データストアを用意する - Part1: Single Nodeインストール <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CentOS-6-5の場合"><span class="nav-number">1.</span> <span class="nav-text">CentOS 6.5の場合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-14-04-1の場合"><span class="nav-number">2.</span> <span class="nav-text">Ubuntu 14.04.1の場合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPython-Notebookを使う"><span class="nav-number">3.</span> <span class="nav-text">IPython Notebookを使う</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Masato Shimizu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">492</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">588</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
