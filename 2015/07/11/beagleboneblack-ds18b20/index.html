@@ -23,11 +23,11 @@
   <meta name="description" content="ーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。Dallas one-wire temperature reading on BeagleBone">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BeagleBone Blackで1-WireセンサのDS18B20を使う - Part3: DS18B20">
-<meta property="og:url" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/index.html">
+<meta property="og:url" content="https://masato.github.io/2015/07/11/beagleboneblack-ds18b20/index.html">
 <meta property="og:site_name" content="masato&#39;s blog">
 <meta property="og:description" content="ーネルが3.8.13でもBeagleBone Blackで1-WireのDS18B20を使えるようにするのは結構面倒ですが、capemgrを使った方法が紹介されているのでなんとかなりそうです。DTSを記述後DTCでコンパイルして作成したDTBのバイナリを使ってpin muxしてピンの機能を変更します。Dallas one-wire temperature reading on BeagleBone">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
+<meta property="og:image" content="https://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
 <meta property="article:published_time" content="2015-07-11T12:06:46.000Z">
 <meta property="article:modified_time" content="2020-03-27T22:24:20.550Z">
 <meta property="article:author" content="Masato Shimizu">
@@ -35,9 +35,9 @@
 <meta property="article:tag" content="BeagleBoneBlack">
 <meta property="article:tag" content="DS18B20">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
+<meta name="twitter:image" content="https://masato.github.io/2015/07/11/beagleboneblack-ds18b20/ds18b20_bbb.png">
 
-<link rel="canonical" href="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
+<link rel="canonical" href="https://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
 
 
 <script id="page-configurations">
@@ -196,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
+    <link itemprop="mainEntityOfPage" href="https://masato.github.io/2015/07/11/beagleboneblack-ds18b20/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -277,7 +277,7 @@
 <li>Device Tree Blob (DTB) のバイナリが作成される</li>
 </ul>
 <h3 id="DTSの作成"><a href="#DTSの作成" class="headerlink" title="DTSの作成"></a>DTSの作成</h3><p>DTSを記述します。<a href="http://hipstercircuits.com/dallas-one-wire-temperature-reading-on-beaglebone-black-with-dto/" target="_blank" rel="noopener">Dallas one-wire temperature reading on BeagleBone Black with dto</a>に掲載されているDTSをコピーしてファイルを作成します。</p>
-<figure class="highlight plain"><figcaption><span>BB-W1-00A0.dts</span></figcaption><table><tr><td class="code"><pre><span class="line">&#x2F;dts-v1&#x2F;;</span><br><span class="line">&#x2F;plugin&#x2F;;</span><br><span class="line"></span><br><span class="line">&#x2F; &#123;</span><br><span class="line">truecompatible &#x3D; &quot;ti,beaglebone&quot;, &quot;ti,beaglebone-black&quot;;</span><br><span class="line"></span><br><span class="line">truepart-number &#x3D; &quot;BB-W1&quot;;</span><br><span class="line">trueversion &#x3D; &quot;00A0&quot;;</span><br><span class="line"></span><br><span class="line">true&#x2F;* state the resources this cape uses *&#x2F;</span><br><span class="line">trueexclusive-use &#x3D;</span><br><span class="line">truetrue&#x2F;* the pin header uses *&#x2F;</span><br><span class="line">truetrue&quot;P9.22&quot;,</span><br><span class="line">truetrue&#x2F;* the hardware IP uses *&#x2F;</span><br><span class="line">truetrue&quot;gpio0_2&quot;;</span><br><span class="line"></span><br><span class="line">truefragment@0 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;am33xx_pinmux&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">truetruetruetruetruedallas_w1_pins: pinmux_dallas_w1_pins &#123;</span><br><span class="line">truetruetruetruetruetruepinctrl-single,pins &#x3D; &lt; 							0x150 0x37 						&gt;;</span><br><span class="line">truetruetruetruetrue&#125;;</span><br><span class="line">               &#125;;</span><br><span class="line">true&#125;;</span><br><span class="line"></span><br><span class="line">truefragment@1 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;ocp&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">truetrue       onewire@0 &#123;</span><br><span class="line">truetruetrue       compatible      &#x3D; &quot;w1-gpio&quot;;</span><br><span class="line">truetruetrue       pinctrl-names   &#x3D; &quot;default&quot;;</span><br><span class="line">truetruetrue       pinctrl-0       &#x3D; &lt;&amp;dallas_w1_pins&gt;;</span><br><span class="line">truetruetrue       status          &#x3D; &quot;okay&quot;;</span><br><span class="line"></span><br><span class="line">truetruetrue       gpios &#x3D; &lt;&amp;gpio1 2 0&gt;;</span><br><span class="line">truetrue       &#125;;</span><br><span class="line">         &#125;;</span><br><span class="line">true&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>BB-W1-00A0.dts</span></figcaption><table><tr><td class="code"><pre><span class="line">&#x2F;dts-v1&#x2F;;</span><br><span class="line">&#x2F;plugin&#x2F;;</span><br><span class="line"></span><br><span class="line">&#x2F; &#123;</span><br><span class="line">	compatible &#x3D; &quot;ti,beaglebone&quot;, &quot;ti,beaglebone-black&quot;;</span><br><span class="line"></span><br><span class="line">	part-number &#x3D; &quot;BB-W1&quot;;</span><br><span class="line">	version &#x3D; &quot;00A0&quot;;</span><br><span class="line"></span><br><span class="line">	&#x2F;* state the resources this cape uses *&#x2F;</span><br><span class="line">	exclusive-use &#x3D;</span><br><span class="line">		&#x2F;* the pin header uses *&#x2F;</span><br><span class="line">		&quot;P9.22&quot;,</span><br><span class="line">		&#x2F;* the hardware IP uses *&#x2F;</span><br><span class="line">		&quot;gpio0_2&quot;;</span><br><span class="line"></span><br><span class="line">	fragment@0 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;am33xx_pinmux&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">					dallas_w1_pins: pinmux_dallas_w1_pins &#123;</span><br><span class="line">						pinctrl-single,pins &#x3D; &lt; 							0x150 0x37 						&gt;;</span><br><span class="line">					&#125;;</span><br><span class="line">               &#125;;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	fragment@1 &#123;</span><br><span class="line">               target &#x3D; &lt;&amp;ocp&gt;;</span><br><span class="line">               __overlay__ &#123;</span><br><span class="line">		       onewire@0 &#123;</span><br><span class="line">			       compatible      &#x3D; &quot;w1-gpio&quot;;</span><br><span class="line">			       pinctrl-names   &#x3D; &quot;default&quot;;</span><br><span class="line">			       pinctrl-0       &#x3D; &lt;&amp;dallas_w1_pins&gt;;</span><br><span class="line">			       status          &#x3D; &quot;okay&quot;;</span><br><span class="line"></span><br><span class="line">			       gpios &#x3D; &lt;&amp;gpio1 2 0&gt;;</span><br><span class="line">		       &#125;;</span><br><span class="line">         &#125;;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="DTCでコンパイル"><a href="#DTCでコンパイル" class="headerlink" title="DTCでコンパイル"></a>DTCでコンパイル</h3><p>BeagleBone Blackのカーネル情報を確認します。</p>

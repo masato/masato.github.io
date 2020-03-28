@@ -23,7 +23,7 @@
   <meta name="description" content="今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に&#x2F;var&#x2F;lib&#x2F;dockerは再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は&#x2F;etc&#x2F;fstabの記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerの&#x2F;var&#x2F;lib&#x2F;dockerを移動する">
-<meta property="og:url" content="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/index.html">
+<meta property="og:url" content="https://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/index.html">
 <meta property="og:site_name" content="masato&#39;s blog">
 <meta property="og:description" content="今使っているクラウドのルートディスクが15GBしかないのでDocker Composeで複数のコンテナを起動して開発しているとすぐに容量不足になります。開発中はよくゴミが出るので定期的に&#x2F;var&#x2F;lib&#x2F;dockerは再作成していますが、もう少し大きなディスクを追加して移動しようと思います。最初は&#x2F;etc&#x2F;fstabの記述を間違えてリカバリーモードで起動することになりました。しかもrootのパスワ">
 <meta property="og:locale" content="en_US">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
+<link rel="canonical" href="https://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
 
 
 <script id="page-configurations">
@@ -193,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
+    <link itemprop="mainEntityOfPage" href="https://masato.github.io/2015/06/02/docker-var-lib-docker-bind-mount/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -272,7 +272,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -T</span><br><span class="line">Filesystem     Type     1K-blocks    Used Available Use% Mounted on</span><br><span class="line">/dev/sda1      ext4      15348720 4212380  10333628  29% /</span><br><span class="line">none           tmpfs            4       0         4   0% /sys/fs/cgroup</span><br><span class="line">udev           devtmpfs   2009748       4   2009744   1% /dev</span><br><span class="line">tmpfs          tmpfs       404100     820    403280   1% /run</span><br><span class="line">none           tmpfs         5120       0      5120   0% /run/lock</span><br><span class="line">none           tmpfs      2020484     476   2020008   1% /run/shm</span><br><span class="line">none           tmpfs       102400       0    102400   0% /run/user</span><br></pre></td></tr></table></figure>
 
 <p>ext4のファイルシステムを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkfs.ext4 /dev/sdb1</span><br><span class="line">mke2fs 1.42.9 (4-Feb-2014)</span><br><span class="line">Filesystem label=</span><br><span class="line">OS <span class="built_in">type</span>: Linux</span><br><span class="line">Block size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Fragment size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Stride=0 blocks, Stripe width=0 blocks</span><br><span class="line">2621440 inodes, 10485504 blocks</span><br><span class="line">524275 blocks (5.00%) reserved <span class="keyword">for</span> the super user</span><br><span class="line">First data block=0</span><br><span class="line">Maximum filesystem blocks=4294967296</span><br><span class="line">320 block groups</span><br><span class="line">32768 blocks per group, 32768 fragments per group</span><br><span class="line">8192 inodes per group</span><br><span class="line">Superblock backups stored on blocks:</span><br><span class="line">true32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,</span><br><span class="line">true4096000, 7962624</span><br><span class="line"></span><br><span class="line">Allocating group tables: <span class="keyword">done</span></span><br><span class="line">Writing inode tables: <span class="keyword">done</span></span><br><span class="line">Creating journal (32768 blocks): <span class="keyword">done</span></span><br><span class="line">Writing superblocks and filesystem accounting information: <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo mkfs.ext4 /dev/sdb1</span><br><span class="line">mke2fs 1.42.9 (4-Feb-2014)</span><br><span class="line">Filesystem label=</span><br><span class="line">OS <span class="built_in">type</span>: Linux</span><br><span class="line">Block size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Fragment size=4096 (<span class="built_in">log</span>=2)</span><br><span class="line">Stride=0 blocks, Stripe width=0 blocks</span><br><span class="line">2621440 inodes, 10485504 blocks</span><br><span class="line">524275 blocks (5.00%) reserved <span class="keyword">for</span> the super user</span><br><span class="line">First data block=0</span><br><span class="line">Maximum filesystem blocks=4294967296</span><br><span class="line">320 block groups</span><br><span class="line">32768 blocks per group, 32768 fragments per group</span><br><span class="line">8192 inodes per group</span><br><span class="line">Superblock backups stored on blocks:</span><br><span class="line">	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,</span><br><span class="line">	4096000, 7962624</span><br><span class="line"></span><br><span class="line">Allocating group tables: <span class="keyword">done</span></span><br><span class="line">Writing inode tables: <span class="keyword">done</span></span><br><span class="line">Creating journal (32768 blocks): <span class="keyword">done</span></span><br><span class="line">Writing superblocks and filesystem accounting information: <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="パーティションのマウント"><a href="#パーティションのマウント" class="headerlink" title="パーティションのマウント"></a>パーティションのマウント</h2><p>新しくパーティションをマウントしてDockerの<code>/var/lib/docker</code>を移動していきます。まずDockerを停止します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo service docker stop</span><br><span class="line">docker stop/waiting</span><br></pre></td></tr></table></figure>
