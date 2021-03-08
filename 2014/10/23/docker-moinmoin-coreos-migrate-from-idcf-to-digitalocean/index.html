@@ -120,6 +120,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -144,11 +145,35 @@
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="algolia-results">
+  <div id="algolia-stats"></div>
+  <div id="algolia-hits"></div>
+  <div id="algolia-pagination" class="algolia-pagination"></div>
+</div>
+
+      
+    </div>
+  </div>
 
 </div>
     </header>
@@ -256,7 +281,7 @@
 <h3 id="failover-testing"><a href="#failover-testing" class="headerlink" title="failover testing"></a>failover testing</h3><p>Next thing should I do is to stop running CoreOS node without hesitation.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl ssh moin@80.service</span><br><span class="line">$ sudo shutdown -h now</span><br></pre></td></tr></table></figure>
 
-<p>The 10.1.1.191 node previously running <a href="mailto:&#x6d;&#111;&#105;&#x6e;&#64;&#56;&#48;&#x2e;&#x73;&#101;&#x72;&#x76;&#x69;&#x63;&#x65;">&#x6d;&#111;&#105;&#x6e;&#64;&#56;&#48;&#x2e;&#x73;&#101;&#x72;&#x76;&#x69;&#x63;&#x65;</a> was disappeared in the list. In place of stopped node on IDCF Cloud, a new container on DigitalOcean activated being a failover node. </p>
+<p>The 10.1.1.191 node previously running <a href="mailto:&#x6d;&#111;&#105;&#x6e;&#64;&#x38;&#48;&#x2e;&#x73;&#101;&#114;&#118;&#x69;&#x63;&#101;">&#x6d;&#111;&#105;&#x6e;&#64;&#x38;&#48;&#x2e;&#x73;&#101;&#114;&#118;&#x69;&#x63;&#101;</a> was disappeared in the list. In place of stopped node on IDCF Cloud, a new container on DigitalOcean activated being a failover node. </p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl list-machines</span><br><span class="line">MACHINE         IP              METADATA</span><br><span class="line">2b27d51f...     10.1.0.246      role=etcd</span><br><span class="line">672419a9...     128.199.xxx.xxx role=moin</span><br><span class="line">$ fleetctl list-units</span><br><span class="line">UNIT            MACHINE                         ACTIVE  SUB</span><br><span class="line">moin@80.service 672419a9.../128.199.xxx.xxx     active  running</span><br><span class="line">$ fleetctl journal -f moin@80.service</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -452,6 +477,13 @@
 
   
 
+
+
+
+  
+<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
+<script src="/js/algolia-search.js"></script>
 
 
 
