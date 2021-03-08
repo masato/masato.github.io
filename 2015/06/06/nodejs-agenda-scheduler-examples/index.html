@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回リストしたNode.jsのJobqueueとSccheduleツールからスケジュール型ジョブ管理ツールのagendaを使ってみます。別途REST APIを用意してインタフェースする予定なのでジョブの基本的なCRUDを試してみます。agendaはジョブ管理のバックエンドにMongoDBを使います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.jsのagendaでジョブをスケジュールする - Part1: ジョブのCRUD">
 <meta property="og:url" content="https://masato.github.io/2015/06/06/nodejs-agenda-scheduler-examples/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回リストしたNode.jsのJobqueueとSccheduleツールからスケジュール型ジョブ管理ツールのagendaを使ってみます。別途REST APIを用意してインタフェースする予定なのでジョブの基本的なCRUDを試してみます。agendaはジョブ管理のバックエンドにMongoDBを使います。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-06-06T13:06:12.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.817Z">
+<meta property="article:modified_time" content="2015-06-06T13:06:12.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="agenda">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Node.jsのagendaでジョブをスケジュールする - Part1: ジョブのCRUD | masato's blog</title>
+  <title>Node.jsのagendaでジョブをスケジュールする - Part1: ジョブのCRUD | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 6 2015 22:06:12" itemprop="dateCreated datePublished" datetime="2015-06-06T22:06:12+09:00">Jun 6 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回リストしたNode.jsのJobqueueとSccheduleツールからスケジュール型ジョブ管理ツールのagendaを使ってみます。別途REST APIを用意してインタフェースする予定なのでジョブの基本的なCRUDを試してみます。agendaはジョブ管理のバックエンドにMongoDBを使います。</div>
@@ -240,52 +207,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>前回リストした<a href="/2015/06/05/nodejs-job-queue-schedule/">Node.jsのJobqueueとSccheduleツール</a>からスケジュール型ジョブ管理ツールの<a href="https://github.com/rschmukler/agenda" target="_blank" rel="noopener">agenda</a>を使ってみます。別途REST APIを用意してインタフェースする予定なのでジョブの基本的なCRUDを試してみます。agendaはジョブ管理のバックエンドにMongoDBを使います。</p>
-<a id="more"></a>
+        <p>前回リストした<a href="/2015/06/05/nodejs-job-queue-schedule/">Node.jsのJobqueueとSccheduleツール</a>からスケジュール型ジョブ管理ツールの<a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda">agenda</a>を使ってみます。別途REST APIを用意してインタフェースする予定なのでジョブの基本的なCRUDを試してみます。agendaはジョブ管理のバックエンドにMongoDBを使います。</p>
+<span id="more"></span>
 
-<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>以下のようなプロジェクトを作成します。リポジトリは<a href="https://github.com/masato/docker-agenda-sample" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>以下のようなプロジェクトを作成します。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-agenda-sample">こちら</a>です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-agenda</span><br><span class="line">$ tree -L 1</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── app.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">└── package.json</span><br><span class="line"></span><br><span class="line">1 directory, 5 files</span><br></pre></td></tr></table></figure>
 
 <p>app.jsを例にしてagendaのジョブの管理メソッドを確認していきます。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/docker-agenda/app.js </span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Agenda = <span class="built_in">require</span>(<span class="string">'agenda'</span>),</span><br><span class="line">    agenda = <span class="keyword">new</span> Agenda(</span><br><span class="line">        &#123;<span class="attr">db</span>: &#123;<span class="attr">address</span>: process.env.MONGO_PORT_27017_TCP_ADDR+<span class="string">':'</span></span><br><span class="line">              +process.env.MONGO_PORT_27017_TCP_PORT + <span class="string">'/agendadb'</span>&#125;&#125;);</span><br><span class="line"></span><br><span class="line">agenda.define(<span class="string">'hello world'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">job, done</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(job.attrs.data.time, <span class="string">'hello world!'</span>);</span><br><span class="line">  done();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">agenda.schedule(<span class="string">'in 5 seconds'</span>, <span class="string">'hello world'</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-agenda/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Agenda = <span class="built_in">require</span>(<span class="string">&#x27;agenda&#x27;</span>),</span><br><span class="line">    agenda = <span class="keyword">new</span> Agenda(</span><br><span class="line">        &#123;<span class="attr">db</span>: &#123;<span class="attr">address</span>: process.env.MONGO_PORT_27017_TCP_ADDR+<span class="string">&#x27;:&#x27;</span></span><br><span class="line">              +process.env.MONGO_PORT_27017_TCP_PORT + <span class="string">&#x27;/agendadb&#x27;</span>&#125;&#125;);</span><br><span class="line"></span><br><span class="line">agenda.define(<span class="string">&#x27;hello world&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">job, done</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(job.attrs.data.time, <span class="string">&#x27;hello world!&#x27;</span>);</span><br><span class="line">  done();</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">agenda.schedule(<span class="string">&#x27;in 5 seconds&#x27;</span>, <span class="string">&#x27;hello world&#x27;</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br></pre></td></tr></table></figure>
 
-<h2 id="ジョブの作成"><a href="#ジョブの作成" class="headerlink" title="ジョブの作成"></a>ジョブの作成</h2><h3 id="ジョブの処理関数の定義-define"><a href="#ジョブの処理関数の定義-define" class="headerlink" title="ジョブの処理関数の定義 - define"></a>ジョブの処理関数の定義 - define</h3><p><a href="https://github.com/rschmukler/agenda#definejobname-options-fn" target="_blank" rel="noopener">define(jobName, [options], fn)</a>はジョブの処理を実装した関数に名前をつけて定義します。関数内では非同期処理の場合はdone()を実行します。同期処理の場合はdoneは省略できます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.define(<span class="string">'hello world'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">job, done</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(job.attrs.data.time, <span class="string">'hello world!'</span>);</span><br><span class="line">  done();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="ジョブの作成"><a href="#ジョブの作成" class="headerlink" title="ジョブの作成"></a>ジョブの作成</h2><h3 id="ジョブの処理関数の定義-define"><a href="#ジョブの処理関数の定義-define" class="headerlink" title="ジョブの処理関数の定義 - define"></a>ジョブの処理関数の定義 - define</h3><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#definejobname-options-fn">define(jobName, [options], fn)</a>はジョブの処理を実装した関数に名前をつけて定義します。関数内では非同期処理の場合はdone()を実行します。同期処理の場合はdoneは省略できます。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.define(<span class="string">&#x27;hello world&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">job, done</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(job.attrs.data.time, <span class="string">&#x27;hello world!&#x27;</span>);</span><br><span class="line">  done();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<h3 id="1回だけスケジュール-schedule"><a href="#1回だけスケジュール-schedule" class="headerlink" title="1回だけスケジュール - schedule"></a>1回だけスケジュール - schedule</h3><p><a href="https://github.com/rschmukler/agenda#schedulewhen-name-data" target="_blank" rel="noopener">schedule(when, name, data)</a>は<code>name</code>のジョブを一度だけ実行します。非英語圏だと前置詞が難しいのですが<code>in 5 seconds</code>と書くと<code>あと5秒経ったら</code>ジョブを実行します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.schedule(<span class="string">'in 5 seconds'</span>, <span class="string">'hello world'</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="string">'say hello world in 5 seconds'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="1回だけスケジュール-schedule"><a href="#1回だけスケジュール-schedule" class="headerlink" title="1回だけスケジュール - schedule"></a>1回だけスケジュール - schedule</h3><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#schedulewhen-name-data">schedule(when, name, data)</a>は<code>name</code>のジョブを一度だけ実行します。非英語圏だと前置詞が難しいのですが<code>in 5 seconds</code>と書くと<code>あと5秒経ったら</code>ジョブを実行します。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.schedule(<span class="string">&#x27;in 5 seconds&#x27;</span>, <span class="string">&#x27;hello world&#x27;</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="string">&#x27;say hello world in 5 seconds&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>プログラムを実行すると最初のログが表示されてから5秒後に<code>hello world</code>が出力されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm agenda</span><br><span class="line">Creating dockeragenda_mongo_1...</span><br><span class="line"></span><br><span class="line">&gt; docker-agenda@0.0.1 start /app</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">Wed Jun 10 2015 13:44:55 GMT+0000 (UTC) <span class="string">'say hello world in 5 seconds'</span></span><br><span class="line">Wed Jun 10 2015 13:44:55 GMT+0000 (UTC) <span class="string">'hello world'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm agenda</span><br><span class="line">Creating dockeragenda_mongo_1...</span><br><span class="line"></span><br><span class="line">&gt; docker-agenda@0.0.1 start /app</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">Wed Jun 10 2015 13:44:55 GMT+0000 (UTC) <span class="string">&#x27;say hello world in 5 seconds&#x27;</span></span><br><span class="line">Wed Jun 10 2015 13:44:55 GMT+0000 (UTC) <span class="string">&#x27;hello world&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>MongoDBのコンテナに入りどんなレコードが作成されているか確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it dockeragenda_mongo_1 bash</span><br><span class="line">$ mongo agendadb</span><br><span class="line">&gt; show collections;</span><br><span class="line">agendaJobs</span><br><span class="line">system.indexes</span><br><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55783f57c2f0820c0063b18d"</span>), <span class="string">"name"</span> : <span class="string">"hello world"</span>, <span class="string">"data"</span> : &#123; <span class="string">"time"</span> : ISODate(<span class="string">"2015-06-10T13:44:55.036Z"</span>) &#125;, <span class="string">"type"</span> : <span class="string">"normal"</span>, <span class="string">"priority"</span> : 0, <span class="string">"nextRunAt"</span> : null, <span class="string">"lastModifiedBy"</span> : null, <span class="string">"lockedAt"</span> : null, <span class="string">"lastRunAt"</span> : ISODate(<span class="string">"2015-06-10T13:45:00.041Z"</span>), <span class="string">"lastFinishedAt"</span> : ISODate(<span class="string">"2015-06-10T13:45:00.046Z"</span>) &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it dockeragenda_mongo_1 bash</span><br><span class="line">$ mongo agendadb</span><br><span class="line">&gt; show collections;</span><br><span class="line">agendaJobs</span><br><span class="line">system.indexes</span><br><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55783f57c2f0820c0063b18d&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;hello world&quot;</span>, <span class="string">&quot;data&quot;</span> : &#123; <span class="string">&quot;time&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T13:44:55.036Z&quot;</span>) &#125;, <span class="string">&quot;type&quot;</span> : <span class="string">&quot;normal&quot;</span>, <span class="string">&quot;priority&quot;</span> : 0, <span class="string">&quot;nextRunAt&quot;</span> : null, <span class="string">&quot;lastModifiedBy&quot;</span> : null, <span class="string">&quot;lockedAt&quot;</span> : null, <span class="string">&quot;lastRunAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T13:45:00.041Z&quot;</span>), <span class="string">&quot;lastFinishedAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T13:45:00.046Z&quot;</span>) &#125;</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="繰り返す-every"><a href="#繰り返す-every" class="headerlink" title="繰り返す - every"></a>繰り返す - every</h3><p><a href="https://github.com/rschmukler/agenda#everyinterval-name-data" target="_blank" rel="noopener">every(interval, name, [data])</a>メソッドは<code>name</code>のジョブを<code>interval</code>の間隔で繰り返し実行します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.every(<span class="string">'5 seconds'</span>, <span class="string">'hello world'</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="string">'say hello world every 5 seconds'</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="繰り返す-every"><a href="#繰り返す-every" class="headerlink" title="繰り返す - every"></a>繰り返す - every</h3><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#everyinterval-name-data">every(interval, name, [data])</a>メソッドは<code>name</code>のジョブを<code>interval</code>の間隔で繰り返し実行します。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.every(<span class="string">&#x27;5 seconds&#x27;</span>, <span class="string">&#x27;hello world&#x27;</span>, &#123;<span class="attr">time</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;);</span><br><span class="line">agenda.start();</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="string">&#x27;say hello world every 5 seconds&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>プログラムを実行するとすぐに1回目の<code>hello world</code>が表示され、以降は5秒間隔で出力されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm agenda</span><br><span class="line">Creating dockeragenda_mongo_1...</span><br><span class="line"></span><br><span class="line">&gt; docker-agenda@0.0.1 start /app</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">'say hello world every 5 seconds'</span></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">'hello world'</span></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">'hello world'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm agenda</span><br><span class="line">Creating dockeragenda_mongo_1...</span><br><span class="line"></span><br><span class="line">&gt; docker-agenda@0.0.1 start /app</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">&#x27;say hello world every 5 seconds&#x27;</span></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line">Wed Jun 10 2015 14:05:26 GMT+0000 (UTC) <span class="string">&#x27;hello world&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>MongoDBコンテナを確認してすると、ジョブの実行後にnextRunAtフィールドの値が5秒インクリメントされています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55784426dcc6bd7270dc5d81"</span>), <span class="string">"name"</span> : <span class="string">"hello world"</span>, <span class="string">"type"</span> : <span class="string">"single"</span>, <span class="string">"data"</span> : &#123; <span class="string">"time"</span> : ISODate(<span class="string">"2015-06-10T14:05:26.161Z"</span>) &#125;, <span class="string">"priority"</span> : 0, <span class="string">"repeatInterval"</span> : <span class="string">"5 seconds"</span>, <span class="string">"lastModifiedBy"</span> : null, <span class="string">"nextRunAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:11.264Z"</span>), <span class="string">"lockedAt"</span> : null, <span class="string">"lastRunAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:06.264Z"</span>), <span class="string">"lastFinishedAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:06.266Z"</span>) &#125;</span><br><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55784426dcc6bd7270dc5d81"</span>), <span class="string">"name"</span> : <span class="string">"hello world"</span>, <span class="string">"type"</span> : <span class="string">"single"</span>, <span class="string">"data"</span> : &#123; <span class="string">"time"</span> : ISODate(<span class="string">"2015-06-10T14:05:26.161Z"</span>) &#125;, <span class="string">"priority"</span> : 0, <span class="string">"repeatInterval"</span> : <span class="string">"5 seconds"</span>, <span class="string">"lastModifiedBy"</span> : null, <span class="string">"nextRunAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:16.264Z"</span>), <span class="string">"lockedAt"</span> : null, <span class="string">"lastRunAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:11.264Z"</span>), <span class="string">"lastFinishedAt"</span> : ISODate(<span class="string">"2015-06-10T14:06:11.266Z"</span>) &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55784426dcc6bd7270dc5d81&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;hello world&quot;</span>, <span class="string">&quot;type&quot;</span> : <span class="string">&quot;single&quot;</span>, <span class="string">&quot;data&quot;</span> : &#123; <span class="string">&quot;time&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:05:26.161Z&quot;</span>) &#125;, <span class="string">&quot;priority&quot;</span> : 0, <span class="string">&quot;repeatInterval&quot;</span> : <span class="string">&quot;5 seconds&quot;</span>, <span class="string">&quot;lastModifiedBy&quot;</span> : null, <span class="string">&quot;nextRunAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:11.264Z&quot;</span>), <span class="string">&quot;lockedAt&quot;</span> : null, <span class="string">&quot;lastRunAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:06.264Z&quot;</span>), <span class="string">&quot;lastFinishedAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:06.266Z&quot;</span>) &#125;</span><br><span class="line">&gt; db.agendaJobs.find();</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55784426dcc6bd7270dc5d81&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;hello world&quot;</span>, <span class="string">&quot;type&quot;</span> : <span class="string">&quot;single&quot;</span>, <span class="string">&quot;data&quot;</span> : &#123; <span class="string">&quot;time&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:05:26.161Z&quot;</span>) &#125;, <span class="string">&quot;priority&quot;</span> : 0, <span class="string">&quot;repeatInterval&quot;</span> : <span class="string">&quot;5 seconds&quot;</span>, <span class="string">&quot;lastModifiedBy&quot;</span> : null, <span class="string">&quot;nextRunAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:16.264Z&quot;</span>), <span class="string">&quot;lockedAt&quot;</span> : null, <span class="string">&quot;lastRunAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:11.264Z&quot;</span>), <span class="string">&quot;lastFinishedAt&quot;</span> : ISODate(<span class="string">&quot;2015-06-10T14:06:11.266Z&quot;</span>) &#125;</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="ジョブの検索-jobs"><a href="#ジョブの検索-jobs" class="headerlink" title="ジョブの検索 - jobs"></a>ジョブの検索 - jobs</h2><p><a href="https://github.com/rschmukler/agenda#jobsmongoskin-query" target="_blank" rel="noopener">jobs(mongoskin query)</a>を実行してデータベースからジョブを検索してコールバックで取得します。<a href="https://github.com/kissjs/node-mongoskin" target="_blank" rel="noopener">mongoskin</a>のクエリが使えます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.jobs(&#123;<span class="attr">name</span>: <span class="string">'printAnalyticsReport'</span>&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, jobs</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Work with jobs (see below)</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="ジョブの検索-jobs"><a href="#ジョブの検索-jobs" class="headerlink" title="ジョブの検索 - jobs"></a>ジョブの検索 - jobs</h2><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#jobsmongoskin-query">jobs(mongoskin query)</a>を実行してデータベースからジョブを検索してコールバックで取得します。<a target="_blank" rel="noopener" href="https://github.com/kissjs/node-mongoskin">mongoskin</a>のクエリが使えます。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.jobs(&#123;<span class="attr">name</span>: <span class="string">&#x27;printAnalyticsReport&#x27;</span>&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, jobs</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// Work with jobs (see below)</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<h2 id="ジョブの更新"><a href="#ジョブの更新" class="headerlink" title="ジョブの更新"></a>ジョブの更新</h2><p>ジョブインスタンスのメソッドを実行して変更した内容は<a href="https://github.com/rschmukler/agenda#savecallback" target="_blank" rel="noopener">save(callback)</a>を実行してデータベースのジョブに保存して更新する必要があります。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">job.repeatEvery(<span class="string">'10 minutes'</span>);</span><br><span class="line">job.save();</span><br></pre></td></tr></table></figure>
+<h2 id="ジョブの更新"><a href="#ジョブの更新" class="headerlink" title="ジョブの更新"></a>ジョブの更新</h2><p>ジョブインスタンスのメソッドを実行して変更した内容は<a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#savecallback">save(callback)</a>を実行してデータベースのジョブに保存して更新する必要があります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">job.repeatEvery(<span class="string">&#x27;10 minutes&#x27;</span>);</span><br><span class="line">job.save();</span><br></pre></td></tr></table></figure>
 
-<h2 id="ジョブの削除"><a href="#ジョブの削除" class="headerlink" title="ジョブの削除"></a>ジョブの削除</h2><p>ジョブの削除は<a href="https://github.com/rschmukler/agenda#removecallback" target="_blank" rel="noopener">remove(callback)</a>を実行します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">job.remove(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!err) <span class="built_in">console</span>.log(<span class="string">"Successfully removed job from collection"</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="ジョブの削除"><a href="#ジョブの削除" class="headerlink" title="ジョブの削除"></a>ジョブの削除</h2><p>ジョブの削除は<a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#removecallback">remove(callback)</a>を実行します。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">job.remove(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!err) <span class="built_in">console</span>.log(<span class="string">&quot;Successfully removed job from collection&quot;</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
-<h3 id="アトミックな削除-cancel"><a href="#アトミックな削除-cancel" class="headerlink" title="アトミックな削除 - cancel"></a>アトミックな削除 - cancel</h3><p><a href="https://github.com/rschmukler/agenda#cancelmongoskin-query-cb" target="_blank" rel="noopener">cancel(mongoskin query, cb)</a>はジョブの検索(jobs())と削除(remove())をアトミックに行います。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.cancel(&#123;<span class="attr">name</span>: <span class="string">'printAnalyticsReport'</span>&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, numRemoved</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="アトミックな削除-cancel"><a href="#アトミックな削除-cancel" class="headerlink" title="アトミックな削除 - cancel"></a>アトミックな削除 - cancel</h3><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#cancelmongoskin-query-cb">cancel(mongoskin query, cb)</a>はジョブの検索(jobs())と削除(remove())をアトミックに行います。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.cancel(&#123;<span class="attr">name</span>: <span class="string">&#x27;printAnalyticsReport&#x27;</span>&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">err, numRemoved</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<h3 id="すべて削除-purge"><a href="#すべて削除-purge" class="headerlink" title="すべて削除 - purge"></a>すべて削除 - purge</h3><p><a href="https://github.com/rschmukler/agenda#purgecb" target="_blank" rel="noopener">purge(cb)</a></p>
-<p>設定変更などの結果ジョブが不要になったときは、<a href="https://github.com/rschmukler/agenda#purgecb" target="_blank" rel="noopener">purge(cb)</a>を使いジョブをデータベースから削除します。</p>
+<h3 id="すべて削除-purge"><a href="#すべて削除-purge" class="headerlink" title="すべて削除 - purge"></a>すべて削除 - purge</h3><p><a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#purgecb">purge(cb)</a></p>
+<p>設定変更などの結果ジョブが不要になったときは、<a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda#purgecb">purge(cb)</a>を使いジョブをデータベースから削除します。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">agenda.purge(<span class="function"><span class="keyword">function</span>(<span class="params">err, numRemoved</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
     </div>
 
@@ -322,7 +289,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -373,7 +339,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ジョブの作成"><span class="nav-number">2.</span> <span class="nav-text">ジョブの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ジョブの処理関数の定義-define"><span class="nav-number">2.1.</span> <span class="nav-text">ジョブの処理関数の定義 - define</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1回だけスケジュール-schedule"><span class="nav-number">2.2.</span> <span class="nav-text">1回だけスケジュール - schedule</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#繰り返す-every"><span class="nav-number">2.3.</span> <span class="nav-text">繰り返す - every</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ジョブの検索-jobs"><span class="nav-number">3.</span> <span class="nav-text">ジョブの検索 - jobs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ジョブの更新"><span class="nav-number">4.</span> <span class="nav-text">ジョブの更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ジョブの削除"><span class="nav-number">5.</span> <span class="nav-text">ジョブの削除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#アトミックな削除-cancel"><span class="nav-number">5.1.</span> <span class="nav-text">アトミックな削除 - cancel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#すべて削除-purge"><span class="nav-number">5.2.</span> <span class="nav-text">すべて削除 - purge</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B8%E3%83%A7%E3%83%96%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">ジョブの作成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B8%E3%83%A7%E3%83%96%E3%81%AE%E5%87%A6%E7%90%86%E9%96%A2%E6%95%B0%E3%81%AE%E5%AE%9A%E7%BE%A9-define"><span class="nav-number">2.1.</span> <span class="nav-text">ジョブの処理関数の定義 - define</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E5%9B%9E%E3%81%A0%E3%81%91%E3%82%B9%E3%82%B1%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB-schedule"><span class="nav-number">2.2.</span> <span class="nav-text">1回だけスケジュール - schedule</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%99-every"><span class="nav-number">2.3.</span> <span class="nav-text">繰り返す - every</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B8%E3%83%A7%E3%83%96%E3%81%AE%E6%A4%9C%E7%B4%A2-jobs"><span class="nav-number">3.</span> <span class="nav-text">ジョブの検索 - jobs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B8%E3%83%A7%E3%83%96%E3%81%AE%E6%9B%B4%E6%96%B0"><span class="nav-number">4.</span> <span class="nav-text">ジョブの更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B8%E3%83%A7%E3%83%96%E3%81%AE%E5%89%8A%E9%99%A4"><span class="nav-number">5.</span> <span class="nav-text">ジョブの削除</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A2%E3%83%88%E3%83%9F%E3%83%83%E3%82%AF%E3%81%AA%E5%89%8A%E9%99%A4-cancel"><span class="nav-number">5.1.</span> <span class="nav-text">アトミックな削除 - cancel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%99%E3%81%B9%E3%81%A6%E5%89%8A%E9%99%A4-purge"><span class="nav-number">5.2.</span> <span class="nav-text">すべて削除 - purge</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -405,10 +371,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -433,9 +402,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -475,13 +444,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

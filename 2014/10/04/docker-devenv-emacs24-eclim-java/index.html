@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ClojureやMicro Servicesの学習のためにJavaを使う機会が増えました。OSvを使うとJavaだけで理想のアーキテクチャができそうです。以前Javaの開発ではEclipseを使っていました。auto-completeがないとJavaの開発はつらいです。その後RubyやPythonで開発するようになり、メインの開発環境はEmacsになっています。最近では開発はクラウド上のDocke">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker開発環境をつくる - Emacs24とEclimからEclipseに接続するJava開発環境">
 <meta property="og:url" content="https://masato.github.io/2014/10/04/docker-devenv-emacs24-eclim-java/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="ClojureやMicro Servicesの学習のためにJavaを使う機会が増えました。OSvを使うとJavaだけで理想のアーキテクチャができそうです。以前Javaの開発ではEclipseを使っていました。auto-completeがないとJavaの開発はつらいです。その後RubyやPythonで開発するようになり、メインの開発環境はEmacsになっています。最近では開発はクラウド上のDocke">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-10-04T04:42:08.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.589Z">
+<meta property="article:modified_time" content="2014-10-04T04:42:08.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="DockerDevEnv">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Docker開発環境をつくる - Emacs24とEclimからEclipseに接続するJava開発環境 | masato's blog</title>
+  <title>Docker開発環境をつくる - Emacs24とEclimからEclipseに接続するJava開発環境 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Oct 4 2014 13:42:08" itemprop="dateCreated datePublished" datetime="2014-10-04T13:42:08+09:00">Oct 4 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">ClojureやMicro Servicesの学習のためにJavaを使う機会が増えました。OSvを使うとJavaだけで理想のアーキテクチャができそうです。以前Javaの開発ではEclipseを使っていました。auto-completeがないとJavaの開発はつらいです。その後RubyやPythonで開発するようになり、メインの開発環境はEmacsになっています。最近では開発はクラウド上のDockerコンテナ内でプログラミングをしているので、さらにGUI環境から遠くなりました。X11 forwardingでEclipseもおもしろそうですが、Eclipseをネットワーク接続してEmacsから使う方法を試してみます。</div>
@@ -247,10 +214,10 @@
 <li><code>Update 2014-10-06</code>: <a href="/2014/10/06/docker-devenv-emacs24-eclim-java8-failed-spring-boot/">Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う</a></li>
 <li><code>Update 2014-10-05</code>: <a href="/2014/10/05/spring-boot-emacs-eclim-helloworld/">EclimでSpring Boot入門 - Part1: Hello World</a></li>
 </ul>
-<p><a href="/2014/09/20/docker-devenv-emacs24-clojure/">Clojure</a>や<a href="/2014/10/03/micro-services-docker-osv-spring-cloud/">Micro Services</a>の学習のためにJavaを使う機会が増えました。<a href="http://osv.io/" target="_blank" rel="noopener">OSv</a>を使うとJavaだけで理想のアーキテクチャができそうです。</p>
+<p><a href="/2014/09/20/docker-devenv-emacs24-clojure/">Clojure</a>や<a href="/2014/10/03/micro-services-docker-osv-spring-cloud/">Micro Services</a>の学習のためにJavaを使う機会が増えました。<a target="_blank" rel="noopener" href="http://osv.io/">OSv</a>を使うとJavaだけで理想のアーキテクチャができそうです。</p>
 <p>以前Javaの開発ではEclipseを使っていました。<code>auto-complete</code>がないとJavaの開発はつらいです。その後RubyやPythonで開発するようになり、メインの開発環境はEmacsになっています。最近では開発はクラウド上のDockerコンテナ内でプログラミングをしているので、さらにGUI環境から遠くなりました。</p>
 <p><code>X11 forwarding</code>でEclipseもおもしろそうですが、Eclipseをネットワーク接続してEmacsから使う方法を試してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p>プロジェクトを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/docker_apps/eclim</span><br></pre></td></tr></table></figure>
@@ -259,21 +226,21 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree ~/docker_apps/eclim/</span><br><span class="line">~/docker_apps/eclim/</span><br><span class="line">├── .emacs.d</span><br><span class="line">│   ├── Cask</span><br><span class="line">│   ├── init.el</span><br><span class="line">│   └── inits</span><br><span class="line">│       ├── 00-keybinds.el</span><br><span class="line">│       ├── 01-files.el</span><br><span class="line">│       └── 04-eclim.el</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── mykey.pub</span><br><span class="line">└── sv</span><br><span class="line">    └── xvfb</span><br><span class="line">        ├── <span class="built_in">log</span></span><br><span class="line">        │   └── run</span><br><span class="line">        └── run</span><br></pre></td></tr></table></figure>
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>最初に完成したDockerfileです。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.15</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD mykey.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree\</span><br><span class="line">                       python</span><br><span class="line"><span class="comment"># non-root user</span></span><br><span class="line">RUN useradd -m -d /home/docker -s /bin/bash docker \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">"docker:docker"</span> | chpasswd \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 700 /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; cp /root/.ssh/authorized_keys /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 600 /home/docker/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">"export LANG=ja_JP.UTF-8"</span> &gt;&gt; /home/docker/.profile \</span><br><span class="line"> &amp;&amp; chown -R docker:docker /home/docker/.ssh</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">"docker ALL=(ALL) NOPASSWD:ALL"</span> &gt;&gt; /etc/sudoers</span><br><span class="line"><span class="comment"># eclim</span></span><br><span class="line">RUN apt-get install -y openjdk-7-jdk ant maven \</span><br><span class="line">    xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic</span><br><span class="line">ADD .emacs.d /home/docker/.emacs.d</span><br><span class="line">RUN chown -R docker:docker /home/docker/.emacs.d</span><br><span class="line">USER docker</span><br><span class="line">ENV HOME /home/docker</span><br><span class="line">WORKDIR /home/docker</span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">RUN /bin/bash -c <span class="string">'echo export PATH="/home/docker/.cask/bin:$PATH" &gt;&gt; /home/docker/.profile'</span> \</span><br><span class="line"> &amp;&amp; /bin/bash -c <span class="string">'source /home/docker/.profile &amp;&amp; cd /home/docker/.emacs.d &amp;&amp; cask install'</span></span><br><span class="line"><span class="comment"># eclipse,eclim</span></span><br><span class="line">RUN wget -P /home/docker http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/luna/R/eclipse-java-luna-R-linux-gtk-x86_64.tar.gz \</span><br><span class="line"> &amp;&amp; tar xzvf eclipse-java-luna-R-linux-gtk-x86_64.tar.gz -C /home/docker \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/workspace \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> /home/docker &amp;&amp; git <span class="built_in">clone</span> git://github.com/ervandew/eclim.git \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> eclim &amp;&amp; ant -Declipse.home=/home/docker/eclipse</span><br><span class="line">USER root</span><br><span class="line">ADD sv /etc/service</span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.15</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD mykey.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree\</span><br><span class="line">                       python</span><br><span class="line"><span class="comment"># non-root user</span></span><br><span class="line">RUN useradd -m -d /home/docker -s /bin/bash docker \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;docker:docker&quot;</span> | chpasswd \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 700 /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; cp /root/.ssh/authorized_keys /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 600 /home/docker/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;export LANG=ja_JP.UTF-8&quot;</span> &gt;&gt; /home/docker/.profile \</span><br><span class="line"> &amp;&amp; chown -R docker:docker /home/docker/.ssh</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">&quot;docker ALL=(ALL) NOPASSWD:ALL&quot;</span> &gt;&gt; /etc/sudoers</span><br><span class="line"><span class="comment"># eclim</span></span><br><span class="line">RUN apt-get install -y openjdk-7-jdk ant maven \</span><br><span class="line">    xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic</span><br><span class="line">ADD .emacs.d /home/docker/.emacs.d</span><br><span class="line">RUN chown -R docker:docker /home/docker/.emacs.d</span><br><span class="line">USER docker</span><br><span class="line">ENV HOME /home/docker</span><br><span class="line">WORKDIR /home/docker</span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">RUN /bin/bash -c <span class="string">&#x27;echo export PATH=&quot;/home/docker/.cask/bin:$PATH&quot; &gt;&gt; /home/docker/.profile&#x27;</span> \</span><br><span class="line"> &amp;&amp; /bin/bash -c <span class="string">&#x27;source /home/docker/.profile &amp;&amp; cd /home/docker/.emacs.d &amp;&amp; cask install&#x27;</span></span><br><span class="line"><span class="comment"># eclipse,eclim</span></span><br><span class="line">RUN wget -P /home/docker http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/luna/R/eclipse-java-luna-R-linux-gtk-x86_64.tar.gz \</span><br><span class="line"> &amp;&amp; tar xzvf eclipse-java-luna-R-linux-gtk-x86_64.tar.gz -C /home/docker \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/workspace \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> /home/docker &amp;&amp; git <span class="built_in">clone</span> git://github.com/ervandew/eclim.git \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> eclim &amp;&amp; ant -Declipse.home=/home/docker/eclipse</span><br><span class="line">USER root</span><br><span class="line">ADD sv /etc/service</span><br><span class="line">CMD [<span class="string">&quot;/sbin/my_init&quot;</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
 <h3 id="Xvfbのrunit"><a href="#Xvfbのrunit" class="headerlink" title="Xvfbのrunit"></a>Xvfbのrunit</h3><p>runitの起動スクリプトを作成します。XvfbはIPv6を無効にするため<code>-nolisten inet6</code>のフラグをつけます。</p>
 <figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/sv/xvfb/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> Xvfb :1 -screen 0 1024x768x24 -nolisten inet6</span><br></pre></td></tr></table></figure>
 
 <p>ログの設定です。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/sv/xvfb/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line">!/bin/sh</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/sv/xvfb/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line">!/bin/sh</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">&quot;/var/log/<span class="variable">$&#123;service&#125;</span>&quot;</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>それぞれ実行権限をつけます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod +x sv/xvfb/run</span><br><span class="line">$ chmod +x sv/xvfb/<span class="built_in">log</span>/run</span><br></pre></td></tr></table></figure>
 
-<h3 id="emacs-d"><a href="#emacs-d" class="headerlink" title=".emacs.d"></a>.emacs.d</h3><p><a href="http://cask.github.io/" target="_blank" rel="noopener">Cask</a>の設定ファイルです。auto-completeとemacs-eclimをインストールします。</p>
+<h3 id="emacs-d"><a href="#emacs-d" class="headerlink" title=".emacs.d"></a>.emacs.d</h3><p><a target="_blank" rel="noopener" href="http://cask.github.io/">Cask</a>の設定ファイルです。auto-completeとemacs-eclimをインストールします。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(source gnu)</span><br><span class="line">(source marmalade)</span><br><span class="line">(source melpa)</span><br><span class="line">(depends-on &quot;pallet&quot;)</span><br><span class="line">(depends-on &quot;init-loader&quot;)</span><br><span class="line">;; emacs-eclim</span><br><span class="line">(depends-on &quot;auto-complete&quot;)</span><br><span class="line">(depends-on &quot;emacs-eclim&quot;)</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/senny/emacs-eclim/issues/95" target="_blank" rel="noopener">Symbol’s function definition is void: find</a>のissuesを読むとemacs 24.3の場合には、<code>(require &#39;cl)</code>が必要です。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/senny/emacs-eclim/issues/95">Symbol’s function definition is void: find</a>のissuesを読むとemacs 24.3の場合には、<code>(require &#39;cl)</code>が必要です。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/inits/04-eclim.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;cl)</span><br><span class="line">(require &#39;eclim)</span><br><span class="line">(global-eclim-mode)</span><br><span class="line">(custom-set-variables</span><br><span class="line">  &#39;(eclim-eclipse-dirs &#39;(&quot;&#x2F;home&#x2F;docker&#x2F;eclipse&quot;))</span><br><span class="line">  &#39;(eclim-executable &quot;&#x2F;home&#x2F;docker&#x2F;eclipse&#x2F;eclim&quot;)</span><br><span class="line">  &#39;(eclimd-default-workspace &quot;&#x2F;home&#x2F;docker&#x2F;workspace&quot;))</span><br><span class="line">;; regular auto-complete initialization</span><br><span class="line">(require &#39;auto-complete-config)</span><br><span class="line">(ac-config-default)</span><br><span class="line">;; add the emacs-eclim source</span><br><span class="line">(require &#39;ac-emacs-eclim-source)</span><br><span class="line">(ac-emacs-eclim-config)</span><br><span class="line">(ac-set-trigger-key &quot;TAB&quot;)</span><br><span class="line">(define-key ac-complete-mode-map (kbd &quot;C-n&quot;) &#39;ac-next)</span><br><span class="line">(define-key ac-complete-mode-map (kbd &quot;C-p&quot;) &#39;ac-previous)</span><br><span class="line">(add-hook &#39;java-mode-hook &#39;eclim-mode)</span><br></pre></td></tr></table></figure>
 
 <p>以下はいつもと同じです。init.elで<code>init-loader</code>を使えるようにします。</p>
@@ -286,7 +253,7 @@
 <figure class="highlight plain"><figcaption><span>el ~/docker_apps/eclim/.emacs.d/inits/01-files.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(setq backup-inhibited t)</span><br><span class="line">(setq next-line-add-newlines nil)</span><br><span class="line">(setq-default tab-width 4 indent-tabs-mode nil)</span><br></pre></td></tr></table></figure>
 
 <h3 id="コンテナを起動して確認する"><a href="#コンテナを起動して確認する" class="headerlink" title="コンテナを起動して確認する"></a>コンテナを起動して確認する</h3><p>この後トラブルシュートと個別のファイルについて書きますが、まずは動作確認をします。<br>コンテナを起動してSSH接続します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/eclim</span><br><span class="line">$ docker build -t masato/eclim .</span><br><span class="line">$ docker run --name eclim -d -i -t masato/eclim</span><br><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/mykey</span><br><span class="line">$ ssh docker@$(docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> eclim)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/eclim</span><br><span class="line">$ docker build -t masato/eclim .</span><br><span class="line">$ docker run --name eclim -d -i -t masato/eclim</span><br><span class="line">$ <span class="built_in">eval</span> `ssh-agent`</span><br><span class="line">$ ssh-add ~/.ssh/mykey</span><br><span class="line">$ ssh docker@$(docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;&quot;</span> eclim)</span><br></pre></td></tr></table></figure>
 <p>eclimd を起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br></pre></td></tr></table></figure>
 
@@ -294,7 +261,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emacs</span><br></pre></td></tr></table></figure>
 
 <p>プロジェクトを作成します。名前はexampleとしてjavaのプロジェクトを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">M-x eclim-project-create</span><br><span class="line">Name: example</span><br><span class="line">Project Directory: ~/workspace/example</span><br><span class="line">Type: java</span><br><span class="line">Created project <span class="string">'example'</span>.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">M-x eclim-project-create</span><br><span class="line">Name: example</span><br><span class="line">Project Directory: ~/workspace/example</span><br><span class="line">Type: java</span><br><span class="line">Created project <span class="string">&#x27;example&#x27;</span>.</span><br></pre></td></tr></table></figure>
 
 <p>作成したプロジェクトを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">M-x eclim-project-mode</span><br><span class="line"></span><br><span class="line">  | open   | example                        | /home/docker/workspace/example</span><br></pre></td></tr></table></figure>
@@ -302,18 +269,18 @@
 
 <h3 id="Eclipse-4-4-0を使う"><a href="#Eclipse-4-4-0を使う" class="headerlink" title="Eclipse 4.4.0を使う"></a>Eclipse 4.4.0を使う</h3><p>以下はトラブルシュートのメモです。</p>
 <p><code>phusion/baseimage:0.9.15</code>はUbuntu 14.04を使っています。</p>
-<figure class="highlight bash"><figcaption><span>/etc/lsb-release</span></figcaption><table><tr><td class="code"><pre><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=14.04</span><br><span class="line">DISTRIB_CODENAME=trusty</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">"Ubuntu 14.04.1 LTS"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/lsb-release</span></figcaption><table><tr><td class="code"><pre><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=14.04</span><br><span class="line">DISTRIB_CODENAME=trusty</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">&quot;Ubuntu 14.04.1 LTS&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>apt-getでインストールできるEclipseのバージョン古いです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ apt-cache show eclipse-platform | grep Version</span><br><span class="line">Version: 3.8.1-5.1</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://stackoverflow.com/questions/26129731/exception-starting-eclipse-luna-sr1-on-osx" target="_blank" rel="noopener">Eclipse Luna (4.4.1 SR1)</a>はeclimdの実行時に例外が発生します。</p>
+<p><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/26129731/exception-starting-eclipse-luna-sr1-on-osx">Eclipse Luna (4.4.1 SR1)</a>はeclimdの実行時に例外が発生します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br><span class="line">...</span><br><span class="line">java.lang.ClassCastException: org.eclipse.osgi.internal.framework.EquinoxConfiguration<span class="variable">$1</span> cannot be cast to java.lang.String</span><br><span class="line">        at org.eclipse.m2e.logback.configuration.LogHelper.logJavaProperties(LogHelper.java:26)</span><br><span class="line">        at org.eclipse.m2e.logback.configuration.LogPlugin.loadConfiguration(LogPlugin.java:189)</span><br><span class="line">        at org.eclipse.m2e.logback.configuration.LogPlugin.configureLogback(LogPlugin.java:144)</span><br><span class="line">        at org.eclipse.m2e.logback.configuration.LogPlugin.access<span class="variable">$2</span>(LogPlugin.java:107)</span><br><span class="line">        at org.eclipse.m2e.logback.configuration.LogPlugin<span class="variable">$1</span>.run(LogPlugin.java:62)</span><br><span class="line">        at java.util.TimerThread.mainLoop(Timer.java:555)</span><br><span class="line">        at java.util.TimerThread.run(Timer.java:505)</span><br></pre></td></tr></table></figure>
 
 <p>Eclipse Luna (4.4.0)をダウンロードして使います。</p>
 <figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">RUN wget -P /home/docker http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/luna/R/eclip\</span><br><span class="line">se-java-luna-R-linux-gtk-x86_64.tar.gz \</span><br></pre></td></tr></table></figure>
 
-<h3 id="eclimはgit-cloneしてビルドする"><a href="#eclimはgit-cloneしてビルドする" class="headerlink" title="eclimはgit cloneしてビルドする"></a>eclimはgit cloneしてビルドする</h3><p>配布されている<code>eclim_2.4.0.jar</code>には、<a href="https://groups.google.com/forum/#!topic/eclim-user/9H_C8bYJJ-E" target="_blank" rel="noopener">NullPointer when attempting to install eclim headless</a>や<a href="http://stackoverflow.com/questions/25580805/can-not-install-eclim" target="_blank" rel="noopener">Can not install eclim</a>にissuesがあるように、NPEが発生するため<code>git clone</code>して最新バージョンをビルドします。</p>
+<h3 id="eclimはgit-cloneしてビルドする"><a href="#eclimはgit-cloneしてビルドする" class="headerlink" title="eclimはgit cloneしてビルドする"></a>eclimはgit cloneしてビルドする</h3><p>配布されている<code>eclim_2.4.0.jar</code>には、<a target="_blank" rel="noopener" href="https://groups.google.com/forum/#!topic/eclim-user/9H_C8bYJJ-E">NullPointer when attempting to install eclim headless</a>や<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/25580805/can-not-install-eclim">Can not install eclim</a>にissuesがあるように、NPEが発生するため<code>git clone</code>して最新バージョンをビルドします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ java \</span><br><span class="line">  -Declipse.home=/opt/eclipse \</span><br><span class="line">  -Dvim.skip=<span class="literal">true</span> \</span><br><span class="line">  -jar eclim_2.4.0.jar install</span><br><span class="line">...</span><br><span class="line">2014-10-03 08:49:47,738 DEBUG [ANT]</span><br><span class="line">BUILD SUCCESSFUL</span><br><span class="line">Total time: 19 seconds</span><br><span class="line">java.lang.NullPointerException</span><br></pre></td></tr></table></figure>
 
 <p>また、antを使ったeclimのビルドは、rootで行うとエラーになります。</p>
@@ -369,7 +336,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -420,7 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xvfbのrunit"><span class="nav-number">3.</span> <span class="nav-text">Xvfbのrunit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emacs-d"><span class="nav-number">4.</span> <span class="nav-text">.emacs.d</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナを起動して確認する"><span class="nav-number">5.</span> <span class="nav-text">コンテナを起動して確認する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse-4-4-0を使う"><span class="nav-number">6.</span> <span class="nav-text">Eclipse 4.4.0を使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eclimはgit-cloneしてビルドする"><span class="nav-number">7.</span> <span class="nav-text">eclimはgit cloneしてビルドする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xvfbはipv6を無効にする"><span class="nav-number">8.</span> <span class="nav-text">Xvfbはipv6を無効にする</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xvfb%E3%81%AErunit"><span class="nav-number">3.</span> <span class="nav-text">Xvfbのrunit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emacs-d"><span class="nav-number">4.</span> <span class="nav-text">.emacs.d</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%82%92%E8%B5%B7%E5%8B%95%E3%81%97%E3%81%A6%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"><span class="nav-number">5.</span> <span class="nav-text">コンテナを起動して確認する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eclipse-4-4-0%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">6.</span> <span class="nav-text">Eclipse 4.4.0を使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eclim%E3%81%AFgit-clone%E3%81%97%E3%81%A6%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"><span class="nav-number">7.</span> <span class="nav-text">eclimはgit cloneしてビルドする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Xvfb%E3%81%AFipv6%E3%82%92%E7%84%A1%E5%8A%B9%E3%81%AB%E3%81%99%E3%82%8B"><span class="nav-number">8.</span> <span class="nav-text">Xvfbはipv6を無効にする</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -452,10 +418,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -480,9 +449,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -522,13 +491,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

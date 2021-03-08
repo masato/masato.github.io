@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="IDCFクラウドのCoreOSにインストールしたPanamaxへ、Templateを使ってDockerコンテナをデプロイしてみます。App Template Challengeが9月2日まで開催されていることもあり、たくさんTemplateが見つかります。とりあえず適当にRailsのTemplateを探してRun Templateしたらどれも動かなかったので、以下の基準でTemplateを探しまし">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Panamax で Dockerコンテナ管理- Part2: Ghost with MySQL">
 <meta property="og:url" content="https://masato.github.io/2014/08/29/panamax-in-coreos-ghost-with-mysql-template/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="IDCFクラウドのCoreOSにインストールしたPanamaxへ、Templateを使ってDockerコンテナをデプロイしてみます。App Template Challengeが9月2日まで開催されていることもあり、たくさんTemplateが見つかります。とりあえず適当にRailsのTemplateを探してRun Templateしたらどれも動かなかったので、以下の基準でTemplateを探しまし">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/08/29/panamax-in-coreos-ghost-with-mysql-template/ghost_app.png">
 <meta property="og:image" content="https://masato.github.io/2014/08/29/panamax-in-coreos-ghost-with-mysql-template/ghost_demo.png">
 <meta property="article:published_time" content="2014-08-28T16:31:33.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:modified_time" content="2014-08-28T16:31:33.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="CoreOS">
 <meta property="article:tag" content="Docker管理">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Panamax で Dockerコンテナ管理- Part2: Ghost with MySQL | masato's blog</title>
+  <title>Panamax で Dockerコンテナ管理- Part2: Ghost with MySQL | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 29 2014 01:31:33" itemprop="dateCreated datePublished" datetime="2014-08-29T01:31:33+09:00">Aug 29 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">IDCFクラウドのCoreOSにインストールしたPanamaxへ、Templateを使ってDockerコンテナをデプロイしてみます。App Template Challengeが9月2日まで開催されていることもあり、たくさんTemplateが見つかります。とりあえず適当にRailsのTemplateを探してRun Templateしたらどれも動かなかったので、以下の基準でTemplateを探しました。Panamax専用のイメージを使っていないこと、アプリとDBコンテナが分かれていること、IDCFクラウドで動かしているため、Vagrant固有の機能を使っていないこと</div>
@@ -244,29 +211,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="/2014/08/19/panamax-in-coreos-on-idcf/">IDCFクラウドのCoreOSにインストールした</a>Panamaxへ、Templateを使ってDockerコンテナをデプロイしてみます。<a href="http://panamax.io/contest/" target="_blank" rel="noopener">App Template Challenge</a>が9月2日まで開催されていることもあり、たくさんTemplateが見つかります。<br>とりあえず適当にRailsのTemplateを探して<code>Run Template</code>したらどれも動かなかったので、以下の基準でTemplateを探しました。</p>
+        <p><a href="/2014/08/19/panamax-in-coreos-on-idcf/">IDCFクラウドのCoreOSにインストールした</a>Panamaxへ、Templateを使ってDockerコンテナをデプロイしてみます。<a target="_blank" rel="noopener" href="http://panamax.io/contest/">App Template Challenge</a>が9月2日まで開催されていることもあり、たくさんTemplateが見つかります。<br>とりあえず適当にRailsのTemplateを探して<code>Run Template</code>したらどれも動かなかったので、以下の基準でTemplateを探しました。</p>
 <ul>
 <li>Panamax専用のイメージを使っていないこと</li>
 <li>アプリとDBコンテナが分かれていること</li>
 <li>IDCFクラウドで動かしているため、Vagrant固有の機能を使っていないこと</li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Templateの定義ファイル"><a href="#Templateの定義ファイル" class="headerlink" title="Templateの定義ファイル"></a>Templateの定義ファイル</h3><p>ブログツールのGhostかWagtailを使ってみよう思い、まずGhostのpmxファイルを<a href="https://github.com/CenturyLinkLabs/panamax-contest-templates/blob/master/ghost_with_mysql.pmx" target="_blank" rel="noopener">ghost_with_mysql.pmx</a>でGitHubで確認します。</p>
-<p>Figの書式に似ているので、<a href="http://www.centurylinklabs.com/building-complex-apps-for-docker-on-coreos-and-fig/" target="_blank" rel="noopener">Building Complex Apps for Docker on CoreOS and Fig</a>で紹介されていた<a href="https://github.com/centurylinklabs/fig2coreos" target="_blank" rel="noopener">fig2coreos</a>が発展した感じです。</p>
+<h3 id="Templateの定義ファイル"><a href="#Templateの定義ファイル" class="headerlink" title="Templateの定義ファイル"></a>Templateの定義ファイル</h3><p>ブログツールのGhostかWagtailを使ってみよう思い、まずGhostのpmxファイルを<a target="_blank" rel="noopener" href="https://github.com/CenturyLinkLabs/panamax-contest-templates/blob/master/ghost_with_mysql.pmx">ghost_with_mysql.pmx</a>でGitHubで確認します。</p>
+<p>Figの書式に似ているので、<a target="_blank" rel="noopener" href="http://www.centurylinklabs.com/building-complex-apps-for-docker-on-coreos-and-fig/">Building Complex Apps for Docker on CoreOS and Fig</a>で紹介されていた<a target="_blank" rel="noopener" href="https://github.com/centurylinklabs/fig2coreos">fig2coreos</a>が発展した感じです。</p>
 <p>PanamaxはCoreOS上で動くため、orchestrationはfleetを使います。Figを開発したOrchardはCoreOSに買収されたので、このYAMLからfleet用のsystemdのunitファイルを生成する方法は標準的になりそうです。fleetはDockerコンテナ管理のためによくできた仕組みです。</p>
-<figure class="highlight yaml"><figcaption><span>ghost_with_mysql.pmx</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">images:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">dockerfile_ghost_latest</span></span><br><span class="line">  <span class="attr">source:</span> <span class="string">dockerfile/ghost:latest</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">Default</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host_port:</span> <span class="string">'8080'</span></span><br><span class="line">    <span class="attr">container_port:</span> <span class="string">'2368'</span></span><br><span class="line">    <span class="attr">proto:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">service:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">    <span class="attr">alias:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">DB_PASSWORD</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">pass@word01</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">DB_NAME</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">ghost</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">  <span class="attr">source:</span> <span class="string">centurylink/mysql:5.5</span></span><br><span class="line">  <span class="attr">category:</span> <span class="string">DB</span> <span class="string">Tier</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">Default</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host_port:</span> <span class="string">'3306'</span></span><br><span class="line">    <span class="attr">container_port:</span> <span class="string">'3306'</span></span><br><span class="line">    <span class="attr">proto:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">pass@word01</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>ghost_with_mysql.pmx</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="attr">images:</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">dockerfile_ghost_latest</span></span><br><span class="line">  <span class="attr">source:</span> <span class="string">dockerfile/ghost:latest</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">Default</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host_port:</span> <span class="string">&#x27;8080&#x27;</span></span><br><span class="line">    <span class="attr">container_port:</span> <span class="string">&#x27;2368&#x27;</span></span><br><span class="line">    <span class="attr">proto:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">service:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">    <span class="attr">alias:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">DB_PASSWORD</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">pass@word01</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">DB_NAME</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">ghost</span></span><br><span class="line"><span class="bullet">-</span> <span class="attr">name:</span> <span class="string">centurylink_mysql</span></span><br><span class="line">  <span class="attr">source:</span> <span class="string">centurylink/mysql:5.5</span></span><br><span class="line">  <span class="attr">category:</span> <span class="string">DB</span> <span class="string">Tier</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">Default</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">host_port:</span> <span class="string">&#x27;3306&#x27;</span></span><br><span class="line">    <span class="attr">container_port:</span> <span class="string">&#x27;3306&#x27;</span></span><br><span class="line">    <span class="attr">proto:</span> <span class="string">TCP</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">variable:</span> <span class="string">MYSQL_ROOT_PASSWORD</span></span><br><span class="line">    <span class="attr">value:</span> <span class="string">pass@word01</span></span><br></pre></td></tr></table></figure>
 
 <p>どちらも汎用的なDockerイメージを使っているのでテストに向いていそうです。</p>
 <ul>
-<li>MySQL: <a href="https://github.com/CenturyLinkLabs/docker-mysql" target="_blank" rel="noopener">docker-mysql</a></li>
-<li>Ghost: <a href="https://github.com/dockerfile/ghost" target="_blank" rel="noopener">dockerfile/ghost</a></li>
+<li>MySQL: <a target="_blank" rel="noopener" href="https://github.com/CenturyLinkLabs/docker-mysql">docker-mysql</a></li>
+<li>Ghost: <a target="_blank" rel="noopener" href="https://github.com/dockerfile/ghost">dockerfile/ghost</a></li>
 </ul>
-<h3 id="環境変数"><a href="#環境変数" class="headerlink" title="環境変数"></a>環境変数</h3><p>PanamaxのTemplateは起動する前に環境変数が正常に設定されていないと、<a href="https://github.com/CenturyLinkLabs/panamax-ui/issues/286" target="_blank" rel="noopener">Infinite loop trying to add official default MySQL to empty application</a>のようにsytemdが無限ループします。Panamaxを始めて使うと動かないので戸惑います。</p>
+<h3 id="環境変数"><a href="#環境変数" class="headerlink" title="環境変数"></a>環境変数</h3><p>PanamaxのTemplateは起動する前に環境変数が正常に設定されていないと、<a target="_blank" rel="noopener" href="https://github.com/CenturyLinkLabs/panamax-ui/issues/286">Infinite loop trying to add official default MySQL to empty application</a>のようにsytemdが無限ループします。Panamaxを始めて使うと動かないので戸惑います。</p>
 <p>今回のGhostの環境変数は、MySQL周辺ですが初期値が正常に入っているのでこのまま動きそうです。</p>
 <h3 id="Run-Templates"><a href="#Run-Templates" class="headerlink" title="Run Templates"></a>Run Templates</h3><p>Searchタブから<code>Ghost with MySQL</code>を検索して<code>Run Templates</code>ボタンを押すだけで、イメージ取得とfleetのunitファイル作成、アプリケーション起動、コンテナ連携をしてくれます。</p>
 <p><code>CoreOS Journal - Application Activity Log</code>で、systemdのjournalからログを確認できます。以下は<code>DB Tier</code>の、centurylink_mysqlコンテナが起動したところまでです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Aug 28 10:36:18 systemd Starting centurylink_mysql.service...</span><br><span class="line">Aug 28 10:36:18 docker Pulling repository centurylink/mysql</span><br><span class="line">Aug 28 10:37:42 systemd Started centurylink_mysql.service.</span><br><span class="line">Aug 28 10:37:42 systemd Starting dockerfile_ghost_latest.service...</span><br><span class="line">Aug 28 10:37:42 docker Error response from daemon: No such container: centurylink_mysql</span><br><span class="line">Aug 28 10:37:42 docker 2014/08/28 01:37:42 Error: failed to remove one or more containers</span><br><span class="line">Aug 28 10:37:42 docker Pulling repository dockerfile/ghost</span><br><span class="line">Aug 28 10:37:42 docker 140828 1:37:42 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:42 docker 140828 1:37:42 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Note] Plugin <span class="string">'FEDERATED'</span> is disabled.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Compressed tables use zlib 1.2.8</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Using Linux native AIO</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Completed initialization of buffer pool</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: highest supported file format is Barracuda.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Waiting <span class="keyword">for</span> the background threads to start</span><br><span class="line">Aug 28 10:37:44 docker 140828 1:37:44 InnoDB: 5.5.38 started; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:44 docker 140828 1:37:44 InnoDB: Starting shutdown...</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Note] Plugin <span class="string">'FEDERATED'</span> is disabled.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Compressed tables use zlib 1.2.8</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Using Linux native AIO</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Completed initialization of buffer pool</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: highest supported file format is Barracuda.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Waiting <span class="keyword">for</span> the background threads to start</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 InnoDB: 5.5.38 started; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Server hostname (<span class="built_in">bind</span>-address): <span class="string">'0.0.0.0'</span>; port: 3306</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] - <span class="string">'0.0.0.0'</span> resolves to <span class="string">'0.0.0.0'</span>;</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Server socket created on IP: <span class="string">'0.0.0.0'</span>.</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Event Scheduler: Loaded 0 events</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] /usr/sbin/mysqld: ready <span class="keyword">for</span> connections.</span><br><span class="line">Aug 28 10:37:46 docker Version: <span class="string">'5.5.38-0ubuntu0.14.04.1-log'</span> socket: <span class="string">'/var/run/mysqld/mysqld.sock'</span> port: 3306 (Ubuntu)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Aug 28 10:36:18 systemd Starting centurylink_mysql.service...</span><br><span class="line">Aug 28 10:36:18 docker Pulling repository centurylink/mysql</span><br><span class="line">Aug 28 10:37:42 systemd Started centurylink_mysql.service.</span><br><span class="line">Aug 28 10:37:42 systemd Starting dockerfile_ghost_latest.service...</span><br><span class="line">Aug 28 10:37:42 docker Error response from daemon: No such container: centurylink_mysql</span><br><span class="line">Aug 28 10:37:42 docker 2014/08/28 01:37:42 Error: failed to remove one or more containers</span><br><span class="line">Aug 28 10:37:42 docker Pulling repository dockerfile/ghost</span><br><span class="line">Aug 28 10:37:42 docker 140828 1:37:42 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:42 docker 140828 1:37:42 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 [Note] Plugin <span class="string">&#x27;FEDERATED&#x27;</span> is disabled.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Compressed tables use zlib 1.2.8</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Using Linux native AIO</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Completed initialization of buffer pool</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: highest supported file format is Barracuda.</span><br><span class="line">Aug 28 10:37:43 docker 140828 1:37:43 InnoDB: Waiting <span class="keyword">for</span> the background threads to start</span><br><span class="line">Aug 28 10:37:44 docker 140828 1:37:44 InnoDB: 5.5.38 started; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:44 docker 140828 1:37:44 InnoDB: Starting shutdown...</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Shutdown completed; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Warning] Using unique option prefix key_buffer instead of key_buffer_size is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Warning] Using unique option prefix myisam-recover instead of myisam-recover-options is deprecated and will be removed <span class="keyword">in</span> a future release. Please use the full name instead.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 [Note] Plugin <span class="string">&#x27;FEDERATED&#x27;</span> is disabled.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: The InnoDB memory heap is disabled</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Mutexes and rw_locks use GCC atomic builtins</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Compressed tables use zlib 1.2.8</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Using Linux native AIO</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Initializing buffer pool, size = 128.0M</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Completed initialization of buffer pool</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: highest supported file format is Barracuda.</span><br><span class="line">Aug 28 10:37:45 docker 140828 1:37:45 InnoDB: Waiting <span class="keyword">for</span> the background threads to start</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 InnoDB: 5.5.38 started; <span class="built_in">log</span> sequence number 1595675</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Server hostname (bind-address): <span class="string">&#x27;0.0.0.0&#x27;</span>; port: 3306</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] - <span class="string">&#x27;0.0.0.0&#x27;</span> resolves to <span class="string">&#x27;0.0.0.0&#x27;</span>;</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Server socket created on IP: <span class="string">&#x27;0.0.0.0&#x27;</span>.</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] Event Scheduler: Loaded 0 events</span><br><span class="line">Aug 28 10:37:46 docker 140828 1:37:46 [Note] /usr/sbin/mysqld: ready <span class="keyword">for</span> connections.</span><br><span class="line">Aug 28 10:37:46 docker Version: <span class="string">&#x27;5.5.38-0ubuntu0.14.04.1-log&#x27;</span> socket: <span class="string">&#x27;/var/run/mysqld/mysqld.sock&#x27;</span> port: 3306 (Ubuntu)</span><br></pre></td></tr></table></figure>
 
 <p>正常にTemplateからコンテナが2台起動しました。</p>
 <img src="/2014/08/29/panamax-in-coreos-ghost-with-mysql-template/ghost_app.png" class="center">
@@ -278,7 +245,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker ps</span><br><span class="line">CONTAINER ID        IMAGE                            COMMAND                CREATED             STATUS              PORTS                     NAMES</span><br><span class="line">...</span><br><span class="line">6a60a060dd7f        dockerfile/ghost:latest          bash /ghost-start      22 hours ago        Up 22 hours         0.0.0.0:8080-&gt;2368/tcp    dockerfile_ghost_latest</span><br><span class="line">40526d34a765        centurylink/mysql:5.5            /usr/<span class="built_in">local</span>/bin/run     22 hours ago        Up 22 hours         0.0.0.0:3306-&gt;3306/tcp    centurylink_mysql,dockerfile_ghost_latest/centurylink_mysql</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>MySQLコンテナをinspectするとpmxで設定した環境変数が設定されています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .Config.Env &amp;#125;&amp;#125;"</span> 40526d34a765</span><br><span class="line">[MYSQL_ROOT_PASSWORD=pass@word01 HOME=/ PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/usr/sbin:/usr/bin:/sbin:/bin DEBIAN_FRONTEND=noninteractive]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .Config.Env &amp;#125;&amp;#125;&quot;</span> 40526d34a765</span><br><span class="line">[MYSQL_ROOT_PASSWORD=pass@word01 HOME=/ PATH=/usr/<span class="built_in">local</span>/sbin:/usr/<span class="built_in">local</span>/bin:/usr/sbin:/usr/bin:/sbin:/bin DEBIAN_FRONTEND=noninteractive]</span><br></pre></td></tr></table></figure>
 
 <h3 id="Ghostをブラウザで確認"><a href="#Ghostをブラウザで確認" class="headerlink" title="Ghostをブラウザで確認"></a>Ghostをブラウザで確認</h3><p><code>docker ps</code>でみると、Panamaxを動かしているCoreOSに8080でポートがマップされています。<br>Dockerホストから直接CoreOSのIPアドレスをブラウザで確認します。</p>
 <img src="/2014/08/29/panamax-in-coreos-ghost-with-mysql-template/ghost_demo.png" class="center">
@@ -320,7 +287,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -371,7 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Templateの定義ファイル"><span class="nav-number">1.</span> <span class="nav-text">Templateの定義ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#環境変数"><span class="nav-number">2.</span> <span class="nav-text">環境変数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-Templates"><span class="nav-number">3.</span> <span class="nav-text">Run Templates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナの起動確認"><span class="nav-number">4.</span> <span class="nav-text">コンテナの起動確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ghostをブラウザで確認"><span class="nav-number">5.</span> <span class="nav-text">Ghostをブラウザで確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Template%E3%81%AE%E5%AE%9A%E7%BE%A9%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">Templateの定義ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">環境変数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-Templates"><span class="nav-number">3.</span> <span class="nav-text">Run Templates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95%E7%A2%BA%E8%AA%8D"><span class="nav-number">4.</span> <span class="nav-text">コンテナの起動確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ghost%E3%82%92%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%81%A7%E7%A2%BA%E8%AA%8D"><span class="nav-number">5.</span> <span class="nav-text">Ghostをブラウザで確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -403,10 +369,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -431,9 +400,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -473,13 +442,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

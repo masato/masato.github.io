@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,29 +13,29 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Part6とPart7でVirtualBox 4.3.12上にESXi5の仮想マシンを作成して、remote buildを実行できるように環境構築しました。ESXi5でVNCのインバウンドのFW設定も入れましたが、ゲストVMにVNC接続できず、Preseedが実行できませんでした。なぜかPart2でWindowsのVMWareWorkstationの環境ではPackerでOVA作成に成功しています">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packerを使いWindows上でOVAを作成する - Part8: Nested VirtualBox デスクトップ環境のディスク拡張">
 <meta property="og:url" content="https://masato.github.io/2014/06/15/packer-windows-vagrant-nested-vmware-player/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Part6とPart7でVirtualBox 4.3.12上にESXi5の仮想マシンを作成して、remote buildを実行できるように環境構築しました。ESXi5でVNCのインバウンドのFW設定も入れましたが、ゲストVMにVNC接続できず、Preseedが実行できませんでした。なぜかPart2でWindowsのVMWareWorkstationの環境ではPackerでOVA作成に成功しています">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-06-15T10:46:49.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:modified_time" content="2014-06-15T10:46:49.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Ubuntu">
 <meta property="article:tag" content="Packer">
 <meta property="article:tag" content="Vagrant">
 <meta property="article:tag" content="PackerOVA">
-<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="VirtualBox">
+<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="Mintty">
 <meta property="article:tag" content="VBoxManage">
 <meta property="article:tag" content="Vagrantデスクトップ">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>Packerを使いWindows上でOVAを作成する - Part8: Nested VirtualBox デスクトップ環境のディスク拡張 | masato's blog</title>
+  <title>Packerを使いWindows上でOVAを作成する - Part8: Nested VirtualBox デスクトップ環境のディスク拡張 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -95,7 +95,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -116,14 +116,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -132,51 +131,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -193,11 +168,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -210,7 +184,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -220,19 +194,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 15 2014 19:46:49" itemprop="dateCreated datePublished" datetime="2014-06-15T19:46:49+09:00">Jun 15 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Part6とPart7でVirtualBox 4.3.12上にESXi5の仮想マシンを作成して、remote buildを実行できるように環境構築しました。ESXi5でVNCのインバウンドのFW設定も入れましたが、ゲストVMにVNC接続できず、Preseedが実行できませんでした。なぜかPart2でWindowsのVMWareWorkstationの環境ではPackerでOVA作成に成功しています。作業環境でPreseedの実行をVNCで確認できた方がデバッグしやすいので、VagrantでUbuntu14.04のデスクトップ環境を構築するところから始めます。デフォルトのディスクサイズが小さいので、デスクトップ環境ができたら、VMware Player￥をインストールして、PackerからOVAを作成してみます。</div>
@@ -250,17 +217,17 @@
 <p>なぜか<a href="/2014/06/08/packer-windows-vmware-iso-ova-build/">Part2</a>でWindowsのVMWareWorkstationの環境ではPackerでOVA作成に成功しています。</p>
 <p>作業環境でPreseedの実行をVNCで確認できた方がデバッグしやすいので、VagrantでUbuntu14.04のデスクトップ環境を構築するところから始めます。デフォルトのディスクサイズが小さいので、</p>
 <p>デスクトップ環境ができたら、<code>VMware Player</code>をインストールして、PackerからOVAを作成してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="デスクトップ用のBoxを探す"><a href="#デスクトップ用のBoxを探す" class="headerlink" title="デスクトップ用のBoxを探す"></a>デスクトップ用のBoxを探す</h3><p>VagrantのBoxは、<a href="https://vagrantcloud.com/discover/featured" target="_blank" rel="noopener">Vagrant Cloud</a>から検索します。<br><a href="https://vagrantcloud.com/search?utf8=%E2%9C%93&sort=&provider=&q=ubuntu+desktop+14.04" target="_blank" rel="noopener">ubuntu desktop 14.05</a>などと入力して適当なBoxをみつけます。</p>
-<p>今回は<a href="/2014/06/08/packer-windows-vmware-iso-ova-build/">Part2</a>と同じ、Box-Cutterの<a href="https://vagrantcloud.com/box-cutter/ubuntu1404-desktop" target="_blank" rel="noopener"> ubuntu1404-desktop</a>を使います。</p>
+<h3 id="デスクトップ用のBoxを探す"><a href="#デスクトップ用のBoxを探す" class="headerlink" title="デスクトップ用のBoxを探す"></a>デスクトップ用のBoxを探す</h3><p>VagrantのBoxは、<a target="_blank" rel="noopener" href="https://vagrantcloud.com/discover/featured">Vagrant Cloud</a>から検索します。<br><a target="_blank" rel="noopener" href="https://vagrantcloud.com/search?utf8=%E2%9C%93&sort=&provider=&q=ubuntu+desktop+14.04">ubuntu desktop 14.05</a>などと入力して適当なBoxをみつけます。</p>
+<p>今回は<a href="/2014/06/08/packer-windows-vmware-iso-ova-build/">Part2</a>と同じ、Box-Cutterの<a target="_blank" rel="noopener" href="https://vagrantcloud.com/box-cutter/ubuntu1404-desktop"> ubuntu1404-desktop</a>を使います。</p>
 <h3 id="Vagrantの開始"><a href="#Vagrantの開始" class="headerlink" title="Vagrantの開始"></a>Vagrantの開始</h3><p>まずMinttyを起動します。<br><code>Vagrant Cloud</code>からBoxを取得して、<code>vagrant up</code>すると、VirtualBoxのGUIが起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/vagrant_apps</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br><span class="line">$ vagrant init box-cutter/ubuntu1404-desktop</span><br><span class="line">$ vagrant up</span><br></pre></td></tr></table></figure>
 
 <p><code>vagrant ssh</code>でなく、MinttyからSSH接続できるようにします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant ssh-config --host desktop &gt;&gt; ~/.ssh/config</span><br><span class="line">$ ssh desktop</span><br><span class="line">Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-24-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line"></span><br><span class="line">Last login: Sun Jun  8 14:52:15 2014 from 10.0.2.2</span><br><span class="line">vagrant@ubuntu1404-desktop:~$</span><br></pre></td></tr></table></figure>
 
-<h3 id="VBoxManage-exeでディスクサイズの拡張"><a href="#VBoxManage-exeでディスクサイズの拡張" class="headerlink" title="VBoxManage.exeでディスクサイズの拡張"></a>VBoxManage.exeでディスクサイズの拡張</h3><p><a href="http://blog.dakatsuka.jp/2014/04/24/vagrant-hdd-resize.html" target="_blank" rel="noopener">Vagrant VMのディスクサイズを後から拡張する方法</a>を参考に、ディスクの拡張作業を行います。</p>
+<h3 id="VBoxManage-exeでディスクサイズの拡張"><a href="#VBoxManage-exeでディスクサイズの拡張" class="headerlink" title="VBoxManage.exeでディスクサイズの拡張"></a>VBoxManage.exeでディスクサイズの拡張</h3><p><a target="_blank" rel="noopener" href="http://blog.dakatsuka.jp/2014/04/24/vagrant-hdd-resize.html">Vagrant VMのディスクサイズを後から拡張する方法</a>を参考に、ディスクの拡張作業を行います。</p>
 <p>まずVagrantを停止します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant halt</span><br></pre></td></tr></table></figure>
 
@@ -268,7 +235,7 @@
 <figure class="highlight bash"><figcaption><span>~/.bash_profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/c/Program\ Files/Oracle/VirtualBox/:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
 
 <p>仮想ディスクがVMDK形式だとからサイズ変更ができないため、VDI形式に変換します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/VirtualBox\ VMs/ubuntu1404-desktop/</span><br><span class="line">$ VBoxManage.exe clonehd ubuntu1404-desktop-disk1.vmdk ubuntu1404-desktop-disk1.vdi --format VDI</span><br><span class="line">0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%</span><br><span class="line">Clone hard disk created <span class="keyword">in</span> format <span class="string">'VDI'</span>. UUID: 5e2ef773-98d7-43f1-8ffe-6e37273d17ce</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/VirtualBox\ VMs/ubuntu1404-desktop/</span><br><span class="line">$ VBoxManage.exe clonehd ubuntu1404-desktop-disk1.vmdk ubuntu1404-desktop-disk1.vdi --format VDI</span><br><span class="line">0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%</span><br><span class="line">Clone hard disk created <span class="keyword">in</span> format <span class="string">&#x27;VDI&#x27;</span>. UUID: 5e2ef773-98d7-43f1-8ffe-6e37273d17ce</span><br></pre></td></tr></table></figure>
 
 <p>とりあえず、40GBにディスクサイズを拡張します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ VBoxManage modifyhd ubuntu1404-desktop-disk1.vdi --resize 40960</span><br><span class="line">0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%</span><br></pre></td></tr></table></figure>
@@ -302,29 +269,29 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
 
 <h3 id="仮想マシンのLVMの設定をする"><a href="#仮想マシンのLVMの設定をする" class="headerlink" title="仮想マシンのLVMの設定をする"></a>仮想マシンのLVMの設定をする</h3><p>pvresizeで物理ボリュームの<code>/dev/sda5</code>をリサイズします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pvresize /dev/sda5</span><br><span class="line">  Physical volume <span class="string">"/dev/sda5"</span> changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pvresize /dev/sda5</span><br><span class="line">  Physical volume <span class="string">&quot;/dev/sda5&quot;</span> changed</span><br><span class="line">  1 physical volume(s) resized / 0 physical volume(s) not resized</span><br></pre></td></tr></table></figure>
 
 <p>pvscanで容量が増えていることを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pvscan</span><br><span class="line">  PV /dev/sda5   VG ubuntu1404-desktop-vg   lvm2 [39.76 GiB / 30.10 GiB free]</span><br><span class="line">  Total: 1 [39.76 GiB] / <span class="keyword">in</span> use: 1 [39.76 GiB] / <span class="keyword">in</span> no VG: 0 [0   ]</span><br></pre></td></tr></table></figure>
 
 <p>論理ボリューム名はlvscanで確認できます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lvscan</span><br><span class="line">  ACTIVE            <span class="string">'/dev/ubuntu1404-desktop-vg/root'</span> [9.16 GiB] inherit</span><br><span class="line">  ACTIVE            <span class="string">'/dev/ubuntu1404-desktop-vg/swap_1'</span> [512.00 MiB] inherit</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lvscan</span><br><span class="line">  ACTIVE            <span class="string">&#x27;/dev/ubuntu1404-desktop-vg/root&#x27;</span> [9.16 GiB] inherit</span><br><span class="line">  ACTIVE            <span class="string">&#x27;/dev/ubuntu1404-desktop-vg/swap_1&#x27;</span> [512.00 MiB] inherit</span><br></pre></td></tr></table></figure>
 
 <p>論理ボリュームをリサイズします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lvresize -l +100%FREE /dev/ubuntu1404-desktop-vg/root</span><br><span class="line">  Extending logical volume root to 39.26 GiB</span><br><span class="line">  Logical volume root successfully resized</span><br></pre></td></tr></table></figure>
 
 <p>再度lvscanで容量が増えているか確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lvscan</span><br><span class="line">  ACTIVE            <span class="string">'/dev/ubuntu1404-desktop-vg/root'</span> [39.26 GiB] inherit</span><br><span class="line">  ACTIVE            <span class="string">'/dev/ubuntu1404-desktop-vg/swap_1'</span> [512.00 MiB] inherit</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lvscan</span><br><span class="line">  ACTIVE            <span class="string">&#x27;/dev/ubuntu1404-desktop-vg/root&#x27;</span> [39.26 GiB] inherit</span><br><span class="line">  ACTIVE            <span class="string">&#x27;/dev/ubuntu1404-desktop-vg/swap_1&#x27;</span> [512.00 MiB] inherit</span><br></pre></td></tr></table></figure>
 
 <p>resize2fsを使ってファイルシステムをリサイズします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo resize2fs /dev/ubuntu1404-desktop-vg/root</span><br><span class="line">resize2fs 1.42.9 (4-Feb-2014)</span><br><span class="line">Filesystem at /dev/ubuntu1404-desktop-vg/root is mounted on /; on-line resizing required</span><br><span class="line">old_desc_blocks = 1, new_desc_blocks = 3</span><br><span class="line">The filesystem on /dev/ubuntu1404-desktop-vg/root is now 10291200 blocks long.</span><br></pre></td></tr></table></figure>
 
 <p>最後にdfで確認してます。仮想マシンのディスクサイズが拡張されました!</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">Filesystem                                Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/mapper/ubuntu1404--desktop--vg-root   <span class="number">39</span>G  <span class="number">3.2</span>G   <span class="number">34</span>G   <span class="number">9</span>% /</span><br><span class="line">none                                      <span class="number">4.0</span>K     <span class="number">0</span>  <span class="number">4.0</span>K   <span class="number">0</span>% /sys/fs/cgroup</span><br><span class="line">udev                                      <span class="number">487</span>M  <span class="number">4.0</span>K  <span class="number">487</span>M   <span class="number">1</span>% /dev</span><br><span class="line">tmpfs                                     <span class="number">100</span>M  <span class="number">816</span>K   <span class="number">99</span>M   <span class="number">1</span>% /run</span><br><span class="line">none                                      <span class="number">5.0</span>M     <span class="number">0</span>  <span class="number">5.0</span>M   <span class="number">0</span>% /run/lock</span><br><span class="line">none                                      <span class="number">498</span>M   <span class="number">76</span>K  <span class="number">497</span>M   <span class="number">1</span>% /run/shm</span><br><span class="line">none                                      <span class="number">100</span>M   <span class="number">48</span>K  <span class="number">100</span>M   <span class="number">1</span>% /run/user</span><br><span class="line">/dev/sda1                                 <span class="number">236</span>M   <span class="number">37</span>M  <span class="number">188</span>M  <span class="number">17</span>% /boot</span><br></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">Filesystem                                <span class="keyword">Size</span>  Used Avail Use% Mounted on</span><br><span class="line"><span class="regexp">/dev/m</span>apper<span class="regexp">/ubuntu1404--desktop--vg-root   39G  3.2G   34G   9% /</span></span><br><span class="line">none                                      <span class="number">4.0</span>K     <span class="number">0</span>  <span class="number">4.0</span>K   <span class="number">0</span>% <span class="regexp">/sys/</span>fs/cgroup</span><br><span class="line">udev                                      <span class="number">487</span>M  <span class="number">4.0</span>K  <span class="number">487</span>M   <span class="number">1</span>% /dev</span><br><span class="line">tmpfs                                     <span class="number">100</span>M  <span class="number">816</span>K   <span class="number">99</span>M   <span class="number">1</span>% /run</span><br><span class="line">none                                      <span class="number">5.0</span>M     <span class="number">0</span>  <span class="number">5.0</span>M   <span class="number">0</span>% <span class="regexp">/run/</span>lock</span><br><span class="line">none                                      <span class="number">498</span>M   <span class="number">76</span>K  <span class="number">497</span>M   <span class="number">1</span>% <span class="regexp">/run/</span>shm</span><br><span class="line">none                                      <span class="number">100</span>M   <span class="number">48</span>K  <span class="number">100</span>M   <span class="number">1</span>% <span class="regexp">/run/u</span>ser</span><br><span class="line"><span class="regexp">/dev/</span>sda1                                 <span class="number">236</span>M   <span class="number">37</span>M  <span class="number">188</span>M  <span class="number">17</span>% /boot</span><br></pre></td></tr></table></figure>
 
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>VagrantからVirtualBox上にUbuntu14.04のデスクトップ環境と、PackerからOVAを作成するためにディスクサイズの拡張をしました。</p>
 <p>次回は、この仮想マシン上にNestedの<code>VMware Pleyer</code>をインストールして、Packerの開発環境を構築します。</p>
-<p>PackerのESXi5上の<code>remote build</code>はISOのアップロードを毎回行うバグがあり、直したいなと思っていたところ<a href="https://github.com/mitchellh/packer/issues/1244" target="_blank" rel="noopener">Vmware ESXi remote builder always uploads iso to ESXi host</a>でPRがありました。あとでビルドして試したいです。</p>
+<p>PackerのESXi5上の<code>remote build</code>はISOのアップロードを毎回行うバグがあり、直したいなと思っていたところ<a target="_blank" rel="noopener" href="https://github.com/mitchellh/packer/issues/1244">Vmware ESXi remote builder always uploads iso to ESXi host</a>でPRがありました。あとでビルドして試したいです。</p>
 
     </div>
 
@@ -338,8 +305,8 @@
               <a href="/tags/Packer/" rel="tag"># Packer</a>
               <a href="/tags/Vagrant/" rel="tag"># Vagrant</a>
               <a href="/tags/PackerOVA/" rel="tag"># PackerOVA</a>
-              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/VirtualBox/" rel="tag"># VirtualBox</a>
+              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/Mintty/" rel="tag"># Mintty</a>
               <a href="/tags/VBoxManage/" rel="tag"># VBoxManage</a>
               <a href="/tags/Vagrant%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97/" rel="tag"># Vagrantデスクトップ</a>
@@ -367,7 +334,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -418,7 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#デスクトップ用のBoxを探す"><span class="nav-number">1.</span> <span class="nav-text">デスクトップ用のBoxを探す</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrantの開始"><span class="nav-number">2.</span> <span class="nav-text">Vagrantの開始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VBoxManage-exeでディスクサイズの拡張"><span class="nav-number">3.</span> <span class="nav-text">VBoxManage.exeでディスクサイズの拡張</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮想ディスクをVDIに交換"><span class="nav-number">4.</span> <span class="nav-text">仮想ディスクをVDIに交換</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮想マシンのパーティションテーブルを変更"><span class="nav-number">5.</span> <span class="nav-text">仮想マシンのパーティションテーブルを変更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮想マシンのLVMの設定をする"><span class="nav-number">6.</span> <span class="nav-text">仮想マシンのLVMの設定をする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E7%94%A8%E3%81%AEBox%E3%82%92%E6%8E%A2%E3%81%99"><span class="nav-number">1.</span> <span class="nav-text">デスクトップ用のBoxを探す</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrant%E3%81%AE%E9%96%8B%E5%A7%8B"><span class="nav-number">2.</span> <span class="nav-text">Vagrantの開始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VBoxManage-exe%E3%81%A7%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%82%B5%E3%82%A4%E3%82%BA%E3%81%AE%E6%8B%A1%E5%BC%B5"><span class="nav-number">3.</span> <span class="nav-text">VBoxManage.exeでディスクサイズの拡張</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%AE%E6%83%B3%E3%83%87%E3%82%A3%E3%82%B9%E3%82%AF%E3%82%92VDI%E3%81%AB%E4%BA%A4%E6%8F%9B"><span class="nav-number">4.</span> <span class="nav-text">仮想ディスクをVDIに交換</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AE%E3%83%91%E3%83%BC%E3%83%86%E3%82%A3%E3%82%B7%E3%83%A7%E3%83%B3%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB%E3%82%92%E5%A4%89%E6%9B%B4"><span class="nav-number">5.</span> <span class="nav-text">仮想マシンのパーティションテーブルを変更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AELVM%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%82%92%E3%81%99%E3%82%8B"><span class="nav-number">6.</span> <span class="nav-text">仮想マシンのLVMの設定をする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -450,10 +416,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -478,9 +447,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -520,13 +489,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

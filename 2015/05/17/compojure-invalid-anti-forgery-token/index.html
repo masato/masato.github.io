@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回Docker Composureを使って作成したCompojureプロジェクトに、curlからPOSTするとInvalid anti-forgery tokenが発生してしまいました。デフォルトでCSRF対策用トークンを追加しないとPOSTはできない仕様になっています。開発中はanti-forgeryを無効にした方が簡単です。いろいろ調べるとStackOverflowにあった方法でうまくいきま">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CompojureのCSRF対策トークンのanti-forgery-token作成">
 <meta property="og:url" content="https://masato.github.io/2015/05/17/compojure-invalid-anti-forgery-token/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回Docker Composureを使って作成したCompojureプロジェクトに、curlからPOSTするとInvalid anti-forgery tokenが発生してしまいました。デフォルトでCSRF対策用トークンを追加しないとPOSTはできない仕様になっています。開発中はanti-forgeryを無効にした方が簡単です。いろいろ調べるとStackOverflowにあった方法でうまくいきま">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-05-17T06:34:02.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.578Z">
+<meta property="article:modified_time" content="2015-05-17T06:34:02.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Clojure">
 <meta property="article:tag" content="DockerCompose">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>CompojureのCSRF対策トークンのanti-forgery-token作成 | masato's blog</title>
+  <title>CompojureのCSRF対策トークンのanti-forgery-token作成 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 17 2015 15:34:02" itemprop="dateCreated datePublished" datetime="2015-05-17T15:34:02+09:00">May 17 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回Docker Composureを使って作成したCompojureプロジェクトに、curlからPOSTするとInvalid anti-forgery tokenが発生してしまいました。デフォルトでCSRF対策用トークンを追加しないとPOSTはできない仕様になっています。開発中はanti-forgeryを無効にした方が簡単です。いろいろ調べるとStackOverflowにあった方法でうまくいきました。</div>
@@ -241,56 +208,56 @@
 
       
         <p><a href="/2015/05/16/docker-compose-clojure/">前回</a>Docker Composureを使って作成したCompojureプロジェクトに、curlからPOSTすると<code>Invalid anti-forgery token</code>が発生してしまいました。デフォルトでCSRF対策用トークンを追加しないとPOSTはできない仕様になっています。開発中は<code>anti-forgery</code>を無効にした方が簡単です。いろいろ調べるとStackOverflowにあった方法でうまくいきました。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Invalid-anti-forgery-token"><a href="#Invalid-anti-forgery-token" class="headerlink" title="Invalid anti-forgery token"></a>Invalid anti-forgery token</h2><p>以下のようにPOST用ハンドラをhandler.cljに作成してcurlでPOSTすると<code>Invalid anti-forgery token</code>が発生します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -d <span class="string">"name=masato"</span> localhost:3000/greeting</span><br><span class="line">&lt;h1&gt;Invalid anti-forgery token&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -d <span class="string">&quot;name=masato&quot;</span> localhost:3000/greeting</span><br><span class="line">&lt;h1&gt;Invalid anti-forgery token&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
 
 <p>StackOverflowでも議論されていました。以下のサイトを参考に作業していきます。</p>
 <ul>
-<li><p><a href="http://stackoverflow.com/questions/30172569/how-can-i-use-ring-anti-forgery-csrf-token-with-latest-version-ring-compojure" target="_blank" rel="noopener">How can I use ring anti-forgery / CSRF token with latest version ring/compojure?</a></p>
+<li><p><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/30172569/how-can-i-use-ring-anti-forgery-csrf-token-with-latest-version-ring-compojure">How can I use ring anti-forgery / CSRF token with latest version ring/compojure?</a></p>
 </li>
-<li><p><a href="http://stackoverflow.com/questions/20430281/set-ring-anti-forgery-csrf-header-token" target="_blank" rel="noopener">Set Ring-Anti-Forgery CSRF header token</a></p>
+<li><p><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/20430281/set-ring-anti-forgery-csrf-header-token">Set Ring-Anti-Forgery CSRF header token</a></p>
 </li>
-<li><p><a href="https://github.com/edbond/CSRF" target="_blank" rel="noopener">edbond/CSRF</a></p>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/edbond/CSRF">edbond/CSRF</a></p>
 </li>
 </ul>
 <h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>前回と同じようにDocker Composeでプロジェクトを管理します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ tree .</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── cookies</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">└── m2</span><br></pre></td></tr></table></figure>
 
 <p>Dockerホストの作業ユーザーと同じuidのユーザーをDockerコンテナにも作成します。MavenのjarファイルはVOLUMEに指定してDockerホストにマップしてコンテナ間で共有します。</p>
-<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">'docker ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">"lein"</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;docker ALL=(ALL) NOPASSWD:ALL&#x27;</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">&quot;lein&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 <p>ローカルにClojureのイメージをビルドします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t clojure .</span><br></pre></td></tr></table></figure>
 
 <p>docker-compose.ymlの<code>working_dir</code>ディレクティブはCompojureプロジェクトを作成する前はコメントアウトしておきます。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line"><span class="comment">#  working_dir: /usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3449:3449"</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9000:9000"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line"><span class="comment">#  working_dir: /usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3449:3449&quot;</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p><code>lein new</code>でcompojureのプロジェクトを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker-compose run --rm --service-ports lein new compojure hello-world</span><br></pre></td></tr></table></figure>
 
 <p>作成したCompojureプロジェクトを<code>working_dir</code>ディレクティブに指定します。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3449:3449"</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9000:9000"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3449:3449&quot;</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>project.cljファイルにはJSON作成の<a href="https://github.com/dakrone/cheshire" target="_blank" rel="noopener">cheshire</a>を依存関係に追加します。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> hello-world <span class="string">"0.1.0-SNAPSHOT"</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">"FIXME: write description"</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">"http://example.com/FIXME"</span></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">"2.0.0"</span></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">                 [compojure <span class="string">"1.3.1"</span>]</span><br><span class="line">                 [ring/ring-defaults <span class="string">"0.1.2"</span>]</span><br><span class="line">                 [cheshire <span class="string">"5.4.0"</span>]]</span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-ring <span class="string">"0.8.13"</span>]]</span><br><span class="line">  <span class="symbol">:ring</span> &#123;<span class="symbol">:handler</span> hello-world.handler/app&#125;</span><br><span class="line">  <span class="symbol">:profiles</span></span><br><span class="line">  &#123;<span class="symbol">:dev</span> &#123;<span class="symbol">:dependencies</span> [[javax.servlet/servlet-api <span class="string">"2.5"</span>]</span><br><span class="line">                        [ring-mock <span class="string">"0.1.5"</span>]]&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>project.cljファイルにはJSON作成の<a target="_blank" rel="noopener" href="https://github.com/dakrone/cheshire">cheshire</a>を依存関係に追加します。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> hello-world <span class="string">&quot;0.1.0-SNAPSHOT&quot;</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">&quot;FIXME: write description&quot;</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">&quot;http://example.com/FIXME&quot;</span></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">&quot;1.6.0&quot;</span>]</span><br><span class="line">                 [compojure <span class="string">&quot;1.3.1&quot;</span>]</span><br><span class="line">                 [ring/ring-defaults <span class="string">&quot;0.1.2&quot;</span>]</span><br><span class="line">                 [cheshire <span class="string">&quot;5.4.0&quot;</span>]]</span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-ring <span class="string">&quot;0.8.13&quot;</span>]]</span><br><span class="line">  <span class="symbol">:ring</span> &#123;<span class="symbol">:handler</span> hello-world.handler/app&#125;</span><br><span class="line">  <span class="symbol">:profiles</span></span><br><span class="line">  &#123;<span class="symbol">:dev</span> &#123;<span class="symbol">:dependencies</span> [[javax.servlet/servlet-api <span class="string">&quot;2.5&quot;</span>]</span><br><span class="line">                        [ring-mock <span class="string">&quot;0.1.5&quot;</span>]]&#125;&#125;)</span><br></pre></td></tr></table></figure>
 
-<p>GET “/“ハンドラでCSRFトークンを出力するように変更します。トークンは<a href="https://github.com/ring-clojure/ring-anti-forgery/blob/master/src/ring/util/anti_forgery.clj" target="_blank" rel="noopener">Ring-Anti-Forgery</a>の<code>*anti-forgery-token*</code>を評価します。動的なvarのスペシャル変数です。セッションに保存しているcookie-storeのキーはランダムで適当に作成しました。</p>
-<p>またJSONでレスポンスを返すために<a href="https://github.com/dakrone/cheshire" target="_blank" rel="noopener">cheshire</a>のgenerate-stringを使います。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/src/hello_world/handler.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> hello-world.handler</span><br><span class="line">  (<span class="symbol">:require</span> [compojure.core <span class="symbol">:refer</span> <span class="symbol">:all</span>]</span><br><span class="line">            [compojure.route <span class="symbol">:as</span> route]</span><br><span class="line">            [ring.middleware.defaults <span class="symbol">:refer</span> [wrap-defaults site-defaults]]</span><br><span class="line">            [ring.middleware.session <span class="symbol">:refer</span> [wrap-session]]</span><br><span class="line">            [ring.middleware.anti-forgery <span class="symbol">:refer</span> <span class="symbol">:all</span>]</span><br><span class="line">            [ring.middleware.session.cookie <span class="symbol">:refer</span> (<span class="name">cookie-store</span>)]</span><br><span class="line">            [cheshire.core <span class="symbol">:refer</span> <span class="symbol">:all</span>]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> greeting-handler [request]</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [name (<span class="name"><span class="builtin-name">get-in</span></span> request [<span class="symbol">:params</span> <span class="symbol">:name</span>])]</span><br><span class="line">    (<span class="name"><span class="builtin-name">str</span></span> <span class="string">"Hi, "</span> name)))</span><br><span class="line"></span><br><span class="line">(<span class="name">defroutes</span> app-routes</span><br><span class="line">  (<span class="name">GET</span> <span class="string">"/"</span> [] (<span class="name">generate-string</span> &#123;<span class="symbol">:csrf-token</span></span><br><span class="line">                                *anti-forgery-token*&#125;))</span><br><span class="line">  (<span class="name">POST</span> <span class="string">"/greeting"</span> [] greeting-handler)</span><br><span class="line">  (<span class="name">route/not-found</span> <span class="string">"Not Found"</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">def</span></span> app</span><br><span class="line">  (<span class="name"><span class="builtin-name">-&gt;</span></span> app-routes</span><br><span class="line">   (<span class="name">wrap-defaults</span> site-defaults)</span><br><span class="line">   (<span class="name">wrap-session</span> &#123;<span class="symbol">:cookie-attrs</span> &#123;<span class="symbol">:max-age</span> <span class="number">3600</span>&#125;</span><br><span class="line">                  <span class="symbol">:store</span> (<span class="name">cookie-store</span> &#123;<span class="symbol">:key</span> <span class="string">"ahY9poQuaghahc7I"</span>&#125;)&#125;)))</span><br></pre></td></tr></table></figure>
+<p>GET “/“ハンドラでCSRFトークンを出力するように変更します。トークンは<a target="_blank" rel="noopener" href="https://github.com/ring-clojure/ring-anti-forgery/blob/master/src/ring/util/anti_forgery.clj">Ring-Anti-Forgery</a>の<code>*anti-forgery-token*</code>を評価します。動的なvarのスペシャル変数です。セッションに保存しているcookie-storeのキーはランダムで適当に作成しました。</p>
+<p>またJSONでレスポンスを返すために<a target="_blank" rel="noopener" href="https://github.com/dakrone/cheshire">cheshire</a>のgenerate-stringを使います。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/src/hello_world/handler.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> hello-world.handler</span><br><span class="line">  (<span class="symbol">:require</span> [compojure.core <span class="symbol">:refer</span> <span class="symbol">:all</span>]</span><br><span class="line">            [compojure.route <span class="symbol">:as</span> route]</span><br><span class="line">            [ring.middleware.defaults <span class="symbol">:refer</span> [wrap-defaults site-defaults]]</span><br><span class="line">            [ring.middleware.session <span class="symbol">:refer</span> [wrap-session]]</span><br><span class="line">            [ring.middleware.anti-forgery <span class="symbol">:refer</span> <span class="symbol">:all</span>]</span><br><span class="line">            [ring.middleware.session.cookie <span class="symbol">:refer</span> (<span class="name">cookie-store</span>)]</span><br><span class="line">            [cheshire.core <span class="symbol">:refer</span> <span class="symbol">:all</span>]))</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">greeting-handler</span> [request]</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [name (<span class="name"><span class="builtin-name">get-in</span></span> request [<span class="symbol">:params</span> <span class="symbol">:name</span>])]</span><br><span class="line">    (<span class="name"><span class="builtin-name">str</span></span> <span class="string">&quot;Hi, &quot;</span> name)))</span><br><span class="line"></span><br><span class="line">(<span class="name">defroutes</span> app-routes</span><br><span class="line">  (<span class="name">GET</span> <span class="string">&quot;/&quot;</span> [] (<span class="name">generate-string</span> &#123;<span class="symbol">:csrf-token</span></span><br><span class="line">                                *anti-forgery-token*&#125;))</span><br><span class="line">  (<span class="name">POST</span> <span class="string">&quot;/greeting&quot;</span> [] greeting-handler)</span><br><span class="line">  (<span class="name">route/not-found</span> <span class="string">&quot;Not Found&quot;</span>))</span><br><span class="line"></span><br><span class="line">(<span class="keyword">def</span> <span class="title">app</span></span><br><span class="line">  (<span class="name"><span class="builtin-name">-&gt;</span></span> app-routes</span><br><span class="line">   (<span class="name">wrap-defaults</span> site-defaults)</span><br><span class="line">   (<span class="name">wrap-session</span> &#123;<span class="symbol">:cookie-attrs</span> &#123;<span class="symbol">:max-age</span> <span class="number">3600</span>&#125;</span><br><span class="line">                  <span class="symbol">:store</span> (<span class="name">cookie-store</span> &#123;<span class="symbol">:key</span> <span class="string">&quot;ahY9poQuaghahc7I&quot;</span>&#125;)&#125;)))</span><br></pre></td></tr></table></figure>
 
 <p>Ringサーバーをheadlessで起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker-compose run --rm --service-ports lein ring server-headless</span><br><span class="line">...</span><br><span class="line">SelectChannelConnector@0.0.0.0:3000</span><br><span class="line">Started server on port 3000</span><br></pre></td></tr></table></figure>
 
 <p>最初に用意したハンドラを実行してCSRFトークンを出力します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET --cookie-jar cookies <span class="string">"http://localhost:3000/"</span></span><br><span class="line">&#123;<span class="string">"csrf-token"</span>:<span class="string">"FxyHMRjb5I9wwxskEo2h2uXhtU/CNUo38xLDTa/2fJp7QhZ/Wo7hi4zRbey9yUZgRKfe3y1uS66K8+kA"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET --cookie-jar cookies <span class="string">&quot;http://localhost:3000/&quot;</span></span><br><span class="line">&#123;<span class="string">&quot;csrf-token&quot;</span>:<span class="string">&quot;FxyHMRjb5I9wwxskEo2h2uXhtU/CNUo38xLDTa/2fJp7QhZ/Wo7hi4zRbey9yUZgRKfe3y1uS66K8+kA&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <p>JSONで取得したcsfr-tokenをHTTPヘッダの<code>X-CSRF-Token</code>に指定してcurlからPOSTすると成功します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST  \</span><br><span class="line">  --cookie cookies  \</span><br><span class="line">  -F <span class="string">"name=masato"</span>  \</span><br><span class="line">  -H <span class="string">"X-CSRF-Token: FxyHMRjb5I9wwxskEo2h2uXhtU/CNUo38xLDTa/2fJp7QhZ/Wo7hi4zRbey9yUZgRKfe3y1uS66K8+kA"</span> \</span><br><span class="line">  <span class="string">"http://localhost:3000/greeting"</span></span><br><span class="line">Hi, masato</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST  \</span><br><span class="line">  --cookie cookies  \</span><br><span class="line">  -F <span class="string">&quot;name=masato&quot;</span>  \</span><br><span class="line">  -H <span class="string">&quot;X-CSRF-Token: FxyHMRjb5I9wwxskEo2h2uXhtU/CNUo38xLDTa/2fJp7QhZ/Wo7hi4zRbey9yUZgRKfe3y1uS66K8+kA&quot;</span> \</span><br><span class="line">  <span class="string">&quot;http://localhost:3000/greeting&quot;</span></span><br><span class="line">Hi, masato</span><br></pre></td></tr></table></figure>
 
 <h2 id="anti-forgeryを無効にする場合"><a href="#anti-forgeryを無効にする場合" class="headerlink" title="anti-forgeryを無効にする場合"></a>anti-forgeryを無効にする場合</h2><p>CSRF対策を無効にする場合は、<code>site-defaults</code>のanti-forgeryキーの値をfalseにして起動します。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/src/hello_world/handler.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">(<span class="name"><span class="builtin-name">def</span></span> app (<span class="name">wrap-defaults</span> app-routes (<span class="name">assoc-in</span> site-defaults [<span class="symbol">:security</span> <span class="symbol">:anti-forgery</span>] <span class="literal">false</span>)))</span><br></pre></td></tr></table></figure>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/hello-world/src/hello_world/handler.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">(<span class="keyword">def</span> <span class="title">app</span> (<span class="name">wrap-defaults</span> app-routes (<span class="name">assoc-in</span> site-defaults [<span class="symbol">:security</span> <span class="symbol">:anti-forgery</span>] <span class="literal">false</span>)))</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -327,7 +294,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -378,7 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Invalid-anti-forgery-token"><span class="nav-number">1.</span> <span class="nav-text">Invalid anti-forgery token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#anti-forgeryを無効にする場合"><span class="nav-number">3.</span> <span class="nav-text">anti-forgeryを無効にする場合</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Invalid-anti-forgery-token"><span class="nav-number">1.</span> <span class="nav-text">Invalid anti-forgery token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#anti-forgery%E3%82%92%E7%84%A1%E5%8A%B9%E3%81%AB%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88"><span class="nav-number">3.</span> <span class="nav-text">anti-forgeryを無効にする場合</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -410,10 +376,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -438,9 +407,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -480,13 +449,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

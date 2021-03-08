@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ES6で書くIsomorphicアプリのBoilerplateを調べました。いくつか手を動かしながら勉強していこうと思います。最初はなるべくシンプルなIsomorphicな動作を選びたいのですが、Reactアプリは複雑になりがちで周辺ツールも多くどの構成を選んだら良いか悩みます。Tutorial Setting Up a Simple Isomorphic React appのポストがとてもわかり">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ES6で書くIsomorphicアプリ入門 - Part3: React Isomorphic Demo">
 <meta property="og:url" content="https://masato.github.io/2015/07/08/iojs-es6-react-isomorphic-boilerplate/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="ES6で書くIsomorphicアプリのBoilerplateを調べました。いくつか手を動かしながら勉強していこうと思います。最初はなるべくシンプルなIsomorphicな動作を選びたいのですが、Reactアプリは複雑になりがちで周辺ツールも多くどの構成を選んだら良いか悩みます。Tutorial Setting Up a Simple Isomorphic React appのポストがとてもわかり">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-07-08T00:22:18.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.716Z">
+<meta property="article:modified_time" content="2015-07-08T00:22:18.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="Isomorphic">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>ES6で書くIsomorphicアプリ入門 - Part3: React Isomorphic Demo | masato's blog</title>
+  <title>ES6で書くIsomorphicアプリ入門 - Part3: React Isomorphic Demo | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 8 2015 09:22:18" itemprop="dateCreated datePublished" datetime="2015-07-08T09:22:18+09:00">Jul 8 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">ES6で書くIsomorphicアプリのBoilerplateを調べました。いくつか手を動かしながら勉強していこうと思います。最初はなるべくシンプルなIsomorphicな動作を選びたいのですが、Reactアプリは複雑になりがちで周辺ツールも多くどの構成を選んだら良いか悩みます。Tutorial Setting Up a Simple Isomorphic React appのポストがとてもわかりやすいので写経していきます。</div>
@@ -241,29 +208,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>ES6で書くIsomorphicアプリのBoilerplateを<a href="/2015/07/02/iojs-es6-isomorphic-boilerplate/">調べました</a>。いくつか手を動かしながら勉強していこうと思います。最初はなるべくシンプルなIsomorphicな動作を選びたいのですが、Reactアプリは複雑になりがちで周辺ツールも多くどの構成を選んだら良いか悩みます。<a href="http://jmfurlott.com/tutorial-setting-up-a-simple-isomorphic-react-app/" target="_blank" rel="noopener">Tutorial: Setting Up a Simple Isomorphic React app</a>のポストがとてもわかりやすいので写経していきます。</p>
+        <p>ES6で書くIsomorphicアプリのBoilerplateを<a href="/2015/07/02/iojs-es6-isomorphic-boilerplate/">調べました</a>。いくつか手を動かしながら勉強していこうと思います。最初はなるべくシンプルなIsomorphicな動作を選びたいのですが、Reactアプリは複雑になりがちで周辺ツールも多くどの構成を選んだら良いか悩みます。<a target="_blank" rel="noopener" href="http://jmfurlott.com/tutorial-setting-up-a-simple-isomorphic-react-app/">Tutorial: Setting Up a Simple Isomorphic React app</a>のポストがとてもわかりやすいので写経していきます。</p>
 <h2 id="Isomorphicな特徴"><a href="#Isomorphicな特徴" class="headerlink" title="Isomorphicな特徴"></a>Isomorphicな特徴</h2><p>IsomorphicなReactアプリはクライアントのコードは1つのファイルにバンドルして、HTMLからロードします。最初にHTMLを開いたときはサーバーサイドでレンダリングされたコンポーネントを表示しますが、バンドルされたReactアプリがロードされたら上書きします。</p>
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p><a href="http://jmfurlott.com/tutorial-setting-up-a-simple-isomorphic-react-app/" target="_blank" rel="noopener">Tutorial: Setting Up a Simple Isomorphic React app</a>のリポジトリは<a href="https://github.com/jmfurlott/react-isomorphic-boilerplate" target="_blank" rel="noopener">react-isomorphic-boilerplate</a>です。</p>
-<p>今回作成したディレクトリ構造です。作業リポジトリは<a href="https://github.com/masato/react-isomorphic-boilerplate-app" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p><a target="_blank" rel="noopener" href="http://jmfurlott.com/tutorial-setting-up-a-simple-isomorphic-react-app/">Tutorial: Setting Up a Simple Isomorphic React app</a>のリポジトリは<a target="_blank" rel="noopener" href="https://github.com/jmfurlott/react-isomorphic-boilerplate">react-isomorphic-boilerplate</a>です。</p>
+<p>今回作成したディレクトリ構造です。作業リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/react-isomorphic-boilerplate-app">こちら</a>です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/react-isomorphic-boilerplate-app</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── css</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">├── package.json</span><br><span class="line">├── src</span><br><span class="line">│  ├── client</span><br><span class="line">│  │   └── entry.js</span><br><span class="line">│  ├── server</span><br><span class="line">│  │   ├── server.js</span><br><span class="line">│  │   └── webpack.js</span><br><span class="line">│  └── shared</span><br><span class="line">│      ├── components</span><br><span class="line">│      │  └── AppHandler.js</span><br><span class="line">│      └── routes.js</span><br><span class="line">├── views</span><br><span class="line">│  └── index.jade</span><br><span class="line">└── webpack.config.dev.js</span><br></pre></td></tr></table></figure>
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>io.jsのベースイメージを使いDockerfileを用意します。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">    mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    chown -R docker:docker /app /dist/node_modules</span><br><span class="line"></span><br><span class="line">USER docker</span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN  npm install</span><br><span class="line"></span><br><span class="line">COPY . /app</span><br><span class="line">CMD [<span class="string">"npm"</span>,<span class="string">"start"</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">    mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    chown -R docker:docker /app /dist/node_modules</span><br><span class="line"></span><br><span class="line">USER docker</span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN  npm install</span><br><span class="line"></span><br><span class="line">COPY . /app</span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>,<span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 <h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>docker-compose.ymlには環境変数としてpublic ip addressを指定します。HTMLからWebpack dev serverに接続するためのIPアドレスです。サーバーサイドはクラウド上で動作しているため、ブラウザからはリモートでアクセスする必要があります。PUBLIC_IPにインターネットから接続できるIPアドレスを指定します。</p>
 <figure class="highlight yml"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">PUBLIC_IP=xxx.xxx.xxx.xxx</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">EXPRESS_PORT=3030</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">WEBPACK_PORT=8090</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3030</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8090</span><span class="string">:8090</span></span><br></pre></td></tr></table></figure>
 
 <p>docker-composeコマンドを短縮するためにエイリアスを用意します。</p>
-<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> iojs-run=<span class="string">'docker-compose run --rm npm'</span></span><br><span class="line"><span class="built_in">alias</span> iojs-up=<span class="string">'docker-compose up npm'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> iojs-run=<span class="string">&#x27;docker-compose run --rm npm&#x27;</span></span><br><span class="line"><span class="built_in">alias</span> iojs-up=<span class="string">&#x27;docker-compose up npm&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>package.jsonはデフォルトで最小限を書いておきます。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"react-isomorphic"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"react-isomorphic"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"private"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;react-isomorphic&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;react-isomorphic&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>docker-composeのエイリアスを使って必要なモジュールをnpmでインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ iojs-run npm install --save-dev react webpack react-router react-hot-loader webpack-dev-server babel-loader</span><br></pre></td></tr></table></figure>
 
 <p>用意しておいたpackage.jsonに<code>devDependencies</code>のセクションが追加されました。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"react-isomorphic"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"react-isomorphic"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"devDependencies"</span>: &#123;</span><br><span class="line">        <span class="attr">"babel"</span>: <span class="string">"^5.6.14"</span>,</span><br><span class="line">        <span class="attr">"babel-core"</span>: <span class="string">"^5.6.17"</span>,</span><br><span class="line">        <span class="attr">"babel-loader"</span>: <span class="string">"^5.3.1"</span>,</span><br><span class="line">        <span class="attr">"express"</span>: <span class="string">"^4.13.1"</span>,</span><br><span class="line">        <span class="attr">"jade"</span>: <span class="string">"^1.11.0"</span>,</span><br><span class="line">        <span class="attr">"node-libs-browser"</span>: <span class="string">"^0.5.2"</span>,</span><br><span class="line">        <span class="attr">"nodemon"</span>: <span class="string">"^1.3.7"</span>,</span><br><span class="line">        <span class="attr">"react"</span>: <span class="string">"^0.13.3"</span>,</span><br><span class="line">        <span class="attr">"react-hot-loader"</span>: <span class="string">"^1.2.8"</span>,</span><br><span class="line">        <span class="attr">"react-router"</span>: <span class="string">"^0.13.3"</span>,</span><br><span class="line">        <span class="attr">"webpack"</span>: <span class="string">"^1.10.1"</span>,</span><br><span class="line">        <span class="attr">"webpack-dev-server"</span>: <span class="string">"^1.10.1"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">        <span class="attr">"clean"</span>: <span class="string">"rm -rf lib"</span>,</span><br><span class="line">        <span class="attr">"watch-js"</span>: <span class="string">"babel src -d lib --experimental -w"</span>,</span><br><span class="line">        <span class="attr">"dev-server"</span>: <span class="string">"node lib/server/webpack.js"</span>,</span><br><span class="line">        <span class="attr">"server"</span>: <span class="string">"nodemon lib/server/server.js"</span>,</span><br><span class="line">        <span class="attr">"start"</span>: <span class="string">"npm run watch-js &amp; npm run dev-server &amp; npm run server"</span>,</span><br><span class="line">        <span class="attr">"build"</span>: <span class="string">"npm run clean &amp;&amp; babel src -d lib --experimental"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;react-isomorphic&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;react-isomorphic&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;devDependencies&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;babel&quot;</span>: <span class="string">&quot;^5.6.14&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;babel-core&quot;</span>: <span class="string">&quot;^5.6.17&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;babel-loader&quot;</span>: <span class="string">&quot;^5.3.1&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;express&quot;</span>: <span class="string">&quot;^4.13.1&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;jade&quot;</span>: <span class="string">&quot;^1.11.0&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;node-libs-browser&quot;</span>: <span class="string">&quot;^0.5.2&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;nodemon&quot;</span>: <span class="string">&quot;^1.3.7&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;react&quot;</span>: <span class="string">&quot;^0.13.3&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;react-hot-loader&quot;</span>: <span class="string">&quot;^1.2.8&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;react-router&quot;</span>: <span class="string">&quot;^0.13.3&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;webpack&quot;</span>: <span class="string">&quot;^1.10.1&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;webpack-dev-server&quot;</span>: <span class="string">&quot;^1.10.1&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;clean&quot;</span>: <span class="string">&quot;rm -rf lib&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;watch-js&quot;</span>: <span class="string">&quot;babel src -d lib --experimental -w&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;dev-server&quot;</span>: <span class="string">&quot;node lib/server/webpack.js&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;server&quot;</span>: <span class="string">&quot;nodemon lib/server/server.js&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;start&quot;</span>: <span class="string">&quot;npm run watch-js &amp; npm run dev-server &amp; npm run server&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;build&quot;</span>: <span class="string">&quot;npm run clean &amp;&amp; babel src -d lib --experimental&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>scripts</code>セクションに開発に必要なコマンドを用意します。ごちゃごちゃしているのでGulpでまとめた方が良さそうです。ホットロードもしますが、ES6で書いたコードは<code>build</code>でコンパイルしておきます。ブラウザからのリクエストを処理するExpressのサーバーと、バンドルされたReactアプリを返すWebpack dev serverの2つを起動します。</p>
 <p>package.jsonが出来上がったのでイメージにビルドします。</p>
@@ -277,17 +244,17 @@
 <li>client: Reace bundleのエントリポイント</li>
 <li>shared: componentsとroutes</li>
 </ul>
-<h3 id="views-index-jade"><a href="#views-index-jade" class="headerlink" title="views/index.jade"></a>views/index.jade</h3><p>ビューは<a href="http://jade-lang.com/" target="_blank" rel="noopener">Jade</a>のテンプレートエンジンを使います。<code>#app!= content</code>の記述で<code>&lt;div id=&quot;app&quot;&gt;</code>要素を作成します。</p>
+<h3 id="views-index-jade"><a href="#views-index-jade" class="headerlink" title="views/index.jade"></a>views/index.jade</h3><p>ビューは<a target="_blank" rel="noopener" href="http://jade-lang.com/">Jade</a>のテンプレートエンジンを使います。<code>#app!= content</code>の記述で<code>&lt;div id=&quot;app&quot;&gt;</code>要素を作成します。</p>
 <figure class="highlight plain"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/views/index.jade</span></figcaption><table><tr><td class="code"><pre><span class="line">html</span><br><span class="line">  head</span><br><span class="line">    title&#x3D;&quot;React Isomorphic App&quot;</span><br><span class="line">    meta(charset&#x3D;&#39;utf-8&#39;)</span><br><span class="line">    meta(http-equiv&#x3D;&#39;X-UA-Compatible&#39;, content&#x3D;&#39;IE&#x3D;edge&#39;)</span><br><span class="line">    meta(name&#x3D;&#39;description&#39;, content&#x3D;&#39;&#39;)</span><br><span class="line">    meta(name&#x3D;&#39;viewport&#39;, content&#x3D;&#39;width&#x3D;device-width, initial-scale&#x3D;1&#39;)</span><br><span class="line"></span><br><span class="line">  body</span><br><span class="line">    #app!&#x3D; content</span><br><span class="line">    script(src&#x3D;&#39;http:&#x2F;&#x2F;&#39;+public_ip+&#39;:&#39;+webpack_port+&#39;&#x2F;js&#x2F;app.js&#39;, defer)</span><br></pre></td></tr></table></figure>
 
 <h3 id="src-server-server-js"><a href="#src-server-server-js" class="headerlink" title="src/server/server.js"></a>src/server/server.js</h3><p>ExpressのコードもES6で書きます。routeは<code>/*</code>で全部拾って<code>react-router</code>に渡します。このプロジェクトにはfavicon.icoを用意していませんが、staticなコンテンツもreact-routerにroutingの役割が回ってしまいます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Warning: No route matches path <span class="string">"/favicon.ico"</span>. Make sure you have &lt;Route path=<span class="string">"/favicon.ico"</span>&gt; somewhere <span class="keyword">in</span> your routes</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Warning: No route matches path <span class="string">&quot;/favicon.ico&quot;</span>. Make sure you have &lt;Route path=<span class="string">&quot;/favicon.ico&quot;</span>&gt; somewhere <span class="keyword">in</span> your routes</span><br></pre></td></tr></table></figure>
 
 <p><code>react-router</code>はサーバーとクライアントで<code>shared/routes</code>を共有しています。デフォルトのサンプルだと同じコンポーネントを使っているので、Expressが<code>&lt;div id=&quot;app&quot;&gt;</code>にrenderしたcontentと、React bundleがロードされた後に、<code>document.getElementById(&#39;app&#39;)</code>でrenderする内容の区別がつきません。Isomorphicではなくなりますが、処理をわかりやすくするためにcontents変数にはコンポーネントではなく、デフォルトの文字列を入れるようにしました。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/server/server.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line"><span class="comment">// set up Jade</span></span><br><span class="line">app.set(<span class="string">'views'</span>, <span class="string">'./views'</span>);</span><br><span class="line">app.set(<span class="string">'view engine'</span>, <span class="string">'jade'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">'../shared/routes'</span>;</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">'/*'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    Router.run(routes, req.url, Handler =&gt; &#123;</span><br><span class="line">        <span class="comment">//let content = React.renderToString(&lt;Handler /&gt;);</span></span><br><span class="line">        <span class="keyword">let</span> content = <span class="string">'empty!'</span>;</span><br><span class="line">        res.render(<span class="string">'index'</span>, &#123; <span class="attr">public_ip_port</span>: process.env.PUBLIC_IP_PORT,</span><br><span class="line">                              content: content &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(process.env.EXPRESS_PORT, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> host = server.address().address;</span><br><span class="line">    <span class="keyword">var</span> port = server.address().port;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Example app listening at http://%s:%s'</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/server/server.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">&#x27;express&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">&#x27;react-router&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line"><span class="comment">// set up Jade</span></span><br><span class="line">app.set(<span class="string">&#x27;views&#x27;</span>, <span class="string">&#x27;./views&#x27;</span>);</span><br><span class="line">app.set(<span class="string">&#x27;view engine&#x27;</span>, <span class="string">&#x27;jade&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">&#x27;../shared/routes&#x27;</span>;</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/*&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    Router.run(routes, req.url, <span class="function"><span class="params">Handler</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">//let content = React.renderToString(&lt;Handler /&gt;);</span></span><br><span class="line">        <span class="keyword">let</span> content = <span class="string">&#x27;empty!&#x27;</span>;</span><br><span class="line">        res.render(<span class="string">&#x27;index&#x27;</span>, &#123; <span class="attr">public_ip_port</span>: process.env.PUBLIC_IP_PORT,</span><br><span class="line">                              content: content &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(process.env.EXPRESS_PORT, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> host = server.address().address;</span><br><span class="line">    <span class="keyword">var</span> port = server.address().port;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Example app listening at http://%s:%s&#x27;</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h3 id="src-server-webpack-js"><a href="#src-server-webpack-js" class="headerlink" title="src/server/webpack.js"></a>src/server/webpack.js</h3><p>Reactアプリをレンダーする開発用サーバーです。Node.jsのサーバーとは別に動作します。WebpackDevServerインスタンスは、<code>webpack.config.dev.js</code>に書かれた設定を読み込んで使います。今回はサーバーサイドがクラウド上で動作しているため、Webpack dev serverはリモートから接続します。<code>localhost</code>でなく<code>0.0.0.0</code>でLISTENするように変更しました。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/server/webpack.js</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> WebpackDevServer <span class="keyword">from</span> <span class="string">"webpack-dev-server"</span>;</span><br><span class="line"><span class="keyword">import</span> webpack <span class="keyword">from</span> <span class="string">"webpack"</span>;</span><br><span class="line"><span class="keyword">import</span> config <span class="keyword">from</span> <span class="string">"../../webpack.config.dev"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> WebpackDevServer(webpack(config), &#123;</span><br><span class="line">    <span class="comment">// webpack-dev-server options</span></span><br><span class="line">    publicPath: config.output.publicPath,</span><br><span class="line">    hot: <span class="literal">true</span>,</span><br><span class="line">    stats: &#123;<span class="attr">colors</span>: <span class="literal">true</span>&#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(process.env.WEBPACK_PORT, <span class="string">"0.0.0.0"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/server/webpack.js</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> WebpackDevServer <span class="keyword">from</span> <span class="string">&quot;webpack-dev-server&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> webpack <span class="keyword">from</span> <span class="string">&quot;webpack&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> config <span class="keyword">from</span> <span class="string">&quot;../../webpack.config.dev&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = <span class="keyword">new</span> WebpackDevServer(webpack(config), &#123;</span><br><span class="line">    <span class="comment">// webpack-dev-server options</span></span><br><span class="line">    publicPath: config.output.publicPath,</span><br><span class="line">    hot: <span class="literal">true</span>,</span><br><span class="line">    stats: &#123;<span class="attr">colors</span>: <span class="literal">true</span>&#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(process.env.WEBPACK_PORT, <span class="string">&quot;0.0.0.0&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;);</span><br></pre></td></tr></table></figure>
 
 <h3 id="webpack-config-dev-js"><a href="#webpack-config-dev-js" class="headerlink" title="webpack.config.dev.js"></a>webpack.config.dev.js</h3><p>entryにapp.jsにbundleするエントリポイントを複数指定します。</p>
 <ul>
@@ -295,16 +262,16 @@
 <li>ホットロード</li>
 <li>アプリのクライアント</li>
 </ul>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/webpack.config.dev.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> public_url = <span class="string">'http://'</span>+process.env.PUBLIC_IP+<span class="string">':'</span>+process.env.WEBPACK_PORT;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    devtool: <span class="string">'inline-source-map'</span>,</span><br><span class="line">    entry: [</span><br><span class="line">        <span class="string">'webpack-dev-server/client?'</span>+public_url,</span><br><span class="line">        <span class="string">'webpack/hot/only-dev-server'</span>,</span><br><span class="line">        <span class="string">'./src/client/entry'</span>,</span><br><span class="line">    ],</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: __dirname + <span class="string">'/public/js/'</span>,</span><br><span class="line">        filename: <span class="string">'app.js'</span>,</span><br><span class="line">        publicPath: public_url+<span class="string">'/js/'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="keyword">new</span> webpack.HotModuleReplacementPlugin(),</span><br><span class="line">        <span class="keyword">new</span> webpack.NoErrorsPlugin(),</span><br><span class="line">    ],</span><br><span class="line">    resolve: &#123;</span><br><span class="line">        extensions: [<span class="string">''</span>, <span class="string">'.js'</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">        loaders: [</span><br><span class="line">            &#123; <span class="attr">test</span>: <span class="regexp">/\.jsx?$/</span>, <span class="attr">loaders</span>: [<span class="string">'react-hot'</span>, <span class="string">'babel-loader?experimental'</span>], <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span> &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/webpack.config.dev.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> public_url = <span class="string">&#x27;http://&#x27;</span>+process.env.PUBLIC_IP+<span class="string">&#x27;:&#x27;</span>+process.env.WEBPACK_PORT;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    devtool: <span class="string">&#x27;inline-source-map&#x27;</span>,</span><br><span class="line">    entry: [</span><br><span class="line">        <span class="string">&#x27;webpack-dev-server/client?&#x27;</span>+public_url,</span><br><span class="line">        <span class="string">&#x27;webpack/hot/only-dev-server&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;./src/client/entry&#x27;</span>,</span><br><span class="line">    ],</span><br><span class="line">    output: &#123;</span><br><span class="line">        path: __dirname + <span class="string">&#x27;/public/js/&#x27;</span>,</span><br><span class="line">        filename: <span class="string">&#x27;app.js&#x27;</span>,</span><br><span class="line">        publicPath: public_url+<span class="string">&#x27;/js/&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="keyword">new</span> webpack.HotModuleReplacementPlugin(),</span><br><span class="line">        <span class="keyword">new</span> webpack.NoErrorsPlugin(),</span><br><span class="line">    ],</span><br><span class="line">    resolve: &#123;</span><br><span class="line">        extensions: [<span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;.js&#x27;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">        loaders: [</span><br><span class="line">            &#123; <span class="attr">test</span>: <span class="regexp">/\.jsx?$/</span>, loaders: [<span class="string">&#x27;react-hot&#x27;</span>, <span class="string">&#x27;babel-loader?experimental&#x27;</span>], <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span> &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="共有"><a href="#共有" class="headerlink" title="共有"></a>共有</h2><h3 id="src-shared-components-AppHandler-js"><a href="#src-shared-components-AppHandler-js" class="headerlink" title="src/shared/components/AppHandler.js"></a>src/shared/components/AppHandler.js</h3><p>AppHandler.jsはサーバーとクライアントで共有しているコンポーネントです。今回のテストではExpressからIsomorphicにコンポーネントを共有して、サーバーサイドレンダリングできることを確認した後、静的な文字列に変更しています。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/shared/components/AppHandler.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">AppHandler</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello App Handler<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/shared/components/AppHandler.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">AppHandler</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello App Handler<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="src-shared-routes-js"><a href="#src-shared-routes-js" class="headerlink" title="src/shared/routes.js"></a>src/shared/routes.js</h3><p><code>react-router</code>のroutesを定義します。Routeはpathの<code>/</code>にAppHandlerコンポーネントを表示します。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/shared/routes.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Route &#125; <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> AppHandler <span class="keyword">from</span> <span class="string">'./components/AppHandler'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (</span><br><span class="line">    &lt;Route handler=&#123; AppHandler &#125; path=<span class="string">"/"</span> /&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/shared/routes.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Route &#125; <span class="keyword">from</span> <span class="string">&#x27;react-router&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> AppHandler <span class="keyword">from</span> <span class="string">&#x27;./components/AppHandler&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (</span><br><span class="line">    &lt;Route handler=&#123; AppHandler &#125; path=<span class="string">&quot;/&quot;</span> /&gt;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
-<h2 id="クライアント"><a href="#クライアント" class="headerlink" title="クライアント"></a>クライアント</h2><h3 id="src-client-entry-js"><a href="#src-client-entry-js" class="headerlink" title="src/client/entry.js"></a>src/client/entry.js</h3><p>React bundleのエントリポイントです。サーバーサイドでは<code>React.renderToString(&lt;Handler /&gt;);</code>でJadeでレンダリングするcontents変数を作成しましたが、クライアントサイドでは<code>React.render(&lt;Handler /&gt;, document.getElementById(&#39;app&#39;));</code>を使って、直接divのidを指定してコンポーネントをマウントします。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/client/entry.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">'react-router'</span>;</span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">'../shared/routes'</span>;</span><br><span class="line"></span><br><span class="line">Router.run(routes, Router.HistroyLocation, (Handler, state) =&gt; &#123;</span><br><span class="line">    React.render(<span class="xml"><span class="tag">&lt;<span class="name">Handler</span> /&gt;</span></span>, <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="クライアント"><a href="#クライアント" class="headerlink" title="クライアント"></a>クライアント</h2><h3 id="src-client-entry-js"><a href="#src-client-entry-js" class="headerlink" title="src/client/entry.js"></a>src/client/entry.js</h3><p>React bundleのエントリポイントです。サーバーサイドでは<code>React.renderToString(&lt;Handler /&gt;);</code>でJadeでレンダリングするcontents変数を作成しましたが、クライアントサイドでは<code> React.render(&lt;Handler /&gt;, document.getElementById(&#39;app&#39;));</code>を使って、直接divのidを指定してコンポーネントをマウントします。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/react-isomorphic-boilerplate-app/src/client/entry.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">&#x27;react-router&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">&#x27;../shared/routes&#x27;</span>;</span><br><span class="line"></span><br><span class="line">Router.run(routes, Router.HistroyLocation, <span class="function">(<span class="params">Handler, state</span>) =&gt;</span> &#123;</span><br><span class="line">    React.render(<span class="xml"><span class="tag">&lt;<span class="name">Handler</span> /&gt;</span></span>, <span class="built_in">document</span>.getElementById(<span class="string">&#x27;app&#x27;</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="起動とテスト"><a href="#起動とテスト" class="headerlink" title="起動とテスト"></a>起動とテスト</h2><p>一応クリーンビルドしておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ iojs-run npm run clean</span><br><span class="line">$ iojs-run npm run build</span><br><span class="line">...</span><br><span class="line">npm info postclean react-isomorphic@0.0.1</span><br><span class="line">npm info ok</span><br><span class="line">src/client/entry.js -&gt; lib/client/entry.js</span><br><span class="line">src/server/server.js -&gt; lib/server/server.js</span><br><span class="line">src/server/webpack.js -&gt; lib/server/webpack.js</span><br><span class="line">src/shared/components/AppHandler.js -&gt; lib/shared/components/AppHandler.js</span><br><span class="line">src/shared/routes.js -&gt; lib/shared/routes.js</span><br><span class="line">npm info postbuild react-isomorphic@0.0.1</span><br><span class="line">npm info ok</span><br></pre></td></tr></table></figure>
@@ -314,7 +281,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ iojs-up</span><br><span class="line">...</span><br><span class="line">npm_1 | webpack: bundle is now VALID.</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザからDockerホストのパブリックIPアドレスを実行します。接続先はExpressサーバーの3030ポートです。</p>
-<p><a href="http://xxx.xxx.xxx.xxx:3030/" target="_blank" rel="noopener">http://xxx.xxx.xxx.xxx:3030/</a></p>
+<p><a target="_blank" rel="noopener" href="http://xxx.xxx.xxx.xxx:3030/">http://xxx.xxx.xxx.xxx:3030/</a></p>
 <p>本来はIsomorphicに共有しているコンポーネントをサーバーサイドでrenderします。React bundleが上書きする動作を確認するため、’empty!’の静的な文字列が最初にrenderします。index.htmlがロードされたあと、React bundleがWebpack dev serverからロードされます。<code>react-router</code>の<code>/</code>pathに従いAppHandler.jsがcomponentとして表示されます。</p>
 <h2 id="課題"><a href="#課題" class="headerlink" title="課題"></a>課題</h2><p>シンプルなサンプルなのでとてもわかりやすいですが、Expressのrouteを<code>/*</code>としてすべてreact-routerに渡しています。その反面favicon.icoなど静的ファイルもreact-routerでハンドリングが必要になったり、Isomorphicで共有いしているコンポーネントの動作が見えづらいところがあります。</p>
 
@@ -354,7 +321,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -405,7 +371,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Isomorphicな特徴"><span class="nav-number">1.</span> <span class="nav-text">Isomorphicな特徴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.2.</span> <span class="nav-text">docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#サーバーサイド"><span class="nav-number">3.</span> <span class="nav-text">サーバーサイド</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#views-index-jade"><span class="nav-number">3.1.</span> <span class="nav-text">views&#x2F;index.jade</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-server-server-js"><span class="nav-number">3.2.</span> <span class="nav-text">src&#x2F;server&#x2F;server.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-server-webpack-js"><span class="nav-number">3.3.</span> <span class="nav-text">src&#x2F;server&#x2F;webpack.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack-config-dev-js"><span class="nav-number">3.4.</span> <span class="nav-text">webpack.config.dev.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共有"><span class="nav-number">4.</span> <span class="nav-text">共有</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-shared-components-AppHandler-js"><span class="nav-number">4.1.</span> <span class="nav-text">src&#x2F;shared&#x2F;components&#x2F;AppHandler.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-shared-routes-js"><span class="nav-number">4.2.</span> <span class="nav-text">src&#x2F;shared&#x2F;routes.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#クライアント"><span class="nav-number">5.</span> <span class="nav-text">クライアント</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-client-entry-js"><span class="nav-number">5.1.</span> <span class="nav-text">src&#x2F;client&#x2F;entry.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#起動とテスト"><span class="nav-number">6.</span> <span class="nav-text">起動とテスト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#課題"><span class="nav-number">7.</span> <span class="nav-text">課題</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Isomorphic%E3%81%AA%E7%89%B9%E5%BE%B4"><span class="nav-number">1.</span> <span class="nav-text">Isomorphicな特徴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.2.</span> <span class="nav-text">docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89"><span class="nav-number">3.</span> <span class="nav-text">サーバーサイド</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#views-index-jade"><span class="nav-number">3.1.</span> <span class="nav-text">views&#x2F;index.jade</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-server-server-js"><span class="nav-number">3.2.</span> <span class="nav-text">src&#x2F;server&#x2F;server.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-server-webpack-js"><span class="nav-number">3.3.</span> <span class="nav-text">src&#x2F;server&#x2F;webpack.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack-config-dev-js"><span class="nav-number">3.4.</span> <span class="nav-text">webpack.config.dev.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E6%9C%89"><span class="nav-number">4.</span> <span class="nav-text">共有</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-shared-components-AppHandler-js"><span class="nav-number">4.1.</span> <span class="nav-text">src&#x2F;shared&#x2F;components&#x2F;AppHandler.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-shared-routes-js"><span class="nav-number">4.2.</span> <span class="nav-text">src&#x2F;shared&#x2F;routes.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88"><span class="nav-number">5.</span> <span class="nav-text">クライアント</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#src-client-entry-js"><span class="nav-number">5.1.</span> <span class="nav-text">src&#x2F;client&#x2F;entry.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%B7%E5%8B%95%E3%81%A8%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">6.</span> <span class="nav-text">起動とテスト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AA%B2%E9%A1%8C"><span class="nav-number">7.</span> <span class="nav-text">課題</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -437,10 +403,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -465,9 +434,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -507,13 +476,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

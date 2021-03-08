@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,29 +13,29 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Part3でESXi4用のOVAがきれいに作成できなかったので、VirualBox 4.3.12にESXi5のNested Virtualizationを構築して、PackerのESXi5ドライバーを使ってみます。Vagrant and Chef on Windowsを参考にWindows上でVagrantを動かすところまで構築します。また、Minttyを使いやすくして、Windows7からLin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packerを使いWindows上でOVAを作成する - Part4: Nested ESXi5 on VirtualBox ESXi5 Vagrant">
 <meta property="og:url" content="https://masato.github.io/2014/06/11/packer-windows-vagrant-mingw-mintty/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Part3でESXi4用のOVAがきれいに作成できなかったので、VirualBox 4.3.12にESXi5のNested Virtualizationを構築して、PackerのESXi5ドライバーを使ってみます。Vagrant and Chef on Windowsを参考にWindows上でVagrantを動かすところまで構築します。また、Minttyを使いやすくして、Windows7からLin">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-06-11T13:25:06.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:modified_time" content="2014-06-11T13:25:06.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Packer">
 <meta property="article:tag" content="Windows">
 <meta property="article:tag" content="Vagrant">
 <meta property="article:tag" content="PackerOVA">
-<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="VirtualBox">
+<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="MinGW">
 <meta property="article:tag" content="Mintty">
 <meta property="article:tag" content="Git">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Packerを使いWindows上でOVAを作成する - Part4: Nested ESXi5 on VirtualBox ESXi5 Vagrant | masato's blog</title>
+  <title>Packerを使いWindows上でOVAを作成する - Part4: Nested ESXi5 on VirtualBox ESXi5 Vagrant | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 11 2014 22:25:06" itemprop="dateCreated datePublished" datetime="2014-06-11T22:25:06+09:00">Jun 11 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Part3でESXi4用のOVAがきれいに作成できなかったので、VirualBox 4.3.12にESXi5のNested Virtualizationを構築して、PackerのESXi5ドライバーを使ってみます。Vagrant and Chef on Windowsを参考にWindows上でVagrantを動かすところまで構築します。また、Minttyを使いやすくして、Windows7からLinuxを操作を便利にします。</div>
@@ -245,19 +212,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://masato.github.io/tags/PackerOVA/">PackerでOVA作成</a>シリーズです。<br><a href="/2014/06/09/packer-idcf-ova/">Part3</a>でESXi4用のOVAがきれいに作成できなかったので、<code>VirualBox 4.3.12</code>にESXi5の<br><a href="http://en.wikipedia.org/wiki/Nested_virtualization" target="_blank" rel="noopener">Nested Virtualization</a>環境を構築して、Packerの<a href="https://github.com/mitchellh/packer/blob/master/builder/vmware/iso/driver_esx5.go" target="_blank" rel="noopener">ESXi5ドライバー</a>を使ってみます。</p>
-<p><a href="http://qiita.com/ogomr/items/98a33f47f6ba050adac4" target="_blank" rel="noopener">Vagrant and Chef on Windows</a>を参考にWindows上でVagrantを動かすところまで構築します。また、Minttyを使いやすくしてWindows7からLinuxを操作を便利にします。</p>
-<a id="more"></a>
+        <p><a href="http://masato.github.io/tags/PackerOVA/">PackerでOVA作成</a>シリーズです。<br><a href="/2014/06/09/packer-idcf-ova/">Part3</a>でESXi4用のOVAがきれいに作成できなかったので、<code>VirualBox 4.3.12</code>にESXi5の<br><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Nested_virtualization">Nested Virtualization</a>環境を構築して、Packerの<a target="_blank" rel="noopener" href="https://github.com/mitchellh/packer/blob/master/builder/vmware/iso/driver_esx5.go">ESXi5ドライバー</a>を使ってみます。</p>
+<p><a target="_blank" rel="noopener" href="http://qiita.com/ogomr/items/98a33f47f6ba050adac4">Vagrant and Chef on Windows</a>を参考にWindows上でVagrantを動かすところまで構築します。また、Minttyを使いやすくしてWindows7からLinuxを操作を便利にします。</p>
+<span id="more"></span>
 
-<h3 id="VirtualBoxのインストール"><a href="#VirtualBoxのインストール" class="headerlink" title="VirtualBoxのインストール"></a>VirtualBoxのインストール</h3><p>VirtualBoxは<a href="http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html#vbox" target="_blank" rel="noopener">ダウンロード</a>ページから、最新バージョンの<a href="http://download.virtualbox.org/virtualbox/4.3.12/VirtualBox-4.3.12-93733-Win.exe" target="_blank" rel="noopener">4.3.12</a>をダウンロードしてインストーラーを実行します。</p>
+<h3 id="VirtualBoxのインストール"><a href="#VirtualBoxのインストール" class="headerlink" title="VirtualBoxのインストール"></a>VirtualBoxのインストール</h3><p>VirtualBoxは<a target="_blank" rel="noopener" href="http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html#vbox">ダウンロード</a>ページから、最新バージョンの<a target="_blank" rel="noopener" href="http://download.virtualbox.org/virtualbox/4.3.12/VirtualBox-4.3.12-93733-Win.exe">4.3.12</a>をダウンロードしてインストーラーを実行します。</p>
 <p>以下の場所にインストールされます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Program Files\Oracle\VirtualBox</span><br></pre></td></tr></table></figure>
 
-<h3 id="Vagrantのインストール"><a href="#Vagrantのインストール" class="headerlink" title="Vagrantのインストール"></a>Vagrantのインストール</h3><p>Vagrantは<a href="http://www.vagrantup.com/downloads.html" target="_blank" rel="noopener">ダウンロード</a>ページから、最新バージョンの<a href="https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.3.msi" target="_blank" rel="noopener">1.6.3</a>をダウンロードしてインストーラーを実行します。</p>
+<h3 id="Vagrantのインストール"><a href="#Vagrantのインストール" class="headerlink" title="Vagrantのインストール"></a>Vagrantのインストール</h3><p>Vagrantは<a target="_blank" rel="noopener" href="http://www.vagrantup.com/downloads.html">ダウンロード</a>ページから、最新バージョンの<a target="_blank" rel="noopener" href="https://dl.bintray.com/mitchellh/vagrant/vagrant_1.6.3.msi">1.6.3</a>をダウンロードしてインストーラーを実行します。</p>
 <p>インストールディレクトリは、以下の場所に指定します。</p>
 <figure class="highlight taggerscript"><table><tr><td class="code"><pre><span class="line">C:<span class="symbol">\o</span>pt<span class="symbol">\H</span>ashiCorp<span class="symbol">\V</span>agrant</span><br></pre></td></tr></table></figure>
 
-<p>Windows版のVagrantには、<a href="ttp://www.mingw.org/">MinGW</a>,<a href="https://code.google.com/p/mintty/" target="_blank" rel="noopener">Mintty</a>,<a href="http://rubyinstaller.org/" target="_blank" rel="noopener">RubyInstaller</a>が同梱されています。</p>
+<p>Windows版のVagrantには、<a href="ttp://www.mingw.org/">MinGW</a>,<a target="_blank" rel="noopener" href="https://code.google.com/p/mintty/">Mintty</a>,<a target="_blank" rel="noopener" href="http://rubyinstaller.org/">RubyInstaller</a>が同梱されています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\opt\HashiCorp\Vagrant\embedded</span><br></pre></td></tr></table></figure>
 
 <p>Windowsなので仕方なく再起動すると、PATHが通って使えるようになります。</p>
@@ -270,23 +237,23 @@
 <p>起動後ホームディレクトリに移動できるように、ショートカット作成を作成して、プロパティのリンク先にloginを追加します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\opt\HashiCorp\Vagrant\embedded\bin\mintty.exe /bin/bash --login</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://hayachi617.blogspot.jp/2013/09/windows8-provargrant.html" target="_blank" rel="noopener">Windows8 Proにvargrantを入れてみる(その１)</a>を参考に、<br>作成したショートカットからMinttyを起動して、.minttyrcの設定をします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat &lt;&lt; __EOF__ &gt; ~/.minttyrc</span><br><span class="line">BoldAsFont=no</span><br><span class="line">Locale=ja_JP</span><br><span class="line">Charset=UTF-8</span><br><span class="line">FontHeight=12</span><br><span class="line">Columns=100</span><br><span class="line">Rows=34</span><br><span class="line">Transparency=medium</span><br><span class="line">Term=xterm-256color</span><br><span class="line">RightClickAction=paste</span><br><span class="line">OpaqueWhenFocused=no</span><br><span class="line">PgUpDnScroll=yes</span><br><span class="line">__EOF__</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="http://hayachi617.blogspot.jp/2013/09/windows8-provargrant.html">Windows8 Proにvargrantを入れてみる(その１)</a>を参考に、<br>作成したショートカットからMinttyを起動して、.minttyrcの設定をします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat &lt;&lt; <span class="string">__EOF__ &gt; ~/.minttyrc</span></span><br><span class="line"><span class="string">BoldAsFont=no</span></span><br><span class="line"><span class="string">Locale=ja_JP</span></span><br><span class="line"><span class="string">Charset=UTF-8</span></span><br><span class="line"><span class="string">FontHeight=12</span></span><br><span class="line"><span class="string">Columns=100</span></span><br><span class="line"><span class="string">Rows=34</span></span><br><span class="line"><span class="string">Transparency=medium</span></span><br><span class="line"><span class="string">Term=xterm-256color</span></span><br><span class="line"><span class="string">RightClickAction=paste</span></span><br><span class="line"><span class="string">OpaqueWhenFocused=no</span></span><br><span class="line"><span class="string">PgUpDnScroll=yes</span></span><br><span class="line"><span class="string">__EOF__</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p>Vagrantfileを配置する作業ディレクトリを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/vagrant_apps/ubuntu-14.04</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
 
-<h3 id="boxのダウンロード"><a href="#boxのダウンロード" class="headerlink" title="boxのダウンロード"></a>boxのダウンロード</h3><p>Vagrantのboxは、<a href="/tags/Docker/">Docker</a>でお世話になっている、phusionの<a href="https://github.com/phusion/open-vagrant-boxes" target="_blank" rel="noopener">open-vagrant-boxes</a>を使用します。</p>
+<h3 id="boxのダウンロード"><a href="#boxのダウンロード" class="headerlink" title="boxのダウンロード"></a>boxのダウンロード</h3><p>Vagrantのboxは、<a href="/tags/Docker/">Docker</a>でお世話になっている、phusionの<a target="_blank" rel="noopener" href="https://github.com/phusion/open-vagrant-boxes">open-vagrant-boxes</a>を使用します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant init phusion/ubuntu-14.04-amd64</span><br><span class="line">A `Vagrantfile` has been placed <span class="keyword">in</span> this directory. You are now</span><br><span class="line">ready to `vagrant up` your first virtual environment! Please <span class="built_in">read</span></span><br><span class="line">the comments <span class="keyword">in</span> the Vagrantfile as well as documentation on</span><br><span class="line">`vagrantup.com` <span class="keyword">for</span> more information on using Vagrant.</span><br></pre></td></tr></table></figure>
 
 <p>リソースが少ないので、CPUコアを1に指定します。</p>
-<figure class="highlight ruby"><figcaption><span>~/vagrant_apps/ubuntu14.04/Vagrantfile</span></figcaption><table><tr><td class="code"><pre><span class="line">VAGRANTFILE_API_VERSION = <span class="string">"2"</span></span><br><span class="line"></span><br><span class="line">Vagrant.configure(VAGRANTFILE_API_VERSION) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.provider <span class="string">"virtualbox"</span> <span class="keyword">do</span> <span class="params">|vb|</span></span><br><span class="line">    vb.customize [<span class="string">"modifyvm"</span>, <span class="symbol">:id</span>, <span class="string">"--cpus"</span>, <span class="string">"1"</span>]</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><figcaption><span>~/vagrant_apps/ubuntu14.04/Vagrantfile</span></figcaption><table><tr><td class="code"><pre><span class="line">VAGRANTFILE_API_VERSION = <span class="string">&quot;2&quot;</span></span><br><span class="line"></span><br><span class="line">Vagrant.configure(VAGRANTFILE_API_VERSION) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  config.vm.provider <span class="string">&quot;virtualbox&quot;</span> <span class="keyword">do</span> <span class="params">|vb|</span></span><br><span class="line">    vb.customize [<span class="string">&quot;modifyvm&quot;</span>, <span class="symbol">:id</span>, <span class="string">&quot;--cpus&quot;</span>, <span class="string">&quot;1&quot;</span>]</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
 <p><code>vagrant up</code>しまず。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagran up</span><br></pre></td></tr></table></figure>
 
 <h3 id="MinGWのパッケージを追加"><a href="#MinGWのパッケージを追加" class="headerlink" title="MinGWのパッケージを追加"></a>MinGWのパッケージを追加</h3><p>VagrantでインストールされるMinGWには、viやsshが含まれていないため、MinGWをインストールした後コピーして使います。</p>
-<p><a href="http://www.mingw.org/" target="_blank" rel="noopener">MinGW</a>から、mingw-get-setup.exeをダウンロードして実行します。以下の場所にインストールします。</p>
+<p><a target="_blank" rel="noopener" href="http://www.mingw.org/">MinGW</a>から、mingw-get-setup.exeをダウンロードして実行します。以下の場所にインストールします。</p>
 <figure class="highlight dos"><table><tr><td class="code"><pre><span class="line"><span class="function">C://<span class="title">opt</span>/<span class="title">MinGW</span></span></span><br></pre></td></tr></table></figure>
 
 <p>Minttyを起動してMinGWの中身を、<code>Vagrant/embedded</code>にコピーして不足しているパッケージを追加します。</p>
@@ -296,10 +263,10 @@
 
 <p>mingw-getの設定ファイルを編集し、MSYSのPATHをVagrantにコピーした場所に指定します。</p>
 <p>defaults.xml</p>
-<figure class="highlight xml"><figcaption><span>C:\opt\HashiCorp\Vagrant\embedded\var\lib\mingw-get\data\defaults.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">&lt;sysroot subsystem="MSYS" path="%R/msys/1.0" /&gt;</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">"MSYS"</span> <span class="attr">path</span>=<span class="string">"/opt/HashiCorp/Vagrant/embedded"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><figcaption><span>C:\opt\HashiCorp\Vagrant\embedded\var\lib\mingw-get\data\defaults.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">&lt;sysroot subsystem=&quot;MSYS&quot; path=&quot;%R/msys/1.0&quot; /&gt;</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">&quot;MSYS&quot;</span> <span class="attr">path</span>=<span class="string">&quot;/opt/HashiCorp/Vagrant/embedded&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>profile.xml</p>
-<figure class="highlight xml"><figcaption><span>C:\opt\HashiCorp\Vagrant\embedded\var\lib\mingw-get\data\profile.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">&lt;sysroot subsystem="MSYS" path="%R/msys/1.0" /&gt;</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">"MSYS"</span> <span class="attr">path</span>=<span class="string">"/opt/HashiCorp/Vagrant/embedded"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><figcaption><span>C:\opt\HashiCorp\Vagrant\embedded\var\lib\mingw-get\data\profile.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">&lt;sysroot subsystem=&quot;MSYS&quot; path=&quot;%R/msys/1.0&quot; /&gt;</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">&quot;MSYS&quot;</span> <span class="attr">path</span>=<span class="string">&quot;/opt/HashiCorp/Vagrant/embedded&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>min-getの更新をします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /c/opt/HashiCorp/Vagrant/embedded/var/lib/mingw-get/data/</span><br><span class="line">$ mingw-get update</span><br><span class="line">$ mingw-get upgrade</span><br></pre></td></tr></table></figure>
@@ -311,7 +278,7 @@
 <figure class="highlight bash"><figcaption><span>~/.bash_profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/c/Program\ Files/Oracle/VirtualBox/:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
 
 <p>vimのエイリアスを設定します。</p>
-<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> vi=<span class="string">'vim'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> vi=<span class="string">&#x27;vim&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>環境設定ファイルを再読込します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">source</span> ~/.bash_profile</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
@@ -323,20 +290,18 @@
 <p>SSHでVagrantのVMにログインします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh trusty</span><br><span class="line">Welcome to Ubuntu 14.04 LTS (GNU/Linux 3.13.0-24-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line">Last login: Tue Apr 22 19:47:09 2014 from 10.0.2.2</span><br><span class="line">vagrant@ubuntu-14:~$</span><br></pre></td></tr></table></figure>
 
-<h3 id="Git-for-Windows"><a href="#Git-for-Windows" class="headerlink" title="Git for Windows"></a>Git for Windows</h3><p><a href="http://msysgit.github.io/" target="_blank" rel="noopener">Git for Windows</a>から最新バージョンの<a href="https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe" target="_blank" rel="noopener">1.9.4</a>をダウンロードしてインストールします。</p>
+<h3 id="Git-for-Windows"><a href="#Git-for-Windows" class="headerlink" title="Git for Windows"></a>Git for Windows</h3><p><a target="_blank" rel="noopener" href="http://msysgit.github.io/">Git for Windows</a>から最新バージョンの<a target="_blank" rel="noopener" href="https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe">1.9.4</a>をダウンロードしてインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">c:\opt\Git</span><br></pre></td></tr></table></figure>
 
 <p>MinGWから、WindowsにインストールしたGitを使えるようにするため、以下の設定をします。</p>
 <ul>
 <li><p>Adjusting your PATH environment</p>
-<ul>
-<li>Use Git from Windows Command Prompt</li>
-</ul>
+</li>
+<li><p>Use Git from Windows Command Prompt</p>
 </li>
 <li><p>Choosing the SSH executable</p>
-<ul>
-<li>Use OpenSSH</li>
-</ul>
+</li>
+<li><p>Use OpenSSH</p>
 </li>
 <li><p>Checieout as-is, commit Unix-style line endings</p>
 </li>
@@ -365,8 +330,8 @@
               <a href="/tags/Windows/" rel="tag"># Windows</a>
               <a href="/tags/Vagrant/" rel="tag"># Vagrant</a>
               <a href="/tags/PackerOVA/" rel="tag"># PackerOVA</a>
-              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/VirtualBox/" rel="tag"># VirtualBox</a>
+              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/MinGW/" rel="tag"># MinGW</a>
               <a href="/tags/Mintty/" rel="tag"># Mintty</a>
               <a href="/tags/Git/" rel="tag"># Git</a>
@@ -393,7 +358,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -444,7 +408,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualBoxのインストール"><span class="nav-number">1.</span> <span class="nav-text">VirtualBoxのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrantのインストール"><span class="nav-number">2.</span> <span class="nav-text">Vagrantのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mintty"><span class="nav-number">3.</span> <span class="nav-text">Mintty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">4.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boxのダウンロード"><span class="nav-number">5.</span> <span class="nav-text">boxのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MinGWのパッケージを追加"><span class="nav-number">6.</span> <span class="nav-text">MinGWのパッケージを追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-profileと-bashrc"><span class="nav-number">7.</span> <span class="nav-text">.bash_profileと.bashrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHの設定"><span class="nav-number">8.</span> <span class="nav-text">SSHの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-for-Windows"><span class="nav-number">9.</span> <span class="nav-text">Git for Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ディレクトリ構成"><span class="nav-number">10.</span> <span class="nav-text">ディレクトリ構成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">11.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualBox%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">VirtualBoxのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrant%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">Vagrantのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mintty"><span class="nav-number">3.</span> <span class="nav-text">Mintty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#box%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89"><span class="nav-number">5.</span> <span class="nav-text">boxのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MinGW%E3%81%AE%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%82%92%E8%BF%BD%E5%8A%A0"><span class="nav-number">6.</span> <span class="nav-text">MinGWのパッケージを追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-profile%E3%81%A8-bashrc"><span class="nav-number">7.</span> <span class="nav-text">.bash_profileと.bashrc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">8.</span> <span class="nav-text">SSHの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-for-Windows"><span class="nav-number">9.</span> <span class="nav-text">Git for Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E6%88%90"><span class="nav-number">10.</span> <span class="nav-text">ディレクトリ構成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">11.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -476,10 +440,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -504,9 +471,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -546,13 +513,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

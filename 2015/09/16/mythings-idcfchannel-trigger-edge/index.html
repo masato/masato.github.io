@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="myThingsの組合せとしてIDCFをトリガーに使う場合、何かしらの条件を設定してその条件を満たしているか判定する必要があります。大きく分けてRaspberry Piなどのコネクテッドデバイス側か、IDCFチャンネルサーバーがあるクラウド側でプログラムを実行します。今回は計測したセンサーデータが閾値を超えた場合に、トリガー発火条件を満たしているか判定するコードをRasbperry Pi側で実装し">
 <meta property="og:type" content="article">
 <meta property="og:title" content="myThingsをはじめよう - Part7: トリガーの閾値監視をRaspberry Piで行う">
 <meta property="og:url" content="https://masato.github.io/2015/09/16/mythings-idcfchannel-trigger-edge/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="myThingsの組合せとしてIDCFをトリガーに使う場合、何かしらの条件を設定してその条件を満たしているか判定する必要があります。大きく分けてRaspberry Piなどのコネクテッドデバイス側か、IDCFチャンネルサーバーがあるクラウド側でプログラムを実行します。今回は計測したセンサーデータが閾値を超えた場合に、トリガー発火条件を満たしているか判定するコードをRasbperry Pi側で実装し">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/09/16/mythings-idcfchannel-trigger-edge/gmail-action-created.png">
 <meta property="og:image" content="https://masato.github.io/2015/09/16/mythings-idcfchannel-trigger-edge/gmail-received.png">
 <meta property="article:published_time" content="2015-09-16T05:40:21.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.791Z">
+<meta property="article:modified_time" content="2015-09-16T05:40:21.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="RaspberryPi">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>myThingsをはじめよう - Part7: トリガーの閾値監視をRaspberry Piで行う | masato's blog</title>
+  <title>myThingsをはじめよう - Part7: トリガーの閾値監視をRaspberry Piで行う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,22 +193,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 16 2015 14:40:21" itemprop="dateCreated datePublished" datetime="2015-09-16T14:40:21+09:00">Sep 16 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -255,46 +222,46 @@
 
       
         <p>myThingsの組合せとしてIDCFをトリガーに使う場合、何かしらの条件を設定してその条件を満たしているか判定する必要があります。大きく分けてRaspberry Piなどのコネクテッドデバイス側か、IDCFチャンネルサーバーがあるクラウド側でプログラムを実行します。今回は計測したセンサーデータが閾値を超えた場合に、トリガー発火条件を満たしているか判定するコードをRasbperry Pi側で実装してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="はじめに"><a href="#はじめに" class="headerlink" title="はじめに"></a>はじめに</h2><h3 id="作業の流れ"><a href="#作業の流れ" class="headerlink" title="作業の流れ"></a>作業の流れ</h3><p>以下の手順で作業を進めていきます。</p>
 <ol>
 <li>Raspberry PiでBME280センサーデータを取得する</li>
 <li>Raspberry Piで閾値監視をする</li>
-<li>Raspberry PiからIDCFチャンネルサーバーにHTTP POST <code>/data/{triggerのuuid}</code>する</li>
+<li>Raspberry PiからIDCFチャンネルサーバーにHTTP POST <code>/data/&#123;triggerのuuid&#125;</code>する</li>
 <li>myThingsアプリから組合せを「手動実行」する</li>
 <li>Gmailにメールが届く</li>
 </ol>
-<h3 id="Raspberry-PiとBME280環境センサー設定"><a href="#Raspberry-PiとBME280環境センサー設定" class="headerlink" title="Raspberry PiとBME280環境センサー設定"></a>Raspberry PiとBME280環境センサー設定</h3><p>あらかじめ<a href="/2015/07/16/raspberrypi-2-headless-install-2/">Part2</a>の手順でRaspberry Piと<a href="https://www.switch-science.com/catalog/2236/" target="_blank" rel="noopener">BME280環境センサモジュール</a>のセットアップを行います。</p>
+<h3 id="Raspberry-PiとBME280環境センサー設定"><a href="#Raspberry-PiとBME280環境センサー設定" class="headerlink" title="Raspberry PiとBME280環境センサー設定"></a>Raspberry PiとBME280環境センサー設定</h3><p>あらかじめ<a href="/2015/07/16/raspberrypi-2-headless-install-2/">Part2</a>の手順でRaspberry Piと<a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2236/">BME280環境センサモジュール</a>のセットアップを行います。</p>
 <p>すでにサンプルコードをダウンロード済の場合は<code>git clone</code>したディレクトリに移動して最新のコードを取得します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/python_apps/bme280-meshblu-pybme280-meshblu-py</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
 
 <p>あたらしくダウンロードする場合はディレクトリを作成して<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/python_apps</span><br><span class="line">$ <span class="built_in">cd</span> ~/python_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/IDCFChannel/bme280-meshblu-py.git</span><br><span class="line">$ <span class="built_in">cd</span> bme280-meshblu-py</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/IDCFChannel/bme280-meshblu-py/blob/master/bme280_sample.py" target="_blank" rel="noopener">bme280_sample.py</a>のPythonプログラムを実行してセンサーからデータを取得できることを確認します。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/bme280-meshblu-py/blob/master/bme280_sample.py">bme280_sample.py</a>のPythonプログラムを実行してセンサーからデータを取得できることを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo python bme280_sample.py</span><br><span class="line">temp : 27.06  ℃</span><br><span class="line">pressure : 1006.96 hPa</span><br><span class="line">hum :  57.78 ％</span><br></pre></td></tr></table></figure>
 
 <h3 id="IDCFチャンネルサーバーでtrigger-1の確認"><a href="#IDCFチャンネルサーバーでtrigger-1の確認" class="headerlink" title="IDCFチャンネルサーバーでtrigger-1の確認"></a>IDCFチャンネルサーバーでtrigger-1の確認</h3><p>IDCFクラウドの仮想マシンにログインします。IDCFチャンネルサーバーが起動しているディレクトリに移動して<code>list</code>コマンドを実行します。使用する<code>trigger-1</code>のtokenとuuidを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose/</span><br><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line">...</span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ d74ebedf │ 21c83792-b25e-4ae7-a627-714af57a1a4b │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <h3 id="Raspberry-Piでコードの準備"><a href="#Raspberry-Piでコードの準備" class="headerlink" title="Raspberry Piでコードの準備"></a>Raspberry Piでコードの準備</h3><p>Rasbpberry Piにログインしてconfig.pyを編集します。IDCFチャンネルサーバーで確認した<code>trigger-1</code>の値や、IDCFチャンネルサーバーのIPアドレスを設定します。actionのuuidなどは今回は使用しません。<code>THRESHOLD</code>は閾値監視で使う気温の閾値になります。</p>
-<figure class="highlight python"><figcaption><span>config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">"IDCF_CHANNEL_URL"</span>: <span class="string">"210.140.162.58"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_1_UUID"</span>: <span class="string">"21c83792-b25e-4ae7-a627-714af57a1a4b"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_1_TOKEN"</span>: <span class="string">"d74ebedf"</span>,</span><br><span class="line">     <span class="string">"ACTION_1_UUID"</span>: <span class="string">""</span>,</span><br><span class="line">     <span class="string">"ACTION_2_UUID"</span>: <span class="string">""</span>,</span><br><span class="line">     <span class="string">"THRESHOLD"</span>: <span class="number">27.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>: <span class="string">&quot;210.140.162.58&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_1_UUID&quot;</span>: <span class="string">&quot;21c83792-b25e-4ae7-a627-714af57a1a4b&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>: <span class="string">&quot;d74ebedf&quot;</span>,</span><br><span class="line">     <span class="string">&quot;ACTION_1_UUID&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">     <span class="string">&quot;ACTION_2_UUID&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">     <span class="string">&quot;THRESHOLD&quot;</span>: <span class="number">27.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="myThingsアプリで組合せの作成"><a href="#myThingsアプリで組合せの作成" class="headerlink" title="myThingsアプリで組合せの作成"></a>myThingsアプリで組合せの作成</h3><p>IDCFをトリガーに、Gmailをアクションにして組合せを作成します。作り方は<a href="/2015/09/01/mythings-idcfchannel-trigger-http/">Part6の「Gmail」のアクションを実行する</a>と同じです。</p>
 <p><img src="/2015/09/16/mythings-idcfchannel-trigger-edge/gmail-action-created.png" alt="gmail-action-created.png"></p>
 <h2 id="Raspberry-Pi側で閾値監視"><a href="#Raspberry-Pi側で閾値監視" class="headerlink" title="Raspberry Pi側で閾値監視"></a>Raspberry Pi側で閾値監視</h2><p>Raspberry Pi上でセンサーデータを取得するプログラムの中で閾値監視も同時に行うパターンです。クラウド側に追加のプログラムが不要なため、単純な閾値監視やテストに向いています。ただしRaspberry Piが複数になった場合に、閾値監視の条件を変更した後のプログラムのデプロイが煩雑になります。</p>
-<h3 id="Raspberry-Pi側のプログラム"><a href="#Raspberry-Pi側のプログラム" class="headerlink" title="Raspberry Pi側のプログラム"></a>Raspberry Pi側のプログラム</h3><p>最初にプログラムで利用する<a href="http://www.python-requests.org/en/latest/" target="_blank" rel="noopener">requests</a>パッケージをインストールします。</p>
+<h3 id="Raspberry-Pi側のプログラム"><a href="#Raspberry-Pi側のプログラム" class="headerlink" title="Raspberry Pi側のプログラム"></a>Raspberry Pi側のプログラム</h3><p>最初にプログラムで利用する<a target="_blank" rel="noopener" href="http://www.python-requests.org/en/latest/">requests</a>パッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install requests</span><br></pre></td></tr></table></figure>
 
-<p><code>git clone</code>したディレクトリに移動して、<a href="https://github.com/IDCFChannel/bme280-meshblu-py/blob/master/bme280_data.py" target="_blank" rel="noopener">bme280_data.py</a>を使います。</p>
-<figure class="highlight python"><figcaption><span>bme280_data.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># HTTP</span></span><br><span class="line">    url = <span class="string">"http://&#123;0&#125;/data/&#123;1&#125;"</span>.format(conf[<span class="string">"IDCF_CHANNEL_URL"</span>],</span><br><span class="line">                                       conf[<span class="string">"TRIGGER_1_UUID"</span>])</span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">"meshblu_auth_uuid"</span>: conf[<span class="string">"TRIGGER_1_UUID"</span>],</span><br><span class="line">        <span class="string">"meshblu_auth_token"</span>: conf[<span class="string">"TRIGGER_1_TOKEN"</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    payload = &#123;<span class="string">"trigger"</span>:<span class="string">"on"</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             print(<span class="string">"temperature: &#123;&#125;"</span>.format(retval[<span class="string">"temperature"</span>]))</span><br><span class="line">             <span class="keyword">if</span> float(retval[<span class="string">"temperature"</span>]) &gt; conf[<span class="string">"THRESHOLD"</span>]:</span><br><span class="line">                 print(<span class="string">"threshold over: &#123;0&#125; &gt; &#123;1&#125;"</span>.format(float(retval[<span class="string">"temperature"</span>]),</span><br><span class="line">                                     conf[<span class="string">"THRESHOLD"</span>]))</span><br><span class="line">                 r = requests.post(url, headers=headers, data=payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p><code>git clone</code>したディレクトリに移動して、<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/bme280-meshblu-py/blob/master/bme280_data.py">bme280_data.py</a>を使います。</p>
+<figure class="highlight python"><figcaption><span>bme280_data.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span>():</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># HTTP</span></span><br><span class="line">    url = <span class="string">&quot;http://&#123;0&#125;/data/&#123;1&#125;&quot;</span>.<span class="built_in">format</span>(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>],</span><br><span class="line">                                       conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>])</span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">&quot;meshblu_auth_uuid&quot;</span>: conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>],</span><br><span class="line">        <span class="string">&quot;meshblu_auth_token&quot;</span>: conf[<span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>]</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    payload = &#123;<span class="string">&quot;trigger&quot;</span>:<span class="string">&quot;on&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             print(<span class="string">&quot;temperature: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(retval[<span class="string">&quot;temperature&quot;</span>]))</span><br><span class="line">             <span class="keyword">if</span> <span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]) &gt; conf[<span class="string">&quot;THRESHOLD&quot;</span>]:</span><br><span class="line">                 print(<span class="string">&quot;threshold over: &#123;0&#125; &gt; &#123;1&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]),</span><br><span class="line">                                     conf[<span class="string">&quot;THRESHOLD&quot;</span>]))</span><br><span class="line">                 r = requests.post(url, headers=headers, data=payload)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>センサーデータの閾値を監視するコードは以下です。config.pyに設定した<code>THRESHOLD</code>の値とセンサーから取得した気温(temperature)を比較します。<code>THRESHOLD</code>は<code>27.0</code>に設定しているので気温が27.0より高い場合にトリガーの発火条件となります。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    retval = sensing()</span><br><span class="line">    <span class="keyword">if</span> retval:</span><br><span class="line">         print(<span class="string">"temperature: &#123;&#125;"</span>.format(retval[<span class="string">"temperature"</span>]))</span><br><span class="line">         <span class="keyword">if</span> float(retval[<span class="string">"temperature"</span>]) &gt; conf[<span class="string">"THRESHOLD"</span>]:</span><br><span class="line">             print(<span class="string">"threshold over: &#123;0&#125; &gt; &#123;1&#125;"</span>.format(float(retval[<span class="string">"temperature"</span>]),</span><br><span class="line">                                 conf[<span class="string">"THRESHOLD"</span>]))</span><br><span class="line">             r = requests.post(url, headers=headers, data=payload)</span><br><span class="line">    sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    retval = sensing()</span><br><span class="line">    <span class="keyword">if</span> retval:</span><br><span class="line">         print(<span class="string">&quot;temperature: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(retval[<span class="string">&quot;temperature&quot;</span>]))</span><br><span class="line">         <span class="keyword">if</span> <span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]) &gt; conf[<span class="string">&quot;THRESHOLD&quot;</span>]:</span><br><span class="line">             print(<span class="string">&quot;threshold over: &#123;0&#125; &gt; &#123;1&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]),</span><br><span class="line">                                 conf[<span class="string">&quot;THRESHOLD&quot;</span>]))</span><br><span class="line">             r = requests.post(url, headers=headers, data=payload)</span><br><span class="line">    sleep(<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
 
-<p>トリガーの発火条件を満たしたことをmyThingsサーバーに伝えるため、IDCFチャンネルサーバーにHTTP POSTします。IDCFチャンネルサーバーのIPアドレスに続けて<code>/data/{trigger-1のuuid</code>を指定します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">"http://&#123;0&#125;/data/&#123;1&#125;"</span>.format(conf[<span class="string">"IDCF_CHANNEL_URL"</span>],</span><br><span class="line">                                   conf[<span class="string">"TRIGGER_1_UUID"</span>])</span><br></pre></td></tr></table></figure>
+<p>トリガーの発火条件を満たしたことをmyThingsサーバーに伝えるため、IDCFチャンネルサーバーにHTTP POSTします。IDCFチャンネルサーバーのIPアドレスに続けて<code>/data/&#123;trigger-1のuuid</code>を指定します。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">&quot;http://&#123;0&#125;/data/&#123;1&#125;&quot;</span>.<span class="built_in">format</span>(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>],</span><br><span class="line">                                   conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>])</span><br></pre></td></tr></table></figure>
 
 <p>完成したURLに認証用のHTTPヘッダを追加してHTTP POSTします。POSTするデータは現在IDCFチャンネルのトリガーからアクションに値として渡すことができないので、なくても構いません。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http://210.140.162.58/data/21c83792-b25e-4ae7-a627-714af57a1a4b</span><br></pre></td></tr></table></figure>
@@ -305,12 +272,12 @@
 <p>閾値を超えたらCtrl-Cを押してプログラムを終了させます。</p>
 <p>myThingsアプリの組合せを開いて「手動実行」ボタンを押します。トリガーの発火条件を満たしているのでGmailアクションが実行され、メールが届きます。</p>
 <p><img src="/2015/09/16/mythings-idcfchannel-trigger-edge/gmail-received.png" alt="gmail-received.png"></p>
-<h2 id="dataにPOSTするとMongoDBにレコードが作成される"><a href="#dataにPOSTするとMongoDBにレコードが作成される" class="headerlink" title="/dataにPOSTするとMongoDBにレコードが作成される"></a>/dataにPOSTするとMongoDBにレコードが作成される</h2><p>トリガー発火の条件を満たして<code>/data/{trigger-1のuuid}</code>にHTTP POSTすると、IDCFチャンネルサーバーのMongoDBにレコードが作成されます。</p>
+<h2 id="dataにPOSTするとMongoDBにレコードが作成される"><a href="#dataにPOSTするとMongoDBにレコードが作成される" class="headerlink" title="/dataにPOSTするとMongoDBにレコードが作成される"></a>/dataにPOSTするとMongoDBにレコードが作成される</h2><p>トリガー発火の条件を満たして<code>/data/&#123;trigger-1のuuid&#125;</code>にHTTP POSTすると、IDCFチャンネルサーバーのMongoDBにレコードが作成されます。</p>
 <p>IDCFチャンネルサーバーが実行されているディレクトリに移動してから、MongoDBのコンテナにアクセスします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker <span class="built_in">exec</span> -it meshblucompose_mongo_1 mongo skynet</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
 
 <p><code>data</code>コレクションの最新の値を確認します。trigger-1のuuidを持ち、先ほどトリガー発火条件を満たした時刻にHTTP POSTしたレコードが登録されています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(1)</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55fa682d06986a0e000058da"</span>), <span class="string">"trigger"</span> : <span class="string">"on"</span>, <span class="string">"ipAddress"</span> : <span class="string">"210.xxx.xxx.xxx"</span>, <span class="string">"uuid"</span> : <span class="string">"21c83792-b25e-4ae7-a627-714af57a1a4b"</span>, <span class="string">"timestamp"</span> : <span class="string">"2015-09-17T07:13:49.438Z"</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(1)</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55fa682d06986a0e000058da&quot;</span>), <span class="string">&quot;trigger&quot;</span> : <span class="string">&quot;on&quot;</span>, <span class="string">&quot;ipAddress&quot;</span> : <span class="string">&quot;210.xxx.xxx.xxx&quot;</span>, <span class="string">&quot;uuid&quot;</span> : <span class="string">&quot;21c83792-b25e-4ae7-a627-714af57a1a4b&quot;</span>, <span class="string">&quot;timestamp&quot;</span> : <span class="string">&quot;2015-09-17T07:13:49.438Z&quot;</span> &#125;</span><br></pre></td></tr></table></figure>
 
 <p>myThingsアプリの組合せで指定したトリガーのレコードが作成されているか、myThingsサーバーは15分間隔で<code>data</code>コレクションを確認しています。myThingsアプリの「手動実行」ボタンを押した場合はすぐに確認します。</p>
 <p>前回確認した時刻より新しいレコードが見つかると、トリガー発火条件を満たしたと判断してmyThingsサーバーは設定されたアクションを実行します。</p>
@@ -352,7 +319,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -403,7 +369,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#はじめに"><span class="nav-number">1.</span> <span class="nav-text">はじめに</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作業の流れ"><span class="nav-number">1.1.</span> <span class="nav-text">作業の流れ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-PiとBME280環境センサー設定"><span class="nav-number">1.2.</span> <span class="nav-text">Raspberry PiとBME280環境センサー設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFチャンネルサーバーでtrigger-1の確認"><span class="nav-number">1.3.</span> <span class="nav-text">IDCFチャンネルサーバーでtrigger-1の確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Piでコードの準備"><span class="nav-number">1.4.</span> <span class="nav-text">Raspberry Piでコードの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#myThingsアプリで組合せの作成"><span class="nav-number">1.5.</span> <span class="nav-text">myThingsアプリで組合せの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi側で閾値監視"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi側で閾値監視</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi側のプログラム"><span class="nav-number">2.1.</span> <span class="nav-text">Raspberry Pi側のプログラム</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#トリガーの発火とアクションの実行"><span class="nav-number">2.2.</span> <span class="nav-text">トリガーの発火とアクションの実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dataにPOSTするとMongoDBにレコードが作成される"><span class="nav-number">3.</span> <span class="nav-text">&#x2F;dataにPOSTするとMongoDBにレコードが作成される</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB"><span class="nav-number">1.</span> <span class="nav-text">はじめに</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E6%A5%AD%E3%81%AE%E6%B5%81%E3%82%8C"><span class="nav-number">1.1.</span> <span class="nav-text">作業の流れ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi%E3%81%A8BME280%E7%92%B0%E5%A2%83%E3%82%BB%E3%83%B3%E3%82%B5%E3%83%BC%E8%A8%AD%E5%AE%9A"><span class="nav-number">1.2.</span> <span class="nav-text">Raspberry PiとBME280環境センサー設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCF%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A7trigger-1%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">1.3.</span> <span class="nav-text">IDCFチャンネルサーバーでtrigger-1の確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi%E3%81%A7%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E6%BA%96%E5%82%99"><span class="nav-number">1.4.</span> <span class="nav-text">Raspberry Piでコードの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#myThings%E3%82%A2%E3%83%97%E3%83%AA%E3%81%A7%E7%B5%84%E5%90%88%E3%81%9B%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.5.</span> <span class="nav-text">myThingsアプリで組合せの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi%E5%81%B4%E3%81%A7%E9%96%BE%E5%80%A4%E7%9B%A3%E8%A6%96"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi側で閾値監視</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi%E5%81%B4%E3%81%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">2.1.</span> <span class="nav-text">Raspberry Pi側のプログラム</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%88%E3%83%AA%E3%82%AC%E3%83%BC%E3%81%AE%E7%99%BA%E7%81%AB%E3%81%A8%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E5%AE%9F%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">トリガーの発火とアクションの実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data%E3%81%ABPOST%E3%81%99%E3%82%8B%E3%81%A8MongoDB%E3%81%AB%E3%83%AC%E3%82%B3%E3%83%BC%E3%83%89%E3%81%8C%E4%BD%9C%E6%88%90%E3%81%95%E3%82%8C%E3%82%8B"><span class="nav-number">3.</span> <span class="nav-text">&#x2F;dataにPOSTするとMongoDBにレコードが作成される</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -435,10 +401,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -463,9 +432,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -505,13 +474,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

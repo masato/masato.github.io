@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="OpenRestyを使ったDocker用のHTTP Proxyができあがったので、ようやく本来の目的であるDokcerを使ったRStudio Serverの学習環境のデプロイをする準備が整いました。開発環境で作成したDockerイメージを、IDCFオブジェクトストレージをバックエンドに設定したdocker-registryにpushして、本番環境のUbuntu14.04にDocker1.1.2から">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerでデータ分析環境 - Part6: Ubuntu14.04のDockerにRStudio ServerとOpenRestyをデプロイ">
 <meta property="og:url" content="https://masato.github.io/2014/08/09/docker-analytic-sandbox-rstudio-openresty-deploy/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="OpenRestyを使ったDocker用のHTTP Proxyができあがったので、ようやく本来の目的であるDokcerを使ったRStudio Serverの学習環境のデプロイをする準備が整いました。開発環境で作成したDockerイメージを、IDCFオブジェクトストレージをバックエンドに設定したdocker-registryにpushして、本番環境のUbuntu14.04にDocker1.1.2から">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/08/09/docker-analytic-sandbox-rstudio-openresty-deploy/test-rstudio.png">
 <meta property="article:published_time" content="2014-08-09T03:31:06.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.584Z">
+<meta property="article:modified_time" content="2014-08-09T03:31:06.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="docker-registry">
 <meta property="article:tag" content="AnalyticSandbox">
@@ -57,7 +57,7 @@
   };
 </script>
 
-  <title>Dockerでデータ分析環境 - Part6: Ubuntu14.04のDockerにRStudio ServerとOpenRestyをデプロイ | masato's blog</title>
+  <title>Dockerでデータ分析環境 - Part6: Ubuntu14.04のDockerにRStudio ServerとOpenRestyをデプロイ | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -97,7 +97,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -118,14 +118,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -134,51 +133,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -195,11 +170,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -212,7 +186,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -222,19 +196,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 9 2014 12:31:06" itemprop="dateCreated datePublished" datetime="2014-08-09T12:31:06+09:00">Aug 9 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">OpenRestyを使ったDocker用のHTTP Proxyができあがったので、ようやく本来の目的であるDokcerを使ったRStudio Serverの学習環境のデプロイをする準備が整いました。開発環境で作成したDockerイメージを、IDCFオブジェクトストレージをバックエンドに設定したdocker-registryにpushして、本番環境のUbuntu14.04にDocker1.1.2からpullして使います。</div>
@@ -254,7 +221,7 @@
 </ul>
 <p>OpenRestyを使ったDocker用の<a href="/2014/08/06/docker-reverse-proxy-xipio-openresty-sinatra/">HTTP Proxy</a>ができあがったので、<br>ようやく本来の目的であるDokcerを使った<a href="/2014/07/09/docker-analytic-sandbox-rstudio-server/">RStudio Serverの学習環境</a>のデプロイをする準備が整いました。</p>
 <p>開発環境で作成したDockerイメージを、IDCFオブジェクトストレージをバックエンドに設定したdocker-registryにpushして、本番環境のUbuntu14.04にDocker1.1.2からpullして使います。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 
 <h3 id="docker-registry"><a href="#docker-registry" class="headerlink" title="docker-registry"></a>docker-registry</h3><p>本番環境のDockerホストにデプロイするDockerイメージをdocker-registryにpushします。<br><a href="http://masato.github.io/2014/05/22/idcf-storage-docker-registry/">docker-registry</a>のバックエンドはIDCFオブジェクトストレージを使っています。</p>
@@ -269,14 +236,14 @@
 
 <h3 id="OpenRestyのSSL対応"><a href="#OpenRestyのSSL対応" class="headerlink" title="OpenRestyのSSL対応"></a>OpenRestyのSSL対応</h3><p>この前作成したOpenRestyをSSL対応するようにします。</p>
 <p>Dockerfileでオレオレ証明書の作成を追加します。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/openresty/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM 3scale/openresty</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">RUN useradd --system nginx</span><br><span class="line">ADD nginx.conf /var/www/</span><br><span class="line">ADD openresty.conf /etc/supervisor/conf.d/openresty.conf</span><br><span class="line">RUN sed -i <span class="string">'s/bind 127.0.0.1/bind 0.0.0.0/g'</span> /etc/redis/redis.conf</span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get -y install openssl</span><br><span class="line">RUN <span class="built_in">cd</span> /etc/ssl \</span><br><span class="line"> &amp;&amp; openssl genrsa -out ssl.key 4096 \</span><br><span class="line"> &amp;&amp; openssl req -new -batch -key ssl.key -out ssl.csr \</span><br><span class="line"> &amp;&amp; openssl x509 -req -days 3650 -<span class="keyword">in</span> ssl.csr -signkey ssl.key -out ssl.crt</span><br><span class="line">EXPOSE 80 443 6379</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/openresty/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM 3scale/openresty</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line">RUN useradd --system nginx</span><br><span class="line">ADD nginx.conf /var/www/</span><br><span class="line">ADD openresty.conf /etc/supervisor/conf.d/openresty.conf</span><br><span class="line">RUN sed -i <span class="string">&#x27;s/bind 127.0.0.1/bind 0.0.0.0/g&#x27;</span> /etc/redis/redis.conf</span><br><span class="line">RUN sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get -y install openssl</span><br><span class="line">RUN <span class="built_in">cd</span> /etc/ssl \</span><br><span class="line"> &amp;&amp; openssl genrsa -out ssl.key 4096 \</span><br><span class="line"> &amp;&amp; openssl req -new -batch -key ssl.key -out ssl.csr \</span><br><span class="line"> &amp;&amp; openssl x509 -req -days 3650 -<span class="keyword">in</span> ssl.csr -signkey ssl.key -out ssl.crt</span><br><span class="line">EXPOSE 80 443 6379</span><br></pre></td></tr></table></figure>
 
-<p>NginxでSSLのリバースプロキシをする場合、<code>RStudio Server</code>のようなセキュリティチェックが厳しいアプリはちょっと嵌まりました。<br><a href="http://www.cyberciti.biz/faq/howto-linux-unix-setup-nginx-ssl-proxy/" target="_blank" rel="noopener">nginx: Setup SSL Reverse Proxy (Load Balanced SSL Proxy)</a>を参考にして設定ファイルを作成しました。<code>proxy_set_header</code>や<code>add_header</code>が必要になります。</p>
+<p>NginxでSSLのリバースプロキシをする場合、<code>RStudio Server</code>のようなセキュリティチェックが厳しいアプリはちょっと嵌まりました。<br><a target="_blank" rel="noopener" href="http://www.cyberciti.biz/faq/howto-linux-unix-setup-nginx-ssl-proxy/">nginx: Setup SSL Reverse Proxy (Load Balanced SSL Proxy)</a>を参考にして設定ファイルを作成しました。<code>proxy_set_header</code>や<code>add_header</code>が必要になります。</p>
 <p>80で受けた接続は、443に<code>return 301</code>を返してリダイレクトさせます。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/openresty/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">worker_processes  1;</span><br><span class="line">error_log  /dev/stderr debug;</span><br><span class="line">daemon off;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  256;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">      listen 80;</span><br><span class="line">      <span class="built_in">return</span> 301 https:/<span class="variable">$host</span><span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen  443 ssl deferred;</span><br><span class="line">        client_max_body_size 20M;</span><br><span class="line">        ssl on;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        proxy_buffer_size 64K;</span><br><span class="line">        proxy_buffers 32 48K;</span><br><span class="line">        proxy_busy_buffers_size 256K;</span><br><span class="line">        <span class="comment">### SSL log files ###</span></span><br><span class="line">        <span class="comment">#access_log      /var/log/ssl-access.log;</span></span><br><span class="line">        <span class="comment">#error_log       /var/log/ssl-error.log;</span></span><br><span class="line">        <span class="comment">### SSL cert files ###</span></span><br><span class="line">        ssl_certificate /etc/ssl/ssl.crt;</span><br><span class="line">        ssl_certificate_key /etc/ssl/ssl.key;</span><br><span class="line">        <span class="comment">### Add SSL specific settings here ###</span></span><br><span class="line">        ssl_protocols        SSLv3 TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">        ssl_ciphers RC4:HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        keepalive_timeout    60;</span><br><span class="line">        ssl_session_cache    shared:SSL:10m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        <span class="comment">### force timeouts if one of backend is died ##</span></span><br><span class="line">        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;</span><br><span class="line">        <span class="comment">### Set headers ####</span></span><br><span class="line">        proxy_set_header        Accept-Encoding   <span class="string">""</span>;</span><br><span class="line">        proxy_set_header        Host            <span class="variable">$host</span>;</span><br><span class="line">        proxy_set_header        X-Real-IP       <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header        X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        <span class="comment">### Most PHP, Python, Rails, Java App can use this header ###</span></span><br><span class="line">        <span class="comment">#proxy_set_header X-Forwarded-Proto https;##</span></span><br><span class="line">        <span class="comment">#This is better##</span></span><br><span class="line">        proxy_set_header        X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">        add_header              Front-End-Https   on;</span><br><span class="line">        <span class="comment">### By default we don't want to redirect it ####</span></span><br><span class="line">        proxy_redirect     off;</span><br><span class="line">        location / &#123;</span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$upstream</span> <span class="string">""</span>;</span><br><span class="line">            rewrite_by_lua <span class="string">'</span></span><br><span class="line"><span class="string">               local res = ngx.location.capture("/redis")</span></span><br><span class="line"><span class="string">               if res.status == ngx.HTTP_OK then</span></span><br><span class="line"><span class="string">                  ngx.var.upstream       = res.body</span></span><br><span class="line"><span class="string">               else</span></span><br><span class="line"><span class="string">                  ngx.exit(ngx.HTTP_FORBIDDEN)</span></span><br><span class="line"><span class="string">               end</span></span><br><span class="line"><span class="string">            '</span>;</span><br><span class="line">            proxy_pass http://<span class="variable">$upstream</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location /redis &#123;</span><br><span class="line">             internal;</span><br><span class="line">             <span class="built_in">set</span>            <span class="variable">$redis_key</span> <span class="variable">$host</span>;</span><br><span class="line">             redis_pass     127.0.0.1:6379;</span><br><span class="line">             default_type   text/html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/openresty/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">worker_processes  1;</span><br><span class="line">error_log  /dev/stderr debug;</span><br><span class="line">daemon off;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  256;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">      listen 80;</span><br><span class="line">      <span class="built_in">return</span> 301 https:/$host<span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen  443 ssl deferred;</span><br><span class="line">        client_max_body_size 20M;</span><br><span class="line">        ssl on;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        proxy_buffer_size 64K;</span><br><span class="line">        proxy_buffers 32 48K;</span><br><span class="line">        proxy_busy_buffers_size 256K;</span><br><span class="line">        <span class="comment">### SSL log files ###</span></span><br><span class="line">        <span class="comment">#access_log      /var/log/ssl-access.log;</span></span><br><span class="line">        <span class="comment">#error_log       /var/log/ssl-error.log;</span></span><br><span class="line">        <span class="comment">### SSL cert files ###</span></span><br><span class="line">        ssl_certificate /etc/ssl/ssl.crt;</span><br><span class="line">        ssl_certificate_key /etc/ssl/ssl.key;</span><br><span class="line">        <span class="comment">### Add SSL specific settings here ###</span></span><br><span class="line">        ssl_protocols        SSLv3 TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">        ssl_ciphers RC4:HIGH:!aNULL:!MD5;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        keepalive_timeout    60;</span><br><span class="line">        ssl_session_cache    shared:SSL:10m;</span><br><span class="line">        ssl_session_timeout  10m;</span><br><span class="line">        <span class="comment">### force timeouts if one of backend is died ##</span></span><br><span class="line">        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;</span><br><span class="line">        <span class="comment">### Set headers ####</span></span><br><span class="line">        proxy_set_header        Accept-Encoding   <span class="string">&quot;&quot;</span>;</span><br><span class="line">        proxy_set_header        Host            <span class="variable">$host</span>;</span><br><span class="line">        proxy_set_header        X-Real-IP       <span class="variable">$remote_addr</span>;</span><br><span class="line">        proxy_set_header        X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">        <span class="comment">### Most PHP, Python, Rails, Java App can use this header ###</span></span><br><span class="line">        <span class="comment">#proxy_set_header X-Forwarded-Proto https;##</span></span><br><span class="line">        <span class="comment">#This is better##</span></span><br><span class="line">        proxy_set_header        X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">        add_header              Front-End-Https   on;</span><br><span class="line">        <span class="comment">### By default we don&#x27;t want to redirect it ####</span></span><br><span class="line">        proxy_redirect     off;</span><br><span class="line">        location / &#123;</span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$upstream</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">            rewrite_by_lua <span class="string">&#x27;</span></span><br><span class="line"><span class="string">               local res = ngx.location.capture(&quot;/redis&quot;)</span></span><br><span class="line"><span class="string">               if res.status == ngx.HTTP_OK then</span></span><br><span class="line"><span class="string">                  ngx.var.upstream       = res.body</span></span><br><span class="line"><span class="string">               else</span></span><br><span class="line"><span class="string">                  ngx.exit(ngx.HTTP_FORBIDDEN)</span></span><br><span class="line"><span class="string">               end</span></span><br><span class="line"><span class="string">            &#x27;</span>;</span><br><span class="line">            proxy_pass http://<span class="variable">$upstream</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location /redis &#123;</span><br><span class="line">             internal;</span><br><span class="line">             <span class="built_in">set</span>            <span class="variable">$redis_key</span> <span class="variable">$host</span>;</span><br><span class="line">             redis_pass     127.0.0.1:6379;</span><br><span class="line">             default_type   text/html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="Ubuntu14-04のDocker本番環境の作成"><a href="#Ubuntu14-04のDocker本番環境の作成" class="headerlink" title="Ubuntu14.04のDocker本番環境の作成"></a>Ubuntu14.04のDocker本番環境の作成</h3><p>Ubuntu14.04にDockerをインストールします。<code>apt-get install docker.io</code>でインストールするバージョンは少し古いので、<a href="https://get.docker.io/ubuntu" target="_blank" rel="noopener">https://get.docker.io/ubuntu</a>からインストールします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install -y apt-transport-https</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"deb https://get.docker.io/ubuntu docker main"</span> | sudo tee -a  /etc/apt/sources.list.d/docker.list</span><br><span class="line">$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install -y lxc-docker</span><br></pre></td></tr></table></figure>
+<h3 id="Ubuntu14-04のDocker本番環境の作成"><a href="#Ubuntu14-04のDocker本番環境の作成" class="headerlink" title="Ubuntu14.04のDocker本番環境の作成"></a>Ubuntu14.04のDocker本番環境の作成</h3><p>Ubuntu14.04にDockerをインストールします。<code>apt-get install docker.io</code>でインストールするバージョンは少し古いので、<a target="_blank" rel="noopener" href="https://get.docker.io/ubuntu">https://get.docker.io/ubuntu</a>からインストールします。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install -y apt-transport-https</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;deb https://get.docker.io/ubuntu docker main&quot;</span> | sudo tee -a  /etc/apt/sources.list.d/docker.list</span><br><span class="line">$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install -y lxc-docker</span><br></pre></td></tr></table></figure>
 
 <p>versionを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker -v</span><br><span class="line">Docker version 1.1.2, build d84a070</span><br></pre></td></tr></table></figure>
@@ -286,7 +253,7 @@
 
 <h3 id="デプロイ"><a href="#デプロイ" class="headerlink" title="デプロイ"></a>デプロイ</h3><p>Ubuntu14.04のDockerにSSH接続します。</p>
 <p>docker-registryの確認をします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl 10.1.2.164:5000</span><br><span class="line"><span class="string">"docker-registry server (dev) (v0.7.3)"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl 10.1.2.164:5000</span><br><span class="line"><span class="string">&quot;docker-registry server (dev) (v0.7.3)&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>デプロイするイメージをpullします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull 10.1.2.164:5000/rstudio-data</span><br><span class="line">$ docker pull 10.1.2.164:5000/rstudio-server</span><br><span class="line">$ docker pull 10.1.2.164:5000/openresty</span><br></pre></td></tr></table></figure>
@@ -295,16 +262,16 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -i -t -d --name rstudio-data 10.1.2.164:5000/rstudio-data</span><br><span class="line">$ docker run -i -t -d --name rstudio-server --volumes-from rstudio-data 10.1.2.164:5000/rstudio-server /sbin/my_init</span><br><span class="line">$ docker run -i -t -d --name openresty -p 80:80 -p 443:443 10.1.2.164:5000/openresty</span><br></pre></td></tr></table></figure>
 
 <h3 id="redis-cliでルーティングの設定"><a href="#redis-cliでルーティングの設定" class="headerlink" title="redis-cliでルーティングの設定"></a>redis-cliでルーティングの設定</h3><p>これまでIPアドレスの確認は、inspectとjqを使っていましたが、<code>-f</code>フラグを使うとGoのtemplateでフォーマットできます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect -f <span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &amp;#125;&amp;#125;"</span>  12947ce0876e</span><br><span class="line">172.17.0.3</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect -f <span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &amp;#125;&amp;#125;&quot;</span>  12947ce0876e</span><br><span class="line">172.17.0.3</span><br></pre></td></tr></table></figure>
 
 <p><code>masato-rstudio.10.1.3.98.xip.io</code>のURLを、<br><code>RStudio Server</code>コンテナの<code>172.17.0.3:8787</code>にルーティングします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm --link openresty:redis dockerfile/redis bash -c <span class="string">'redis-cli -h $REDIS_PORT_6379_TCP_ADDR set masato-rstudio.10.1.3.98.xip.io 172.17.0.3:8787'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm --link openresty:redis dockerfile/redis bash -c <span class="string">&#x27;redis-cli -h $REDIS_PORT_6379_TCP_ADDR set masato-rstudio.10.1.3.98.xip.io 172.17.0.3:8787&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="デプロイ用のスクリプト"><a href="#デプロイ用のスクリプト" class="headerlink" title="デプロイ用のスクリプト"></a>デプロイ用のスクリプト</h3><p><code>RStudio Server</code>の学習環境は複数必要なので、スクリプトを書いて自動化できるようにします。</p>
-<figure class="highlight bash"><figcaption><span>~/bin/deploy-rstudio.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$1</span>"</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Usage: deploy-rstudio username"</span></span><br><span class="line">  <span class="built_in">exit</span> -1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">REGISTRY=<span class="string">"10.1.2.164:5000"</span></span><br><span class="line">DOCKER_HOST=<span class="string">"10.1.2.244"</span></span><br><span class="line">RSTUDIO_PORT=<span class="string">"8787"</span></span><br><span class="line">docker run -i -t -d --name <span class="variable">$1</span>-rstudio-data <span class="variable">$&#123;REGISTRY&#125;</span>/rstudio-data</span><br><span class="line">CONTAINER_ID=$(docker run -i -t -d --name <span class="variable">$1</span>-rstudio-server --volumes-from <span class="variable">$1</span>-rstudio-data <span class="variable">$&#123;REGISTRY&#125;</span>/rstudio-server /sbin/my_init)</span><br><span class="line">CONTAINER_IP=$(docker inspect -f <span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &amp;#125;&amp;#125;"</span> <span class="variable">$&#123;CONTAINER_ID&#125;</span>)</span><br><span class="line">REDIS_CLI=<span class="string">'redis-cli -h $REDIS_PORT_6379_TCP_ADDR'</span></span><br><span class="line">URL=<span class="string">"<span class="variable">$1</span>-rstudio.<span class="variable">$&#123;DOCKER_HOST&#125;</span>.xip.io"</span></span><br><span class="line">REDIS_CMD=<span class="string">"set <span class="variable">$&#123;URL&#125;</span> <span class="variable">$&#123;CONTAINER_IP&#125;</span>:<span class="variable">$&#123;RSTUDIO_PORT&#125;</span>"</span></span><br><span class="line">docker run -it --rm --link openresty:redis dockerfile/redis bash -c <span class="string">"<span class="variable">$&#123;REDIS_CLI&#125;</span> <span class="variable">$&#123;REDIS_CMD&#125;</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;URL&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/bin/deploy-rstudio.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$1</span>&quot;</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Usage: deploy-rstudio username&quot;</span></span><br><span class="line">  <span class="built_in">exit</span> -1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">REGISTRY=<span class="string">&quot;10.1.2.164:5000&quot;</span></span><br><span class="line">DOCKER_HOST=<span class="string">&quot;10.1.2.244&quot;</span></span><br><span class="line">RSTUDIO_PORT=<span class="string">&quot;8787&quot;</span></span><br><span class="line">docker run -i -t -d --name <span class="variable">$1</span>-rstudio-data <span class="variable">$&#123;REGISTRY&#125;</span>/rstudio-data</span><br><span class="line">CONTAINER_ID=$(docker run -i -t -d --name <span class="variable">$1</span>-rstudio-server --volumes-from <span class="variable">$1</span>-rstudio-data <span class="variable">$&#123;REGISTRY&#125;</span>/rstudio-server /sbin/my_init)</span><br><span class="line">CONTAINER_IP=$(docker inspect -f <span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &amp;#125;&amp;#125;&quot;</span> <span class="variable">$&#123;CONTAINER_ID&#125;</span>)</span><br><span class="line">REDIS_CLI=<span class="string">&#x27;redis-cli -h $REDIS_PORT_6379_TCP_ADDR&#x27;</span></span><br><span class="line">URL=<span class="string">&quot;<span class="variable">$1</span>-rstudio.<span class="variable">$&#123;DOCKER_HOST&#125;</span>.xip.io&quot;</span></span><br><span class="line">REDIS_CMD=<span class="string">&quot;set <span class="variable">$&#123;URL&#125;</span> <span class="variable">$&#123;CONTAINER_IP&#125;</span>:<span class="variable">$&#123;RSTUDIO_PORT&#125;</span>&quot;</span></span><br><span class="line">docker run -it --rm --link openresty:redis dockerfile/redis bash -c <span class="string">&quot;<span class="variable">$&#123;REDIS_CLI&#125;</span> <span class="variable">$&#123;REDIS_CMD&#125;</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;URL&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>引数に作成したい名前を渡します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ~/bin/deploy-rstudio.sh <span class="built_in">test</span></span><br><span class="line">c50de874da02d3f6254cd8d13935996897d75ff31a4c57cb3790e650956707a8</span><br><span class="line">OK</span><br><span class="line"><span class="built_in">test</span>-rstudio.10.1.2.244.xip.io</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ~/bin/deploy-rstudio.sh <span class="built_in">test</span></span><br><span class="line">c50de874da02d3f6254cd8d13935996897d75ff31a4c57cb3790e650956707a8</span><br><span class="line">OK</span><br><span class="line">test-rstudio.10.1.2.244.xip.io</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザで確認します。</p>
 <img src="/2014/08/09/docker-analytic-sandbox-rstudio-openresty-deploy/test-rstudio.png" class="center">
@@ -353,7 +320,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -404,7 +370,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-registry"><span class="nav-number">1.</span> <span class="nav-text">docker-registry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenRestyのSSL対応"><span class="nav-number">2.</span> <span class="nav-text">OpenRestyのSSL対応</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu14-04のDocker本番環境の作成"><span class="nav-number">3.</span> <span class="nav-text">Ubuntu14.04のDocker本番環境の作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デプロイ"><span class="nav-number">4.</span> <span class="nav-text">デプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-cliでルーティングの設定"><span class="nav-number">5.</span> <span class="nav-text">redis-cliでルーティングの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デプロイ用のスクリプト"><span class="nav-number">6.</span> <span class="nav-text">デプロイ用のスクリプト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-registry"><span class="nav-number">1.</span> <span class="nav-text">docker-registry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenResty%E3%81%AESSL%E5%AF%BE%E5%BF%9C"><span class="nav-number">2.</span> <span class="nav-text">OpenRestyのSSL対応</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu14-04%E3%81%AEDocker%E6%9C%AC%E7%95%AA%E7%92%B0%E5%A2%83%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.</span> <span class="nav-text">Ubuntu14.04のDocker本番環境の作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4"><span class="nav-number">4.</span> <span class="nav-text">デプロイ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-cli%E3%81%A7%E3%83%AB%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">5.</span> <span class="nav-text">redis-cliでルーティングの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E7%94%A8%E3%81%AE%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88"><span class="nav-number">6.</span> <span class="nav-text">デプロイ用のスクリプト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -436,10 +402,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -464,9 +433,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -506,13 +475,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

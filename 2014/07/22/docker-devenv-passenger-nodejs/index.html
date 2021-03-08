@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Nginxの手軽なDockerコンテナが必要になったので、phusion&#x2F;baseimageでDockerイメージを作ろうと思い、Node.jsとNginxのサンプルを探していました。Docker Misconceptionsのポストでpassenger-dockerを紹介していました。PassengerはRubyだけかと思っていましたが、Python,Node.js,Meteorまで対応していま">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerで開発環境をつくる - Passenger Nginx と Node.js">
 <meta property="og:url" content="https://masato.github.io/2014/07/22/docker-devenv-passenger-nodejs/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Nginxの手軽なDockerコンテナが必要になったので、phusion&#x2F;baseimageでDockerイメージを作ろうと思い、Node.jsとNginxのサンプルを探していました。Docker Misconceptionsのポストでpassenger-dockerを紹介していました。PassengerはRubyだけかと思っていましたが、Python,Node.js,Meteorまで対応していま">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/07/22/docker-devenv-passenger-nodejs/nodejs_hello_world.png">
 <meta property="article:published_time" content="2014-07-22T14:00:29.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.595Z">
+<meta property="article:modified_time" content="2014-07-22T14:00:29.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="DockerDevEnv">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>Dockerで開発環境をつくる - Passenger Nginx と Node.js | masato's blog</title>
+  <title>Dockerで開発環境をつくる - Passenger Nginx と Node.js | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,19 +190,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 22 2014 23:00:29" itemprop="dateCreated datePublished" datetime="2014-07-22T23:00:29+09:00">Jul 22 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Nginxの手軽なDockerコンテナが必要になったので、phusion/baseimageでDockerイメージを作ろうと思い、Node.jsとNginxのサンプルを探していました。Docker Misconceptionsのポストでpassenger-dockerを紹介していました。PassengerはRubyだけかと思っていましたが、Python,Node.js,Meteorまで対応しています。Node.jsのpm2やforeverをDockerでどうやって使うのか考えるよりPassengerで簡単にできそうです。Node.js用のイメージはphusion/baseimageから派生したphusion/passenger-nodejsになります。</div>
@@ -245,15 +212,15 @@
         <ul>
 <li><code>Update 2014-07-28</code>: <a href="/2014/07/28/docker-devenv-nginx/">Dockerで開発環境をつくる - Nginx</a></li>
 </ul>
-<p>Nginxの手軽なDockerコンテナが必要になったので、<code>phusion/baseimage</code>でDockerイメージを作ろうと思い、Node.jsとNginxのサンプルを探していました。<a href="https://devopsu.com/blog/docker-misconceptions/" target="_blank" rel="noopener">Docker Misconceptions</a>のポストで<a href="https://github.com/phusion/passenger-docker" target="_blank" rel="noopener">passenger-docker</a>を紹介していました。</p>
+<p>Nginxの手軽なDockerコンテナが必要になったので、<code>phusion/baseimage</code>でDockerイメージを作ろうと思い、Node.jsとNginxのサンプルを探していました。<a target="_blank" rel="noopener" href="https://devopsu.com/blog/docker-misconceptions/">Docker Misconceptions</a>のポストで<a target="_blank" rel="noopener" href="https://github.com/phusion/passenger-docker">passenger-docker</a>を紹介していました。</p>
 <p>PassengerはRubyだけかと思っていましたが、Python,Node.js,Meteorまで対応しています。<br>Node.jsのpm2やforeverをDockerでどうやって使うのか考えるよりPassengerで簡単にできそうです。</p>
 <p>Node.js用のイメージは<code>phusion/baseimage</code>から派生した<code>phusion/passenger-nodejs</code>になります。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>最初に今回作成したDockerfileです。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/nodejs/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/passenger-nodejs:0.9.11</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker's init process.</span></span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Node.js and Meteor support.</span></span><br><span class="line">RUN /build/nodejs.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...put your own build instructions here...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># Install an SSH of your choice.</span></span><br><span class="line">ADD my_key.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment"># Using Nginx and Passenger</span></span><br><span class="line">RUN rm -f /etc/service/nginx/down</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...commands to place your web app in /home/app/webapp...</span></span><br><span class="line">RUN rm -rf /etc/nginx/sites-enabled/default</span><br><span class="line">ADD webapp.conf /etc/nginx/sites-enabled/</span><br><span class="line">RUN mkdir -p /home/app/webapp/public</span><br><span class="line">ADD app.js /home/app/webapp/</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/nodejs/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/passenger-nodejs:0.9.11</span><br><span class="line"></span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker&#x27;s init process.</span></span><br><span class="line">CMD [<span class="string">&quot;/sbin/my_init&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Node.js and Meteor support.</span></span><br><span class="line">RUN /build/nodejs.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...put your own build instructions here...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># Install an SSH of your choice.</span></span><br><span class="line">ADD my_key.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment"># Using Nginx and Passenger</span></span><br><span class="line">RUN rm -f /etc/service/nginx/down</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...commands to place your web app in /home/app/webapp...</span></span><br><span class="line">RUN rm -rf /etc/nginx/sites-enabled/default</span><br><span class="line">ADD webapp.conf /etc/nginx/sites-enabled/</span><br><span class="line">RUN mkdir -p /home/app/webapp/public</span><br><span class="line">ADD app.js /home/app/webapp/</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
-<h3 id="Node-jsアプリ"><a href="#Node-jsアプリ" class="headerlink" title="Node.jsアプリ"></a>Node.jsアプリ</h3><p><a href="https://github.com/phusion/passenger/wiki/Phusion-Passenger%3A-Node.js-tutorial" target="_blank" rel="noopener">Phusion Passenger: Node.js tutorial</a>を読むとNode.jsをPassengerで動かす場合、nodeコマンドで起動するファイルはapp.jsである必要があります。</p>
+<h3 id="Node-jsアプリ"><a href="#Node-jsアプリ" class="headerlink" title="Node.jsアプリ"></a>Node.jsアプリ</h3><p><a target="_blank" rel="noopener" href="https://github.com/phusion/passenger/wiki/Phusion-Passenger%3A-Node.js-tutorial">Phusion Passenger: Node.js tutorial</a>を読むとNode.jsをPassengerで動かす場合、nodeコマンドで起動するファイルはapp.jsである必要があります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">application directory</span><br><span class="line">  |</span><br><span class="line">  +-- app.js</span><br><span class="line">  |</span><br><span class="line">  +-- public/</span><br><span class="line">  |</span><br><span class="line">  +-- tmp/</span><br></pre></td></tr></table></figure>
 
 <p>単純な<code>Hellow World</code>を作成します。<br>listenするポートは8000にしていますが、Passengerの場合意味がなく、3000ポートでlistenするようです。</p>
@@ -277,11 +244,11 @@
 <p>Dockerホストからブラウザで確認します。</p>
 <img src="/2014/07/22/docker-devenv-passenger-nodejs/nodejs_hello_world.png" class="center">
 
-<h3 id="docker-bashコマンド"><a href="#docker-bashコマンド" class="headerlink" title="docker-bashコマンド"></a>docker-bashコマンド</h3><p><a href="https://github.com/phusion/passenger-docker" target="_blank" rel="noopener">passenger-docker</a>にはDockerホストにインストールして使う、便利なコマンドがあります。</p>
+<h3 id="docker-bashコマンド"><a href="#docker-bashコマンド" class="headerlink" title="docker-bashコマンド"></a>docker-bashコマンド</h3><p><a target="_blank" rel="noopener" href="https://github.com/phusion/passenger-docker">passenger-docker</a>にはDockerホストにインストールして使う、便利なコマンドがあります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> Downloads</span><br><span class="line">$ curl --fail -L -O https://github.com/phusion/baseimage-docker/archive/master.tar.gz &amp;&amp; \</span><br><span class="line">   tar xzf master.tar.gz &amp;&amp; \</span><br><span class="line">   sudo ./baseimage-docker-master/install-tools.sh</span><br><span class="line">...</span><br><span class="line">+ cp tools/docker-bash /usr/<span class="built_in">local</span>/bin/</span><br><span class="line">+ cp tools/docker-ssh /usr/<span class="built_in">local</span>/bin/</span><br><span class="line">+ cp tools/baseimage-docker-nsenter /usr/<span class="built_in">local</span>/bin/</span><br><span class="line">+ mkdir -p /usr/<span class="built_in">local</span>/share/baseimage-docker</span><br><span class="line">+ cp image/insecure_key /usr/<span class="built_in">local</span>/share/baseimage-docker/</span><br><span class="line">+ chmod 644 /usr/<span class="built_in">local</span>/share/baseimage-docker/insecure_key</span><br></pre></td></tr></table></figure>
 
 <p>書式です。</p>
-<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ docker-<span class="keyword">bash </span>YOUR-CONTAINER-ID</span><br></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>docker-bash YOUR-CONTAINER-ID</span><br></pre></td></tr></table></figure>
 
 <p>コンテナIDを指定して、SSHログインできます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo docker-bash 8bbcde370741</span><br><span class="line">root@8bbcde370741:/<span class="comment">#</span></span><br></pre></td></tr></table></figure>
@@ -327,7 +294,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -378,7 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-jsアプリ"><span class="nav-number">2.</span> <span class="nav-text">Node.jsアプリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginxを有効にする"><span class="nav-number">3.</span> <span class="nav-text">Nginxを有効にする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#site-enabled"><span class="nav-number">4.</span> <span class="nav-text">site-enabled</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-と-run"><span class="nav-number">5.</span> <span class="nav-text">build と run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-bashコマンド"><span class="nav-number">6.</span> <span class="nav-text">docker-bashコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-js%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">2.</span> <span class="nav-text">Node.jsアプリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx%E3%82%92%E6%9C%89%E5%8A%B9%E3%81%AB%E3%81%99%E3%82%8B"><span class="nav-number">3.</span> <span class="nav-text">Nginxを有効にする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#site-enabled"><span class="nav-number">4.</span> <span class="nav-text">site-enabled</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-%E3%81%A8-run"><span class="nav-number">5.</span> <span class="nav-text">build と run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-bash%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">6.</span> <span class="nav-text">docker-bashコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -410,10 +376,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -438,9 +407,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -480,13 +449,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

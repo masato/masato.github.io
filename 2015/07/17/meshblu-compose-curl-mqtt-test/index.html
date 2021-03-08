@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Mesubluは複数のトランポートプロトコルに対応しています。REST APIでPOSTしたメッセージをMQTTでsubscribeして受信することができます。クラウド上のDockerホストにMeshbluコンテナを起動したあと、localhostでメッセージングとデータ保存のテストをしてみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MeshbluでオープンソースのIoTをはじめよう - Part5: RESTとMQTTのメッセージングとデータ保存">
 <meta property="og:url" content="https://masato.github.io/2015/07/17/meshblu-compose-curl-mqtt-test/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Mesubluは複数のトランポートプロトコルに対応しています。REST APIでPOSTしたメッセージをMQTTでsubscribeして受信することができます。クラウド上のDockerホストにMeshbluコンテナを起動したあと、localhostでメッセージングとデータ保存のテストをしてみます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-07-17T10:12:36.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.759Z">
+<meta property="article:modified_time" content="2015-07-17T10:12:36.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="IoT">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>MeshbluでオープンソースのIoTをはじめよう - Part5: RESTとMQTTのメッセージングとデータ保存 | masato's blog</title>
+  <title>MeshbluでオープンソースのIoTをはじめよう - Part5: RESTとMQTTのメッセージングとデータ保存 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,22 +190,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 17 2015 19:12:36" itemprop="dateCreated datePublished" datetime="2015-07-17T19:12:36+09:00">Jul 17 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -251,41 +218,41 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="https://developer.octoblu.com/" target="_blank" rel="noopener">Mesublu</a>は複数のトランポートプロトコルに対応しています。REST APIでPOSTしたメッセージをMQTTでsubscribeして受信することができます。クラウド上のDockerホストにMeshbluコンテナを起動したあと、localhostでメッセージングとデータ保存のテストをしてみます。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="https://developer.octoblu.com/">Mesublu</a>は複数のトランポートプロトコルに対応しています。REST APIでPOSTしたメッセージをMQTTでsubscribeして受信することができます。クラウド上のDockerホストにMeshbluコンテナを起動したあと、localhostでメッセージングとデータ保存のテストをしてみます。</p>
+<span id="more"></span>
 
-<h2 id="Meshbluのインストール"><a href="#Meshbluのインストール" class="headerlink" title="Meshbluのインストール"></a>Meshbluのインストール</h2><p>MeshbluとRedis、MongoDB、OpenResty、CLIツールなど一式をDocker Composeで起動します。リポジトリは<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="Meshbluのインストール"><a href="#Meshbluのインストール" class="headerlink" title="Meshbluのインストール"></a>Meshbluのインストール</h2><p>MeshbluとRedis、MongoDB、OpenResty、CLIツールなど一式をDocker Composeで起動します。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose">こちら</a>です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get install -y git</span><br><span class="line">$ mkdir ~/iot_apps &amp;&amp; <span class="built_in">cd</span> ~/iot_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/IDCFChannel/meshblu-compose</span><br><span class="line">$ <span class="built_in">cd</span> meshblu-compose</span><br></pre></td></tr></table></figure>
 
 <p>インストールスプリクトを実行するとMeshbluのコンテナが起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./bootstrap.sh</span><br><span class="line">...</span><br><span class="line">      Name             Command             State              Ports</span><br><span class="line">-------------------------------------------------------------------------</span><br><span class="line">meshblucompose_m   npm start          Up                 0.0.0.0:1883-&gt;18</span><br><span class="line">eshblu_1                                                 83/tcp, 80/tcp</span><br><span class="line">meshblucompose_m   /entrypoint.sh     Up                 27017/tcp</span><br><span class="line">ongo_1             mongod</span><br><span class="line">meshblucompose_o   nginx -c /etc/ng   Up                 0.0.0.0:443-&gt;443</span><br><span class="line">penresty_1         inx/nginx.conf                        /tcp, 0.0.0.0:80</span><br><span class="line">                                                         -&gt;80/tcp</span><br><span class="line">meshblucompose_r   /entrypoint.sh     Up                 6379/tcp</span><br><span class="line">edis_1             redis-server</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="curlとMosquitto"><a href="#curlとMosquitto" class="headerlink" title="curlとMosquitto"></a>curlとMosquitto</h3><p>RESTはcurlを使い、MQTTは<a href="http://mosquitto.org/" target="_blank" rel="noopener">Mosquitto</a>をクライアントに使ってテストをします。</p>
+<h3 id="curlとMosquitto"><a href="#curlとMosquitto" class="headerlink" title="curlとMosquitto"></a>curlとMosquitto</h3><p>RESTはcurlを使い、MQTTは<a target="_blank" rel="noopener" href="http://mosquitto.org/">Mosquitto</a>をクライアントに使ってテストをします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install curl mosquitto-clients</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="デバイスの準備"><a href="#デバイスの準備" class="headerlink" title="デバイスの準備"></a>デバイスの準備</h2><p>MeshbluではREST APIやMQTTを使ってメッセージをpubsubするクライアントを「デバイス」として管理します。</p>
 <h3 id="デバイスの登録"><a href="#デバイスの登録" class="headerlink" title="デバイスの登録"></a>デバイスの登録</h3><p>インストール直後はデバイスは登録されていません。最初にdocker-compose.ymlに付属しているCLIを使いプリセットのデバイスを登録します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker-compose run --rm iotutil register</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"register"</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 8ec3992b           │ ed311cd7-dc09-459b-9aaf-7d1c08186bdd │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker-compose run --rm iotutil register</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;register&quot;</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 8ec3992b           │ ed311cd7-dc09-459b-9aaf-7d1c08186bdd │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <p>コマンドを実行すると、<code>trigger-[1-5]</code>と<code>action-[1-5]</code>とownerをあわせて合計11個のデバイスが登録されます。標準出力されるownerのデバイスは作成した11個のデバイスすべてにメッセージを送信することができます。デフォルトでは、<code>trigger-[1-5]</code>から<code>action-[1-5]</code>へ末尾が同じ数字の組み合わせのメッセージ送信を許可しています。</p>
 <h3 id="デバイスの一覧"><a href="#デバイスの一覧" class="headerlink" title="デバイスの一覧"></a>デバイスの一覧</h3><p>登録したデバイスは以下のコマンドで確認することができます。uuidとtokenはMeshbluのブローカーに接続するための認証情報としても利用します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"list"</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 6e8e63fe │ 71a24381-02e2-47f3-bfa6-8174545f2261 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-2 │ 85a97be4 │ 561bc67b-0c0c-4ad4-a6ec-f1a6163f02b0 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-3 │ ede956b8 │ 6a21c6b7-2a1c-40e3-a26c-96b52f48c586 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-4 │ 4e120995 │ 9f109642-efa9-4973-9bb4-4bc48987e5ec │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-5 │ 190ade78 │ 12cdc02d-f1ac-43ef-936a-a44565a58f2f │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1  │ a02222d2 │ 4dbe71d3-ad32-45e5-99fc-88c225bf11b8 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2  │ 4cb06821 │ 6244ee9c-203c-478a-992b-5fe1c5f782cb │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-3  │ 54c454e5 │ b3b4cee4-2f19-4c05-904e-1fa139f531bc │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-4  │ 6b80470a │ c2986c27-e751-47d1-b655-d1750e3ecb71 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-5  │ 3aefc667 │ fd9f1a40-fa99-44f4-a405-49f360c175aa │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;list&quot;</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 6e8e63fe │ 71a24381-02e2-47f3-bfa6-8174545f2261 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-2 │ 85a97be4 │ 561bc67b-0c0c-4ad4-a6ec-f1a6163f02b0 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-3 │ ede956b8 │ 6a21c6b7-2a1c-40e3-a26c-96b52f48c586 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-4 │ 4e120995 │ 9f109642-efa9-4973-9bb4-4bc48987e5ec │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-5 │ 190ade78 │ 12cdc02d-f1ac-43ef-936a-a44565a58f2f │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1  │ a02222d2 │ 4dbe71d3-ad32-45e5-99fc-88c225bf11b8 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2  │ 4cb06821 │ 6244ee9c-203c-478a-992b-5fe1c5f782cb │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-3  │ 54c454e5 │ b3b4cee4-2f19-4c05-904e-1fa139f531bc │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-4  │ 6b80470a │ c2986c27-e751-47d1-b655-d1750e3ecb71 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-5  │ 3aefc667 │ fd9f1a40-fa99-44f4-a405-49f360c175aa │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="Mesubluの状態確認"><a href="#Mesubluの状態確認" class="headerlink" title="Mesubluの状態確認"></a>Mesubluの状態確認</h2><h3 id="APIの仕様"><a href="#APIの仕様" class="headerlink" title="APIの仕様"></a>APIの仕様</h3><p>MeshbluのREST APIやMQTTの使い方は<a href="http://meshblu-http.readme.io/docs" target="_blank" rel="noopener">Documentation</a>のサイトに詳しく書いてあります。</p>
+<h2 id="Mesubluの状態確認"><a href="#Mesubluの状態確認" class="headerlink" title="Mesubluの状態確認"></a>Mesubluの状態確認</h2><h3 id="APIの仕様"><a href="#APIの仕様" class="headerlink" title="APIの仕様"></a>APIの仕様</h3><p>MeshbluのREST APIやMQTTの使い方は<a target="_blank" rel="noopener" href="http://meshblu-http.readme.io/docs">Documentation</a>のサイトに詳しく書いてあります。</p>
 <h3 id="SSL通信のinsecureフラグについて"><a href="#SSL通信のinsecureフラグについて" class="headerlink" title="SSL通信のinsecureフラグについて"></a>SSL通信のinsecureフラグについて</h3><p>Docker ComposeでMeshbuを起動するとフロントのリバースプロキシとしてOpenRestyが起動しています。Dockerホストの80と443にマップされています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose  ps openresty</span><br><span class="line">      Name             Command             State              Ports</span><br><span class="line">-------------------------------------------------------------------------</span><br><span class="line">meshblucompose_o   nginx -c /etc/ng   Up                 0.0.0.0:443-&gt;443</span><br><span class="line">penresty_1         inx/nginx.conf                        /tcp, 0.0.0.0:80</span><br><span class="line">                                                         -&gt;80/tcp</span><br></pre></td></tr></table></figure>
 
 <p>http(80)はすべてhttps(443)にリダイレクトしています。<code>./bootstrap.sh</code>を実行するときに自己署名のSSL証明書を作成しているので、curlコマンドからHTTPSを使う場合は<code>--insecure</code>オプションが必要です。</p>
-<figure class="highlight bash"><figcaption><span>~/iot_apps/meshblu-compose/nginx/conf/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        underscores_in_headers on;</span><br><span class="line">        <span class="built_in">return</span> 301 https://<span class="variable">$host</span><span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/iot_apps/meshblu-compose/nginx/conf/nginx.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        underscores_in_headers on;</span><br><span class="line">        <span class="built_in">return</span> 301 https://$host<span class="variable">$request_uri</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="GET-status"><a href="#GET-status" class="headerlink" title="GET /status"></a>GET /status</h3><p>curlからMeshbluが起動しているか<code>status</code>を確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET \</span><br><span class="line">  <span class="string">"https://localhost/status"</span> \</span><br><span class="line">  --insecure \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: ed311cd7-dc09-459b-9aaf-7d1c08186bdd"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: 8ec3992b"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET \</span><br><span class="line">  <span class="string">&quot;https://localhost/status&quot;</span> \</span><br><span class="line">  --insecure \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_uuid: ed311cd7-dc09-459b-9aaf-7d1c08186bdd&quot;</span> \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_token: 8ec3992b&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>結果</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"meshblu"</span>:<span class="string">"online"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;meshblu&quot;</span>:<span class="string">&quot;online&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="メッセージを送信して、すぐに受信する"><a href="#メッセージを送信して、すぐに受信する" class="headerlink" title="メッセージを送信して、すぐに受信する"></a>メッセージを送信して、すぐに受信する</h2><p>MQTTブローカーを使った一番基本的なメッセージングから試してみます。テスト用のデバイスとして<code>trigger-1</code>と<code>action-1</code>を使います。</p>
 <ul>
@@ -293,10 +260,10 @@
 <li>メッセージ受信: action-1</li>
 </ul>
 <p>メッセージを送信するデバイスはtrigger-1です。tokenとuuidを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k trigger-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"show"</span> <span class="string">"-k"</span> <span class="string">"trigger-1"</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 6e8e63fe │ 71a24381-02e2-47f3-bfa6-8174545f2261 │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k trigger-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;show&quot;</span> <span class="string">&quot;-k&quot;</span> <span class="string">&quot;trigger-1&quot;</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 6e8e63fe │ 71a24381-02e2-47f3-bfa6-8174545f2261 │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <p>メッセージを受信するデバイスはaction-1です。tokenとuuidを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k action-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"show"</span> <span class="string">"-k"</span> <span class="string">"action-1"</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1 │ a02222d2 │ 4dbe71d3-ad32-45e5-99fc-88c225bf11b8 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k action-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;show&quot;</span> <span class="string">&quot;-k&quot;</span> <span class="string">&quot;action-1&quot;</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1 │ a02222d2 │ 4dbe71d3-ad32-45e5-99fc-88c225bf11b8 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="MQTT-subscribe-uuid"><a href="#MQTT-subscribe-uuid" class="headerlink" title="MQTT subscribe uuid"></a>MQTT subscribe uuid</h3><p>最初にmosquitto_subコマンドを使い、action-1がMQTTのメッセージをsubscribeします。Meshbluではメッセージをsubscribeするトピック名はメッセージを受信するデバイスのuuidになります。またusernameとpasswordも必須項目です。それぞれuuidとtokenを指定します。</p>
@@ -304,38 +271,38 @@
 
 <h3 id="MQTT-publish-message"><a href="#MQTT-publish-message" class="headerlink" title="MQTT publish message"></a>MQTT publish message</h3><p>trigger-1からaction-1にメッセージを送信します。mosquitto_subと同様にusernameとpasswordはtrigger-1のuuidとtokenを指定します。トピック名は<code>message</code>が固定なので注意が必要です。送信先はJSON形式のメッセージの中に<code>devices</code>キーの値として指定します。action-1にメッセージを送信するので、action-1のuuidの<code>4dbe71d3-ad32-45e5-99fc-88c225bf11b8</code>を記述します。メッセージの本文は<code>payload</code>キーに指定します。この例ではJSON形式で記述していますが、文字列も使えます。また<code>payload</code>キーと値がなくても空でメッセージを送信することもできます。</p>
 <p>新しいシェルを開き、mosquitto_pubコマンドからpublishします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t message \</span><br><span class="line">  -m <span class="string">'&#123;"devices": ["4dbe71d3-ad32-45e5-99fc-88c225bf11b8"], "payload": &#123;"led":"on"&#125;&#125;'</span> \</span><br><span class="line">  -u 71a24381-02e2-47f3-bfa6-8174545f2261 \</span><br><span class="line">  -P 6e8e63fe \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t message \</span><br><span class="line">  -m <span class="string">&#x27;&#123;&quot;devices&quot;: [&quot;4dbe71d3-ad32-45e5-99fc-88c225bf11b8&quot;], &quot;payload&quot;: &#123;&quot;led&quot;:&quot;on&quot;&#125;&#125;&#x27;</span> \</span><br><span class="line">  -u 71a24381-02e2-47f3-bfa6-8174545f2261 \</span><br><span class="line">  -P 6e8e63fe \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
 
 <p>mosquitto_subコマンドを実行しているシェルにメッセージが届きました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"data"</span>:&#123;<span class="string">"led"</span>:<span class="string">"on"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&quot;data&quot;</span>:&#123;<span class="string">&quot;led&quot;</span>:<span class="string">&quot;on&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="HTTP-POST-messages"><a href="#HTTP-POST-messages" class="headerlink" title="HTTP POST /messages"></a>HTTP POST /messages</h3><p>MQTTのsubscriberにREST APIからメッセージをPOSTしてみます。RESTのクライアントはcurlコマンドを使います。MQTTのpublishと同様にURLは<code>/messages</code>が固定です。トピック名と違いURLの方は<code>/messages</code>と複数形になっています。メッセージはJSON形式なので<code>Content-Type: application/json</code>が必要です。また、trigger-1のuuidとtokenは認証情報としてHTTPヘッダに記述します。</p>
 <p>先ほどのmosquitto_subコマンドが起動している状態で、新しいシェルを開きcurlコマンドからメッセージをPOSTします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">"https://localhost/messages"</span> \</span><br><span class="line">  --insecure  \</span><br><span class="line">  -H <span class="string">"Content-Type: application/json"</span> \</span><br><span class="line">  -d <span class="string">'&#123;"devices": "4dbe71d3-ad32-45e5-99fc-88c225bf11b8", "payload": &#123;"led":"on"&#125;&#125;'</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: 71a24381-02e2-47f3-bfa6-8174545f2261"</span>  \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: 6e8e63fe"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">&quot;https://localhost/messages&quot;</span> \</span><br><span class="line">  --insecure  \</span><br><span class="line">  -H <span class="string">&quot;Content-Type: application/json&quot;</span> \</span><br><span class="line">  -d <span class="string">&#x27;&#123;&quot;devices&quot;: &quot;4dbe71d3-ad32-45e5-99fc-88c225bf11b8&quot;, &quot;payload&quot;: &#123;&quot;led&quot;:&quot;on&quot;&#125;&#125;&#x27;</span> \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_uuid: 71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>  \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_token: 6e8e63fe&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>メッセージのPOSTに成功すると以下のメッセージが表示されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"devices"</span>:<span class="string">"4dbe71d3-ad32-45e5-99fc-88c225bf11b8"</span>,<span class="string">"payload"</span>:&#123;<span class="string">"led"</span>:<span class="string">"on"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&quot;devices&quot;</span>:<span class="string">&quot;4dbe71d3-ad32-45e5-99fc-88c225bf11b8&quot;</span>,<span class="string">&quot;payload&quot;</span>:&#123;<span class="string">&quot;led&quot;</span>:<span class="string">&quot;on&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <p>mosquitto_subコマンドを実行しているシェルにメッセージが届きました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"data"</span>:&#123;<span class="string">"led"</span>:<span class="string">"on"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&quot;data&quot;</span>:&#123;<span class="string">&quot;led&quot;</span>:<span class="string">&quot;on&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="データを保存して、あとで取り出す"><a href="#データを保存して、あとで取り出す" class="headerlink" title="データを保存して、あとで取り出す"></a>データを保存して、あとで取り出す</h2><p>Raspberry Piと環境センサーが計測した湿度が70%を超えたときなど、特定の閾値をデータとして送信したい場合があります。</p>
 <p>データの送信先がMQTTやWebSocketでsubscribeしている場合は、上記で確認したようにMQTT publishやHTTP POST /messagesからメッセージとして送信できます。ただし、データの送信先がHTTPの場合はメッセージを同期で受信するのが困難になります。</p>
 <p>MQTTの場合は<code>data</code>トピックに、HTTPの場合は<code>/data/uuid</code>に送信して一度MongoDBにデータを保存します。データの送信先はMongoDBにレンジクエリのAPIを使い保存されているデータをポーリングして取り出しします。</p>
 <h3 id="MQTT-publish-data"><a href="#MQTT-publish-data" class="headerlink" title="MQTT publish data"></a>MQTT publish data</h3><p>trigger-1から閾値越えのデータを<code>data</code>トピックに送信してみます。特定のデバイスにメッセージを送信したときの<code>message</code>トピックとは異なり、データを保存する場合は<code>data</code>トピックを固定で使います。<code>devices</code>キーは、データを保存するuuidなのでtrigger-1自身のuuidになるので注意が必要です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t data \</span><br><span class="line">  -m <span class="string">'&#123;"devices": ["71a24381-02e2-47f3-bfa6-8174545f2261"], "payload": "trigger on"&#125;'</span> \</span><br><span class="line">  -u 71a24381-02e2-47f3-bfa6-8174545f2261 \</span><br><span class="line">  -P 6e8e63fe \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t data \</span><br><span class="line">  -m <span class="string">&#x27;&#123;&quot;devices&quot;: [&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;], &quot;payload&quot;: &quot;trigger on&quot;&#125;&#x27;</span> \</span><br><span class="line">  -u 71a24381-02e2-47f3-bfa6-8174545f2261 \</span><br><span class="line">  -P 6e8e63fe \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
 
 <h3 id="MongoDBのデータ"><a href="#MongoDBのデータ" class="headerlink" title="MongoDBのデータ"></a>MongoDBのデータ</h3><p>MondoDBコンテナに入り保存されたデータを確認します。MondoDBのデータベース名は<code>skynet</code>です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu_compose</span><br><span class="line">$ docker <span class="built_in">exec</span> -it meshblucompose_mongo_1 mongo skynet</span><br><span class="line"></span><br><span class="line">trigger-1がmosquitto_pubしたデータを確認します。</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(1);</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55b212f5ac81f6100042b353"</span>), <span class="string">"devices"</span> : [ <span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span> ], <span class="string">"payload"</span> : <span class="string">"trigger on"</span>, <span class="string">"fromUuid"</span> : <span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span>, <span class="string">"uuid"</span> : <span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span>, <span class="string">"timestamp"</span> : <span class="string">"2015-07-24T10:27:01.766Z"</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu_compose</span><br><span class="line">$ docker <span class="built_in">exec</span> -it meshblucompose_mongo_1 mongo skynet</span><br><span class="line"></span><br><span class="line">trigger-1がmosquitto_pubしたデータを確認します。</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(1);</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55b212f5ac81f6100042b353&quot;</span>), <span class="string">&quot;devices&quot;</span> : [ <span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span> ], <span class="string">&quot;payload&quot;</span> : <span class="string">&quot;trigger on&quot;</span>, <span class="string">&quot;fromUuid&quot;</span> : <span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>, <span class="string">&quot;uuid&quot;</span> : <span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>, <span class="string">&quot;timestamp&quot;</span> : <span class="string">&quot;2015-07-24T10:27:01.766Z&quot;</span> &#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="HTTP-GET-data-uuid"><a href="#HTTP-GET-data-uuid" class="headerlink" title="HTTP GET /data/uuid"></a>HTTP GET /data/uuid</h3><p>このレンジクエリを実行するデバイスのuuidとtokenはすべてのデバイスにアクセスができるownerデバイスのuuidとtokenを認証情報に使います。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil owner</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"owner"</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 8ec3992b           │ ed311cd7-dc09-459b-9aaf-7d1c08186bdd │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil owner</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;owner&quot;</span></span><br><span class="line"></span><br><span class="line">┌─────────┬────────────────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword │ meshblu_auth_token │ meshblu_auth_uuid                    │</span><br><span class="line">├─────────┼────────────────────┼──────────────────────────────────────┤</span><br><span class="line">│ owner   │ 8ec3992b           │ ed311cd7-dc09-459b-9aaf-7d1c08186bdd │</span><br><span class="line">└─────────┴────────────────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <p>一定間隔でレンジクエリのstartとfinishをインクリメントして、MongoDBに閾値越えのデータが保存されているか確認します。レコードタイムスタンプが<code>2015-07-24T10:27:01.766Z</code>です。テストのため<code>start</code>と<code>finish</code>でタイムスタンプをはさむようにクエリします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET  \</span><br><span class="line">  <span class="string">"https://localhost/data/71a24381-02e2-47f3-bfa6-8174545f2261?start=2015-07-24T10:25:01.766Z&amp;finish=2015-07-24T10:40:01.766Z&amp;limit=1"</span>  \</span><br><span class="line">  --insecure  \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: ed311cd7-dc09-459b-9aaf-7d1c08186bdd"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: 8ec3992b"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET  \</span><br><span class="line">  <span class="string">&quot;https://localhost/data/71a24381-02e2-47f3-bfa6-8174545f2261?start=2015-07-24T10:25:01.766Z&amp;finish=2015-07-24T10:40:01.766Z&amp;limit=1&quot;</span>  \</span><br><span class="line">  --insecure  \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_uuid: ed311cd7-dc09-459b-9aaf-7d1c08186bdd&quot;</span> \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_token: 8ec3992b&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>以下のようにtrigger-1がmosquitto_pubから保存したデータを取り出すことができました。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"data"</span>:[&#123;<span class="attr">"devices"</span>:[<span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span>],<span class="attr">"payload"</span>:<span class="string">"trigger on"</span>,<span class="attr">"fromUuid"</span>:<span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span>,<span class="attr">"uuid"</span>:<span class="string">"71a24381-02e2-47f3-bfa6-8174545f2261"</span>,<span class="attr">"timestamp"</span>:<span class="string">"2015-07-24T10:27:01.766Z"</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;data&quot;</span>:[&#123;<span class="attr">&quot;devices&quot;</span>:[<span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>],<span class="attr">&quot;payload&quot;</span>:<span class="string">&quot;trigger on&quot;</span>,<span class="attr">&quot;fromUuid&quot;</span>:<span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>,<span class="attr">&quot;uuid&quot;</span>:<span class="string">&quot;71a24381-02e2-47f3-bfa6-8174545f2261&quot;</span>,<span class="attr">&quot;timestamp&quot;</span>:<span class="string">&quot;2015-07-24T10:27:01.766Z&quot;</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -374,7 +341,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -425,7 +391,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Meshbluのインストール"><span class="nav-number">1.</span> <span class="nav-text">Meshbluのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curlとMosquitto"><span class="nav-number">1.1.</span> <span class="nav-text">curlとMosquitto</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#デバイスの準備"><span class="nav-number">2.</span> <span class="nav-text">デバイスの準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#デバイスの登録"><span class="nav-number">2.1.</span> <span class="nav-text">デバイスの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デバイスの一覧"><span class="nav-number">2.2.</span> <span class="nav-text">デバイスの一覧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesubluの状態確認"><span class="nav-number">3.</span> <span class="nav-text">Mesubluの状態確認</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#APIの仕様"><span class="nav-number">3.1.</span> <span class="nav-text">APIの仕様</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL通信のinsecureフラグについて"><span class="nav-number">3.2.</span> <span class="nav-text">SSL通信のinsecureフラグについて</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GET-status"><span class="nav-number">3.3.</span> <span class="nav-text">GET &#x2F;status</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#メッセージを送信して、すぐに受信する"><span class="nav-number">4.</span> <span class="nav-text">メッセージを送信して、すぐに受信する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-subscribe-uuid"><span class="nav-number">4.1.</span> <span class="nav-text">MQTT subscribe uuid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-publish-message"><span class="nav-number">4.2.</span> <span class="nav-text">MQTT publish message</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-POST-messages"><span class="nav-number">4.3.</span> <span class="nav-text">HTTP POST &#x2F;messages</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#データを保存して、あとで取り出す"><span class="nav-number">5.</span> <span class="nav-text">データを保存して、あとで取り出す</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-publish-data"><span class="nav-number">5.1.</span> <span class="nav-text">MQTT publish data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBのデータ"><span class="nav-number">5.2.</span> <span class="nav-text">MongoDBのデータ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-GET-data-uuid"><span class="nav-number">5.3.</span> <span class="nav-text">HTTP GET &#x2F;data&#x2F;uuid</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Meshblu%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">Meshbluのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curl%E3%81%A8Mosquitto"><span class="nav-number">1.1.</span> <span class="nav-text">curlとMosquitto</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E6%BA%96%E5%82%99"><span class="nav-number">2.</span> <span class="nav-text">デバイスの準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E7%99%BB%E9%8C%B2"><span class="nav-number">2.1.</span> <span class="nav-text">デバイスの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E4%B8%80%E8%A6%A7"><span class="nav-number">2.2.</span> <span class="nav-text">デバイスの一覧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesublu%E3%81%AE%E7%8A%B6%E6%85%8B%E7%A2%BA%E8%AA%8D"><span class="nav-number">3.</span> <span class="nav-text">Mesubluの状態確認</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#API%E3%81%AE%E4%BB%95%E6%A7%98"><span class="nav-number">3.1.</span> <span class="nav-text">APIの仕様</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL%E9%80%9A%E4%BF%A1%E3%81%AEinsecure%E3%83%95%E3%83%A9%E3%82%B0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><span class="nav-number">3.2.</span> <span class="nav-text">SSL通信のinsecureフラグについて</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GET-status"><span class="nav-number">3.3.</span> <span class="nav-text">GET &#x2F;status</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%82%92%E9%80%81%E4%BF%A1%E3%81%97%E3%81%A6%E3%80%81%E3%81%99%E3%81%90%E3%81%AB%E5%8F%97%E4%BF%A1%E3%81%99%E3%82%8B"><span class="nav-number">4.</span> <span class="nav-text">メッセージを送信して、すぐに受信する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-subscribe-uuid"><span class="nav-number">4.1.</span> <span class="nav-text">MQTT subscribe uuid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-publish-message"><span class="nav-number">4.2.</span> <span class="nav-text">MQTT publish message</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-POST-messages"><span class="nav-number">4.3.</span> <span class="nav-text">HTTP POST &#x2F;messages</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E4%BF%9D%E5%AD%98%E3%81%97%E3%81%A6%E3%80%81%E3%81%82%E3%81%A8%E3%81%A7%E5%8F%96%E3%82%8A%E5%87%BA%E3%81%99"><span class="nav-number">5.</span> <span class="nav-text">データを保存して、あとで取り出す</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-publish-data"><span class="nav-number">5.1.</span> <span class="nav-text">MQTT publish data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDB%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF"><span class="nav-number">5.2.</span> <span class="nav-text">MongoDBのデータ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-GET-data-uuid"><span class="nav-number">5.3.</span> <span class="nav-text">HTTP GET &#x2F;data&#x2F;uuid</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -457,10 +423,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -485,9 +454,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -527,13 +496,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

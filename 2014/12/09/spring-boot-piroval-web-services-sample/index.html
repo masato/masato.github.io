@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Spring Cloudの使い方を調べていると、よい記事がみつかりました。Introducing Spring Cloud Deploying a Spring boot application to Cloud Foundry with Spring-Cloud hello-spring-cloud これを参考にして、リポジトリにspring-cloud-sampleのサンプルを作成していきます">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring BootをPivotal Web Servicesにデプロイする - Part2: ローカルのDocker開発環境で実行する">
 <meta property="og:url" content="https://masato.github.io/2014/12/09/spring-boot-piroval-web-services-sample/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Spring Cloudの使い方を調べていると、よい記事がみつかりました。Introducing Spring Cloud Deploying a Spring boot application to Cloud Foundry with Spring-Cloud hello-spring-cloud これを参考にして、リポジトリにspring-cloud-sampleのサンプルを作成していきます">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-12-09T13:10:15.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.907Z">
+<meta property="article:modified_time" content="2014-12-09T13:10:15.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="SpringBoot">
 <meta property="article:tag" content="SpringCloud">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Spring BootをPivotal Web Servicesにデプロイする - Part2: ローカルのDocker開発環境で実行する | masato's blog</title>
+  <title>Spring BootをPivotal Web Servicesにデプロイする - Part2: ローカルのDocker開発環境で実行する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Dec 9 2014 22:10:15" itemprop="dateCreated datePublished" datetime="2014-12-09T22:10:15+09:00">Dec 9 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Spring Cloudの使い方を調べていると、よい記事がみつかりました。Introducing Spring Cloud Deploying a Spring boot application to Cloud Foundry with Spring-Cloud hello-spring-cloud これを参考にして、リポジトリにspring-cloud-sampleのサンプルを作成していきます。Javaアプリを実行可能なJARファイルにできると、DockerコンテナにはJVMがあればデプロイ可能になります。</div>
@@ -245,33 +212,33 @@
       
         <p>Spring Cloudの使い方を調べていると、よい記事がみつかりました。</p>
 <ul>
-<li><a href="http://spring.io/blog/2014/06/03/introducing-spring-cloud" target="_blank" rel="noopener">Introducing Spring Cloud</a></li>
-<li><a href="http://www.javacodegeeks.com/2014/08/deploying-a-spring-boot-application-to-cloud-foundry-with-spring-cloud.html" target="_blank" rel="noopener">Deploying a Spring boot application to Cloud Foundry with Spring-Cloud</a></li>
+<li><a target="_blank" rel="noopener" href="http://spring.io/blog/2014/06/03/introducing-spring-cloud">Introducing Spring Cloud</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.javacodegeeks.com/2014/08/deploying-a-spring-boot-application-to-cloud-foundry-with-spring-cloud.html">Deploying a Spring boot application to Cloud Foundry with Spring-Cloud</a></li>
 </ul>
-<p>これを参考にして、リポジトリに<a href="https://github.com/masato/spring-cloud-sample" target="_blank" rel="noopener">spring-cloud-sample</a>のサンプルを作成していきます。Javaアプリを実行可能なJARファイルにできると、DockerコンテナにはJVMがあればデプロイ可能になります。</p>
-<a id="more"></a>
+<p>これを参考にして、リポジトリに<a target="_blank" rel="noopener" href="https://github.com/masato/spring-cloud-sample">spring-cloud-sample</a>のサンプルを作成していきます。Javaアプリを実行可能なJARファイルにできると、DockerコンテナにはJVMがあればデプロイ可能になります。</p>
+<span id="more"></span>
 
-<h3 id="spring-cloud-sample"><a href="#spring-cloud-sample" class="headerlink" title="spring-cloud-sample"></a>spring-cloud-sample</h3><p>CloudFoundryの<a href="https://github.com/cloudfoundry-samples/hello-spring-cloud" target="_blank" rel="noopener">hello-spring-cloud</a>を参考にして、DataSourceのクラス名と接続URLを表示する簡単なプログラムを作成しました。</p>
+<h3 id="spring-cloud-sample"><a href="#spring-cloud-sample" class="headerlink" title="spring-cloud-sample"></a>spring-cloud-sample</h3><p>CloudFoundryの<a target="_blank" rel="noopener" href="https://github.com/cloudfoundry-samples/hello-spring-cloud">hello-spring-cloud</a>を参考にして、DataSourceのクラス名と接続URLを表示する簡単なプログラムを作成しました。</p>
 <p><code>@Profile(&quot;cloud&quot;)</code>アノテーションを指定しているので、CloudFoundryにデプロイした時にだけこのDataSourceのBeanは作成されます。</p>
-<figure class="highlight java"><figcaption><span>~/spring-cloud-sample/src/main/java/helloconfig/CloudConfiguration.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> helloconfig;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.config.java.AbstractCloudConfig;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Profile;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile</span>(<span class="string">"cloud"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudConfiguration</span> <span class="keyword">extends</span> <span class="title">AbstractCloudConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> connectionFactory().dataSource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><figcaption><span>~/spring-cloud-sample/src/main/java/helloconfig/CloudConfiguration.java</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> helloconfig;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.sql.DataSource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.config.java.AbstractCloudConfig;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Profile;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Profile(&quot;cloud&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudConfiguration</span> <span class="keyword">extends</span> <span class="title">AbstractCloudConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> connectionFactory().dataSource();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>ローカルで実行するときはapplication.propertiesで指定したDataSourceが使用されます。</p>
 <figure class="highlight bash"><figcaption><span>~/spring-cloud-sample/src/main/resources/application.properties</span></figcaption><table><tr><td class="code"><pre><span class="line">spring.datasource.platform: h2</span><br></pre></td></tr></table></figure>
 
-<h3 id="bundle-gradle"><a href="#bundle-gradle" class="headerlink" title="bundle.gradle"></a>bundle.gradle</h3><p>dependenciesに、<code>org.springframework.cloud:spring-cloud-cloudfoundry-connector</code>を追加しました。<a href="https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector" target="_blank" rel="noopener">spring-cloud-cloudfoundry-connector</a>の中で、<code>VCAP_SERVICES</code>環境変数のJSONをJacksonを使いアンマーシャルして、MySQLへの接続情報をセットしてくれます。</p>
-<figure class="highlight groovy"><figcaption><span>~/spring-cloud-sample/build.gradle</span></figcaption><table><tr><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        springBootVersion = <span class="string">'1.1.9.RELEASE'</span></span><br><span class="line">        springloadedVersion = <span class="string">'1.2.1.RELEASE'</span></span><br><span class="line">        springCloudVersion = <span class="string">'1.1.0.RELEASE'</span></span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(<span class="string">"org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;"</span>)</span><br><span class="line">        classpath(<span class="string">"org.springframework:springloaded:$&#123;springloadedVersion&#125;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'java'</span></span><br><span class="line">apply <span class="string">plugin:</span> <span class="string">'spring-boot'</span> </span><br><span class="line"></span><br><span class="line">jar &#123;</span><br><span class="line">    baseName = <span class="string">'helloconfig'</span></span><br><span class="line">    version = <span class="string">'0.0.1-SNAPSHOT'</span></span><br><span class="line">&#125;</span><br><span class="line">sourceCompatibility = <span class="number">1.8</span></span><br><span class="line">targetCompatibility = <span class="number">1.8</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile(<span class="string">"org.springframework.boot:spring-boot-starter-thymeleaf"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.boot:spring-boot-starter-data-jpa"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.cloud:spring-cloud-spring-service-connector:$&#123;springCloudVersion&#125;"</span>)</span><br><span class="line">    compile(<span class="string">"org.springframework.cloud:spring-cloud-cloudfoundry-connector:$&#123;springCloudVersion&#125;"</span>)</span><br><span class="line"></span><br><span class="line">    compile(<span class="string">"com.h2database:h2"</span>)</span><br><span class="line">    testCompile(<span class="string">"org.springframework.boot:spring-boot-starter-test"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task wrapper(<span class="string">type:</span> Wrapper) &#123;</span><br><span class="line">    gradleVersion = <span class="string">'2.2.1'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="bundle-gradle"><a href="#bundle-gradle" class="headerlink" title="bundle.gradle"></a>bundle.gradle</h3><p>dependenciesに、<code>org.springframework.cloud:spring-cloud-cloudfoundry-connector</code>を追加しました。<a target="_blank" rel="noopener" href="https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector">spring-cloud-cloudfoundry-connector</a>の中で、<code>VCAP_SERVICES</code>環境変数のJSONをJacksonを使いアンマーシャルして、MySQLへの接続情報をセットしてくれます。</p>
+<figure class="highlight groovy"><figcaption><span>~/spring-cloud-sample/build.gradle</span></figcaption><table><tr><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    ext &#123;</span><br><span class="line">        springBootVersion = <span class="string">&#x27;1.1.9.RELEASE&#x27;</span></span><br><span class="line">        springloadedVersion = <span class="string">&#x27;1.2.1.RELEASE&#x27;</span></span><br><span class="line">        springCloudVersion = <span class="string">&#x27;1.1.0.RELEASE&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath(<span class="string">&quot;org.springframework.boot:spring-boot-gradle-plugin:$&#123;springBootVersion&#125;&quot;</span>)</span><br><span class="line">        classpath(<span class="string">&quot;org.springframework:springloaded:$&#123;springloadedVersion&#125;&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">apply <span class="attr">plugin:</span> <span class="string">&#x27;java&#x27;</span></span><br><span class="line">apply <span class="attr">plugin:</span> <span class="string">&#x27;spring-boot&#x27;</span> </span><br><span class="line"></span><br><span class="line">jar &#123;</span><br><span class="line">    baseName = <span class="string">&#x27;helloconfig&#x27;</span></span><br><span class="line">    version = <span class="string">&#x27;0.0.1-SNAPSHOT&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">sourceCompatibility = <span class="number">1.8</span></span><br><span class="line">targetCompatibility = <span class="number">1.8</span></span><br><span class="line"></span><br><span class="line">repositories &#123;</span><br><span class="line">    mavenCentral()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile(<span class="string">&quot;org.springframework.boot:spring-boot-starter-thymeleaf&quot;</span>)</span><br><span class="line">    compile(<span class="string">&quot;org.springframework.boot:spring-boot-starter-data-jpa&quot;</span>)</span><br><span class="line">    compile(<span class="string">&quot;org.springframework.cloud:spring-cloud-spring-service-connector:$&#123;springCloudVersion&#125;&quot;</span>)</span><br><span class="line">    compile(<span class="string">&quot;org.springframework.cloud:spring-cloud-cloudfoundry-connector:$&#123;springCloudVersion&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line">    compile(<span class="string">&quot;com.h2database:h2&quot;</span>)</span><br><span class="line">    testCompile(<span class="string">&quot;org.springframework.boot:spring-boot-starter-test&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">task wrapper(<span class="attr">type:</span> Wrapper) &#123;</span><br><span class="line">    gradleVersion = <span class="string">&#x27;2.2.1&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="profileをcloudに指定"><a href="#profileをcloudに指定" class="headerlink" title="profileをcloudに指定"></a>profileをcloudに指定</h3><p>CloudFoundryにデプロイした時は、<a href="https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-spring_auto_reconfiguration.md" target="_blank" rel="noopener">Spring Auto-reconfiguration Framework</a>、<a href="https://github.com/cloudfoundry/java-buildpack-auto-reconfiguration" target="_blank" rel="noopener">java-buildpack-auto-reconfiguration</a>の中で、<code>environment.addActiveProfile(CLOUD_PROFILE);</code>をしてくれるので動的にprofileが”cloud”になります。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.cloudfoundry.reconfiguration.spring;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudProfileApplicationContextInitializer</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">        <span class="title">ApplicationContextInitializer</span>&lt;<span class="title">ConfigurableApplicationContext</span>&gt;, <span class="title">Ordered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CLOUD_PROFILE = <span class="string">"cloud"</span>;</span><br><span class="line">...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ConfigurableApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.cloudUtils.isInCloud()) &#123;</span><br><span class="line">            addCloudProfile(applicationContext);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.warning(<span class="string">"Not running in a cloud. Skipping 'cloud' profile activation."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addCloudProfile</span><span class="params">(ConfigurableApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">        ConfigurableEnvironment environment = applicationContext.getEnvironment();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (hasCloudProfile(environment)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.fine(<span class="string">"'cloud' already in list of active profiles"</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.info(<span class="string">"Adding 'cloud' to list of active profiles"</span>);</span><br><span class="line">            environment.addActiveProfile(CLOUD_PROFILE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="profileをcloudに指定"><a href="#profileをcloudに指定" class="headerlink" title="profileをcloudに指定"></a>profileをcloudに指定</h3><p>CloudFoundryにデプロイした時は、<a target="_blank" rel="noopener" href="https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-spring_auto_reconfiguration.md">Spring Auto-reconfiguration Framework</a>、<a target="_blank" rel="noopener" href="https://github.com/cloudfoundry/java-buildpack-auto-reconfiguration">java-buildpack-auto-reconfiguration</a>の中で、<code>environment.addActiveProfile(CLOUD_PROFILE);</code>をしてくれるので動的にprofileが”cloud”になります。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.cloudfoundry.reconfiguration.spring;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CloudProfileApplicationContextInitializer</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">        <span class="title">ApplicationContextInitializer</span>&lt;<span class="title">ConfigurableApplicationContext</span>&gt;, <span class="title">Ordered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CLOUD_PROFILE = <span class="string">&quot;cloud&quot;</span>;</span><br><span class="line">...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ConfigurableApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.cloudUtils.isInCloud()) &#123;</span><br><span class="line">            addCloudProfile(applicationContext);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.warning(<span class="string">&quot;Not running in a cloud. Skipping &#x27;cloud&#x27; profile activation.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addCloudProfile</span><span class="params">(ConfigurableApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">        ConfigurableEnvironment environment = applicationContext.getEnvironment();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (hasCloudProfile(environment)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.fine(<span class="string">&quot;&#x27;cloud&#x27; already in list of active profiles&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.logger.info(<span class="string">&quot;Adding &#x27;cloud&#x27; to list of active profiles&quot;</span>);</span><br><span class="line">            environment.addActiveProfile(CLOUD_PROFILE);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="gradlewを使って新しい環境でアプリを実行する"><a href="#gradlewを使って新しい環境でアプリを実行する" class="headerlink" title="gradlewを使って新しい環境でアプリを実行する"></a>gradlewを使って新しい環境でアプリを実行する</h3><p>このリポジトリにはgradlewを作成して追加しています。<a href="https://registry.hub.docker.com/u/dockerfile/java/" target="_blank" rel="noopener">dockerfile/java</a>を使った新しいコンテナ上で、すぐにGradleの環境を構築してアプリを実行することができます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm dockerfile/java:oracle-java8 bash</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/spring-cloud-sample</span><br><span class="line">$ <span class="built_in">cd</span> spring-cloud-sample</span><br><span class="line">$ ./gradlew</span><br><span class="line">...</span><br><span class="line">Welcome to Gradle 2.2.1.</span><br><span class="line"></span><br><span class="line">To run a build, run gradlew &lt;task&gt; ...</span><br><span class="line"></span><br><span class="line">To see a list of available tasks, run gradlew tasks</span><br><span class="line"></span><br><span class="line">To see a list of <span class="built_in">command</span>-line options, run gradlew --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">BUILD SUCCESSFUL</span><br><span class="line"></span><br><span class="line">Total time: 24.178 secs</span><br></pre></td></tr></table></figure>
+<h3 id="gradlewを使って新しい環境でアプリを実行する"><a href="#gradlewを使って新しい環境でアプリを実行する" class="headerlink" title="gradlewを使って新しい環境でアプリを実行する"></a>gradlewを使って新しい環境でアプリを実行する</h3><p>このリポジトリにはgradlewを作成して追加しています。<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/dockerfile/java/">dockerfile/java</a>を使った新しいコンテナ上で、すぐにGradleの環境を構築してアプリを実行することができます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm dockerfile/java:oracle-java8 bash</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/masato/spring-cloud-sample</span><br><span class="line">$ <span class="built_in">cd</span> spring-cloud-sample</span><br><span class="line">$ ./gradlew</span><br><span class="line">...</span><br><span class="line">Welcome to Gradle 2.2.1.</span><br><span class="line"></span><br><span class="line">To run a build, run gradlew &lt;task&gt; ...</span><br><span class="line"></span><br><span class="line">To see a list of available tasks, run gradlew tasks</span><br><span class="line"></span><br><span class="line">To see a list of command-line options, run gradlew --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">BUILD SUCCESSFUL</span><br><span class="line"></span><br><span class="line">Total time: 24.178 secs</span><br></pre></td></tr></table></figure>
 
 <h3 id="ローカルで実行する"><a href="#ローカルで実行する" class="headerlink" title="ローカルで実行する"></a>ローカルで実行する</h3><p>bootRunを実行します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./gradlew bootRun</span><br></pre></td></tr></table></figure>
 
 <p>Dockerホストから、コンテナのアプリへcurlを使い接続します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl $(docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> <span class="variable">$CONTAINER_ID</span>):8080</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Cloud Services&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h2&gt;Cloud Services&lt;/h2&gt;</span><br><span class="line">    &lt;table class=<span class="string">"table table-striped"</span>&gt;</span><br><span class="line">      &lt;thead&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;th&gt;Service Connector Type&lt;/th&gt;</span><br><span class="line">          &lt;th&gt;Connection address&lt;/th&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/thead&gt;</span><br><span class="line">      &lt;tbody&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;td&gt;&lt;strong&gt;org.apache.tomcat.jdbc.pool.DataSource&lt;/strong&gt;&lt;/td&gt;</span><br><span class="line">          &lt;td&gt;&amp;lt;bad url&amp;gt; h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE&lt;/td&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl $(docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;&quot;</span> <span class="variable">$CONTAINER_ID</span>):8080</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Cloud Services&lt;/title&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h2&gt;Cloud Services&lt;/h2&gt;</span><br><span class="line">    &lt;table class=<span class="string">&quot;table table-striped&quot;</span>&gt;</span><br><span class="line">      &lt;thead&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;th&gt;Service Connector Type&lt;/th&gt;</span><br><span class="line">          &lt;th&gt;Connection address&lt;/th&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/thead&gt;</span><br><span class="line">      &lt;tbody&gt;</span><br><span class="line">        &lt;tr&gt;</span><br><span class="line">          &lt;td&gt;&lt;strong&gt;org.apache.tomcat.jdbc.pool.DataSource&lt;/strong&gt;&lt;/td&gt;</span><br><span class="line">          &lt;td&gt;&amp;lt;bad url&amp;gt; h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE&lt;/td&gt;</span><br><span class="line">        &lt;/tr&gt;</span><br><span class="line">      &lt;/tbody&gt;</span><br><span class="line">    &lt;/table&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -311,7 +278,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -362,7 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-cloud-sample"><span class="nav-number">1.</span> <span class="nav-text">spring-cloud-sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bundle-gradle"><span class="nav-number">2.</span> <span class="nav-text">bundle.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profileをcloudに指定"><span class="nav-number">3.</span> <span class="nav-text">profileをcloudに指定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradlewを使って新しい環境でアプリを実行する"><span class="nav-number">4.</span> <span class="nav-text">gradlewを使って新しい環境でアプリを実行する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ローカルで実行する"><span class="nav-number">5.</span> <span class="nav-text">ローカルで実行する</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-cloud-sample"><span class="nav-number">1.</span> <span class="nav-text">spring-cloud-sample</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bundle-gradle"><span class="nav-number">2.</span> <span class="nav-text">bundle.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#profile%E3%82%92cloud%E3%81%AB%E6%8C%87%E5%AE%9A"><span class="nav-number">3.</span> <span class="nav-text">profileをcloudに指定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradlew%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E6%96%B0%E3%81%97%E3%81%84%E7%92%B0%E5%A2%83%E3%81%A7%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8B"><span class="nav-number">4.</span> <span class="nav-text">gradlewを使って新しい環境でアプリを実行する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E3%81%A7%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8B"><span class="nav-number">5.</span> <span class="nav-text">ローカルで実行する</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -394,10 +360,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -422,9 +391,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -464,13 +433,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

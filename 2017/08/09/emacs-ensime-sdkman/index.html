@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="EclimでJavaの開発環境構築をしました。同様にちょっとしたScalaのアプリを書きたい時にEclipseやIntelliJ IDEAを起動するのも重たいのでいつものEmacsでScalaの開発環境を構築します。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SDKMAN!とENSIMEとEmacsでScalaの開発環境構築">
 <meta property="og:url" content="https://masato.github.io/2017/08/09/emacs-ensime-sdkman/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="EclimでJavaの開発環境構築をしました。同様にちょっとしたScalaのアプリを書きたい時にEclipseやIntelliJ IDEAを起動するのも重たいのでいつものEmacsでScalaの開発環境を構築します。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-08-08T23:45:32.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.638Z">
+<meta property="article:modified_time" content="2017-08-08T23:45:32.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Scala">
 <meta property="article:tag" content="Emacs">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>SDKMAN!とENSIMEとEmacsでScalaの開発環境構築 | masato's blog</title>
+  <title>SDKMAN!とENSIMEとEmacsでScalaの開発環境構築 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 9 2017 08:45:32" itemprop="dateCreated datePublished" datetime="2017-08-09T08:45:32+09:00">Aug 9 2017</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">EclimでJavaの開発環境構築をしました。同様にちょっとしたScalaのアプリを書きたい時にEclipseやIntelliJ IDEAを起動するのも重たいのでいつものEmacsでScalaの開発環境を構築します。</div>
@@ -240,30 +207,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>　<a href="https://github.com/emacs-eclim/emacs-eclim" target="_blank" rel="noopener">Eclim</a>で<a href="https://masato.github.io/2017/08/04/emacs-eclim-java/">Javaの開発環境構築</a>をしました。同様にちょっとしたScalaのアプリを書きたい時にEclipseやIntelliJ IDEAを起動するのも重たいのでいつものEmacsでScalaの開発環境を構築します。</p>
-<a id="more"></a>
+        <p>　<a target="_blank" rel="noopener" href="https://github.com/emacs-eclim/emacs-eclim">Eclim</a>で<a href="https://masato.github.io/2017/08/04/emacs-eclim-java/">Javaの開発環境構築</a>をしました。同様にちょっとしたScalaのアプリを書きたい時にEclipseやIntelliJ IDEAを起動するのも重たいのでいつものEmacsでScalaの開発環境を構築します。</p>
+<span id="more"></span>
 
 <h2 id="開発用の仮想マシン"><a href="#開発用の仮想マシン" class="headerlink" title="開発用の仮想マシン"></a>開発用の仮想マシン</h2><p>　クラウド上にUbuntu 16.04.3の仮想マシンを用意してパッケージを更新しておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get dist-upgrade -y</span><br></pre></td></tr></table></figure>
 
-<h2 id="SDKMAN"><a href="#SDKMAN" class="headerlink" title="SDKMAN!"></a>SDKMAN!</h2><p>　<a href="http://sdkman.io/" target="_blank" rel="noopener">SDKMAN!</a>は<a href="https://gradle.org/" target="_blank" rel="noopener">Gradle</a>や<a href="http://www.scala-sbt.org/" target="_blank" rel="noopener">sbt</a>などJVM言語のSDK管理ツールです。最近ではJavaのバージョン管理もできるようになりました。</p>
+<h2 id="SDKMAN"><a href="#SDKMAN" class="headerlink" title="SDKMAN!"></a>SDKMAN!</h2><p>　<a target="_blank" rel="noopener" href="http://sdkman.io/">SDKMAN!</a>は<a target="_blank" rel="noopener" href="https://gradle.org/">Gradle</a>や<a target="_blank" rel="noopener" href="http://www.scala-sbt.org/">sbt</a>などJVM言語のSDK管理ツールです。最近ではJavaのバージョン管理もできるようになりました。</p>
 <p>　ワンライナーでSDKMAN!をインストールします。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ curl -s <span class="keyword">get</span>.sdkman.io | /bin/bash</span><br><span class="line">$ sdk version</span><br><span class="line">SDKMAN <span class="number">5.5</span><span class="number">.9</span>+<span class="number">231</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>curl -s get.sdkman.io | <span class="regexp">/bin/bash</span></span><br><span class="line"><span class="variable">$ </span>sdk version</span><br><span class="line">SDKMAN <span class="number">5.5</span>.<span class="number">9</span>+<span class="number">231</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h3><p>　SDKMAN!を使ってインストールできるJavaのバージョンを一覧します。</p>
 <figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">$ sdk list java</span><br><span class="line">================================================================================</span><br><span class="line">Available Java Versions</span><br><span class="line">================================================================================</span><br><span class="line"><span class="code">     8u141-oracle</span></span><br><span class="line"><span class="code">     8u131-zulu</span></span><br><span class="line"><span class="code">     7u141-zulu</span></span><br><span class="line"><span class="code">     6u93-zulu</span></span><br></pre></td></tr></table></figure>
 
-<p>　OpenJDKベースの<a href="http://www.azul.com/downloads/zulu/" target="_blank" rel="noopener">Zulu</a>の8を使います。</p>
+<p>　OpenJDKベースの<a target="_blank" rel="noopener" href="http://www.azul.com/downloads/zulu/">Zulu</a>の8を使います。</p>
 <figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">$ sdk <span class="keyword">install </span><span class="keyword">java </span><span class="number">8</span>u131-zulu</span><br></pre></td></tr></table></figure>
 
 <p>　シェルを起動し直して<code>$JAVA_HOME</code>環境変数を確認します。</p>
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ echo <span class="variable">$JAVA_HOME</span></span><br><span class="line"><span class="regexp">/home/</span>cloud-user<span class="regexp">/.sdkman/</span>candidates<span class="regexp">/java/</span>current</span><br></pre></td></tr></table></figure>
 
 <h3 id="Scalaとsbt"><a href="#Scalaとsbt" class="headerlink" title="Scalaとsbt"></a>Scalaとsbt</h3><p>　Scalaのインストール可能なバージョンです。</p>
-<figure class="highlight lsl"><table><tr><td class="code"><pre><span class="line">$ sdk <span class="type">list</span> scala</span><br><span class="line"></span><br><span class="line">================================================================================</span><br><span class="line">Available Scala Versions</span><br><span class="line">================================================================================</span><br><span class="line">     <span class="number">2.12</span><span class="number">.3</span></span><br><span class="line">     <span class="number">2.12</span><span class="number">.2</span></span><br><span class="line">     <span class="number">2.12</span><span class="number">.1</span></span><br><span class="line">     <span class="number">2.12</span><span class="number">.0</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.8</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.7</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.6</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.5</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.4</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.3</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.2</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.1</span></span><br><span class="line">     <span class="number">2.11</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line">$ sdk list scala</span><br><span class="line"></span><br><span class="line">================================================================================</span><br><span class="line">Available Scala Versions</span><br><span class="line">================================================================================</span><br><span class="line"><span class="code">     2.12.3</span></span><br><span class="line"><span class="code">     2.12.2</span></span><br><span class="line"><span class="code">     2.12.1</span></span><br><span class="line"><span class="code">     2.12.0</span></span><br><span class="line"><span class="code">     2.11.8</span></span><br><span class="line"><span class="code">     2.11.7</span></span><br><span class="line"><span class="code">     2.11.6</span></span><br><span class="line"><span class="code">     2.11.5</span></span><br><span class="line"><span class="code">     2.11.4</span></span><br><span class="line"><span class="code">     2.11.3</span></span><br><span class="line"><span class="code">     2.11.2</span></span><br><span class="line"><span class="code">     2.11.1</span></span><br><span class="line"><span class="code">     2.11.0</span></span><br></pre></td></tr></table></figure>
 
 <p>　Scalaを最新の<code>2.12.3</code>をインストールします。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ sdk install scala <span class="number">2.12</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">$ sdk <span class="keyword">install </span><span class="keyword">scala </span><span class="number">2</span>.<span class="number">12</span>.<span class="number">3</span></span><br></pre></td></tr></table></figure>
 
 <p>　続いてsbtです。バージョンを指定しない場合は最新がインストールされます。</p>
 <figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">$ sdk <span class="keyword">install </span><span class="keyword">sbt</span></span><br><span class="line"><span class="keyword">$ </span>sdk current <span class="keyword">sbt</span></span><br><span class="line"><span class="keyword"></span></span><br><span class="line"><span class="keyword">Using </span><span class="keyword">sbt </span>version <span class="number">0</span>.<span class="number">13</span>.<span class="number">15</span></span><br></pre></td></tr></table></figure>
@@ -271,13 +238,13 @@
 <h2 id="Emacs"><a href="#Emacs" class="headerlink" title="Emacs"></a>Emacs</h2><p>　Emacs24とCaskをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install emacs24-nox emacs24-el -y</span><br><span class="line">$ emacs --version</span><br><span class="line">GNU Emacs 24.5.1</span><br></pre></td></tr></table></figure>
 
-<p>　パッケージ管理の<a href="http://cask.github.io/" target="_blank" rel="noopener">Cask</a>です。インストールする時にGitとPythonが必要です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install git python -y</span><br><span class="line">$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'export PATH="$HOME/.cask/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>　パッケージ管理の<a target="_blank" rel="noopener" href="http://cask.github.io/">Cask</a>です。インストールする時にGitとPythonが必要です。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install git python -y</span><br><span class="line">$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;export PATH=&quot;$HOME/.cask/bin:$PATH&quot;&#x27;</span> &gt;&gt; ~/.bashrc</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
 
 <p>　<code>~/.emacs.d</code>ディレクトリに以下のような設定ファイルを用意します。</p>
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ tree ~<span class="regexp">/.emacs.d/</span></span><br><span class="line"><span class="regexp">/home/</span>cloud-user<span class="regexp">/.emacs.d/</span></span><br><span class="line">├── Cask</span><br><span class="line">└── init.el</span><br></pre></td></tr></table></figure>
 
-<p>　init.elは<a href="https://github.com/emacs-jp/init-loader" target="_blank" rel="noopener">init-loader</a>で分割したい場合は<a href="https://masato.github.io/2017/08/04/emacs-eclim-java/">前回</a>の設定を確認してください。</p>
+<p>　init.elは<a target="_blank" rel="noopener" href="https://github.com/emacs-jp/init-loader">init-loader</a>で分割したい場合は<a href="https://masato.github.io/2017/08/04/emacs-eclim-java/">前回</a>の設定を確認してください。</p>
 <ul>
 <li>~/.emacs.d/init.el</li>
 </ul>
@@ -292,14 +259,14 @@
 <p>　<code>~/.emacs.d</code>ディレクトリに移動してパッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.emacs.d</span><br><span class="line">$ cask install</span><br></pre></td></tr></table></figure>
 
-<h2 id="ユーザーごとの設定"><a href="#ユーザーごとの設定" class="headerlink" title="ユーザーごとの設定"></a>ユーザーごとの設定</h2><p>　sbtプラグインの<a href="http://ensime.org/build_tools/sbt/" target="_blank" rel="noopener">sbt-ensime</a>はユーザー単位にインストールします。プラグインのディレクトリがない場合は作成します。</p>
+<h2 id="ユーザーごとの設定"><a href="#ユーザーごとの設定" class="headerlink" title="ユーザーごとの設定"></a>ユーザーごとの設定</h2><p>　sbtプラグインの<a target="_blank" rel="noopener" href="http://ensime.org/build_tools/sbt/">sbt-ensime</a>はユーザー単位にインストールします。プラグインのディレクトリがない場合は作成します。</p>
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~<span class="regexp">/.sbt/</span><span class="number">0.13</span><span class="regexp">/plugins/</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="plugins-sbt"><a href="#plugins-sbt" class="headerlink" title="plugins.sbt"></a>plugins.sbt</h3><p>　sbtプラグインの<a href="http://ensime.org/build_tools/sbt/" target="_blank" rel="noopener">sbt-ensime</a>をインストールします。ホームの<code>~/.sbt</code>にplugins.sbtを作成します。</p>
+<h3 id="plugins-sbt"><a href="#plugins-sbt" class="headerlink" title="plugins.sbt"></a>plugins.sbt</h3><p>　sbtプラグインの<a target="_blank" rel="noopener" href="http://ensime.org/build_tools/sbt/">sbt-ensime</a>をインストールします。ホームの<code>~/.sbt</code>にplugins.sbtを作成します。</p>
 <ul>
 <li>~/.sbt/0.13/plugins/plugins.sbt</li>
 </ul>
-<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">addSbtPlugin(<span class="string">"org.ensime"</span> % <span class="string">"sbt-ensime"</span> % <span class="string">"1.12.14"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">addSbtPlugin(<span class="string">&quot;org.ensime&quot;</span> % <span class="string">&quot;sbt-ensime&quot;</span> % <span class="string">&quot;1.12.14&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="global-sbt"><a href="#global-sbt" class="headerlink" title="global.sbt"></a>global.sbt</h3><p>　sbt-ensimeプラグインの設定を記述します。</p>
 <ul>
@@ -309,19 +276,19 @@
 
 <p>　カスタマイズの内容は以下を参考にしました。</p>
 <ul>
-<li><p><code>scala_2.11</code>ディレクトリを作成しない<br><a href="https://stackoverflow.com/questions/41070767/ensimeconfig-creates-directories-java-and-scala-2-11-which-i-dont-need" target="_blank" rel="noopener">ensimeConfig creates directories java and scala-2.11, which I don’t need</a></p>
+<li><p><code>scala_2.11</code>ディレクトリを作成しない<br><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/41070767/ensimeconfig-creates-directories-java-and-scala-2-11-which-i-dont-need">ensimeConfig creates directories java and scala-2.11, which I don’t need</a></p>
 </li>
-<li><p><code>C-c</code>でプロセスをキャンセルする<br><a href="http://ensime.org/build_tools/sbt/#cancel-processes" target="_blank" rel="noopener">Cancel Proceses</a></p>
+<li><p><code>C-c</code>でプロセスをキャンセルする<br><a target="_blank" rel="noopener" href="http://ensime.org/build_tools/sbt/#cancel-processes">Cancel Proceses</a></p>
 </li>
 </ul>
 <h2 id="プロジェクトごとの設定"><a href="#プロジェクトごとの設定" class="headerlink" title="プロジェクトごとの設定"></a>プロジェクトごとの設定</h2><p>　簡単なsbtプロジェクトを作成してEmacsからENSIMEを利用してみます。</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~<span class="regexp">/scala_apps/spike</span> &amp;&amp; cd ~<span class="regexp">/scala_apps/spike</span></span><br><span class="line">$ cd ~<span class="regexp">/scala_apps/spike</span></span><br><span class="line">$ mkdir -p src/&#123;main,test&#125;/&#123;java,resources,scala&#125;</span><br><span class="line">$ mkdir <span class="class"><span class="keyword">lib</span> <span class="title">project</span> <span class="title">target</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~<span class="regexp">/scala_apps/</span>spike &amp;&amp; cd ~<span class="regexp">/scala_apps/</span>spike</span><br><span class="line">$ cd ~<span class="regexp">/scala_apps/</span>spike</span><br><span class="line">$ mkdir -p src<span class="regexp">/&#123;main,test&#125;/</span>&#123;java,resources,scala&#125;</span><br><span class="line">$ mkdir lib <span class="keyword">project</span> target</span><br></pre></td></tr></table></figure>
 
 <h3 id="build-sbt"><a href="#build-sbt" class="headerlink" title="build.sbt"></a>build.sbt</h3><p>　プロジェクト定義をbuild.sbtに書きます。ScalaのバージョンはSDKMAN!でインストールした<code>2.12.3</code>から<code>2.11.8</code>に変えてみました。</p>
 <ul>
 <li>~/scala_apps/spike/build.sbt</li>
 </ul>
-<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">name := <span class="string">"Spike"</span></span><br><span class="line">version := <span class="string">"0.1"</span></span><br><span class="line">scalaVersion := <span class="string">"2.11.8"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">name := <span class="string">&quot;Spike&quot;</span></span><br><span class="line">version := <span class="string">&quot;0.1&quot;</span></span><br><span class="line">scalaVersion := <span class="string">&quot;2.11.8&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="ensime"><a href="#ensime" class="headerlink" title=".ensime"></a>.ensime</h3><p>　プロジェクトのトップディレクトリでsbtを起動します。<code>ensimeConfig</code>コマンドを実行して<code>.ensime</code>ファイルを作成します。</p>
 <figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ cd ~/scala_apps/spike</span><br><span class="line">$ sbt </span><br><span class="line">&gt; ensimeConfig</span><br><span class="line">[<span class="builtin-name">info</span>] ENSIME update.</span><br><span class="line">[<span class="builtin-name">info</span>] Updating &#123;file:/home/cloud-user/scala_apps/spike/&#125;spike<span class="built_in">..</span>.</span><br><span class="line">[<span class="builtin-name">info</span>] Resolving jline#jline;2.12.1 <span class="built_in">..</span>.</span><br><span class="line">[<span class="builtin-name">info</span>] Done updating.</span><br><span class="line">[<span class="builtin-name">info</span>] Resolving org.scala-lang#scala-reflect;2.11.8 <span class="built_in">..</span>.</span><br><span class="line">[<span class="builtin-name">info</span>] ENSIME processing spike (Spike)</span><br></pre></td></tr></table></figure>
@@ -334,19 +301,19 @@
 <figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">ENSIME ready. May <span class="keyword">the</span> source be <span class="keyword">with</span> you, always.</span><br></pre></td></tr></table></figure>
 
 <h3 id="HelloWorld-scala"><a href="#HelloWorld-scala" class="headerlink" title="HelloWorld.scala"></a>HelloWorld.scala</h3><p> mainメソッドを実装したScalaのコードを書きます。</p>
-<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    println(<span class="string">"Hello World!"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    println(<span class="string">&quot;Hello World!&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="scala-mode"><a href="#scala-mode" class="headerlink" title="scala-mode"></a>scala-mode</h3><p>　<a href="http://ensime.org/editors/emacs/scala-mode/" target="_blank" rel="noopener">scala-mode</a>はENSIMEをインストールすると自動的に使えます。個別インストールも可能です。Scalaのコードを書く場合の基本的なモードです。例えばEmacsからScala REPLを起動してみます。キーバインドの意味は<code>control を押しながらc、v、controlを離してz</code>です。</p>
-<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">C-c C-v z</span></span><br></pre></td></tr></table></figure>
+<h3 id="scala-mode"><a href="#scala-mode" class="headerlink" title="scala-mode"></a>scala-mode</h3><p>　<a target="_blank" rel="noopener" href="http://ensime.org/editors/emacs/scala-mode/">scala-mode</a>はENSIMEをインストールすると自動的に使えます。個別インストールも可能です。Scalaのコードを書く場合の基本的なモードです。例えばEmacsからScala REPLを起動してみます。キーバインドの意味は<code>control を押しながらc、v、controlを離してz</code>です。</p>
+<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="built_in">C</span><span class="operator">-</span><span class="variable">c</span> <span class="built_in">C</span><span class="operator">-</span><span class="variable">v</span> <span class="variable">z</span></span><br></pre></td></tr></table></figure>
 
 <p>　プロジェクトのbuild.sbtに定義した<code>2.11.8</code>のREPLが起動しました。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">Welcome <span class="keyword">to</span> Scala 2.11.8 (OpenJDK 64-Bit<span class="built_in"> Server </span>VM, Java 1.8.0_131).</span><br><span class="line">Type <span class="keyword">in</span> expressions <span class="keyword">for</span> evaluation. <span class="keyword">Or</span> try :help.</span><br><span class="line"></span><br><span class="line">scala&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">Welcome</span> to Scala <span class="number">2</span>.<span class="number">11</span>.<span class="number">8</span> (OpenJDK <span class="number">64</span>-Bit Server VM, Java <span class="number">1</span>.<span class="number">8</span>.<span class="number">0</span>_<span class="number">131</span>).</span><br><span class="line"><span class="attribute">Type</span> in expressions for evaluation. Or try :help.</span><br><span class="line"></span><br><span class="line"><span class="attribute">scala</span>&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="sbt-mode"><a href="#sbt-mode" class="headerlink" title="sbt-mode"></a>sbt-mode</h3><p>　<a href="http://ensime.org/editors/emacs/sbt-mode/" target="_blank" rel="noopener">sbt-mode</a>も自動的に使えます。このモードではEmacsからsbtを操作するときに使います。sbtのセッションを起動します。</p>
+<h3 id="sbt-mode"><a href="#sbt-mode" class="headerlink" title="sbt-mode"></a>sbt-mode</h3><p>　<a target="_blank" rel="noopener" href="http://ensime.org/editors/emacs/sbt-mode/">sbt-mode</a>も自動的に使えます。このモードではEmacsからsbtを操作するときに使います。sbtのセッションを起動します。</p>
 <figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">M-x sbt-<span class="literal">start</span></span><br></pre></td></tr></table></figure>
 
 <p>　runコマンドはプロジェクトのmainメソッドをプログラムを実行します。Hello worldが表示されました。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">&gt; run</span><br><span class="line">[info] Running HelloWorld</span><br><span class="line">Hello World!</span><br><span class="line">[success] Total time: <span class="number">0</span> s, completed Aug <span class="number">9</span>, <span class="number">2017</span> <span class="number">9</span>:<span class="number">07</span>:<span class="number">09</span> AM</span><br></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">&gt; run</span><br><span class="line">[<span class="builtin-name">info</span>] Running HelloWorld</span><br><span class="line">Hello World!</span><br><span class="line">[success] Total time: 0 s, completed Aug 9, 2017 9:07:09 AM</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -382,7 +349,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -433,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#開発用の仮想マシン"><span class="nav-number">1.</span> <span class="nav-text">開発用の仮想マシン</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SDKMAN"><span class="nav-number">2.</span> <span class="nav-text">SDKMAN!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">2.1.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scalaとsbt"><span class="nav-number">2.2.</span> <span class="nav-text">Scalaとsbt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Emacs"><span class="nav-number">3.</span> <span class="nav-text">Emacs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ユーザーごとの設定"><span class="nav-number">4.</span> <span class="nav-text">ユーザーごとの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#plugins-sbt"><span class="nav-number">4.1.</span> <span class="nav-text">plugins.sbt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#global-sbt"><span class="nav-number">4.2.</span> <span class="nav-text">global.sbt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトごとの設定"><span class="nav-number">5.</span> <span class="nav-text">プロジェクトごとの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#build-sbt"><span class="nav-number">5.1.</span> <span class="nav-text">build.sbt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ensime"><span class="nav-number">5.2.</span> <span class="nav-text">.ensime</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENSIMEの使い方"><span class="nav-number">6.</span> <span class="nav-text">ENSIMEの使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#起動"><span class="nav-number">6.1.</span> <span class="nav-text">起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HelloWorld-scala"><span class="nav-number">6.2.</span> <span class="nav-text">HelloWorld.scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-mode"><span class="nav-number">6.3.</span> <span class="nav-text">scala-mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sbt-mode"><span class="nav-number">6.4.</span> <span class="nav-text">sbt-mode</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E7%99%BA%E7%94%A8%E3%81%AE%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3"><span class="nav-number">1.</span> <span class="nav-text">開発用の仮想マシン</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SDKMAN"><span class="nav-number">2.</span> <span class="nav-text">SDKMAN!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java"><span class="nav-number">2.1.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala%E3%81%A8sbt"><span class="nav-number">2.2.</span> <span class="nav-text">Scalaとsbt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Emacs"><span class="nav-number">3.</span> <span class="nav-text">Emacs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%94%E3%81%A8%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">4.</span> <span class="nav-text">ユーザーごとの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#plugins-sbt"><span class="nav-number">4.1.</span> <span class="nav-text">plugins.sbt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#global-sbt"><span class="nav-number">4.2.</span> <span class="nav-text">global.sbt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%94%E3%81%A8%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">5.</span> <span class="nav-text">プロジェクトごとの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#build-sbt"><span class="nav-number">5.1.</span> <span class="nav-text">build.sbt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ensime"><span class="nav-number">5.2.</span> <span class="nav-text">.ensime</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ENSIME%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9"><span class="nav-number">6.</span> <span class="nav-text">ENSIMEの使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%B7%E5%8B%95"><span class="nav-number">6.1.</span> <span class="nav-text">起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HelloWorld-scala"><span class="nav-number">6.2.</span> <span class="nav-text">HelloWorld.scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-mode"><span class="nav-number">6.3.</span> <span class="nav-text">scala-mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sbt-mode"><span class="nav-number">6.4.</span> <span class="nav-text">sbt-mode</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -465,10 +431,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -493,9 +462,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -535,13 +504,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

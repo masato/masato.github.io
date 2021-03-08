@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,25 +13,25 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="先日IDCFクラウドのDocker上に構築したCloud9環境に、Node.js製blogframeworkのHexoを移設します。ほぼ1年間Nitrous.IO上のHexoでブログを書いていたので、ファイル数が増え無料プランだとMarkdownのコンパイルの時間が増えるようになりプレビューがストレスでした。Nitrous.IO LITE終了がきっかけでしたが、自分クラウドのDocker環境に移設">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cloud9 on Docker - Part2: HexoブログをGitHub Pagesにデプロイする">
 <meta property="og:url" content="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="先日IDCFクラウドのDocker上に構築したCloud9環境に、Node.js製blogframeworkのHexoを移設します。ほぼ1年間Nitrous.IO上のHexoでブログを書いていたので、ファイル数が増え無料プランだとMarkdownのコンパイルの時間が増えるようになりプレビューがストレスでした。Nitrous.IO LITE終了がきっかけでしたが、自分クラウドのDocker環境に移設">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/hexo-default.png">
 <meta property="og:image" content="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/markdown-ja.png">
 <meta property="og:image" content="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/hexo-next.png">
 <meta property="article:published_time" content="2015-06-17T05:39:56.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.569Z">
+<meta property="article:modified_time" content="2015-06-17T05:39:56.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Cloud9">
 <meta property="article:tag" content="Hexo">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Cloud9 on Docker - Part2: HexoブログをGitHub Pagesにデプロイする | masato's blog</title>
+  <title>Cloud9 on Docker - Part2: HexoブログをGitHub Pagesにデプロイする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 17 2015 14:39:56" itemprop="dateCreated datePublished" datetime="2015-06-17T14:39:56+09:00">Jun 17 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">先日IDCFクラウドのDocker上に構築したCloud9環境に、Node.js製blogframeworkのHexoを移設します。ほぼ1年間Nitrous.IO上のHexoでブログを書いていたので、ファイル数が増え無料プランだとMarkdownのコンパイルの時間が増えるようになりプレビューがストレスでした。Nitrous.IO LITE終了がきっかけでしたが、自分クラウドのDocker環境に移設してとても快適になり結果的によかったです。</div>
@@ -245,8 +212,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="/2015/06/08/cloud9-on-idcf-install/">先日</a>IDCFクラウドのDocker上に構築した<a href="https://github.com/c9/core/" target="_blank" rel="noopener">Cloud9</a>環境に、Node.js製blogframeworkの<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>を移設します。ほぼ1年間Nitrous.IO上のHexoでブログを書いていたので、ファイル数が増え無料プランだとMarkdownのコンパイルの時間が増えるようになりプレビューがストレスでした。Nitrous.IO LITE終了がきっかけでしたが、自分クラウドのDocker環境に移設してとても快適になり結果的によかったです。</p>
-<a id="more"></a>
+        <p><a href="/2015/06/08/cloud9-on-idcf-install/">先日</a>IDCFクラウドのDocker上に構築した<a target="_blank" rel="noopener" href="https://github.com/c9/core/">Cloud9</a>環境に、Node.js製blogframeworkの<a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>を移設します。ほぼ1年間Nitrous.IO上のHexoでブログを書いていたので、ファイル数が増え無料プランだとMarkdownのコンパイルの時間が増えるようになりプレビューがストレスでした。Nitrous.IO LITE終了がきっかけでしたが、自分クラウドのDocker環境に移設してとても快適になり結果的によかったです。</p>
+<span id="more"></span>
 
 <h2 id="移設前のHexoの環境"><a href="#移設前のHexoの環境" class="headerlink" title="移設前のHexoの環境"></a>移設前のHexoの環境</h2><p>パッケージの更新を怠っているのでバージョンは少し古く3.0.0を使っています。現在の最新版は<code>3.1.1</code>なのでこの機会にアップデートも行います。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;hexo-site&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;0.0.1&quot;,</span><br><span class="line">  &quot;private&quot;: true,</span><br><span class="line">  &quot;dependencies&quot;: &#123;</span><br><span class="line">    &quot;hexo&quot;: &quot;^3.0.0&quot;,</span><br><span class="line">    &quot;hexo-deployer-git&quot;: &quot;0.0.4&quot;,</span><br><span class="line">    &quot;hexo-generator-archive&quot;: &quot;^0.1.1&quot;,</span><br><span class="line">    &quot;hexo-generator-category&quot;: &quot;^0.1.0&quot;,</span><br><span class="line">    &quot;hexo-generator-feed&quot;: &quot;^1.0.1&quot;,</span><br><span class="line">    &quot;hexo-generator-index&quot;: &quot;^0.1.0&quot;,</span><br><span class="line">    &quot;hexo-generator-sitemap&quot;: &quot;^1.0.1&quot;,</span><br><span class="line">    &quot;hexo-generator-tag&quot;: &quot;^0.1.0&quot;,</span><br><span class="line">    &quot;hexo-renderer-ejs&quot;: &quot;^0.1.0&quot;,</span><br><span class="line">    &quot;hexo-renderer-marked&quot;: &quot;^0.2.4&quot;,</span><br><span class="line">    &quot;hexo-renderer-stylus&quot;: &quot;^0.2.0&quot;,</span><br><span class="line">    &quot;hexo-server&quot;: &quot;^0.1.2&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;scripts&quot;: &#123;&quot;start&quot;: &quot;node server.js&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -254,21 +221,21 @@
 <h2 id="Dockerホストとタイムゾーンを合わせる"><a href="#Dockerホストとタイムゾーンを合わせる" class="headerlink" title="Dockerホストとタイムゾーンを合わせる"></a>Dockerホストとタイムゾーンを合わせる</h2><p>Dockerホストの<code>/etc/localtime</code>をリードオンリーでDockerコンテナにマップします。これでDockerコンテナも同じタイムゾーンで起動します。HexoはURLに日付が入っているのでタイムゾーンが変わると時間帯によってはURLが変わってしまいます。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">volumes:</span><br><span class="line">  - .&#x2F;workspace:&#x2F;workspace</span><br><span class="line">  - ~&#x2F;.ssh&#x2F;id_rsa:&#x2F;root&#x2F;.ssh&#x2F;id_rsa:ro</span><br><span class="line">  - ~&#x2F;.gitconfig:&#x2F;home&#x2F;docker&#x2F;.gitconfig:ro</span><br><span class="line">  - &#x2F;etc&#x2F;localtime:&#x2F;etc&#x2F;localtime:ro</span><br></pre></td></tr></table></figure>
 
-<h2 id="GitHubの設定"><a href="#GitHubの設定" class="headerlink" title="GitHubの設定"></a>GitHubの設定</h2><h3 id="SSHキーの作成"><a href="#SSHキーの作成" class="headerlink" title="SSHキーの作成"></a>SSHキーの作成</h3><p>Hexoは<a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>にデプロイするので、予めDockerホスト上でキーペアを作成しておきます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.ssh</span><br><span class="line">$ ssh-keygen -t rsa -b 4096 -C <span class="string">"ma6ato@gmail.com"</span></span><br></pre></td></tr></table></figure>
+<h2 id="GitHubの設定"><a href="#GitHubの設定" class="headerlink" title="GitHubの設定"></a>GitHubの設定</h2><h3 id="SSHキーの作成"><a href="#SSHキーの作成" class="headerlink" title="SSHキーの作成"></a>SSHキーの作成</h3><p>Hexoは<a target="_blank" rel="noopener" href="https://pages.github.com/">GitHub Pages</a>にデプロイするので、予めDockerホスト上でキーペアを作成しておきます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.ssh</span><br><span class="line">$ ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;ma6ato@gmail.com&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>GitHubの<a href="https://help.github.com/articles/generating-ssh-keys/" target="_blank" rel="noopener">SSHキー作成</a>ページの手順で自分のプロファイルにキーを追加します。Docker Composeからcloud9サービスを<code>up</code>するときに作業ユーザーで先ほど作成した<code>~/.ssh</code>ディレクトリをボリュームとしてマウントします。</p>
+<p>GitHubの<a target="_blank" rel="noopener" href="https://help.github.com/articles/generating-ssh-keys/">SSHキー作成</a>ページの手順で自分のプロファイルにキーを追加します。Docker Composeからcloud9サービスを<code>up</code>するときに作業ユーザーで先ほど作成した<code>~/.ssh</code>ディレクトリをボリュームとしてマウントします。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cloud9:</span><br><span class="line">  build: .</span><br><span class="line">  restart: always</span><br><span class="line">  ports:</span><br><span class="line">    - 8080:80</span><br><span class="line">    - 15454:15454</span><br><span class="line">    - 3000:3000</span><br><span class="line">    - 4000:4000</span><br><span class="line">  volumes:</span><br><span class="line">    - .&#x2F;workspace:&#x2F;workspace</span><br><span class="line">    - ~&#x2F;.ssh&#x2F;id_rsa:&#x2F;root&#x2F;.ssh&#x2F;id_rsa:ro</span><br><span class="line">    - &#x2F;etc&#x2F;localtime:&#x2F;etc&#x2F;localtime:ro</span><br><span class="line">  command: node &#x2F;cloud9&#x2F;server.js --port 80 -w &#x2F;workspace --auth xxx:xxx</span><br></pre></td></tr></table></figure>
 
 <h3 id="gitconfigの追加"><a href="#gitconfigの追加" class="headerlink" title=".gitconfigの追加"></a>.gitconfigの追加</h3><p><code>/root/.gitconfig</code>に予め用意しておきます。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[user]</span><br><span class="line">        name &#x3D; Masato Shimizu</span><br><span class="line">        email &#x3D; ma6ato@gmail.com</span><br><span class="line">[push]</span><br><span class="line">        default &#x3D; simple</span><br></pre></td></tr></table></figure>
 
 <p>DockerfikeでADDします。</p>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">ADD</span><span class="bash"> gitconfig /root/.gitconfig</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">ADD gitconfig <span class="regexp">/root/</span>.gitconfig</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="Hexoのインストール"><a href="#Hexoのインストール" class="headerlink" title="Hexoのインストール"></a>Hexoのインストール</h2><p>npmから<a href="https://github.com/hexojs/hexo-cli" target="_blank" rel="noopener">hexo-cli</a>をインストールします。Dockerコンテナ環境なのでnpmをグローバルにインストールしても環境が汚れることを気にしなくて済みます。旧環境の<code>blog/source</code>ディレクトリをGitHub上で管理しているので新環境にHexoをクリーンインストールした後、<code>git clone</code>してsourceディレクトリをコピーしようと思います。</p>
-<h3 id="npm-install"><a href="#npm-install" class="headerlink" title="npm install"></a>npm install</h3><p>インストールの手順は<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>に書いてあるようにとても簡単です。Dockerfileにhexo-cliのインストールを追加します。</p>
+<h2 id="Hexoのインストール"><a href="#Hexoのインストール" class="headerlink" title="Hexoのインストール"></a>Hexoのインストール</h2><p>npmから<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-cli">hexo-cli</a>をインストールします。Dockerコンテナ環境なのでnpmをグローバルにインストールしても環境が汚れることを気にしなくて済みます。旧環境の<code>blog/source</code>ディレクトリをGitHub上で管理しているので新環境にHexoをクリーンインストールした後、<code>git clone</code>してsourceディレクトリをコピーしようと思います。</p>
+<h3 id="npm-install"><a href="#npm-install" class="headerlink" title="npm install"></a>npm install</h3><p>インストールの手順は<a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>に書いてあるようにとても簡単です。Dockerfileにhexo-cliのインストールを追加します。</p>
 <figure class="highlight bash"><figcaption><span>~/node_apps/docker-cloud9/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN git <span class="built_in">clone</span> https://github.com/c9/core.git /cloud9 &amp;&amp; \</span><br><span class="line">    <span class="built_in">cd</span> /cloud9 &amp;&amp; ./scripts/install-sdk.sh</span><br><span class="line"></span><br><span class="line">RUN npm install hexo-cli -g</span><br><span class="line">WORKDIR /workspace</span><br></pre></td></tr></table></figure>
 
 <p>Dockerイメージをビルドし直して起動します。</p>
@@ -278,13 +245,13 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /workspace</span><br><span class="line">$ hexo init blog</span><br></pre></td></tr></table></figure>
 
 <p>ここで一度commitします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> blog</span><br><span class="line">$ git config --global user.email <span class="string">"ma6ato@gmail.com"</span></span><br><span class="line">$ git config --global user.name <span class="string">"Masato Shimizu"</span></span><br><span class="line">$ git init</span><br><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'first commit'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> blog</span><br><span class="line">$ git config --global user.email <span class="string">&quot;ma6ato@gmail.com&quot;</span></span><br><span class="line">$ git config --global user.name <span class="string">&quot;Masato Shimizu&quot;</span></span><br><span class="line">$ git init</span><br><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">&#x27;first commit&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>旧環境ではいくつかプラグインを使っているので追加でインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-deployer-git hexo-generator-feed hexo-generator-sitemap --save</span><br></pre></td></tr></table></figure>
 
 <p>最終的に以下のようなpackage.jsonになりました。</p>
-<figure class="highlight json"><figcaption><span>/workspace/blog/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"hexo-site"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.0"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"hexo"</span>: &#123;</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"3.1.1"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"hexo"</span>: <span class="string">"^3.1.0"</span>,</span><br><span class="line">    <span class="attr">"hexo-deployer-git"</span>: <span class="string">"0.0.4"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-archive"</span>: <span class="string">"^0.1.2"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-category"</span>: <span class="string">"^0.1.2"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-feed"</span>: <span class="string">"^1.0.2"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-index"</span>: <span class="string">"^0.1.2"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-sitemap"</span>: <span class="string">"^1.0.1"</span>,</span><br><span class="line">    <span class="attr">"hexo-generator-tag"</span>: <span class="string">"^0.1.1"</span>,</span><br><span class="line">    <span class="attr">"hexo-renderer-ejs"</span>: <span class="string">"^0.1.0"</span>,</span><br><span class="line">    <span class="attr">"hexo-renderer-marked"</span>: <span class="string">"^0.2.4"</span>,</span><br><span class="line">    <span class="attr">"hexo-renderer-stylus"</span>: <span class="string">"^0.2.0"</span>,</span><br><span class="line">    <span class="attr">"hexo-server"</span>: <span class="string">"^0.1.2"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>/workspace/blog/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;hexo-site&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;hexo&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;3.1.1&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;hexo&quot;</span>: <span class="string">&quot;^3.1.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-deployer-git&quot;</span>: <span class="string">&quot;0.0.4&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-archive&quot;</span>: <span class="string">&quot;^0.1.2&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-category&quot;</span>: <span class="string">&quot;^0.1.2&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-feed&quot;</span>: <span class="string">&quot;^1.0.2&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-index&quot;</span>: <span class="string">&quot;^0.1.2&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-sitemap&quot;</span>: <span class="string">&quot;^1.0.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-generator-tag&quot;</span>: <span class="string">&quot;^0.1.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-renderer-ejs&quot;</span>: <span class="string">&quot;^0.1.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-renderer-marked&quot;</span>: <span class="string">&quot;^0.2.4&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-renderer-stylus&quot;</span>: <span class="string">&quot;^0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;hexo-server&quot;</span>: <span class="string">&quot;^0.1.2&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>デフォルトの状態でプレビューをして確認します。デフォルトは4000 portですが、Cloud9コンテナはDockerホストの5000 portにマップしているので<code>-p</code>フラグから指定します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server -p 5000</span><br><span class="line">INFO  Hexo is running at http://0.0.0.0:5000/. Press Ctrl+C to stop.</span><br></pre></td></tr></table></figure>
@@ -292,11 +259,11 @@
 <p>WebブラウザからIDCFクラウドのDockerのCloud9コンテナで起動しているHexoサーバーに接続します。ややこしいです。</p>
 <p><img src="/2015/06/17/cloud9-on-idcf-hexo-next/hexo-default.png" alt="hexo-default.png"></p>
 <p>ちゃんとページが表示されているので、ここでcommitしておきます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'plugin install'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">&#x27;plugin install&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Cloud9のエディタ設定"><a href="#Cloud9のエディタ設定" class="headerlink" title="Cloud9のエディタ設定"></a>Cloud9のエディタ設定</h2><p>HexoのブログはMarkdownで記述します。Cloud9は日本語も使えますが、エディタの設定を折り返しにしないととても書きにくいです。エディタの右下にあるギアアイコンをクリックして<code>Wrap lines</code>にチェックをいれます。</p>
 <p><img src="/2015/06/17/cloud9-on-idcf-hexo-next/markdown-ja.png" alt="markdown-ja.png"></p>
-<h2 id="NexTテーマ"><a href="#NexTテーマ" class="headerlink" title="NexTテーマ"></a>NexTテーマ</h2><p>Hexoは<a href="https://github.com/hexojs/hexo/wiki/themes" target="_blank" rel="noopener">テーマ</a>を変更することでブログのテイストを変更することができます。先ほど確認した画面はデフォルトの<a href="https://github.com/hexojs/hexo-theme-landscape" target="_blank" rel="noopener">landscape</a>です。久しぶりにテーマのページを除いてみたらまた増えてました。好みのテーマを探すのも楽しいです。最近は<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">NexT</a>が気に入っています。</p>
+<h2 id="NexTテーマ"><a href="#NexTテーマ" class="headerlink" title="NexTテーマ"></a>NexTテーマ</h2><p>Hexoは<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/wiki/themes">テーマ</a>を変更することでブログのテイストを変更することができます。先ほど確認した画面はデフォルトの<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-theme-landscape">landscape</a>です。久しぶりにテーマのページを除いてみたらまた増えてました。好みのテーマを探すのも楽しいです。最近は<a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">NexT</a>が気に入っています。</p>
 <p>テーマのインストールも簡単で、GitHubからthemeディレクトリにcloneするだけです。</p>
 <p>blogインスタンスのディレクトリをgitで管理しているのでサブモジュールとしてcloneします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /workspace/blog</span><br><span class="line">$ git submodule add https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
@@ -305,37 +272,37 @@
 <p><img src="/2015/06/17/cloud9-on-idcf-hexo-next/hexo-next.png" alt="hexo-next.png"></p>
 <h2 id="設定変更"><a href="#設定変更" class="headerlink" title="設定変更"></a>設定変更</h2><p>Hexoのblogインスタンスの設定と、NexTテーマの設定をそれぞれ変更します。</p>
 <h3 id="blog-config-yml"><a href="#blog-config-yml" class="headerlink" title="blog/_config.yml"></a>blog/_config.yml</h3><p>設定方法は好みですが以下のdiffのように編集しました。YAMLの設定ファイルなのでわかりやすいです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ diff --git a/_config.yml b/_config.yml</span><br><span class="line">index 57e708e..5de1f0e 100644</span><br><span class="line">--- a/_config.yml</span><br><span class="line">+++ b/_config.yml</span><br><span class="line">@@ -3,16 +3,18 @@</span><br><span class="line"> <span class="comment">## Source: https://github.com/hexojs/hexo/</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Site</span></span><br><span class="line">-title: Hexo</span><br><span class="line">+title: <span class="string">"masato's blog"</span></span><br><span class="line"> subtitle:</span><br><span class="line">-description:</span><br><span class="line">-author: John Doe</span><br><span class="line">-language:</span><br><span class="line">-timezone:</span><br><span class="line">+description: <span class="string">"IoT, RaspberryPi, Arduino, Meshblu, Docker, Node.js, Clojure, ClojureScript"</span></span><br><span class="line">+author: <span class="string">"Masato Shimizu"</span></span><br><span class="line">+email: ma6ato@gmail.com</span><br><span class="line">+language: default</span><br><span class="line">+avatar: /images/profile.png</span><br><span class="line">+timezone: Asia/Tokyo</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># URL</span></span><br><span class="line"> <span class="comment">## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'</span></span><br><span class="line">-url: http://yoursite.com</span><br><span class="line">+url: http://masato.github.io/</span><br><span class="line"> root: /</span><br><span class="line"> permalink: :year/:month/:day/:title/</span><br><span class="line"> permalink_defaults:</span><br><span class="line">@@ -34,14 +36,13 @@ titlecase: <span class="literal">false</span> <span class="comment"># Transform title into titlecase</span></span><br><span class="line"> external_link: <span class="literal">true</span> <span class="comment"># Open external links in new tab</span></span><br><span class="line"> filename_case: 0</span><br><span class="line"> render_drafts: <span class="literal">false</span></span><br><span class="line">-post_asset_folder: <span class="literal">false</span></span><br><span class="line">+post_asset_folder: <span class="literal">true</span></span><br><span class="line"> relative_link: <span class="literal">false</span></span><br><span class="line"> future: <span class="literal">true</span></span><br><span class="line"> highlight:</span><br><span class="line">   <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">   line_number: <span class="literal">true</span></span><br><span class="line">-  auto_detect: <span class="literal">true</span></span><br><span class="line">-  tab_replace:</span><br><span class="line">+  tab_replace: <span class="literal">true</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Category &amp; Tag</span></span><br><span class="line"> default_category: uncategorized</span><br><span class="line">@@ -52,7 +53,8 @@ tag_map:</span><br><span class="line"> <span class="comment">## Hexo uses Moment.js to parse and display date</span></span><br><span class="line"> <span class="comment">## You can customize the date format as defined in</span></span><br><span class="line"> <span class="comment">## http://momentjs.com/docs/#/displaying/format/</span></span><br><span class="line">-date_format: YYYY-MM-DD</span><br><span class="line">+<span class="comment">#date_format: YYYY-MM-DD</span></span><br><span class="line">+date_format: MMM D YYYY</span><br><span class="line"> time_format: HH:mm:ss</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Pagination</span></span><br><span class="line">@@ -63,9 +65,36 @@ pagination_dir: page</span><br><span class="line"> <span class="comment"># Extensions</span></span><br><span class="line"> <span class="comment">## Plugins: http://hexo.io/plugins/</span></span><br><span class="line"> <span class="comment">## Themes: http://hexo.io/themes/</span></span><br><span class="line">-theme: landscape</span><br><span class="line">+theme: next</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Deployment</span></span><br><span class="line"> <span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></span><br><span class="line"> deploy:</span><br><span class="line">-  <span class="built_in">type</span>:</span><br><span class="line">+  <span class="built_in">type</span>: git</span><br><span class="line">+  repo: git@github.com:masato/masato.github.io.git</span><br><span class="line">+</span><br><span class="line">+sitemap:</span><br><span class="line">+  path: sitemap.xml</span><br><span class="line">+</span><br><span class="line">+feed:</span><br><span class="line">+  <span class="built_in">type</span>: rss2</span><br><span class="line">+  path: rss2.xml</span><br><span class="line">+  <span class="built_in">limit</span>: 20</span><br><span class="line">+</span><br><span class="line">+tag_generator:</span><br><span class="line">+  per_page: 10</span><br><span class="line">+</span><br><span class="line">+archive_generator:</span><br><span class="line">+  per_page: 10</span><br><span class="line">+  yearly: <span class="literal">true</span></span><br><span class="line">+  monthly: <span class="literal">true</span></span><br><span class="line">+</span><br><span class="line">+</span><br><span class="line">+<span class="comment"># Archives</span></span><br><span class="line">+<span class="comment">## 2: Enable pagination</span></span><br><span class="line">+<span class="comment">## 1: Disable pagination</span></span><br><span class="line">+<span class="comment">## 0: Fully Disable</span></span><br><span class="line">+archive: 2</span><br><span class="line">+category: 2</span><br><span class="line">+tag: 2</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ diff --git a/_config.yml b/_config.yml</span><br><span class="line">index 57e708e..5de1f0e 100644</span><br><span class="line">--- a/_config.yml</span><br><span class="line">+++ b/_config.yml</span><br><span class="line">@@ -3,16 +3,18 @@</span><br><span class="line"> <span class="comment">## Source: https://github.com/hexojs/hexo/</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Site</span></span><br><span class="line">-title: Hexo</span><br><span class="line">+title: <span class="string">&quot;masato&#x27;s blog&quot;</span></span><br><span class="line"> subtitle:</span><br><span class="line">-description:</span><br><span class="line">-author: John Doe</span><br><span class="line">-language:</span><br><span class="line">-timezone:</span><br><span class="line">+description: <span class="string">&quot;IoT, RaspberryPi, Arduino, Meshblu, Docker, Node.js, Clojure, ClojureScript&quot;</span></span><br><span class="line">+author: <span class="string">&quot;Masato Shimizu&quot;</span></span><br><span class="line">+email: ma6ato@gmail.com</span><br><span class="line">+language: default</span><br><span class="line">+avatar: /images/profile.png</span><br><span class="line">+timezone: Asia/Tokyo</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># URL</span></span><br><span class="line"> <span class="comment">## If your site is put in a subdirectory, set url as &#x27;http://yoursite.com/child&#x27; and root as &#x27;/child/&#x27;</span></span><br><span class="line">-url: http://yoursite.com</span><br><span class="line">+url: http://masato.github.io/</span><br><span class="line"> root: /</span><br><span class="line"> permalink: :year/:month/:day/:title/</span><br><span class="line"> permalink_defaults:</span><br><span class="line">@@ -34,14 +36,13 @@ titlecase: <span class="literal">false</span> <span class="comment"># Transform title into titlecase</span></span><br><span class="line"> external_link: <span class="literal">true</span> <span class="comment"># Open external links in new tab</span></span><br><span class="line"> filename_case: 0</span><br><span class="line"> render_drafts: <span class="literal">false</span></span><br><span class="line">-post_asset_folder: <span class="literal">false</span></span><br><span class="line">+post_asset_folder: <span class="literal">true</span></span><br><span class="line"> relative_link: <span class="literal">false</span></span><br><span class="line"> future: <span class="literal">true</span></span><br><span class="line"> highlight:</span><br><span class="line">   <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">   line_number: <span class="literal">true</span></span><br><span class="line">-  auto_detect: <span class="literal">true</span></span><br><span class="line">-  tab_replace:</span><br><span class="line">+  tab_replace: <span class="literal">true</span></span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Category &amp; Tag</span></span><br><span class="line"> default_category: uncategorized</span><br><span class="line">@@ -52,7 +53,8 @@ tag_map:</span><br><span class="line"> <span class="comment">## Hexo uses Moment.js to parse and display date</span></span><br><span class="line"> <span class="comment">## You can customize the date format as defined in</span></span><br><span class="line"> <span class="comment">## http://momentjs.com/docs/#/displaying/format/</span></span><br><span class="line">-date_format: YYYY-MM-DD</span><br><span class="line">+<span class="comment">#date_format: YYYY-MM-DD</span></span><br><span class="line">+date_format: MMM D YYYY</span><br><span class="line"> time_format: HH:mm:ss</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Pagination</span></span><br><span class="line">@@ -63,9 +65,36 @@ pagination_dir: page</span><br><span class="line"> <span class="comment"># Extensions</span></span><br><span class="line"> <span class="comment">## Plugins: http://hexo.io/plugins/</span></span><br><span class="line"> <span class="comment">## Themes: http://hexo.io/themes/</span></span><br><span class="line">-theme: landscape</span><br><span class="line">+theme: next</span><br><span class="line"> </span><br><span class="line"> <span class="comment"># Deployment</span></span><br><span class="line"> <span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></span><br><span class="line"> deploy:</span><br><span class="line">-  <span class="built_in">type</span>:</span><br><span class="line">+  <span class="built_in">type</span>: git</span><br><span class="line">+  repo: git@github.com:masato/masato.github.io.git</span><br><span class="line">+</span><br><span class="line">+sitemap:</span><br><span class="line">+  path: sitemap.xml</span><br><span class="line">+</span><br><span class="line">+feed:</span><br><span class="line">+  <span class="built_in">type</span>: rss2</span><br><span class="line">+  path: rss2.xml</span><br><span class="line">+  <span class="built_in">limit</span>: 20</span><br><span class="line">+</span><br><span class="line">+tag_generator:</span><br><span class="line">+  per_page: 10</span><br><span class="line">+</span><br><span class="line">+archive_generator:</span><br><span class="line">+  per_page: 10</span><br><span class="line">+  yearly: <span class="literal">true</span></span><br><span class="line">+  monthly: <span class="literal">true</span></span><br><span class="line">+</span><br><span class="line">+</span><br><span class="line">+<span class="comment"># Archives</span></span><br><span class="line">+<span class="comment">## 2: Enable pagination</span></span><br><span class="line">+<span class="comment">## 1: Disable pagination</span></span><br><span class="line">+<span class="comment">## 0: Fully Disable</span></span><br><span class="line">+archive: 2</span><br><span class="line">+category: 2</span><br><span class="line">+tag: 2</span><br></pre></td></tr></table></figure>
 
 <h3 id="themes-next-config-yml"><a href="#themes-next-config-yml" class="headerlink" title="themes/next/_config.yml"></a>themes/next/_config.yml</h3><p>NexTテーマも同様に編集します。こちらにはテーマ固有の設定を定義しています。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">diff --git a&#x2F;_config.yml b&#x2F;_config.yml</span><br><span class="line">index feb2741..b5ade09 100755</span><br><span class="line">--- a&#x2F;_config.yml</span><br><span class="line">+++ b&#x2F;_config.yml</span><br><span class="line">@@ -11,18 +11,18 @@ menu:</span><br><span class="line"> favicon: &#x2F;favicon.ico</span><br><span class="line"> </span><br><span class="line"> # Set default keywords (Use a comma to separate)</span><br><span class="line">-keywords: &quot;Hexo,next&quot;</span><br><span class="line">+keywords: &quot;IoT,RaspberryPi,Arduino,Meshblu,Docker,Node.js,Clojure,ClojureScript&quot;</span><br><span class="line"> </span><br><span class="line"> # Set rss to false to disable feed link.</span><br><span class="line"> # Leave rss as empty to use site&#39;s feed link.</span><br><span class="line"> # Set rss to specific value if you have burned your feed already.</span><br><span class="line">-rss:</span><br><span class="line">+rss: &#x2F;rss2.xml</span><br><span class="line"> </span><br><span class="line"> # Icon fonts</span><br><span class="line"> # Place your font into next&#x2F;source&#x2F;fonts, specify directory-name and font-name here</span><br><span class="line"> # Avialable: default | linecons | fifty-shades | feather</span><br><span class="line">-icon_font: default</span><br><span class="line">-#icon_font: fifty-shades</span><br><span class="line">+#icon_font: default</span><br><span class="line">+icon_font: fifty-shades</span><br><span class="line"> #icon_font: feather</span><br><span class="line"> #icon_font: linecons</span><br><span class="line"> </span><br><span class="line">@@ -74,3 +74,7 @@ images: images</span><br><span class="line"> </span><br><span class="line"> # Theme version</span><br><span class="line"> version: 0.4.3</span><br><span class="line">+</span><br><span class="line">+# Miscellaneous</span><br><span class="line">+google_analytics: UA-xxx</span><br><span class="line">+favicon: &#x2F;favicon.ico</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">diff --git a/_config.yml b/_config.yml</span><br><span class="line">index feb2741..b5ade09 100755</span><br><span class="line">--- a/_config.yml</span><br><span class="line">+++ b/_config.yml</span><br><span class="line">@@ -11,18 +11,18 @@ menu:</span><br><span class="line"> favicon: /favicon.ico</span><br><span class="line"> </span><br><span class="line"> # Set default keywords (Use a comma to separate)</span><br><span class="line">-keywords: &quot;Hexo,next&quot;</span><br><span class="line">+keywords: &quot;IoT,RaspberryPi,Arduino,Meshblu,Docker,Node.js,Clojure,ClojureScript&quot;</span><br><span class="line"> </span><br><span class="line"> # Set rss to false to disable feed link.</span><br><span class="line"> # Leave rss as empty to use site&#x27;s feed link.</span><br><span class="line"> # Set rss to specific value if you have burned your feed already.</span><br><span class="line">-rss:</span><br><span class="line">+rss: /rss2.xml</span><br><span class="line"> </span><br><span class="line"> # Icon fonts</span><br><span class="line"> # Place your font into next/source/fonts, specify directory-name and font-name here</span><br><span class="line"> # Avialable: default | linecons | fifty-shades | feather</span><br><span class="line">-icon_font: default</span><br><span class="line">-#icon_font: fifty-shades</span><br><span class="line">+#icon_font: default</span><br><span class="line">+icon_font: fifty-shades</span><br><span class="line"> #icon_font: feather</span><br><span class="line"> #icon_font: linecons</span><br><span class="line"> </span><br><span class="line">@@ -74,3 +74,7 @@ images: images</span><br><span class="line"> </span><br><span class="line"> # Theme version</span><br><span class="line"> version: 0.4.3</span><br><span class="line">+</span><br><span class="line">+# Miscellaneous</span><br><span class="line">+google_analytics: UA-xxx</span><br><span class="line">+favicon: /favicon.ico</span><br></pre></td></tr></table></figure>
 
 <p>デフォルトの画像ファイルなどを入れ替えます。</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/workspace/</span>blog<span class="regexp">/themes/</span><span class="keyword">next</span><span class="regexp">/source/</span>favicon.ico</span><br><span class="line"><span class="regexp">/workspace/</span>blog<span class="regexp">/themes/</span><span class="keyword">next</span><span class="regexp">/source/im</span>ages<span class="regexp">/profile.png</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">/workspace/</span>blog<span class="regexp">/themes/</span><span class="keyword">next</span><span class="regexp">/source/</span>favicon.ico</span><br><span class="line"><span class="regexp">/workspace/</span>blog<span class="regexp">/themes/</span><span class="keyword">next</span><span class="regexp">/source/im</span>ages/profile.png</span><br></pre></td></tr></table></figure>
 
 <p>設定ファイルの編集が終わったのでcommitします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'next config edit'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">&#x27;next config edit&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="フォントの変更"><a href="#フォントの変更" class="headerlink" title="フォントの変更"></a>フォントの変更</h3><p>font-familyも好みで変更します。NexTテーマの場合CSSフレームワークは<a href="https://github.com/tj/styl" target="_blank" rel="noopener">Styl</a>です。これはテーマを作る作者によって様々です。</p>
-<figure class="highlight"><figcaption><span>/workspace/blog/themes/next/source/css/_variables/base.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">// Font families.</span><br><span class="line">//$font-family-sans-serif   = "Avenir Next", Avenir, Tahoma, Vendana, sans-serif</span><br><span class="line">//$font-family-serif        = "PT Serif", Cambria, Georgia, "Times New Roman", serif</span><br><span class="line">//$font-family-monospace    = "PT Mono", Consolas, Monaco, Menlo, monospace</span><br><span class="line">//$font-family-chinese      = "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei"</span><br><span class="line">//$font-family-base         = Lato, $font-family-chinese, sans-serif</span><br><span class="line">//$font-family-headings     = Cambria, Georgia, $font-family-chinese, "Times New Roman", serif</span><br><span class="line">//$font-family-posts        = $font-family-base</span><br><span class="line"></span><br><span class="line">$font-family-sans-serif = 'Open Sans','Helvetica Neue','Helvetica','Arial','ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ', Meiryo,'ＭＳ Ｐゴシック','MS PGothic',sans-serif</span><br><span class="line">$font-family-serif = Georgia, "Times New Roman", serif</span><br><span class="line">$font-family-monospace = "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace</span><br><span class="line"></span><br><span class="line">$font-family-headings     = Lato, $font-family-sans-serif</span><br><span class="line">$font-family-posts        = Lato, $font-family-sans-serif</span><br><span class="line">$font-family-base         = $font-family-posts</span><br></pre></td></tr></table></figure>
+<h3 id="フォントの変更"><a href="#フォントの変更" class="headerlink" title="フォントの変更"></a>フォントの変更</h3><p>font-familyも好みで変更します。NexTテーマの場合CSSフレームワークは<a target="_blank" rel="noopener" href="https://github.com/tj/styl">Styl</a>です。これはテーマを作る作者によって様々です。</p>
+<figure class="highlight"><figcaption><span>/workspace/blog/themes/next/source/css/_variables/base.styl</span></figcaption><table><tr><td class="code"><pre><span class="line">// <span class="attribute">Font</span> families.</span><br><span class="line">//$font-family-sans-serif   = &quot;Avenir Next&quot;, Avenir, Tahoma, Vendana, sans-serif</span><br><span class="line">//$font-family-serif        = &quot;PT Serif&quot;, Cambria, Georgia, &quot;Times New Roman&quot;, serif</span><br><span class="line">//$font-family-monospace    = &quot;PT Mono&quot;, Consolas, Monaco, Menlo, monospace</span><br><span class="line">//$font-family-chinese      = &quot;Microsoft Jhenghei&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;</span><br><span class="line">//$font-family-base         = Lato, $font-family-chinese, sans-serif</span><br><span class="line">//$font-family-headings     = Cambria, Georgia, $font-family-chinese, &quot;Times New Roman&quot;, serif</span><br><span class="line">//$font-family-posts        = $font-family-base</span><br><span class="line"></span><br><span class="line">$font-family-sans-serif = &#x27;Open Sans&#x27;,&#x27;Helvetica Neue&#x27;,&#x27;Helvetica&#x27;,&#x27;Arial&#x27;,&#x27;ヒラギノ角ゴ Pro W3&#x27;,&#x27;Hiragino Kaku Gothic Pro&#x27;,&#x27;メイリオ&#x27;, Meiryo,&#x27;ＭＳ Ｐゴシック&#x27;,&#x27;MS PGothic&#x27;,sans-serif</span><br><span class="line">$font-family-serif = Georgia, &quot;Times New Roman&quot;, serif</span><br><span class="line">$font-family-monospace = &quot;Source Code Pro&quot;, Consolas, Monaco, Menlo, Consolas, monospace</span><br><span class="line"></span><br><span class="line">$font-family-headings     = Lato, $font-family-sans-serif</span><br><span class="line">$font-family-posts        = Lato, $font-family-sans-serif</span><br><span class="line">$font-family-base         = $font-family-posts</span><br></pre></td></tr></table></figure>
 
 <p>これでHexoの設定は終了です。コミットしておきます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">'next theme config'</span></span><br><span class="line">$ <span class="built_in">cd</span> workspace blog</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git add -A</span><br><span class="line">$ git commit -m <span class="string">&#x27;next theme config&#x27;</span></span><br><span class="line">$ <span class="built_in">cd</span> workspace blog</span><br></pre></td></tr></table></figure>
 
 <h2 id="Markdownのpostファイルのコピー"><a href="#Markdownのpostファイルのコピー" class="headerlink" title="Markdownのpostファイルのコピー"></a>Markdownのpostファイルのコピー</h2><p>記述したMarkdownはすべてGitHub上で管理しています。IDCFクラウド上のDockerホストにSSH接続してDocker Composeを起動しているディレクトリに移動します。docker-compose.ymlではCloud9のworkspaceをホストのディレクトリにマウントしています。</p>
 <figure class="highlight yaml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">cloud9:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">8080</span><span class="string">:80</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">15454</span><span class="string">:15454</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3000</span><span class="string">:3000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5000</span><span class="string">:5000</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./workspace:/workspace</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">node</span> <span class="string">/cloud9/server.js</span> <span class="string">--port</span> <span class="number">80</span> <span class="string">-w</span> <span class="string">/workspace</span> <span class="string">--auth</span> <span class="string">xxx:xxx</span></span><br></pre></td></tr></table></figure>
 
 <p>blogインスタンスのsourceディレクトリは一度削除してまるごとコピーします。最後に作り直したblogインスタンスのディレクトリをGitHubの新しいリポジトリにpushして移設は終了です。</p>
-<h2 id="GitHub-Pagesにデプロイ"><a href="#GitHub-Pagesにデプロイ" class="headerlink" title="GitHub Pagesにデプロイ"></a>GitHub Pagesにデプロイ</h2><p>blogインスタンスディレクトリの_config.ymlに<a href="http://hexo.io/docs/deployment.html" target="_blank" rel="noopener">デプロイ</a>の設定をします。</p>
-<h3 id="SSHキーの作成-1"><a href="#SSHキーの作成-1" class="headerlink" title="SSHキーの作成"></a>SSHキーの作成</h3><p>GitHubの<a href="https://help.github.com/articles/generating-ssh-keys/" target="_blank" rel="noopener">SSHキー作成</a>ページの手順で自分のプロファイルにキーを追加します。SSHキーもCloud9のコンソールから作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.ssh</span><br><span class="line">$ ssh-keygen -t rsa -b 4096 -C <span class="string">"ma6ato@gmail.com"</span></span><br></pre></td></tr></table></figure>
+<h2 id="GitHub-Pagesにデプロイ"><a href="#GitHub-Pagesにデプロイ" class="headerlink" title="GitHub Pagesにデプロイ"></a>GitHub Pagesにデプロイ</h2><p>blogインスタンスディレクトリの_config.ymlに<a target="_blank" rel="noopener" href="http://hexo.io/docs/deployment.html">デプロイ</a>の設定をします。</p>
+<h3 id="SSHキーの作成-1"><a href="#SSHキーの作成-1" class="headerlink" title="SSHキーの作成"></a>SSHキーの作成</h3><p>GitHubの<a target="_blank" rel="noopener" href="https://help.github.com/articles/generating-ssh-keys/">SSHキー作成</a>ページの手順で自分のプロファイルにキーを追加します。SSHキーもCloud9のコンソールから作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.ssh</span><br><span class="line">$ ssh-keygen -t rsa -b 4096 -C <span class="string">&quot;ma6ato@gmail.com&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="デプロイ"><a href="#デプロイ" class="headerlink" title="デプロイ"></a>デプロイ</h3><figure class="highlight yaml"><figcaption><span>/workspace/blog/_config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: http://hexo.io/docs/deployment.html</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line"> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line"> <span class="attr">repo:</span> <span class="string">git@github.com:masato/masato.github.io.git</span></span><br></pre></td></tr></table></figure>
 
 <p>Cloud9のコンソールからhexoコマンドを使ってデプロイします。この例では最初にコンパイル先のディレクトリをきれいにします。<code>--generate</code>フラグでMarkdownのコンパイルを行いデプロイしています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /workspace/blog</span><br><span class="line">$ hexo clean &amp;&amp; hexo deploy --generate</span><br></pre></td></tr></table></figure>
 
-<p>Nitrous.IOの無料版では<code>cd</code>コマンドでさえ重いくらいになっていましたが、Markdownのコンパイルもとても速くなりさくさく動くようになりました。Cloud IDEでブログを書いて<a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>にデプロイする環境が自分クラウドにできました。こちらがCloud9の新環境でデプロイしたHexoの<a href="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/">ページ</a>です。</p>
+<p>Nitrous.IOの無料版では<code>cd</code>コマンドでさえ重いくらいになっていましたが、Markdownのコンパイルもとても速くなりさくさく動くようになりました。Cloud IDEでブログを書いて<a target="_blank" rel="noopener" href="https://pages.github.com/">GitHub Pages</a>にデプロイする環境が自分クラウドにできました。こちらがCloud9の新環境でデプロイしたHexoの<a href="https://masato.github.io/2015/06/17/cloud9-on-idcf-hexo-next/">ページ</a>です。</p>
 
     </div>
 
@@ -373,7 +340,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -424,7 +390,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#移設前のHexoの環境"><span class="nav-number">1.</span> <span class="nav-text">移設前のHexoの環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerホストとタイムゾーンを合わせる"><span class="nav-number">2.</span> <span class="nav-text">Dockerホストとタイムゾーンを合わせる</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHubの設定"><span class="nav-number">3.</span> <span class="nav-text">GitHubの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHキーの作成"><span class="nav-number">3.1.</span> <span class="nav-text">SSHキーの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitconfigの追加"><span class="nav-number">3.2.</span> <span class="nav-text">.gitconfigの追加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexoのインストール"><span class="nav-number">4.</span> <span class="nav-text">Hexoのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#npm-install"><span class="nav-number">4.1.</span> <span class="nav-text">npm install</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloud9のエディタ設定"><span class="nav-number">5.</span> <span class="nav-text">Cloud9のエディタ設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NexTテーマ"><span class="nav-number">6.</span> <span class="nav-text">NexTテーマ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#設定変更"><span class="nav-number">7.</span> <span class="nav-text">設定変更</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-config-yml"><span class="nav-number">7.1.</span> <span class="nav-text">blog&#x2F;_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#themes-next-config-yml"><span class="nav-number">7.2.</span> <span class="nav-text">themes&#x2F;next&#x2F;_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#フォントの変更"><span class="nav-number">7.3.</span> <span class="nav-text">フォントの変更</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdownのpostファイルのコピー"><span class="nav-number">8.</span> <span class="nav-text">Markdownのpostファイルのコピー</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub-Pagesにデプロイ"><span class="nav-number">9.</span> <span class="nav-text">GitHub Pagesにデプロイ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSHキーの作成-1"><span class="nav-number">9.1.</span> <span class="nav-text">SSHキーの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デプロイ"><span class="nav-number">9.2.</span> <span class="nav-text">デプロイ</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%BB%E8%A8%AD%E5%89%8D%E3%81%AEHexo%E3%81%AE%E7%92%B0%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">移設前のHexoの環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker%E3%83%9B%E3%82%B9%E3%83%88%E3%81%A8%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%BE%E3%83%BC%E3%83%B3%E3%82%92%E5%90%88%E3%82%8F%E3%81%9B%E3%82%8B"><span class="nav-number">2.</span> <span class="nav-text">Dockerホストとタイムゾーンを合わせる</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">3.</span> <span class="nav-text">GitHubの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E3%82%AD%E3%83%BC%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.1.</span> <span class="nav-text">SSHキーの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitconfig%E3%81%AE%E8%BF%BD%E5%8A%A0"><span class="nav-number">3.2.</span> <span class="nav-text">.gitconfigの追加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">4.</span> <span class="nav-text">Hexoのインストール</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#npm-install"><span class="nav-number">4.1.</span> <span class="nav-text">npm install</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloud9%E3%81%AE%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E8%A8%AD%E5%AE%9A"><span class="nav-number">5.</span> <span class="nav-text">Cloud9のエディタ設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NexT%E3%83%86%E3%83%BC%E3%83%9E"><span class="nav-number">6.</span> <span class="nav-text">NexTテーマ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E5%A4%89%E6%9B%B4"><span class="nav-number">7.</span> <span class="nav-text">設定変更</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#blog-config-yml"><span class="nav-number">7.1.</span> <span class="nav-text">blog&#x2F;_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#themes-next-config-yml"><span class="nav-number">7.2.</span> <span class="nav-text">themes&#x2F;next&#x2F;_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88%E3%81%AE%E5%A4%89%E6%9B%B4"><span class="nav-number">7.3.</span> <span class="nav-text">フォントの変更</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown%E3%81%AEpost%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E3%82%B3%E3%83%94%E3%83%BC"><span class="nav-number">8.</span> <span class="nav-text">Markdownのpostファイルのコピー</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub-Pages%E3%81%AB%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4"><span class="nav-number">9.</span> <span class="nav-text">GitHub Pagesにデプロイ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E3%82%AD%E3%83%BC%E3%81%AE%E4%BD%9C%E6%88%90-1"><span class="nav-number">9.1.</span> <span class="nav-text">SSHキーの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4"><span class="nav-number">9.2.</span> <span class="nav-text">デプロイ</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -456,10 +422,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -484,9 +453,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -526,13 +495,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

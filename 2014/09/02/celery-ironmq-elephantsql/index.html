@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="PostgreSQL-as-a-ServiceのElaphantSQLをIronMQと一緒に使ってみます。Amazon RDSと同じように、PostgreSQLをクラウドサービスとして利用できます。HerokuやAppHarbor、cloudControlなどのPaaSからボタン一つでインテグレーションできるのが特徴です。ウミガメがかわいいTiny turtleプラン(20MB)は無料で使えます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CeleryとIronMQで非同期分散処理 - Part6: ElephantSQLを使う">
 <meta property="og:url" content="https://masato.github.io/2014/09/02/celery-ironmq-elephantsql/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="PostgreSQL-as-a-ServiceのElaphantSQLをIronMQと一緒に使ってみます。Amazon RDSと同じように、PostgreSQLをクラウドサービスとして利用できます。HerokuやAppHarbor、cloudControlなどのPaaSからボタン一つでインテグレーションできるのが特徴です。ウミガメがかわいいTiny turtleプラン(20MB)は無料で使えます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/09/02/celery-ironmq-elephantsql/elephantsql.png">
 <meta property="article:published_time" content="2014-09-01T15:20:11.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.558Z">
+<meta property="article:modified_time" content="2014-09-01T15:20:11.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ClearDB">
 <meta property="article:tag" content="ElephantSQL">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>CeleryとIronMQで非同期分散処理 - Part6: ElephantSQLを使う | masato's blog</title>
+  <title>CeleryとIronMQで非同期分散処理 - Part6: ElephantSQLを使う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 2 2014 00:20:11" itemprop="dateCreated datePublished" datetime="2014-09-02T00:20:11+09:00">Sep 2 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">PostgreSQL-as-a-ServiceのElaphantSQLをIronMQと一緒に使ってみます。Amazon RDSと同じように、PostgreSQLをクラウドサービスとして利用できます。HerokuやAppHarbor、cloudControlなどのPaaSからボタン一つでインテグレーションできるのが特徴です。ウミガメがかわいいTiny turtleプラン(20MB)は無料で使えます。今回のPoCには十分なサイズです。</div>
@@ -247,49 +214,49 @@
         <ul>
 <li><code>Update 2014-10-09</code>: <a href="/2014/08/27/celery-ironmq-newrelic-in-docker-container/">IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール</a></li>
 </ul>
-<p><code>PostgreSQL-as-a-Service</code>の<a href="http://www.elephantsql.com/" target="_blank" rel="noopener">ElaphantSQL</a>を<a href="http://www.iron.io/mq" target="_blank" rel="noopener">IronMQ</a>と一緒に使ってみます。<code>Amazon RDS</code>と同じように、PostgreSQLをクラウドサービスとして利用できます。<a href="https://www.heroku.com/" target="_blank" rel="noopener">Heroku</a>や<a href="https://appharbor.com/" target="_blank" rel="noopener">AppHarbor</a>、<a href="https://www.cloudcontrol.com" target="_blank" rel="noopener">cloudControl</a>などのPaaSからボタン一つでインテグレーションできるのが特徴です。</p>
+<p><code>PostgreSQL-as-a-Service</code>の<a target="_blank" rel="noopener" href="http://www.elephantsql.com/">ElaphantSQL</a>を<a target="_blank" rel="noopener" href="http://www.iron.io/mq">IronMQ</a>と一緒に使ってみます。<code>Amazon RDS</code>と同じように、PostgreSQLをクラウドサービスとして利用できます。<a target="_blank" rel="noopener" href="https://www.heroku.com/">Heroku</a>や<a target="_blank" rel="noopener" href="https://appharbor.com/">AppHarbor</a>、<a target="_blank" rel="noopener" href="https://www.cloudcontrol.com/">cloudControl</a>などのPaaSからボタン一つでインテグレーションできるのが特徴です。</p>
 <p>ウミガメがかわいい<code>Tiny turtle</code>プラン(20MB)は無料で使えます。今回のPoCには十分なサイズです。</p>
 <img src="/2014/09/02/celery-ironmq-elephantsql/elephantsql.png" class="center">
 
 
-<a id="more"></a>
+<span id="more"></span>
 
 
-<h3 id="サインアップ"><a href="#サインアップ" class="headerlink" title="サインアップ"></a>サインアップ</h3><p>メールアドレスを入力して<a href="https://customer.elephantsql.com/login" target="_blank" rel="noopener">Sign up</a>ボタンから登録します。<br>DataCenterは、<code>Amazon Asia Pacific (Tokyo)</code>もプルダウンにありますが、<code>Tiny turtle(Free)</code>の場合は<code>Amazon US East (Northern Virginia)</code>しか選べないようです。</p>
+<h3 id="サインアップ"><a href="#サインアップ" class="headerlink" title="サインアップ"></a>サインアップ</h3><p>メールアドレスを入力して<a target="_blank" rel="noopener" href="https://customer.elephantsql.com/login">Sign up</a>ボタンから登録します。<br>DataCenterは、<code>Amazon Asia Pacific (Tokyo)</code>もプルダウンにありますが、<code>Tiny turtle(Free)</code>の場合は<code>Amazon US East (Northern Virginia)</code>しか選べないようです。</p>
 <p>サインアップしてデータベースを作成すると、接続URLを取得できます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">postgres://&#123;username&#125;:&#123;passwd&#125;@babar.elephantsql.com:5432/&#123;dbname&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="psqlのインストール"><a href="#psqlのインストール" class="headerlink" title="psqlのインストール"></a>psqlのインストール</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install postgresql-client-9.3</span><br></pre></td></tr></table></figure>
+<h3 id="psqlのインストール"><a href="#psqlのインストール" class="headerlink" title="psqlのインストール"></a>psqlのインストール</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install postgresql-client-9.3 </span><br></pre></td></tr></table></figure>
 
 <p>接続確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ psql postgres://***:***@babar.elephantsql.com:5432/***</span><br><span class="line">psql (9.3.5, server 9.2.8)</span><br><span class="line">SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line">***=&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ psql postgres://***:***@babar.elephantsql.com:5432/***</span><br><span class="line">psql (9.3.5, server 9.2.8)</span><br><span class="line">SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)</span><br><span class="line">Type <span class="string">&quot;help&quot;</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line">***=&gt;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Pythonのpsycopg2モジュール"><a href="#Pythonのpsycopg2モジュール" class="headerlink" title="Pythonのpsycopg2モジュール"></a>Pythonのpsycopg2モジュール</h3><p>psycopg2と依存パッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install libpq-dev</span><br><span class="line">$ sudo pip install psycopg2</span><br><span class="line">...</span><br><span class="line">Successfully installed psycopg2</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure>
 
 <p>環境変数から接続用URLを取得してパースします。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/elephantsql.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> psycopg2</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">urlparse.uses_netloc.append(<span class="string">"postgres"</span>)</span><br><span class="line">url = urlparse.urlparse(os.environ[<span class="string">"DATABASE_URL"</span>])</span><br><span class="line"></span><br><span class="line">conn = psycopg2.connect(database=url.path[<span class="number">1</span>:],</span><br><span class="line">  user=url.username,</span><br><span class="line">  password=url.password,</span><br><span class="line">  host=url.hostname,</span><br><span class="line">  port=url.port</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">pprint(conn)</span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/elephantsql.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> psycopg2</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">urlparse.uses_netloc.append(<span class="string">&quot;postgres&quot;</span>)</span><br><span class="line">url = urlparse.urlparse(os.environ[<span class="string">&quot;DATABASE_URL&quot;</span>])</span><br><span class="line"></span><br><span class="line">conn = psycopg2.connect(database=url.path[<span class="number">1</span>:],</span><br><span class="line">  user=url.username,</span><br><span class="line">  password=url.password,</span><br><span class="line">  host=url.hostname,</span><br><span class="line">  port=url.port</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">pprint(conn)</span><br><span class="line">conn.close()</span><br></pre></td></tr></table></figure>
 
 <p>環境変数に<code>DATABASE_URL</code>を指定して実行します。コネクションオブジェクトのダンプが取れました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DATABASE_URL=postgres://***:***@babar.elephantsql.com:5432/*** python elephantsql.py</span><br><span class="line">connection object at 0x7f7b4e939c58; dsn: <span class="string">'dbname=xxx user=xxx password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx host=babar.elephantsql.com port=5432'</span>, closed: 0&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DATABASE_URL=postgres://***:***@babar.elephantsql.com:5432/*** python elephantsql.py</span><br><span class="line">connection object at 0x7f7b4e939c58; dsn: <span class="string">&#x27;dbname=xxx user=xxx password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx host=babar.elephantsql.com port=5432&#x27;</span>, closed: 0&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="SQLSoupのインストール"><a href="#SQLSoupのインストール" class="headerlink" title="SQLSoupのインストール"></a>SQLSoupのインストール</h3><p><a href="http://sqlsoup.readthedocs.org/en/latest/" target="_blank" rel="noopener">SQLSoup</a>はPython用のORMツールである<a href="http://www.sqlalchemy.org/" target="_blank" rel="noopener">SQLAlchemy</a>から派生したDBアクセスライブラリです。<br>ORMを使わず<code>Raw SQL</code>の実行が必要なときに私はよく使っています。またクラスを定義しなくてもDSLがあるのでSQL操作が簡単になります。</p>
+<h3 id="SQLSoupのインストール"><a href="#SQLSoupのインストール" class="headerlink" title="SQLSoupのインストール"></a>SQLSoupのインストール</h3><p><a target="_blank" rel="noopener" href="http://sqlsoup.readthedocs.org/en/latest/">SQLSoup</a>はPython用のORMツールである<a target="_blank" rel="noopener" href="http://www.sqlalchemy.org/">SQLAlchemy</a>から派生したDBアクセスライブラリです。<br>ORMを使わず<code>Raw SQL</code>の実行が必要なときに私はよく使っています。またクラスを定義しなくてもDSLがあるのでSQL操作が簡単になります。</p>
 <p>pipでSQLSoupをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install sqlsoup</span><br><span class="line">...</span><br><span class="line">Successfully installed sqlsoup SQLAlchemy</span><br><span class="line">Cleaning up...</span><br></pre></td></tr></table></figure>
 
 <h3 id="SQLSoupでテーブル作成"><a href="#SQLSoupでテーブル作成" class="headerlink" title="SQLSoupでテーブル作成"></a>SQLSoupでテーブル作成</h3><p>execute()メソッドに<code>Raw SQL</code>を渡して実行できます。<br>また、クラスを定義しなくても以下のようにaccountsテーブルに辞書を渡してinsertもできます。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">db.accounts.insert(account_uuid=<span class="string">'1234'</span>,host=<span class="string">'172.17.0.109'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">db.accounts.insert(account_uuid=<span class="string">&#x27;1234&#x27;</span>,host=<span class="string">&#x27;172.17.0.109&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>accountsテーブルを作成して、サンプルレコードをinsertしてみます。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/create_accounts_table.py </span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> create_engine</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"></span><br><span class="line">DATABASE_URL = <span class="string">'postgres://***:***@babar.elephantsql.com:5432/***'</span></span><br><span class="line"></span><br><span class="line">create_sql = <span class="string">'''</span></span><br><span class="line"><span class="string">CREATE TABLE IF NOT EXISTS accounts (</span></span><br><span class="line"><span class="string">  id SERIAL PRIMARY KEY,</span></span><br><span class="line"><span class="string">  account_uuid TEXT,</span></span><br><span class="line"><span class="string">  host TEXT</span></span><br><span class="line"><span class="string">)</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line">db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line">db.execute(create_sql)</span><br><span class="line">db.commit()</span><br><span class="line"></span><br><span class="line">db.accounts.insert(account_uuid=<span class="string">'1234'</span>,host=<span class="string">'172.17.0.109'</span>)</span><br><span class="line">db.commit()</span><br><span class="line"></span><br><span class="line">accounts = db.accounts.all()</span><br><span class="line"><span class="keyword">print</span> accounts</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/create_accounts_table.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> create_engine</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"></span><br><span class="line">DATABASE_URL = <span class="string">&#x27;postgres://***:***@babar.elephantsql.com:5432/***&#x27;</span></span><br><span class="line"></span><br><span class="line">create_sql = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">CREATE TABLE IF NOT EXISTS accounts (</span></span><br><span class="line"><span class="string">  id SERIAL PRIMARY KEY,</span></span><br><span class="line"><span class="string">  account_uuid TEXT,</span></span><br><span class="line"><span class="string">  host TEXT</span></span><br><span class="line"><span class="string">)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line">db.execute(create_sql)</span><br><span class="line">db.commit()</span><br><span class="line"></span><br><span class="line">db.accounts.insert(account_uuid=<span class="string">&#x27;1234&#x27;</span>,host=<span class="string">&#x27;172.17.0.109&#x27;</span>)</span><br><span class="line">db.commit()</span><br><span class="line"></span><br><span class="line">accounts = db.accounts.<span class="built_in">all</span>()</span><br><span class="line"><span class="built_in">print</span> accounts</span><br></pre></td></tr></table></figure>
 
 <h3 id="Pythonクライアントからqueue"><a href="#Pythonクライアントからqueue" class="headerlink" title="Pythonクライアントからqueue"></a>Pythonクライアントからqueue</h3><p>今までcurlでqueueしていましたが、JSON形式のメッセージを渡したいのでIronMQのPythonクライアントを使います。<br>メッセージは文字列なので、辞書からダンプしてJSON文字列にエンコードします。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/queue.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">'***'</span></span><br><span class="line">TOKEN = <span class="string">'***'</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">'my_queue'</span>)</span><br><span class="line">msg = dict(apikey=<span class="string">'***'</span>,</span><br><span class="line">           account_uuid=<span class="string">'1234'</span>)</span><br><span class="line">q.post(json.dumps(msg))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/queue.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">TOKEN = <span class="string">&#x27;***&#x27;</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">&#x27;my_queue&#x27;</span>)</span><br><span class="line">msg = <span class="built_in">dict</span>(apikey=<span class="string">&#x27;***&#x27;</span>,</span><br><span class="line">           account_uuid=<span class="string">&#x27;1234&#x27;</span>)</span><br><span class="line">q.post(json.dumps(msg))</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="IronQueryのpull-ワーカー"><a href="#IronQueryのpull-ワーカー" class="headerlink" title="IronQueryのpull ワーカー"></a>IronQueryのpull ワーカー</h3><p>queueに格納されるメッセージはJSON文字列なので、辞書にデコードしてから使います。<br>テスト用途なので、エラーが発生してもfinally節でqueueをdeleteします。</p>
 <p>SQLSoupから予め作成したElephantSQLのDBに接続します。<br>IronMQのqueueから取得したメッセージの<code>account_uuid</code>を検索条件に、ElephantSQLのテーブルからレコードを取得します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> (run,put)</span><br><span class="line"><span class="keyword">from</span> fabric.contrib.files <span class="keyword">import</span> append</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">'***'</span></span><br><span class="line">TOKEN = <span class="string">'***'</span></span><br><span class="line">HOST = <span class="string">'172.17.0.109'</span></span><br><span class="line">USER = <span class="string">'root'</span></span><br><span class="line">PASSWORD = <span class="string">'***'</span></span><br><span class="line">DATABASE_URL = <span class="string">'postgres://***:***@babar.elephantsql.com:5432/***'</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">'my_queue'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_host_by</span><span class="params">(account_uuid)</span>:</span></span><br><span class="line">    db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line">    account = db.accounts.filter_by(account_uuid=account_uuid).first()</span><br><span class="line">    <span class="keyword">if</span> account:</span><br><span class="line">        <span class="keyword">return</span> account.host</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        msg = q.get()</span><br><span class="line">        <span class="keyword">if</span> len(msg[<span class="string">'messages'</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">            time.sleep(<span class="number">10</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            req = json.loads(msg[<span class="string">'messages'</span>][<span class="number">0</span>][<span class="string">'body'</span>])</span><br><span class="line">            apikey = req[<span class="string">'apikey'</span>]</span><br><span class="line">            account_uuid = req[<span class="string">'account_uuid'</span>]</span><br><span class="line">            host = find_host_by(account_uuid)</span><br><span class="line">            print(host)</span><br><span class="line">        <span class="keyword">except</span> Exception, e:</span><br><span class="line">            traceback.print_exc()</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            q.delete(msg[<span class="string">"messages"</span>][<span class="number">0</span>][<span class="string">"id"</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">print</span> &gt;&gt; sys.stderr, <span class="string">'\nExit.\n'</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> (run,put)</span><br><span class="line"><span class="keyword">from</span> fabric.contrib.files <span class="keyword">import</span> append</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">TOKEN = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">HOST = <span class="string">&#x27;172.17.0.109&#x27;</span></span><br><span class="line">USER = <span class="string">&#x27;root&#x27;</span></span><br><span class="line">PASSWORD = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">DATABASE_URL = <span class="string">&#x27;postgres://***:***@babar.elephantsql.com:5432/***&#x27;</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">&#x27;my_queue&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_host_by</span>(<span class="params">account_uuid</span>):</span></span><br><span class="line">    db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line">    account = db.accounts.filter_by(account_uuid=account_uuid).first()</span><br><span class="line">    <span class="keyword">if</span> account:</span><br><span class="line">        <span class="keyword">return</span> account.host</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span>():</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        msg = q.get()</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(msg[<span class="string">&#x27;messages&#x27;</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">            time.sleep(<span class="number">10</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            req = json.loads(msg[<span class="string">&#x27;messages&#x27;</span>][<span class="number">0</span>][<span class="string">&#x27;body&#x27;</span>])</span><br><span class="line">            apikey = req[<span class="string">&#x27;apikey&#x27;</span>]</span><br><span class="line">            account_uuid = req[<span class="string">&#x27;account_uuid&#x27;</span>]</span><br><span class="line">            host = find_host_by(account_uuid)</span><br><span class="line">            print(host)</span><br><span class="line">        <span class="keyword">except</span> Exception, e:</span><br><span class="line">            traceback.print_exc()</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            q.delete(msg[<span class="string">&quot;messages&quot;</span>][<span class="number">0</span>][<span class="string">&quot;id&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="built_in">print</span> &gt;&gt; sys.stderr, <span class="string">&#x27;\nExit.\n&#x27;</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>MQを使った非同期分散処理のPoCでは、IronMQもElephantSQLも無料プランで試しています。</p>
 <p>自分でデータベースやMQのミドルウェアを管理しないでも、無料でクラウドサービスが使える便利な世の中になりました。<br>サーバーの面倒から解放されてとても気持ちが軽くなります。</p>
@@ -331,7 +298,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -382,7 +348,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#サインアップ"><span class="nav-number">1.</span> <span class="nav-text">サインアップ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#psqlのインストール"><span class="nav-number">2.</span> <span class="nav-text">psqlのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのpsycopg2モジュール"><span class="nav-number">3.</span> <span class="nav-text">Pythonのpsycopg2モジュール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLSoupのインストール"><span class="nav-number">4.</span> <span class="nav-text">SQLSoupのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLSoupでテーブル作成"><span class="nav-number">5.</span> <span class="nav-text">SQLSoupでテーブル作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonクライアントからqueue"><span class="nav-number">6.</span> <span class="nav-text">Pythonクライアントからqueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IronQueryのpull-ワーカー"><span class="nav-number">7.</span> <span class="nav-text">IronQueryのpull ワーカー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B5%E3%82%A4%E3%83%B3%E3%82%A2%E3%83%83%E3%83%97"><span class="nav-number">1.</span> <span class="nav-text">サインアップ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#psql%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">psqlのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%81%AEpsycopg2%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">Pythonのpsycopg2モジュール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLSoup%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">4.</span> <span class="nav-text">SQLSoupのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLSoup%E3%81%A7%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB%E4%BD%9C%E6%88%90"><span class="nav-number">5.</span> <span class="nav-text">SQLSoupでテーブル作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%8B%E3%82%89queue"><span class="nav-number">6.</span> <span class="nav-text">Pythonクライアントからqueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IronQuery%E3%81%AEpull-%E3%83%AF%E3%83%BC%E3%82%AB%E3%83%BC"><span class="nav-number">7.</span> <span class="nav-text">IronQueryのpull ワーカー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -414,10 +380,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -442,9 +411,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -484,13 +453,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="IDCFクラウドCLIのidcf-compute-apiを使って、インスタンスの作成とSaltをインストールしてみます。gcutilの--metadata_from_file&#x3D;user-data:cloud-config.yamlみたいに初期設定をuser-dataを渡せると便利ですが、使えないのでインスタンスの起動後にSSHでログインしてコマンドを実行します。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDCFクラウドのCLIでSaltをプロビジョニングする">
 <meta property="og:url" content="https://masato.github.io/2014/05/29/idcf-api-salt/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="IDCFクラウドCLIのidcf-compute-apiを使って、インスタンスの作成とSaltをインストールしてみます。gcutilの--metadata_from_file&#x3D;user-data:cloud-config.yamlみたいに初期設定をuser-dataを渡せると便利ですが、使えないのでインスタンスの起動後にSSHでログインしてコマンドを実行します。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-05-28T18:40:51.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.671Z">
+<meta property="article:modified_time" content="2014-05-28T18:40:51.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Salt">
 <meta property="article:tag" content="IDCFクラウド">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>IDCFクラウドのCLIでSaltをプロビジョニングする | masato's blog</title>
+  <title>IDCFクラウドのCLIでSaltをプロビジョニングする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 29 2014 03:40:51" itemprop="dateCreated datePublished" datetime="2014-05-29T03:40:51+09:00">May 29 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">IDCFクラウドCLIのidcf-compute-apiを使って、インスタンスの作成とSaltをインストールしてみます。gcutilの--metadata_from_file=user-data:cloud-config.yamlみたいに初期設定をuser-dataを渡せると便利ですが、使えないのでインスタンスの起動後にSSHでログインしてコマンドを実行します。</div>
@@ -245,8 +212,8 @@
 <li><code>Update 2014-09-06</code>: <a href="/2014/09/06/salt-idcf-docker-states/">Salt with Docker - Part1: Dockerインストール</a></li>
 <li><code>Update 2014-09-07</code>: <a href="/2014/09/07/salt-idcf-docker-wordpress/">Salt with Docker - Part2: WordPressインストール</a></li>
 </ul>
-<p>IDCFクラウドCLIの<a href="http://www.idcf.jp/cloud/docs/Getting%20Started" target="_blank" rel="noopener">idcf-compute-api</a>を使って、インスタンスの作成とSaltをインストールしてみます。<br>gcutilの<code>--metadata_from_file=user-data:cloud-config.yaml</code>みたいに初期設定をuser-dataを渡せると便利ですが、<br>使えないのでインスタンスの起動後にSSHでログインしてコマンドを実行します。</p>
-<a id="more"></a>
+<p>IDCFクラウドCLIの<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/docs/Getting%20Started">idcf-compute-api</a>を使って、インスタンスの作成とSaltをインストールしてみます。<br>gcutilの<code>--metadata_from_file=user-data:cloud-config.yaml</code>みたいに初期設定をuser-dataを渡せると便利ですが、<br>使えないのでインスタンスの起動後にSSHでログインしてコマンドを実行します。</p>
+<span id="more"></span>
 
 <h3 id="salt-installコマンド"><a href="#salt-installコマンド" class="headerlink" title="salt-installコマンド"></a>salt-installコマンド</h3><p>sshでコマンド実行しているだけなのでなんでもよいですが、いつものようにSaltをインストールするスクリプトを書きました。<br>idcf-compute-apiはvirtualenvにインストールしているため、最初にactivateしています。</p>
 <p>作成するインスタンスの設定は、<a href="/2014/05/28/idcf-api-jq/">昨日</a>と同じです。</p>
@@ -255,7 +222,7 @@
 <li><code>--templateid 7183</code> -&gt; Ubuntu Server 12.04.04</li>
 <li><code>--zoneid 1</code> -&gt; jp-east-t1ゾーン</li>
 </ul>
-<figure class="highlight bash"><figcaption><span>~/bin/salt-install</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">activate</span></span> () &#123;</span><br><span class="line">  . ~/.venv/Python-2.7.6/bin/activate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">activate</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">"<span class="variable">$1</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"hostname should be set"</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">results=$(idcf-compute-api deployVirtualMachine \</span><br><span class="line">          --serviceofferingid=21 --templateid=7183 --zoneid=1 \</span><br><span class="line">          --name=<span class="variable">$1</span> --displayname=<span class="variable">$1</span> --keypair=salt)</span><br><span class="line"></span><br><span class="line">jobid=$(<span class="built_in">echo</span> <span class="variable">$&#123;results&#125;</span> | jq <span class="string">'.deployvirtualmachineresponse.jobid'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> jobid: <span class="variable">$&#123;jobid&#125;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$&#123;job_id&#125;</span>"</span> = <span class="string">"null"</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$&#123;results&#125;</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  job_status=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span> \</span><br><span class="line">              | jq <span class="string">'.queryasyncjobresultresponse.jobstatus'</span>)</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;job_status&#125;</span> -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 15s</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse.jobresult.virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;'</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">until [ `nmap --open -p 22 <span class="string">"<span class="variable">$1</span>"</span> |grep -c <span class="string">"ssh"</span>` -eq 1 ]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  sleep 4</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">SSH_OPTS=<span class="string">"-o UserKnownHostsFile=/dev/null -o CheckHostIP=no -o StrictHostKeyChecking=no"</span></span><br><span class="line">SSH_KEY=<span class="string">"-i /home/mshimizu/.ssh/salt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  retval=$(ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> root@<span class="variable">$1</span> <span class="string">"echo ssh success"</span>)</span><br><span class="line">  <span class="keyword">if</span> [[ <span class="string">"<span class="variable">$retval</span>"</span> =~ success$ ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$retval</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 4</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$2</span>"</span> = <span class="string">"master"</span> ]; <span class="keyword">then</span></span><br><span class="line">  ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> -A root@<span class="variable">$1</span> <span class="string">"curl -L http://bootstrap.saltstack.org | sh -s -- -M -X"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> -A root@<span class="variable">$1</span> <span class="string">"curl -L http://bootstrap.saltstack.org | sh -s -- -X"</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/bin/salt-install</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">activate</span></span> () &#123;</span><br><span class="line">  . ~/.venv/Python-2.7.6/bin/activate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">activate</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="string">&quot;<span class="variable">$1</span>&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;hostname should be set&quot;</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">results=$(idcf-compute-api deployVirtualMachine \</span><br><span class="line">          --serviceofferingid=21 --templateid=7183 --zoneid=1 \</span><br><span class="line">          --name=<span class="variable">$1</span> --displayname=<span class="variable">$1</span> --keypair=salt)</span><br><span class="line"></span><br><span class="line">jobid=$(<span class="built_in">echo</span> <span class="variable">$&#123;results&#125;</span> | jq <span class="string">&#x27;.deployvirtualmachineresponse.jobid&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> jobid: <span class="variable">$&#123;jobid&#125;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$&#123;job_id&#125;</span>&quot;</span> = <span class="string">&quot;null&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="variable">$&#123;results&#125;</span></span><br><span class="line">  <span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  job_status=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span> \</span><br><span class="line">              | jq <span class="string">&#x27;.queryasyncjobresultresponse.jobstatus&#x27;</span>)</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;job_status&#125;</span> -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">&quot;.&quot;</span></span><br><span class="line">    sleep 15s</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">&#x27;.queryasyncjobresultresponse.jobresult.virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;&#x27;</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">until [ `nmap --open -p 22 <span class="string">&quot;<span class="variable">$1</span>&quot;</span> |grep -c <span class="string">&quot;ssh&quot;</span>` -eq 1 ]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  sleep 4</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line">SSH_OPTS=<span class="string">&quot;-o UserKnownHostsFile=/dev/null -o CheckHostIP=no -o StrictHostKeyChecking=no&quot;</span></span><br><span class="line">SSH_KEY=<span class="string">&quot;-i /home/mshimizu/.ssh/salt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  retval=$(ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> root@<span class="variable">$1</span> <span class="string">&quot;echo ssh success&quot;</span>)</span><br><span class="line">  <span class="keyword">if</span> [[ <span class="string">&quot;<span class="variable">$retval</span>&quot;</span> =~ success$ ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$retval</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">&quot;.&quot;</span></span><br><span class="line">    sleep 4</span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$2</span>&quot;</span> = <span class="string">&quot;master&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">  ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> -A root@<span class="variable">$1</span> <span class="string">&quot;curl -L http://bootstrap.saltstack.org | sh -s -- -M -X&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  ssh <span class="variable">$SSH_OPTS</span> <span class="variable">$SSH_KEY</span> -A root@<span class="variable">$1</span> <span class="string">&quot;curl -L http://bootstrap.saltstack.org | sh -s -- -X&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="使い方"><a href="#使い方" class="headerlink" title="使い方"></a>使い方</h3><p>スクリプトの第1引数にhostname、第2引数にmasterかminionのどちらをインストールするか指定します。</p>
 <p>salt-masterのインスタンス作成とインストールの場合</p>
@@ -272,7 +239,7 @@
 <li>nmapで22ポートを確認しても、authorized_keysのコピーが終わっていない</li>
 </ul>
 <p>もっとよい書き方がありそうですが、公開鍵認証のsshでテストコマンドを実行して、echoが返るまでポーリングすることにしました。</p>
-<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>今回は単純にSSHでbootstrapコマンドを実行するだけでしたが、Ansibleの<a href="http://docs.ansible.com/wait_for_module.html" target="_blank" rel="noopener">wait_for</a>を使うとYAMLで<a href="/2014/05/19/ansible-gce-salt/">きれい</a>に書けるかも知れません。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>今回は単純にSSHでbootstrapコマンドを実行するだけでしたが、Ansibleの<a target="_blank" rel="noopener" href="http://docs.ansible.com/wait_for_module.html">wait_for</a>を使うとYAMLで<a href="/2014/05/19/ansible-gce-salt/">きれい</a>に書けるかも知れません。</p>
 
     </div>
 
@@ -310,7 +277,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -361,7 +327,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-installコマンド"><span class="nav-number">1.</span> <span class="nav-text">salt-installコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使い方"><span class="nav-number">2.</span> <span class="nav-text">使い方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH起動のタイミング"><span class="nav-number">3.</span> <span class="nav-text">SSH起動のタイミング</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">4.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-install%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">1.</span> <span class="nav-text">salt-installコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E3%81%84%E6%96%B9"><span class="nav-number">2.</span> <span class="nav-text">使い方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSH%E8%B5%B7%E5%8B%95%E3%81%AE%E3%82%BF%E3%82%A4%E3%83%9F%E3%83%B3%E3%82%B0"><span class="nav-number">3.</span> <span class="nav-text">SSH起動のタイミング</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">4.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -393,10 +359,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -421,9 +390,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -463,13 +432,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

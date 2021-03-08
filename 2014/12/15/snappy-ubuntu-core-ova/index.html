@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Snappy Ubuntu Coreのqcow2ファイルをVMDKファイルに変換してOSXのVirtualBoxへデプロイは成功しましたが、VirtualBoxからexportしたOVAファイルはIDCFクラウドにテンプレートとして登録できませんでした。今回はVMXファイルを手動で作成してovftoolを使いOVAファイルを作成してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Snappy Ubuntu Core - Part2: OVAを作成してIDCFクラウドにデプロイする">
 <meta property="og:url" content="https://masato.github.io/2014/12/15/snappy-ubuntu-core-ova/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Snappy Ubuntu Coreのqcow2ファイルをVMDKファイルに変換してOSXのVirtualBoxへデプロイは成功しましたが、VirtualBoxからexportしたOVAファイルはIDCFクラウドにテンプレートとして登録できませんでした。今回はVMXファイルを手動で作成してovftoolを使いOVAファイルを作成してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-12-15T12:41:23.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.901Z">
+<meta property="article:modified_time" content="2014-12-15T12:41:23.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="SnappyUbuntuCore">
 <meta property="article:tag" content="IDCFクラウド">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Snappy Ubuntu Core - Part2: OVAを作成してIDCFクラウドにデプロイする | masato's blog</title>
+  <title>Snappy Ubuntu Core - Part2: OVAを作成してIDCFクラウドにデプロイする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Dec 15 2014 21:41:23" itemprop="dateCreated datePublished" datetime="2014-12-15T21:41:23+09:00">Dec 15 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Snappy Ubuntu Coreのqcow2ファイルをVMDKファイルに変換してOSXのVirtualBoxへデプロイは成功しましたが、VirtualBoxからexportしたOVAファイルはIDCFクラウドにテンプレートとして登録できませんでした。今回はVMXファイルを手動で作成してovftoolを使いOVAファイルを作成してみます。</div>
@@ -244,14 +211,14 @@
 
       
         <p>Snappy Ubuntu Coreのqcow2ファイルをVMDKファイルに変換して<a href="/2014/12/12/snappy-ubuntu-core-virtualbox/">OSXのVirtualBox</a>へデプロイは成功しましたが、VirtualBoxからexportしたOVAファイルはIDCFクラウドにテンプレートとして登録できませんでした。今回はVMXファイルを手動で作成してovftoolを使いOVAファイルを作成してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="ovftoolのインストール"><a href="#ovftoolのインストール" class="headerlink" title="ovftoolのインストール"></a>ovftoolのインストール</h3><p>最初にVMwareアカウントを作成します。ブラウザで<a href="https://my.vmware.com/web/vmware/details?downloadGroup=OVFTOOL400&productId=353" target="_blank" rel="noopener">OVF Tool Downloadページ</a>にアクセスしてVMware OVF Tool 4.0.0 for Linux 64 bitをダウンロードします。ダウンロードした<code>VMware-ovftool-4.0.0-2301625-lin.x86_64.bundle</code>を作業マシンにSCP転送します。</p>
+<h3 id="ovftoolのインストール"><a href="#ovftoolのインストール" class="headerlink" title="ovftoolのインストール"></a>ovftoolのインストール</h3><p>最初にVMwareアカウントを作成します。ブラウザで<a target="_blank" rel="noopener" href="https://my.vmware.com/web/vmware/details?downloadGroup=OVFTOOL400&productId=353">OVF Tool Downloadページ</a>にアクセスしてVMware OVF Tool 4.0.0 for Linux 64 bitをダウンロードします。ダウンロードした<code>VMware-ovftool-4.0.0-2301625-lin.x86_64.bundle</code>を作業マシンにSCP転送します。</p>
 <p>ovftoolをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo /bin/sh ~/VMware-ovftool-4.0.0-2301625-lin.x86_64.bundle</span><br><span class="line">...</span><br><span class="line">Installing VMware OVF Tool component <span class="keyword">for</span> Linux 4.0.0</span><br><span class="line">Copying files...</span><br><span class="line">Configuring...</span><br><span class="line">Installation was successful.</span><br></pre></td></tr></table></figure>
 
-<h3 id="VMXを作成する"><a href="#VMXを作成する" class="headerlink" title="VMXを作成する"></a>VMXを作成する</h3><p>Packerの<a href="https://github.com/mitchellh/packer/blob/master/builder/vmware/iso/step_create_vmx.go" target="_blank" rel="noopener">step_create_vmx.go</a>にあるVMXのテンプレートを参考にして、VMXファイルを作成します。</p>
-<figure class="highlight bash"><figcaption><span>~/ova/UbuntuCore.vmx</span></figcaption><table><tr><td class="code"><pre><span class="line">.encoding = <span class="string">"UTF-8"</span></span><br><span class="line">bios.bootOrder = <span class="string">"hdd,CDROM"</span></span><br><span class="line">checkpoint.vmState = <span class="string">""</span></span><br><span class="line">cleanShutdown = <span class="string">"TRUE"</span></span><br><span class="line">config.version = <span class="string">"8"</span></span><br><span class="line">displayName = <span class="string">"Ubuntu Core"</span></span><br><span class="line">ehci.pciSlotNumber = <span class="string">"34"</span></span><br><span class="line">ehci.present = <span class="string">"TRUE"</span></span><br><span class="line">ethernet0.addressType = <span class="string">"generated"</span></span><br><span class="line">ethernet0.bsdName = <span class="string">"en0"</span></span><br><span class="line">ethernet0.connectionType = <span class="string">"nat"</span></span><br><span class="line">ethernet0.displayName = <span class="string">"Ethernet"</span></span><br><span class="line">ethernet0.linkStatePropagation.enable = <span class="string">"FALSE"</span></span><br><span class="line">ethernet0.pciSlotNumber = <span class="string">"33"</span></span><br><span class="line">ethernet0.present = <span class="string">"TRUE"</span></span><br><span class="line">ethernet0.virtualDev = <span class="string">"e1000"</span></span><br><span class="line">ethernet0.wakeOnPcktRcv = <span class="string">"FALSE"</span></span><br><span class="line">extendedConfigFile = <span class="string">"Ubuntu Core.vmxf"</span></span><br><span class="line">floppy0.present = <span class="string">"FALSE"</span></span><br><span class="line">guestOS = <span class="string">"ubuntu-64"</span></span><br><span class="line">gui.fullScreenAtPowerOn = <span class="string">"FALSE"</span></span><br><span class="line">gui.viewModeAtPowerOn = <span class="string">"windowed"</span></span><br><span class="line">hgfs.linkRootShare = <span class="string">"TRUE"</span></span><br><span class="line">hgfs.mapRootShare = <span class="string">"TRUE"</span></span><br><span class="line">isolation.tools.hgfs.disable = <span class="string">"FALSE"</span></span><br><span class="line">memsize = <span class="string">"512"</span></span><br><span class="line">nvram = <span class="string">"Ubuntu Core.nvram"</span></span><br><span class="line">pciBridge0.pciSlotNumber = <span class="string">"17"</span></span><br><span class="line">pciBridge0.present = <span class="string">"TRUE"</span></span><br><span class="line">pciBridge4.functions = <span class="string">"8"</span></span><br><span class="line">pciBridge4.pciSlotNumber = <span class="string">"21"</span></span><br><span class="line">pciBridge4.present = <span class="string">"TRUE"</span></span><br><span class="line">pciBridge4.virtualDev = <span class="string">"pcieRootPort"</span></span><br><span class="line">pciBridge5.functions = <span class="string">"8"</span></span><br><span class="line">pciBridge5.pciSlotNumber = <span class="string">"22"</span></span><br><span class="line">pciBridge5.present = <span class="string">"TRUE"</span></span><br><span class="line">pciBridge5.virtualDev = <span class="string">"pcieRootPort"</span></span><br><span class="line">pciBridge6.functions = <span class="string">"8"</span></span><br><span class="line">pciBridge6.pciSlotNumber = <span class="string">"23"</span></span><br><span class="line">pciBridge6.present = <span class="string">"TRUE"</span></span><br><span class="line">pciBridge6.virtualDev = <span class="string">"pcieRootPort"</span></span><br><span class="line">pciBridge7.functions = <span class="string">"8"</span></span><br><span class="line">pciBridge7.pciSlotNumber = <span class="string">"24"</span></span><br><span class="line">pciBridge7.present = <span class="string">"TRUE"</span></span><br><span class="line">pciBridge7.virtualDev = <span class="string">"pcieRootPort"</span></span><br><span class="line">powerType.powerOff = <span class="string">"soft"</span></span><br><span class="line">powerType.powerOn = <span class="string">"soft"</span></span><br><span class="line">powerType.reset = <span class="string">"soft"</span></span><br><span class="line">powerType.suspend = <span class="string">"soft"</span></span><br><span class="line">proxyApps.publishToHost = <span class="string">"FALSE"</span></span><br><span class="line">replay.filename = <span class="string">""</span></span><br><span class="line">replay.supported = <span class="string">"FALSE"</span></span><br><span class="line">scsi0.pciSlotNumber = <span class="string">"16"</span></span><br><span class="line">scsi0.present = <span class="string">"TRUE"</span></span><br><span class="line">scsi0.virtualDev = <span class="string">"lsilogic"</span></span><br><span class="line">scsi0:0.fileName = <span class="string">"ubuntu-core-alpha-01.vmdk"</span></span><br><span class="line">scsi0:0.present = <span class="string">"TRUE"</span></span><br><span class="line">scsi0:0.redo = <span class="string">""</span></span><br><span class="line">sound.startConnected = <span class="string">"FALSE"</span></span><br><span class="line">tools.syncTime = <span class="string">"TRUE"</span></span><br><span class="line">tools.upgrade.policy = <span class="string">"upgradeAtPowerCycle"</span></span><br><span class="line">usb.pciSlotNumber = <span class="string">"32"</span></span><br><span class="line">usb.present = <span class="string">"FALSE"</span></span><br><span class="line">virtualHW.productCompatibility = <span class="string">"hosted"</span></span><br><span class="line">virtualHW.version = <span class="string">"10"</span></span><br><span class="line">vmci0.id = <span class="string">"1861462627"</span></span><br><span class="line">vmci0.pciSlotNumber = <span class="string">"35"</span></span><br><span class="line">vmci0.present = <span class="string">"TRUE"</span></span><br><span class="line">vmotion.checkpointFBSize = <span class="string">"65536000"</span></span><br></pre></td></tr></table></figure>
+<h3 id="VMXを作成する"><a href="#VMXを作成する" class="headerlink" title="VMXを作成する"></a>VMXを作成する</h3><p>Packerの<a target="_blank" rel="noopener" href="https://github.com/mitchellh/packer/blob/master/builder/vmware/iso/step_create_vmx.go">step_create_vmx.go</a>にあるVMXのテンプレートを参考にして、VMXファイルを作成します。</p>
+<figure class="highlight bash"><figcaption><span>~/ova/UbuntuCore.vmx</span></figcaption><table><tr><td class="code"><pre><span class="line">.encoding = <span class="string">&quot;UTF-8&quot;</span></span><br><span class="line">bios.bootOrder = <span class="string">&quot;hdd,CDROM&quot;</span></span><br><span class="line">checkpoint.vmState = <span class="string">&quot;&quot;</span></span><br><span class="line">cleanShutdown = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">config.version = <span class="string">&quot;8&quot;</span></span><br><span class="line">displayName = <span class="string">&quot;Ubuntu Core&quot;</span></span><br><span class="line">ehci.pciSlotNumber = <span class="string">&quot;34&quot;</span></span><br><span class="line">ehci.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">ethernet0.addressType = <span class="string">&quot;generated&quot;</span></span><br><span class="line">ethernet0.bsdName = <span class="string">&quot;en0&quot;</span></span><br><span class="line">ethernet0.connectionType = <span class="string">&quot;nat&quot;</span></span><br><span class="line">ethernet0.displayName = <span class="string">&quot;Ethernet&quot;</span></span><br><span class="line">ethernet0.linkStatePropagation.enable = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">ethernet0.pciSlotNumber = <span class="string">&quot;33&quot;</span></span><br><span class="line">ethernet0.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">ethernet0.virtualDev = <span class="string">&quot;e1000&quot;</span></span><br><span class="line">ethernet0.wakeOnPcktRcv = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">extendedConfigFile = <span class="string">&quot;Ubuntu Core.vmxf&quot;</span></span><br><span class="line">floppy0.present = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">guestOS = <span class="string">&quot;ubuntu-64&quot;</span></span><br><span class="line">gui.fullScreenAtPowerOn = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">gui.viewModeAtPowerOn = <span class="string">&quot;windowed&quot;</span></span><br><span class="line">hgfs.linkRootShare = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">hgfs.mapRootShare = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">isolation.tools.hgfs.disable = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">memsize = <span class="string">&quot;512&quot;</span></span><br><span class="line">nvram = <span class="string">&quot;Ubuntu Core.nvram&quot;</span></span><br><span class="line">pciBridge0.pciSlotNumber = <span class="string">&quot;17&quot;</span></span><br><span class="line">pciBridge0.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">pciBridge4.functions = <span class="string">&quot;8&quot;</span></span><br><span class="line">pciBridge4.pciSlotNumber = <span class="string">&quot;21&quot;</span></span><br><span class="line">pciBridge4.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">pciBridge4.virtualDev = <span class="string">&quot;pcieRootPort&quot;</span></span><br><span class="line">pciBridge5.functions = <span class="string">&quot;8&quot;</span></span><br><span class="line">pciBridge5.pciSlotNumber = <span class="string">&quot;22&quot;</span></span><br><span class="line">pciBridge5.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">pciBridge5.virtualDev = <span class="string">&quot;pcieRootPort&quot;</span></span><br><span class="line">pciBridge6.functions = <span class="string">&quot;8&quot;</span></span><br><span class="line">pciBridge6.pciSlotNumber = <span class="string">&quot;23&quot;</span></span><br><span class="line">pciBridge6.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">pciBridge6.virtualDev = <span class="string">&quot;pcieRootPort&quot;</span></span><br><span class="line">pciBridge7.functions = <span class="string">&quot;8&quot;</span></span><br><span class="line">pciBridge7.pciSlotNumber = <span class="string">&quot;24&quot;</span></span><br><span class="line">pciBridge7.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">pciBridge7.virtualDev = <span class="string">&quot;pcieRootPort&quot;</span></span><br><span class="line">powerType.powerOff = <span class="string">&quot;soft&quot;</span></span><br><span class="line">powerType.powerOn = <span class="string">&quot;soft&quot;</span></span><br><span class="line">powerType.reset = <span class="string">&quot;soft&quot;</span></span><br><span class="line">powerType.suspend = <span class="string">&quot;soft&quot;</span></span><br><span class="line">proxyApps.publishToHost = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">replay.filename = <span class="string">&quot;&quot;</span></span><br><span class="line">replay.supported = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">scsi0.pciSlotNumber = <span class="string">&quot;16&quot;</span></span><br><span class="line">scsi0.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">scsi0.virtualDev = <span class="string">&quot;lsilogic&quot;</span></span><br><span class="line">scsi0:0.fileName = <span class="string">&quot;ubuntu-core-alpha-01.vmdk&quot;</span></span><br><span class="line">scsi0:0.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">scsi0:0.redo = <span class="string">&quot;&quot;</span></span><br><span class="line">sound.startConnected = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">tools.syncTime = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">tools.upgrade.policy = <span class="string">&quot;upgradeAtPowerCycle&quot;</span></span><br><span class="line">usb.pciSlotNumber = <span class="string">&quot;32&quot;</span></span><br><span class="line">usb.present = <span class="string">&quot;FALSE&quot;</span></span><br><span class="line">virtualHW.productCompatibility = <span class="string">&quot;hosted&quot;</span></span><br><span class="line">virtualHW.version = <span class="string">&quot;10&quot;</span></span><br><span class="line">vmci0.id = <span class="string">&quot;1861462627&quot;</span></span><br><span class="line">vmci0.pciSlotNumber = <span class="string">&quot;35&quot;</span></span><br><span class="line">vmci0.present = <span class="string">&quot;TRUE&quot;</span></span><br><span class="line">vmotion.checkpointFBSize = <span class="string">&quot;65536000&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="VMXからOVAを作成する"><a href="#VMXからOVAを作成する" class="headerlink" title="VMXからOVAを作成する"></a>VMXからOVAを作成する</h3><p>OVAを作成するプロジェクトです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree ~/ova</span><br><span class="line">~/ova</span><br><span class="line">|-- UbuntuCore.vmx</span><br><span class="line">`-- ubuntu-core-alpha-01.vmdk</span><br></pre></td></tr></table></figure>
@@ -263,12 +230,12 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ s3cmd mb s3://my-ova</span><br><span class="line">$ s3cmd put --acl-public UbuntuCore.ova s3://my-ova</span><br></pre></td></tr></table></figure>
 
 <p>上記の場合のOVAダウンロードのURLは以下になります。</p>
-<p><a href="http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova" target="_blank" rel="noopener">http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova</a></p>
+<p><a target="_blank" rel="noopener" href="http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova">http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova</a></p>
 <h3 id="IDCFクラウドにテンプレートを作成する"><a href="#IDCFクラウドにテンプレートを作成する" class="headerlink" title="IDCFクラウドにテンプレートを作成する"></a>IDCFクラウドにテンプレートを作成する</h3><p>IDCFクラウドのダッシュボードにログインして、テンプレート画面を表示します。上記URLをOVAのURLを指定してOVAテンプレートを作成します。テンプレート名、説明、URL、OSタイプ以外はすべてデフォルトです。</p>
 <ul>
 <li>テンプレート名: UbuntuCore</li>
 <li>説明: UbuntuCore</li>
-<li>URL: <a href="http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova" target="_blank" rel="noopener">http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova</a></li>
+<li>URL: <a target="_blank" rel="noopener" href="http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova">http://my-ova.ds.jp-east.idcfcloud.com/UbuntuCore.ova</a></li>
 <li>ゾーン: tesla</li>
 <li>ハイパーバイザー: VMware</li>
 <li>OSタイプ: Ubuntu 12.04 (64-bit)</li>
@@ -282,7 +249,7 @@
 </ul>
 <h3 id="IDCFクラウドに仮想マシンを作成する"><a href="#IDCFクラウドに仮想マシンを作成する" class="headerlink" title="IDCFクラウドに仮想マシンを作成する"></a>IDCFクラウドに仮想マシンを作成する</h3><p>OVAテンプレートが作成できたら、新しい仮想マシンを作成します。</p>
 <h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>Snappy Ubuntu CoreにSSH接続します。username/passwordは、それぞれubuntu/ubuntuです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh ubuntu@10.3.0.9</span><br><span class="line">Welcome to Ubuntu Vivid Vervet (development branch) (GNU/Linux 3.16.0-25-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms <span class="keyword">for</span> each program are described <span class="keyword">in</span> the</span><br><span class="line">individual files <span class="keyword">in</span> /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">Welcome to the Ubuntu Core rolling development release.</span><br><span class="line"></span><br><span class="line"> * See https://ubuntu.com/snappy</span><br><span class="line"></span><br><span class="line">It<span class="string">'s a brave new world here in snappy Ubuntu Core! This machine</span></span><br><span class="line"><span class="string">does not use apt-get or deb packages. Please see '</span>snappy --<span class="built_in">help</span><span class="string">'</span></span><br><span class="line"><span class="string">for app installation and transactional updates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">To run a command as administrator (user "root"), use "sudo &lt;command&gt;".</span></span><br><span class="line"><span class="string">See "man sudo_root" for details.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ubuntu@localhost:~$</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh ubuntu@10.3.0.9</span><br><span class="line">Welcome to Ubuntu Vivid Vervet (development branch) (GNU/Linux 3.16.0-25-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com/</span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms <span class="keyword">for</span> each program are described <span class="keyword">in</span> the</span><br><span class="line">individual files <span class="keyword">in</span> /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">Welcome to the Ubuntu Core rolling development release.</span><br><span class="line"></span><br><span class="line"> * See https://ubuntu.com/snappy</span><br><span class="line"></span><br><span class="line">It<span class="string">&#x27;s a brave new world here in snappy Ubuntu Core! This machine</span></span><br><span class="line"><span class="string">does not use apt-get or deb packages. Please see &#x27;</span>snappy --<span class="built_in">help</span><span class="string">&#x27;</span></span><br><span class="line"><span class="string">for app installation and transactional updates.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">To run a command as administrator (user &quot;root&quot;), use &quot;sudo &lt;command&gt;&quot;.</span></span><br><span class="line"><span class="string">See &quot;man sudo_root&quot; for details.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">ubuntu@localhost:~$</span></span><br></pre></td></tr></table></figure>
 
 <p>snappyコマンドも使えるようになりました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy versions</span><br><span class="line">Part         Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">ubuntu-core  edge  140        141        184ad1e863e947  *</span><br></pre></td></tr></table></figure>
@@ -325,7 +292,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -376,7 +342,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ovftoolのインストール"><span class="nav-number">1.</span> <span class="nav-text">ovftoolのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMXを作成する"><span class="nav-number">2.</span> <span class="nav-text">VMXを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMXからOVAを作成する"><span class="nav-number">3.</span> <span class="nav-text">VMXからOVAを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFクラウドにテンプレートを作成する"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウドにテンプレートを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFクラウドに仮想マシンを作成する"><span class="nav-number">5.</span> <span class="nav-text">IDCFクラウドに仮想マシンを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ovftool%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">ovftoolのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMX%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B"><span class="nav-number">2.</span> <span class="nav-text">VMXを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VMX%E3%81%8B%E3%82%89OVA%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B"><span class="nav-number">3.</span> <span class="nav-text">VMXからOVAを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AB%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウドにテンプレートを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AB%E4%BB%AE%E6%83%B3%E3%83%9E%E3%82%B7%E3%83%B3%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B"><span class="nav-number">5.</span> <span class="nav-text">IDCFクラウドに仮想マシンを作成する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A2%BA%E8%AA%8D"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -408,10 +374,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -436,9 +405,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -478,13 +447,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

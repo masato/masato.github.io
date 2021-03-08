@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="BeagleBone BlackでMQTTのメッセージを受信して標準出力するサンプルを作成しました。次はもう少し複雑な処理を実装してみます。Cylon.jsのBeagleBone Blackアダプタを使いメッセージを受信したらLチカするだけなのですが、kernelバージョンの問題やCylon.jsのDSLの変更など、嵌まりどころが結構ありました。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BeagleBone BlackのDebianでCylon.jsを使いMQTTを受信してLチカする">
 <meta property="og:url" content="https://masato.github.io/2015/02/22/beagleboneblack-debian-cylonjs-mqtt-led/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="BeagleBone BlackでMQTTのメッセージを受信して標準出力するサンプルを作成しました。次はもう少し複雑な処理を実装してみます。Cylon.jsのBeagleBone Blackアダプタを使いメッセージを受信したらLチカするだけなのですが、kernelバージョンの問題やCylon.jsのDSLの変更など、嵌まりどころが結構ありました。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-02-22T01:37:46.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.548Z">
+<meta property="article:modified_time" content="2015-02-22T01:37:46.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="BeagleBoneBlack">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>BeagleBone BlackのDebianでCylon.jsを使いMQTTを受信してLチカする | masato's blog</title>
+  <title>BeagleBone BlackのDebianでCylon.jsを使いMQTTを受信してLチカする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 22 2015 10:37:46" itemprop="dateCreated datePublished" datetime="2015-02-22T10:37:46+09:00">Feb 22 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">BeagleBone BlackでMQTTのメッセージを受信して標準出力するサンプルを作成しました。次はもう少し複雑な処理を実装してみます。Cylon.jsのBeagleBone Blackアダプタを使いメッセージを受信したらLチカするだけなのですが、kernelバージョンの問題やCylon.jsのDSLの変更など、嵌まりどころが結構ありました。</div>
@@ -241,45 +208,44 @@
 
       
         <p>BeagleBone BlackでMQTTのメッセージを受信して標準出力する<a href="/2015/02/21/ifttt-do-button-wordpress-recipe/">サンプル</a>を作成しました。次はもう少し複雑な処理を実装してみます。Cylon.jsのBeagleBone Blackアダプタを使いメッセージを受信したらLチカするだけなのですが、kernelバージョンの問題やCylon.jsのDSLの変更など、嵌まりどころが結構ありました。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="ファームウェアのDebian-7-5"><a href="#ファームウェアのDebian-7-5" class="headerlink" title="ファームウェアのDebian 7.5"></a>ファームウェアのDebian 7.5</h2><p>BeagleBone BlackのファームウェアはDebian 7.5をeMMCに焼いてあります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/debian_version </span><br><span class="line">7.5</span><br></pre></td></tr></table></figure>
 
-<p>3.8.13 kernelを使っているので、BoneScriptがサポートしているバージョンです。Cylon.jsの<a href="https://github.com/hybridgroup/cylon-beaglebone" target="_blank" rel="noopener">cylon-beaglebone</a>アダプターを使ったLチカにも対応していました。</p>
+<p>3.8.13 kernelを使っているので、BoneScriptがサポートしているバージョンです。Cylon.jsの<a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-beaglebone">cylon-beaglebone</a>アダプターを使ったLチカにも対応していました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ uname -a</span><br><span class="line">Linux beaglebone 3.8.13-bone50 <span class="comment">#1 SMP Tue May 13 13:24:52 UTC 2014 armv7l GNU/Linux</span></span><br></pre></td></tr></table></figure>
 
 <p>Node.jsの環境も確認しておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> node</span><br><span class="line">/usr/bin/node</span><br><span class="line">$ node -v</span><br><span class="line">v0.10.25</span><br><span class="line">$ <span class="built_in">which</span> npm</span><br><span class="line">/usr/bin/npm</span><br><span class="line">$ npm -v</span><br><span class="line">1.3.10</span><br></pre></td></tr></table></figure>
 
 <h2 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h2><p>package.jsonを作成し必要なパッケージを定義します。</p>
-<figure class="highlight json"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"mqtt-led"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"cylon-beaglebone"</span>: <span class="string">"0.14.0"</span>,</span><br><span class="line">    <span class="attr">"cylon-mqtt"</span>: <span class="string">"0.4.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;mqtt-led&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;cylon-beaglebone&quot;</span>: <span class="string">&quot;0.14.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;cylon-mqtt&quot;</span>: <span class="string">&quot;0.4.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;<span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>システムクロックの時間がずれていると<code>npm install</code>で<code>CERT_NOT_YET_VALID</code>が発生してエラーになります。BeagleBone Blackの電源を入れたあとはntpdateで時間合わせをします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ntpdate -b -s -u pool.ntp.org</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
 
-<h2 id="MQTTのsubscribeでLチカする"><a href="#MQTTのsubscribeでLチカする" class="headerlink" title="MQTTのsubscribeでLチカする"></a>MQTTのsubscribeでLチカする</h2><h3 id="Cylon-jsのMQTTドライバーの注意"><a href="#Cylon-jsのMQTTドライバーの注意" class="headerlink" title="Cylon.jsのMQTTドライバーの注意"></a>Cylon.jsのMQTTドライバーの注意</h3><p><a href="https://github.com/hybridgroup/cylon-mqtt/" target="_blank" rel="noopener">cylon-mqtt</a>の<code>Arduino Blink</code>を参考にしてコードを書いていたのですが、このサンプルが間違っていて実行するとエラーになります。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line"></span><br><span class="line">/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:82</span><br><span class="line">  this.connection.digitalWrite(this.pin, 1);</span><br><span class="line">                  ^</span><br><span class="line">TypeError: Object <span class="comment">#&lt;Adaptor&gt; has no method 'digitalWrite'</span></span><br><span class="line">    at Led.turnOn (/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:82:19)</span><br><span class="line">    at Led.toggle (/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:108:10)</span><br><span class="line">    at Driver.&lt;anonymous&gt; (/home/debian/node_apps/app.js:20:14)</span><br></pre></td></tr></table></figure>
+<h2 id="MQTTのsubscribeでLチカする"><a href="#MQTTのsubscribeでLチカする" class="headerlink" title="MQTTのsubscribeでLチカする"></a>MQTTのsubscribeでLチカする</h2><h3 id="Cylon-jsのMQTTドライバーの注意"><a href="#Cylon-jsのMQTTドライバーの注意" class="headerlink" title="Cylon.jsのMQTTドライバーの注意"></a>Cylon.jsのMQTTドライバーの注意</h3><p><a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-mqtt/">cylon-mqtt</a>の<code>Arduino Blink</code>を参考にしてコードを書いていたのですが、このサンプルが間違っていて実行するとエラーになります。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line"></span><br><span class="line">/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:82</span><br><span class="line">  this.connection.digitalWrite(this.pin, 1);</span><br><span class="line">                  ^</span><br><span class="line">TypeError: Object <span class="comment">#&lt;Adaptor&gt; has no method &#x27;digitalWrite&#x27;</span></span><br><span class="line">    at Led.turnOn (/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:82:19)</span><br><span class="line">    at Led.toggle (/home/debian/node_apps/node_modules/cylon-gpio/lib/led.js:108:10)</span><br><span class="line">    at Driver.&lt;anonymous&gt; (/home/debian/node_apps/app.js:20:14)</span><br></pre></td></tr></table></figure>
 
 <p>devicesに<code>adaptor: &#39;firmata&#39;</code>とありますがプロパティが間違っています。</p>
-<figure class="highlight js"><figcaption><span>blink.js</span></figcaption><table><tr><td class="code"><pre><span class="line">devices: &#123;</span><br><span class="line">  toggle: &#123; <span class="attr">driver</span>: <span class="string">'mqtt'</span>, <span class="attr">topic</span>: <span class="string">'toggle'</span>, <span class="attr">adaptor</span>: <span class="string">'mqtt'</span> &#125;,</span><br><span class="line">  led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="string">'13'</span>, <span class="attr">adaptor</span>: <span class="string">'firmata'</span> &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>blink.js</span></figcaption><table><tr><td class="code"><pre><span class="line">devices: &#123;</span><br><span class="line">  toggle: &#123; <span class="attr">driver</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">topic</span>: <span class="string">&#x27;toggle&#x27;</span>, <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span> &#125;,</span><br><span class="line">  led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="string">&#x27;13&#x27;</span>, <span class="attr">adaptor</span>: <span class="string">&#x27;firmata&#x27;</span> &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 
-<p>examplesディレクトリにある<a href="https://github.com/hybridgroup/cylon-mqtt/blob/master/examples/blink/blink.js" target="_blank" rel="noopener">blink.js</a>の方はconnectionプロパティに正しく修正されています。</p>
-<figure class="highlight js"><figcaption><span>blink.js</span></figcaption><table><tr><td class="code"><pre><span class="line">devices: &#123;</span><br><span class="line">  toggle: &#123; <span class="attr">driver</span>: <span class="string">"mqtt"</span>, <span class="attr">topic</span>: <span class="string">"toggle"</span>, <span class="attr">connection</span>: <span class="string">"mqtt"</span> &#125;,</span><br><span class="line">  led: &#123; <span class="attr">driver</span>: <span class="string">"led"</span>, <span class="attr">pin</span>: <span class="string">"13"</span>, <span class="attr">connection</span>: <span class="string">"firmata"</span> &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>examplesディレクトリにある<a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-mqtt/blob/master/examples/blink/blink.js">blink.js</a>の方はconnectionプロパティに正しく修正されています。</p>
+<figure class="highlight js"><figcaption><span>blink.js</span></figcaption><table><tr><td class="code"><pre><span class="line">devices: &#123;</span><br><span class="line">  toggle: &#123; <span class="attr">driver</span>: <span class="string">&quot;mqtt&quot;</span>, <span class="attr">topic</span>: <span class="string">&quot;toggle&quot;</span>, <span class="attr">connection</span>: <span class="string">&quot;mqtt&quot;</span> &#125;,</span><br><span class="line">  led: &#123; <span class="attr">driver</span>: <span class="string">&quot;led&quot;</span>, <span class="attr">pin</span>: <span class="string">&quot;13&quot;</span>, <span class="attr">connection</span>: <span class="string">&quot;firmata&quot;</span> &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 
 <p>Cylon.jsは宣言的に書けるのが良いところです。だたDSLが強くなると仕様変更やプロパティの意味がわかりづらくなり、デバッグに時間がかかるのが気になります。</p>
 <h3 id="自分でPub-Subして1秒間隔でLチカする"><a href="#自分でPub-Subして1秒間隔でLチカする" class="headerlink" title="自分でPub/Subして1秒間隔でLチカする"></a>自分でPub/Subして1秒間隔でLチカする</h3><p>1秒間隔でMQTTにpublishします。work内でsubscribeもしているので自分でメッセージを受信してLチカします。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">'mqtt'</span>, <span class="attr">host</span>: <span class="string">'mqtt://xxx.xxx.xxx.xxx:1883'</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">'beaglebone'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    toggle: &#123; <span class="attr">driver</span>: <span class="string">'mqtt'</span>, <span class="attr">topic</span>: <span class="string">'toggle'</span>, <span class="attr">connection</span>: <span class="string">'mqtt'</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="string">'P8_10'</span>, <span class="attr">connection</span>: <span class="string">'beaglebone'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.toggle.on(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Message on 'toggle': "</span> + data);</span><br><span class="line">      my.led.toggle();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    every((<span class="number">1</span>).second(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Toggling LED."</span>);</span><br><span class="line">      my.toggle.publish(<span class="string">'toggle'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">host</span>: <span class="string">&#x27;mqtt://xxx.xxx.xxx.xxx:1883&#x27;</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;beaglebone&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    toggle: &#123; <span class="attr">driver</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">topic</span>: <span class="string">&#x27;toggle&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;mqtt&#x27;</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="string">&#x27;P8_10&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;beaglebone&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.toggle.on(<span class="string">&#x27;message&#x27;</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Message on &#x27;toggle&#x27;: &quot;</span> + data);</span><br><span class="line">      my.led.toggle();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    every((<span class="number">1</span>).second(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Toggling LED.&quot;</span>);</span><br><span class="line">      my.toggle.publish(<span class="string">&#x27;toggle&#x27;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 
 <p>BeagleBone BlackのLチカするにはroot権限が必要です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start   </span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/debian/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-22T02:18:03.310Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-22T02:18:06.156Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-22T02:18:06.195Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-22T02:18:06.261Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-22T02:18:06.271Z]  INFO -- : Working.</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start   </span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/debian/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-22T02:18:03.310Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-22T02:18:06.156Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-22T02:18:06.195Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-22T02:18:06.261Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-22T02:18:06.271Z]  INFO -- : Working.</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="IFTTTのDo-ButtonからLチカする"><a href="#IFTTTのDo-ButtonからLチカする" class="headerlink" title="IFTTTのDo ButtonからLチカする"></a>IFTTTのDo ButtonからLチカする</h3><p><a href="/2015/02/21/ifttt-do-button-wordpress-recipe/">前回</a>作成したIFTTTのDo Buttonをトリガーにしたサンプルを使います。メッセージを受信すると3秒間だけLチカします。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">'mqtt'</span>, <span class="attr">host</span>: <span class="string">'mqtt://xxx.xxx.xxx.xxx:1883'</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">'beaglebone'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    ifttt: &#123; <span class="attr">driver</span>: <span class="string">'mqtt'</span>, <span class="attr">topic</span>: <span class="string">'ifttt/bbb'</span>, <span class="attr">connection</span>: <span class="string">'mqtt'</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="string">'P8_10'</span>, <span class="attr">connection</span>: <span class="string">'beaglebone'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.ifttt.on(<span class="string">"message"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Message on 'ifttt': "</span> + data);</span><br><span class="line">      <span class="keyword">var</span> timer = setInterval(my.led.toggle, <span class="number">200</span>);</span><br><span class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; clearInterval(timer)&#125;,<span class="number">3000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">host</span>: <span class="string">&#x27;mqtt://xxx.xxx.xxx.xxx:1883&#x27;</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;beaglebone&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    ifttt: &#123; <span class="attr">driver</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">topic</span>: <span class="string">&#x27;ifttt/bbb&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;mqtt&#x27;</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="string">&#x27;P8_10&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;beaglebone&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.ifttt.on(<span class="string">&quot;message&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Message on &#x27;ifttt&#x27;: &quot;</span> + data);</span><br><span class="line">      <span class="keyword">var</span> timer = <span class="built_in">setInterval</span>(my.led.toggle, <span class="number">200</span>);</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="built_in">clearInterval</span>(timer)&#125;,<span class="number">3000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 <p>AndroidにインストールしたDo Buttonアプリのボタンをタップしてトリガーを起動します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/debian/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-22T02:06:06.841Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-22T02:06:09.746Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-22T02:06:09.784Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-22T02:06:09.849Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-22T02:06:09.860Z]  INFO -- : Working.</span><br><span class="line">Message on <span class="string">'ifttt'</span>: &#123;<span class="string">"username"</span>:<span class="string">"username"</span>,<span class="string">"password"</span>:<span class="string">"password"</span>,<span class="string">"title"</span>:<span class="string">""</span>,<span class="string">"description"</span>:<span class="string">"&lt;div&gt;&lt;img src='http://maps.google.com/maps/api/staticmap?center=35.xxxxxx,139.xxxxxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxxxxx,139.xxxxxx' style='max-width:600px;' /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 22, 2015 at 11:06AM http://ift.tt/1LzZoYL&lt;/div&gt;&lt;/div&gt;"</span>,<span class="string">"tags"</span>:&#123;<span class="string">"string"</span>:<span class="string">"Do Button"</span>&#125;,<span class="string">"post_status"</span>:<span class="string">"publish"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/debian/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-22T02:06:06.841Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-22T02:06:09.746Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-22T02:06:09.784Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-22T02:06:09.849Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-22T02:06:09.860Z]  INFO -- : Working.</span><br><span class="line">Message on <span class="string">&#x27;ifttt&#x27;</span>: &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;username&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;password&quot;</span>,<span class="string">&quot;title&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;description&quot;</span>:<span class="string">&quot;&lt;div&gt;&lt;img src=&#x27;http://maps.google.com/maps/api/staticmap?center=35.xxxxxx,139.xxxxxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxxxxx,139.xxxxxx&#x27; style=&#x27;max-width:600px;&#x27; /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 22, 2015 at 11:06AM http://ift.tt/1LzZoYL&lt;/div&gt;&lt;/div&gt;&quot;</span>,<span class="string">&quot;tags&quot;</span>:&#123;<span class="string">&quot;string&quot;</span>:<span class="string">&quot;Do Button&quot;</span>&#125;,<span class="string">&quot;post_status&quot;</span>:<span class="string">&quot;publish&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -317,7 +283,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -368,7 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ファームウェアのDebian-7-5"><span class="nav-number">1.</span> <span class="nav-text">ファームウェアのDebian 7.5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#インストール"><span class="nav-number">2.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTTのsubscribeでLチカする"><span class="nav-number">3.</span> <span class="nav-text">MQTTのsubscribeでLチカする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cylon-jsのMQTTドライバーの注意"><span class="nav-number">3.1.</span> <span class="nav-text">Cylon.jsのMQTTドライバーの注意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自分でPub-Subして1秒間隔でLチカする"><span class="nav-number">3.2.</span> <span class="nav-text">自分でPub&#x2F;Subして1秒間隔でLチカする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IFTTTのDo-ButtonからLチカする"><span class="nav-number">3.3.</span> <span class="nav-text">IFTTTのDo ButtonからLチカする</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%95%E3%82%A1%E3%83%BC%E3%83%A0%E3%82%A6%E3%82%A7%E3%82%A2%E3%81%AEDebian-7-5"><span class="nav-number">1.</span> <span class="nav-text">ファームウェアのDebian 7.5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E3%81%AEsubscribe%E3%81%A7L%E3%83%81%E3%82%AB%E3%81%99%E3%82%8B"><span class="nav-number">3.</span> <span class="nav-text">MQTTのsubscribeでLチカする</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cylon-js%E3%81%AEMQTT%E3%83%89%E3%83%A9%E3%82%A4%E3%83%90%E3%83%BC%E3%81%AE%E6%B3%A8%E6%84%8F"><span class="nav-number">3.1.</span> <span class="nav-text">Cylon.jsのMQTTドライバーの注意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%88%86%E3%81%A7Pub-Sub%E3%81%97%E3%81%A61%E7%A7%92%E9%96%93%E9%9A%94%E3%81%A7L%E3%83%81%E3%82%AB%E3%81%99%E3%82%8B"><span class="nav-number">3.2.</span> <span class="nav-text">自分でPub&#x2F;Subして1秒間隔でLチカする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IFTTT%E3%81%AEDo-Button%E3%81%8B%E3%82%89L%E3%83%81%E3%82%AB%E3%81%99%E3%82%8B"><span class="nav-number">3.3.</span> <span class="nav-text">IFTTTのDo ButtonからLチカする</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -400,10 +365,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -428,9 +396,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -470,13 +438,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

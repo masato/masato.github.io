@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,18 +13,18 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="IFTTTのアクションに自分で用意したWebhookに通知して欲しいときにWordPresss Channelを使うと便利です。今回はifttt-webhookのNode.js版であるexpress-ifttt-webhookを使います。AndroidからIFTTTにYoを送信するとRequestBinのエンドポイントに通知してパラメータをブラウザで確認してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IFTTTでYoをトリガーに任意のWebhookに通知する">
 <meta property="og:url" content="https://masato.github.io/2015/02/17/express-ifttt-webhook-requestbin/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="IFTTTのアクションに自分で用意したWebhookに通知して欲しいときにWordPresss Channelを使うと便利です。今回はifttt-webhookのNode.js版であるexpress-ifttt-webhookを使います。AndroidからIFTTTにYoを送信するとRequestBinのエンドポイントに通知してパラメータをブラウザで確認してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/02/17/express-ifttt-webhook-requestbin/yo-activate.png">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://masato.github.io/2015/02/17/express-ifttt-webhook-requestbin/ifttt.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/17/express-ifttt-webhook-requestbin/requestbin.png">
 <meta property="article:published_time" content="2015-02-17T12:54:13.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.649Z">
+<meta property="article:modified_time" content="2015-02-17T12:54:13.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="ngrok">
@@ -61,7 +61,7 @@
   };
 </script>
 
-  <title>IFTTTでYoをトリガーに任意のWebhookに通知する | masato's blog</title>
+  <title>IFTTTでYoをトリガーに任意のWebhookに通知する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -101,7 +101,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -122,14 +122,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -138,51 +137,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -199,11 +174,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -216,7 +190,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -226,19 +200,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 17 2015 21:54:13" itemprop="dateCreated datePublished" datetime="2015-02-17T21:54:13+09:00">Feb 17 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">IFTTTのアクションに自分で用意したWebhookに通知して欲しいときにWordPresss Channelを使うと便利です。今回はifttt-webhookのNode.js版であるexpress-ifttt-webhookを使います。AndroidからIFTTTにYoを送信するとRequestBinのエンドポイントに通知してパラメータをブラウザで確認してみます。</div>
@@ -252,35 +219,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>IFTTTのアクションに自分で用意したWebhookに通知して欲しいときにWordPresss Channelを使うと便利です。今回は<a href="https://github.com/captn3m0/ifttt-webhook" target="_blank" rel="noopener">ifttt-webhook</a>のNode.js版である<a href="https://github.com/b00giZm/express-ifttt-webhook" target="_blank" rel="noopener">express-ifttt-webhook</a>を使います。AndroidからIFTTTに<a href="http://www.justyo.co/" target="_blank" rel="noopener">Yo</a>を送信すると<a href="http://requestb.in/" target="_blank" rel="noopener">RequestBin</a>のエンドポイントに通知してパラメータをブラウザで確認してみます。</p>
-<a id="more"></a>
+        <p>IFTTTのアクションに自分で用意したWebhookに通知して欲しいときにWordPresss Channelを使うと便利です。今回は<a target="_blank" rel="noopener" href="https://github.com/captn3m0/ifttt-webhook">ifttt-webhook</a>のNode.js版である<a target="_blank" rel="noopener" href="https://github.com/b00giZm/express-ifttt-webhook">express-ifttt-webhook</a>を使います。AndroidからIFTTTに<a target="_blank" rel="noopener" href="http://www.justyo.co/">Yo</a>を送信すると<a target="_blank" rel="noopener" href="http://requestb.in/">RequestBin</a>のエンドポイントに通知してパラメータをブラウザで確認してみます。</p>
+<span id="more"></span>
 
 
-<h2 id="Webhook"><a href="#Webhook" class="headerlink" title="Webhook"></a>Webhook</h2><p><a href="https://github.com/b00giZm/express-ifttt-webhook" target="_blank" rel="noopener">express-ifttt-webhook</a>はNode.jsで書かれたExpressのミドルウェアです。<a href="https://registry.hub.docker.com/u/google/nodejs-runtime/" target="_blank" rel="noopener">google/nodejs-runtime</a>のDockerイメージを使いExpressサーバーのコンテナを起動します。</p>
+<h2 id="Webhook"><a href="#Webhook" class="headerlink" title="Webhook"></a>Webhook</h2><p><a target="_blank" rel="noopener" href="https://github.com/b00giZm/express-ifttt-webhook">express-ifttt-webhook</a>はNode.jsで書かれたExpressのミドルウェアです。<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/google/nodejs-runtime/">google/nodejs-runtime</a>のDockerイメージを使いExpressサーバーのコンテナを起動します。</p>
 <h3 id="Webhookコンテナの用意"><a href="#Webhookコンテナの用意" class="headerlink" title="Webhookコンテナの用意"></a>Webhookコンテナの用意</h3><p>プロジェクトディレクトリを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/docker_apps/ifttt</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
 
 <p>package.jsonを用意して、expressとexpress-ifttt-webhookモジュールをインストールします。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/ifttt/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"express-ifttt"</span>,</span><br><span class="line">  <span class="string">"description"</span>: <span class="string">"express ifttt test app"</span>,</span><br><span class="line">  <span class="string">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="string">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"express"</span>: <span class="string">"*.*.*"</span>,</span><br><span class="line">    <span class="string">"express-ifttt-webhook"</span>: <span class="string">"*.*.*"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">"scripts"</span>: &#123;<span class="string">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/docker_apps/ifttt/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;express-ifttt&quot;</span>,</span><br><span class="line">  <span class="string">&quot;description&quot;</span>: <span class="string">&quot;express ifttt test app&quot;</span>,</span><br><span class="line">  <span class="string">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">  <span class="string">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="string">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;express&quot;</span>: <span class="string">&quot;*.*.*&quot;</span>,</span><br><span class="line">    <span class="string">&quot;express-ifttt-webhook&quot;</span>: <span class="string">&quot;*.*.*&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;scripts&quot;</span>: &#123;<span class="string">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>app.jsに簡単な処理を書きます。<code>json.url</code>には最終的にフォーワードしたいURLを指定します。今回はデバッグ用のRequestBinのURLにフォワードします。URLはこの後IFTTTのレシピに記述します。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/ifttt/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>)</span><br><span class="line">  , webhook = <span class="built_in">require</span>(<span class="string">'express-ifttt-webhook'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = express();</span><br><span class="line">app.set(<span class="string">'port'</span>, <span class="number">8080</span>);</span><br><span class="line"></span><br><span class="line">app.use(webhook(<span class="function"><span class="keyword">function</span>(<span class="params">json,done</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(json);</span><br><span class="line">    json.url = json.categories.string;</span><br><span class="line">    done(<span class="literal">null</span>,json);</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(app.get(<span class="string">'port'</span>), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Server listening on port'</span>, server.address().port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/docker_apps/ifttt/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line">  , webhook = <span class="built_in">require</span>(<span class="string">&#x27;express-ifttt-webhook&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = express();</span><br><span class="line">app.set(<span class="string">&#x27;port&#x27;</span>, <span class="number">8080</span>);</span><br><span class="line"></span><br><span class="line">app.use(webhook(<span class="function"><span class="keyword">function</span>(<span class="params">json,done</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(json);</span><br><span class="line">    json.url = json.categories.string;</span><br><span class="line">    done(<span class="literal">null</span>,json);</span><br><span class="line">&#125;));</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(app.get(<span class="string">&#x27;port&#x27;</span>), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Server listening on port&#x27;</span>, server.address().port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>Dockerfileを作成してコンテナを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> FROM google/nodejs-runtime &gt; Dockerfile</span><br><span class="line">$ docker pull google/nodejs-runtime </span><br><span class="line">$ docker build -t ifttt .</span><br><span class="line">$ docker run -d --name ifttt ifttt</span><br></pre></td></tr></table></figure>
 
-<h3 id="ngrokでWebhookの公開"><a href="#ngrokでWebhookの公開" class="headerlink" title="ngrokでWebhookの公開"></a>ngrokでWebhookの公開</h3><p><a href="https://ngrok.com/" target="_blank" rel="noopener">ngrok</a>を使い作成したWebhookコンテナを公開します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull wizardapps/ngrok:latest</span><br><span class="line">$ docker run -it --rm wizardapps/ngrok:latest ngrok $(docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> ifttt):8080</span><br></pre></td></tr></table></figure>
+<h3 id="ngrokでWebhookの公開"><a href="#ngrokでWebhookの公開" class="headerlink" title="ngrokでWebhookの公開"></a>ngrokでWebhookの公開</h3><p><a target="_blank" rel="noopener" href="https://ngrok.com/">ngrok</a>を使い作成したWebhookコンテナを公開します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull wizardapps/ngrok:latest</span><br><span class="line">$ docker run -it --rm wizardapps/ngrok:latest ngrok $(docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;&quot;</span> ifttt):8080</span><br></pre></td></tr></table></figure>
 
 <p>公開用のngrokエンドポイントをコピーしておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">Forwarding                    http://3b98ba34.ngrok.com -&gt; 172.17.0.47:8080</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h2 id="Yo"><a href="#Yo" class="headerlink" title="Yo"></a>Yo</h2><p><a href="http://www.justyo.co/" target="_blank" rel="noopener">Yo</a>はYoと通知するだけのシンプルなコミュニケーションツールです。IFTTTのトリガーにYoを使ってみます。AndroidにYoアプリをインストールして、+ボタンを押し<code>IFTTT</code>をユーザーに追加しておきます。</p>
+<h2 id="Yo"><a href="#Yo" class="headerlink" title="Yo"></a>Yo</h2><p><a target="_blank" rel="noopener" href="http://www.justyo.co/">Yo</a>はYoと通知するだけのシンプルなコミュニケーションツールです。IFTTTのトリガーにYoを使ってみます。AndroidにYoアプリをインストールして、+ボタンを押し<code>IFTTT</code>をユーザーに追加しておきます。</p>
 <h2 id="IFTTT"><a href="#IFTTT" class="headerlink" title="IFTTT"></a>IFTTT</h2><h3 id="Yoチャンネルのアクティベート"><a href="#Yoチャンネルのアクティベート" class="headerlink" title="Yoチャンネルのアクティベート"></a>Yoチャンネルのアクティベート</h3><p>チャンネルからYoを検索してアクティベートします。</p>
 <p><img src="/2015/02/17/express-ifttt-webhook-requestbin/yo-activate.png" alt="yo-activate.png"></p>
 <h3 id="WordPressチャンネルのアクティベート"><a href="#WordPressチャンネルのアクティベート" class="headerlink" title="WordPressチャンネルのアクティベート"></a>WordPressチャンネルのアクティベート</h3><p>チャネルからWordPressを検索します。テスト用なので今回は認証を行いませんが、UsernameとPasswordはWordPress Channelで必須項目のため適当に入力します。</p>
 <ul>
-<li>Blog URL: <a href="http://3b98ba34.ngrok.com" target="_blank" rel="noopener">http://3b98ba34.ngrok.com</a></li>
+<li>Blog URL: <a target="_blank" rel="noopener" href="http://3b98ba34.ngrok.com/">http://3b98ba34.ngrok.com</a></li>
 <li>Username: username</li>
 <li>Password: password</li>
 </ul>
@@ -289,9 +256,9 @@
 <p><img src="/2015/02/17/express-ifttt-webhook-requestbin/choose-trigger.png" alt="choose-trigger.png"></p>
 <p>次に<code>That</code>をクリックしてWordPress Channelをアクションに選択します。</p>
 <p><img src="/2015/02/17/express-ifttt-webhook-requestbin/choose-action.png" alt="choose-action.png"></p>
-<p><code>Create post</code>のアクションを選択します。フィールドは任意に設定できますが、<code>Categories</code>フィールドにWebfookしたい最終的なフォワード先のURLを指定します。今回は<a href="http://requestb.in/" target="_blank" rel="noopener">RequestBin</a>で作成したURLを入力します。<code>Create Action</code>ボタンを押してアクションのを完了します。</p>
+<p><code>Create post</code>のアクションを選択します。フィールドは任意に設定できますが、<code>Categories</code>フィールドにWebfookしたい最終的なフォワード先のURLを指定します。今回は<a target="_blank" rel="noopener" href="http://requestb.in/">RequestBin</a>で作成したURLを入力します。<code>Create Action</code>ボタンを押してアクションのを完了します。</p>
 <ul>
-<li>Categories: <a href="http://requestb.in/pb4l5spb" target="_blank" rel="noopener">http://requestb.in/pb4l5spb</a></li>
+<li>Categories: <a target="_blank" rel="noopener" href="http://requestb.in/pb4l5spb">http://requestb.in/pb4l5spb</a></li>
 </ul>
 <p><img src="/2015/02/17/express-ifttt-webhook-requestbin/categories-field.png" alt="categories-field.png"></p>
 <p>最後に<code>Create Recipe</code>ボタンをクリックしてレシピのアクティベートを行います。</p>
@@ -301,7 +268,7 @@
 <p>RequestBinで先ほど作成したURLを開くとIFTTTからPOSTされたパラメーターを確認することができました。</p>
 <p><img src="/2015/02/17/express-ifttt-webhook-requestbin/requestbin.png" alt="requestbin.png"></p>
 <p>以下がIFTTTから通知されるJSONデータの中身です。コールバックではJSONオブジェクトになっています。</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123; username: 'username',</span><br><span class="line">  password: 'password',</span><br><span class="line">  title: 'Yo',</span><br><span class="line">  description: 'hello',</span><br><span class="line">  categories: &#123; string: 'http://requestb.in/pb4l5spb' &#125;,</span><br><span class="line">  tags: [ &#123; string: 'IFTTT' &#125;, &#123; string: 'Yo' &#125; ],</span><br><span class="line">  post_status: 'publish' &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123; username: &#x27;username&#x27;,</span><br><span class="line">  password: &#x27;password&#x27;,</span><br><span class="line">  title: &#x27;Yo&#x27;,</span><br><span class="line">  description: &#x27;hello&#x27;,</span><br><span class="line">  categories: &#123; string: &#x27;http://requestb.in/pb4l5spb&#x27; &#125;,</span><br><span class="line">  tags: [ &#123; string: &#x27;IFTTT&#x27; &#125;, &#123; string: &#x27;Yo&#x27; &#125; ],</span><br><span class="line">  post_status: &#x27;publish&#x27; &#125;</span><br></pre></td></tr></table></figure>
 
 <p>今回はテスト的に通知を受けただけですが、次回はExpressの中でMQTTにブリッジしてもう少し汎用的に使えるようにしてみます。</p>
 
@@ -343,7 +310,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -394,7 +360,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Webhook"><span class="nav-number">1.</span> <span class="nav-text">Webhook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Webhookコンテナの用意"><span class="nav-number">1.1.</span> <span class="nav-text">Webhookコンテナの用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngrokでWebhookの公開"><span class="nav-number">1.2.</span> <span class="nav-text">ngrokでWebhookの公開</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Yo"><span class="nav-number">2.</span> <span class="nav-text">Yo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IFTTT"><span class="nav-number">3.</span> <span class="nav-text">IFTTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yoチャンネルのアクティベート"><span class="nav-number">3.1.</span> <span class="nav-text">Yoチャンネルのアクティベート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordPressチャンネルのアクティベート"><span class="nav-number">3.2.</span> <span class="nav-text">WordPressチャンネルのアクティベート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#レシピの作成"><span class="nav-number">3.3.</span> <span class="nav-text">レシピの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidのYoアプリからテスト"><span class="nav-number">4.</span> <span class="nav-text">AndroidのYoアプリからテスト</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Webhook"><span class="nav-number">1.</span> <span class="nav-text">Webhook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Webhook%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E7%94%A8%E6%84%8F"><span class="nav-number">1.1.</span> <span class="nav-text">Webhookコンテナの用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ngrok%E3%81%A7Webhook%E3%81%AE%E5%85%AC%E9%96%8B"><span class="nav-number">1.2.</span> <span class="nav-text">ngrokでWebhookの公開</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Yo"><span class="nav-number">2.</span> <span class="nav-text">Yo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IFTTT"><span class="nav-number">3.</span> <span class="nav-text">IFTTT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yo%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%81%AE%E3%82%A2%E3%82%AF%E3%83%86%E3%82%A3%E3%83%99%E3%83%BC%E3%83%88"><span class="nav-number">3.1.</span> <span class="nav-text">Yoチャンネルのアクティベート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordPress%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%81%AE%E3%82%A2%E3%82%AF%E3%83%86%E3%82%A3%E3%83%99%E3%83%BC%E3%83%88"><span class="nav-number">3.2.</span> <span class="nav-text">WordPressチャンネルのアクティベート</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%AC%E3%82%B7%E3%83%94%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.3.</span> <span class="nav-text">レシピの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android%E3%81%AEYo%E3%82%A2%E3%83%97%E3%83%AA%E3%81%8B%E3%82%89%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">4.</span> <span class="nav-text">AndroidのYoアプリからテスト</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -426,10 +392,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -454,9 +423,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -496,13 +465,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Raspberry Pi (Model B)は非力なので開発環境には向いていませんがデバイスを操作するPythonを書いているとEmacsが欲しくなります。apt-getでEmacs 24がインストールできないようなので、これも不向きですがRaspberry Pi上でEmacsをビルドして使うことにします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Raspberry PiでEmacs 24.5とCaskを使う">
 <meta property="og:url" content="https://masato.github.io/2015/04/13/raspberrypi-emacs-245/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Raspberry Pi (Model B)は非力なので開発環境には向いていませんがデバイスを操作するPythonを書いているとEmacsが欲しくなります。apt-getでEmacs 24がインストールできないようなので、これも不向きですがRaspberry Pi上でEmacsをビルドして使うことにします。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-04-13T00:59:56.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.847Z">
+<meta property="article:modified_time" content="2015-04-13T00:59:56.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="RaspberryPi">
 <meta property="article:tag" content="Emacs">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Raspberry PiでEmacs 24.5とCaskを使う | masato's blog</title>
+  <title>Raspberry PiでEmacs 24.5とCaskを使う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 13 2015 09:59:56" itemprop="dateCreated datePublished" datetime="2015-04-13T09:59:56+09:00">Apr 13 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Raspberry Pi (Model B)は非力なので開発環境には向いていませんがデバイスを操作するPythonを書いているとEmacsが欲しくなります。apt-getでEmacs 24がインストールできないようなので、これも不向きですがRaspberry Pi上でEmacsをビルドして使うことにします。</div>
@@ -241,7 +208,7 @@
 
       
         <p>Raspberry Pi (Model B)は非力なので開発環境には向いていませんがデバイスを操作するPythonを書いているとEmacsが欲しくなります。apt-getでEmacs 24がインストールできないようなので、これも不向きですがRaspberry Pi上でEmacsをビルドして使うことにします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Emacs-24-5-1"><a href="#Emacs-24-5-1" class="headerlink" title="Emacs 24.5.1"></a>Emacs 24.5.1</h2><p>apt-getでインストールできるEmacsは23.4でした。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ apt-cache show emacs23</span><br><span class="line">Package: emacs23</span><br><span class="line">Version: 23.4+1-4</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
@@ -256,11 +223,11 @@
 <p>ビルドとインストールに1時間30分くらいかかります。気長に待ちます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> emacs</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/emacs</span><br><span class="line">$ emacs --version</span><br><span class="line">GNU Emacs 24.5.1</span><br></pre></td></tr></table></figure>
 
-<h2 id="Cask"><a href="#Cask" class="headerlink" title="Cask"></a>Cask</h2><p>Emacsのパッケージ管理は<a href="http://cask.github.io/" target="_blank" rel="noopener">Cask</a>を使います。</p>
-<h3 id="インストール-1"><a href="#インストール-1" class="headerlink" title="インストール"></a>インストール</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python</span><br><span class="line">Cloning into <span class="string">'/home/pi/.cask'</span>...</span><br><span class="line">...</span><br><span class="line">Successfully installed Cask!  Now, add the cask binary to your <span class="variable">$PATH</span>:</span><br><span class="line">  <span class="built_in">export</span> PATH=<span class="string">"/home/pi/.cask/bin:<span class="variable">$PATH</span>"</span></span><br></pre></td></tr></table></figure>
+<h2 id="Cask"><a href="#Cask" class="headerlink" title="Cask"></a>Cask</h2><p>Emacsのパッケージ管理は<a target="_blank" rel="noopener" href="http://cask.github.io/">Cask</a>を使います。</p>
+<h3 id="インストール-1"><a href="#インストール-1" class="headerlink" title="インストール"></a>インストール</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python</span><br><span class="line">Cloning into <span class="string">&#x27;/home/pi/.cask&#x27;</span>...</span><br><span class="line">...</span><br><span class="line">Successfully installed Cask!  Now, add the cask binary to your <span class="variable">$PATH</span>:</span><br><span class="line">  <span class="built_in">export</span> PATH=<span class="string">&quot;/home/pi/.cask/bin:<span class="variable">$PATH</span>&quot;</span></span><br></pre></td></tr></table></figure>
 
 
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">'export PATH="/home/pi/.cask/bin:$PATH"'</span> &gt;&gt; ~/.bashrc</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&#x27;export PATH=&quot;/home/pi/.cask/bin:$PATH&quot;&#x27;</span> &gt;&gt; ~/.bashrc</span><br><span class="line">$ <span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cask --version</span><br><span class="line">0.7.3</span><br></pre></td></tr></table></figure>
 
@@ -270,7 +237,7 @@
 <p>自動生成されたCaskファイルを修正してとりあえず不要なパッケージは削除します。</p>
 <figure class="highlight plain"><figcaption><span>~/.emacs.d/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(source gnu)</span><br><span class="line">(source melpa)</span><br><span class="line"></span><br><span class="line">(depends-on &quot;cask&quot;)</span><br><span class="line">(depends-on &quot;init-loader&quot;)</span><br><span class="line">(depends-on &quot;multi-term&quot;)</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/emacs-jp/init-loader" target="_blank" rel="noopener">init-loader</a>を使うため<code>init.el</code>のrequireは少なくなります。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/emacs-jp/init-loader">init-loader</a>を使うため<code>init.el</code>のrequireは少なくなります。</p>
 <figure class="highlight plain"><figcaption><span>~/.emacs.d/init.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;cask &quot;~&#x2F;.cask&#x2F;cask.el&quot;)</span><br><span class="line">(cask-initialize)</span><br><span class="line"></span><br><span class="line">(require &#39;init-loader)</span><br><span class="line">(setq init-loader-show-log-after-init nil)</span><br><span class="line">(init-loader-load &quot;~&#x2F;.emacs.d&#x2F;inits&quot;)</span><br></pre></td></tr></table></figure>
 
 <p><code>cask install</code>コマンドを実行して、Caskファイルに定義したパッケージをインストールします。</p>
@@ -278,7 +245,7 @@
 
 
 
-<h2 id="init-loader"><a href="#init-loader" class="headerlink" title="init-loader"></a>init-loader</h2><p>Emacsの設定ファイルの管理は<a href="https://github.com/emacs-jp/init-loader" target="_blank" rel="noopener">init-loader</a>を使います。設定ファイルを配置するディレクトリを作成します。</p>
+<h2 id="init-loader"><a href="#init-loader" class="headerlink" title="init-loader"></a>init-loader</h2><p>Emacsの設定ファイルの管理は<a target="_blank" rel="noopener" href="https://github.com/emacs-jp/init-loader">init-loader</a>を使います。設定ファイルを配置するディレクトリを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/.emacs.d/inits</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
 
 <p>最低限必要な基本的な設定ファイルを作成します。</p>
@@ -302,7 +269,7 @@
 <li>バッファの最後でnewlineで新規行を追加するのを禁止する</li>
 <li>4タブのスペース変換</li>
 </ul>
-<h3 id="03-multi-term-el"><a href="#03-multi-term-el" class="headerlink" title="03-multi-term.el"></a>03-multi-term.el</h3><p>USB-TTLシリアル変換モジュールを経由してホストマシンからscreenで接続しているためウィンドウが1つしか開きません。<a href="http://www.emacswiki.org/emacs/MultiTerm" target="_blank" rel="noopener">Multi Term</a>を使い、Emacs上でコーディングをプログラムの実行をできるようにします。</p>
+<h3 id="03-multi-term-el"><a href="#03-multi-term-el" class="headerlink" title="03-multi-term.el"></a>03-multi-term.el</h3><p>USB-TTLシリアル変換モジュールを経由してホストマシンからscreenで接続しているためウィンドウが1つしか開きません。<a target="_blank" rel="noopener" href="http://www.emacswiki.org/emacs/MultiTerm">Multi Term</a>を使い、Emacs上でコーディングをプログラムの実行をできるようにします。</p>
 <figure class="highlight plain"><figcaption><span>~/.emacs.d/inits/03-multi-term.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(dolist (dir (list</span><br><span class="line">              &quot;&#x2F;sbin&quot;</span><br><span class="line">              &quot;&#x2F;usr&#x2F;sbin&quot;</span><br><span class="line">              &quot;&#x2F;bin&quot;</span><br><span class="line">              &quot;&#x2F;usr&#x2F;bin&quot;</span><br><span class="line">              &quot;&#x2F;usr&#x2F;local&#x2F;bin&quot;</span><br><span class="line">              (expand-file-name &quot;~&#x2F;bin&quot;)</span><br><span class="line">              (expand-file-name &quot;~&#x2F;.emacs.d&#x2F;bin&quot;)</span><br><span class="line">              ))</span><br><span class="line"> (when (and (file-exists-p dir) (not (member dir exec-path)))</span><br><span class="line">   (setenv &quot;PATH&quot; (concat dir &quot;:&quot; (getenv &quot;PATH&quot;)))</span><br><span class="line">   (setq exec-path (append (list dir) exec-path))))</span><br><span class="line"></span><br><span class="line">(require &#39;multi-term)</span><br><span class="line">(setq multi-term-program shell-file-name)</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -340,7 +307,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -391,7 +357,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Emacs-24-5-1"><span class="nav-number">1.</span> <span class="nav-text">Emacs 24.5.1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#必要なパッケージ"><span class="nav-number">1.1.</span> <span class="nav-text">必要なパッケージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール"><span class="nav-number">1.2.</span> <span class="nav-text">インストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cask"><span class="nav-number">2.</span> <span class="nav-text">Cask</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール-1"><span class="nav-number">2.1.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定"><span class="nav-number">2.2.</span> <span class="nav-text">設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-loader"><span class="nav-number">3.</span> <span class="nav-text">init-loader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#00-keybindings-el"><span class="nav-number">3.1.</span> <span class="nav-text">00-keybindings.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#01-menu-el"><span class="nav-number">3.2.</span> <span class="nav-text">01-menu.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#02-files-el"><span class="nav-number">3.3.</span> <span class="nav-text">02-files.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#03-multi-term-el"><span class="nav-number">3.4.</span> <span class="nav-text">03-multi-term.el</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Emacs-24-5-1"><span class="nav-number">1.</span> <span class="nav-text">Emacs 24.5.1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><span class="nav-number">1.1.</span> <span class="nav-text">必要なパッケージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.2.</span> <span class="nav-text">インストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cask"><span class="nav-number">2.</span> <span class="nav-text">Cask</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB-1"><span class="nav-number">2.1.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A"><span class="nav-number">2.2.</span> <span class="nav-text">設定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#init-loader"><span class="nav-number">3.</span> <span class="nav-text">init-loader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#00-keybindings-el"><span class="nav-number">3.1.</span> <span class="nav-text">00-keybindings.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#01-menu-el"><span class="nav-number">3.2.</span> <span class="nav-text">01-menu.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#02-files-el"><span class="nav-number">3.3.</span> <span class="nav-text">02-files.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#03-multi-term-el"><span class="nav-number">3.4.</span> <span class="nav-text">03-multi-term.el</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -423,10 +389,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -451,9 +420,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -493,13 +462,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

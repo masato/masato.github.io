@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回までにKoaのアプリを開発するためのio.jsのDockerイメージを作成したり、ES6で書いたJavaScriptのコンパイルの方法を試しました。今回はジェネレータなどKoaで開発する場合に重要な特徴を見ていきます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Koa入門 - Part3: ジェネレータなどKoaの特徴">
 <meta property="og:url" content="https://masato.github.io/2015/06/27/koa-tutorial-generator/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回までにKoaのアプリを開発するためのio.jsのDockerイメージを作成したり、ES6で書いたJavaScriptのコンパイルの方法を試しました。今回はジェネレータなどKoaで開発する場合に重要な特徴を見ていきます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-06-27T01:32:58.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.723Z">
+<meta property="article:modified_time" content="2015-06-27T01:32:58.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="iojs">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Koa入門 - Part3: ジェネレータなどKoaの特徴 | masato's blog</title>
+  <title>Koa入門 - Part3: ジェネレータなどKoaの特徴 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 27 2015 10:32:58" itemprop="dateCreated datePublished" datetime="2015-06-27T10:32:58+09:00">Jun 27 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回までにKoaのアプリを開発するためのio.jsのDockerイメージを作成したり、ES6で書いたJavaScriptのコンパイルの方法を試しました。今回はジェネレータなどKoaで開発する場合に重要な特徴を見ていきます。</div>
@@ -240,18 +207,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>前回までにKoaのアプリを開発するための<a href="/2015/06/25/koa-tutorial-iojs-on-docker/">io.jsのDocker</a>イメージを作成したり、<a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a><br>でES6で書いたJavaScriptの<a href="/2015/06/26/koa-tutorial-es6-babel-register/">コンパイル</a>を試しました。今回はジェネレータなどKoaで開発する場合に重要な特徴を見ていきます。</p>
-<a id="more"></a>
+        <p>前回までにKoaのアプリを開発するための<a href="/2015/06/25/koa-tutorial-iojs-on-docker/">io.jsのDocker</a>イメージを作成したり、<a target="_blank" rel="noopener" href="https://babeljs.io/">Babel</a><br>でES6で書いたJavaScriptの<a href="/2015/06/26/koa-tutorial-es6-babel-register/">コンパイル</a>を試しました。今回はジェネレータなどKoaで開発する場合に重要な特徴を見ていきます。</p>
+<span id="more"></span>
 
-<h2 id="リソース"><a href="#リソース" class="headerlink" title="リソース"></a>リソース</h2><p><a href="https://github.com/koajs/koa" target="_blank" rel="noopener">Koa</a>のREADMEにGetting startedとして以下のサイトが紹介されていました。</p>
+<h2 id="リソース"><a href="#リソース" class="headerlink" title="リソース"></a>リソース</h2><p><a target="_blank" rel="noopener" href="https://github.com/koajs/koa">Koa</a>のREADMEにGetting startedとして以下のサイトが紹介されていました。</p>
 <ul>
-<li><a href="https://github.com/koajs/workshop" target="_blank" rel="noopener">workshop</a></li>
-<li><a href="https://github.com/koajs/kick-off-koa" target="_blank" rel="noopener">kick-off-koa</a></li>
-<li><a href="https://github.com/koajs/examples" target="_blank" rel="noopener">examples</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/koajs/workshop">workshop</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/koajs/kick-off-koa">kick-off-koa</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/koajs/examples">examples</a></li>
 </ul>
-<p>やはり最初のジェネレーター関数を理解するところです。ハンガリーの<a href="http://risingstack.com/" target="_blank" rel="noopener">RisingStack</a>というNode.jsの開発会社のブログを写経していきます。とてもわかりやすい英語で大変勉強になりました。強みにしているのがJavaScript/DevOps/IoTというのも親近感があります。</p>
+<p>やはり最初のジェネレーター関数を理解するところです。ハンガリーの<a target="_blank" rel="noopener" href="http://risingstack.com/">RisingStack</a>というNode.jsの開発会社のブログを写経していきます。とてもわかりやすい英語で大変勉強になりました。強みにしているのがJavaScript/DevOps/IoTというのも親近感があります。</p>
 <ul>
-<li><a href="http://blog.risingstack.com/introduction-to-koa-generators/" target="_blank" rel="noopener">Getting Started with Koa, part 1 - Generators</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.risingstack.com/introduction-to-koa-generators/">Getting Started with Koa, part 1 - Generators</a></li>
 </ul>
 <h2 id="ジェネレータ関数"><a href="#ジェネレータ関数" class="headerlink" title="ジェネレータ関数"></a>ジェネレータ関数</h2><p>ジェネレータ関数はfunctionキーワードの後に<code>*</code>のアスタリスクを付けて定義します。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
@@ -264,25 +231,25 @@
 
 <p>この例では処理の中断はしていないので<code>done</code>が<code>true</code>のオブジェクトがすぐに返ります。もしジェネレータの中で<code>return</code>があれば、最後のイテレータオブジェクト(<code>done</code>がtrue)が返ります。<br>次にジェネレータを中断してみます。関数をイテレーションする毎に<code>yield</code>が処理を中断したときの値を返します。つまり<code>yield</code>キーワードのところで処理は中断しています。</p>
 <h2 id="yield"><a href="#yield" class="headerlink" title="yield"></a>yield</h2><p><code>next()</code>をコールするとジェネレータは開始して<code>yield</code>のところまで進みます。その場所で<code>value</code>と<code>done</code>を含むオブジェクトを返します。<code>value</code>は式(expression)の値です、数値や文字列など結果として値を返すものならなんでも良いです。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (index &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">yield</span> index++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bar = foo();</span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: 0, done: false &#125;</span></span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: 1, done: false &#125;</span></span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> index = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (index &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">yield</span> index++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bar = foo();</span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: 0, done: false &#125;</span></span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: 1, done: false &#125;</span></span><br><span class="line">bar.next()</span><br><span class="line"><span class="comment">//&#123; value: undefined, done: true &#125; </span></span><br></pre></td></tr></table></figure>
 
 <p><code>next()</code>を再び実行すると<code>yield</code>の結果が返り処理が再開します。イテレータオブジェクトからジェネレータの中で値を受け取ることもできます。<code>next(val))</code>のようにすると、処理が再開したときにジェネレータに値が返ります。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; <span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">...   var val = <span class="keyword">yield</span> <span class="string">'A'</span>;</span><br><span class="line">...   console.log(val);</span><br><span class="line">... &#125;</span><br><span class="line">&gt; <span class="keyword">var</span> bar = foo();</span><br><span class="line">&gt; <span class="built_in">console</span>.log(bar.next());</span><br><span class="line">&#123; <span class="attr">value</span>: <span class="string">'A'</span>, <span class="attr">done</span>: <span class="literal">false</span> &#125;</span><br><span class="line">&gt; <span class="built_in">console</span>.log(bar.next(<span class="string">'B'</span>))</span><br><span class="line">B</span><br><span class="line">&#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&gt; <span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">...   <span class="keyword">var</span> val = <span class="keyword">yield</span> <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">...   <span class="built_in">console</span>.log(val);</span><br><span class="line">... &#125;</span><br><span class="line">&gt; <span class="keyword">var</span> bar = foo();</span><br><span class="line">&gt; <span class="built_in">console</span>.log(bar.next());</span><br><span class="line">&#123; <span class="attr">value</span>: <span class="string">&#x27;A&#x27;</span>, <span class="attr">done</span>: <span class="literal">false</span> &#125;</span><br><span class="line">&gt; <span class="built_in">console</span>.log(bar.next(<span class="string">&#x27;B&#x27;</span>))</span><br><span class="line">B</span><br><span class="line">&#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="エラー処理"><a href="#エラー処理" class="headerlink" title="エラー処理"></a>エラー処理</h2><p>間違いを見つけた時はイテレータオブジェクトの<code>throw()</code>メソッドをコールするとジェネレータの中でエラーをcatchしてくれます。こうするとジェネレータの中のエラーハンドリングがとても良く書けます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    x = <span class="keyword">yield</span> <span class="string">'asd B'</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bar = foo();</span><br><span class="line"><span class="keyword">if</span> (bar.next().value == <span class="string">'B'</span>) &#123;</span><br><span class="line">  bar.throw(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"its' B!"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    x = <span class="keyword">yield</span> <span class="string">&#x27;asd B&#x27;</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bar = foo();</span><br><span class="line"><span class="keyword">if</span> (bar.next().value == <span class="string">&#x27;B&#x27;</span>) &#123;</span><br><span class="line">  bar.throw(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;its&#x27; B!&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="for…of"><a href="#for…of" class="headerlink" title="for…of"></a>for…of</h2><p>ES6のループにはジェネレータをイテレートするきにつかう<code>foo...of</code>ループがあります。イテレーションは<code>done</code>が<code>false</code>になるまで続きます。注意が必要なのはこのループを使う時には<code>next()</code>のコールに値を渡すことができません。ループは渡された値を無視します。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (v <span class="keyword">of</span> foo()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="yield-1"><a href="#yield-1" class="headerlink" title="yield*"></a>yield*</h2><p>上記のようにyieldでは何でも扱えるため、ジェネレータも可能ですがその場合は<code>yield *</code>を使う必要があります。この処理をデリゲーションといいいます。別のジェネレータをデリゲートすることができるので、複数のネストされたジェネレータのイテレーションを、1つのイテレータオブジェクトを通して操作することができます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'b'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'a'</span>;</span><br><span class="line">  <span class="keyword">yield</span> *bar();</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">'c'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (v <span class="keyword">of</span> foo()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a</span></span><br><span class="line"><span class="comment">//b</span></span><br><span class="line"><span class="comment">//c</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">foo</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  <span class="keyword">yield</span> *bar();</span><br><span class="line">  <span class="keyword">yield</span> <span class="string">&#x27;c&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (v <span class="keyword">of</span> foo()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(v);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//a</span></span><br><span class="line"><span class="comment">//b</span></span><br><span class="line"><span class="comment">//c</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Thunks"><a href="#Thunks" class="headerlink" title="Thunks"></a>Thunks</h2><p><code>Thunks</code>はまた別のコンセプトですが、Koaを深く知るためには理解が必要です。主に別の関数のコールしやすくするために使われます。サンクは遅延評価とも呼ばれます。重要なことはNode.jsのコールバックを引数から関数のコールとして外に出せるということです。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> read = <span class="function"><span class="keyword">function</span>(<span class="params">file</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">'fs'</span>).readFile(file, cb);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">read(<span class="string">'package.json'</span>)(<span class="function"><span class="keyword">function</span> (<span class="params">err, str</span>) </span>&#123;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> read = <span class="function"><span class="keyword">function</span>(<span class="params">file</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>).readFile(file, cb);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">read(<span class="string">&#x27;package.json&#x27;</span>)(<span class="function"><span class="keyword">function</span> (<span class="params">err, str</span>) </span>&#123;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/tj/node-thunkify" target="_blank" rel="noopener">thunkify</a>という小さなモジュールは、普通のNode.jsの関数をthunkに変換してくれます。どう使うか疑問に思うかもしれませんが、コールバックをジェネレータの中に放り込むときに便利です。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> thunkify = <span class="built_in">require</span>(<span class="string">'thunkify'</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">var</span> read = thunkify(fs.readFile);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">bar</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> read(<span class="string">'input.txt'</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = bar();</span><br><span class="line">gen.next().value(<span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(err) gen.throw(err);</span><br><span class="line">  gen.next(data.toString());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/tj/node-thunkify">thunkify</a>という小さなモジュールは、普通のNode.jsの関数をthunkに変換してくれます。どう使うか疑問に思うかもしれませんが、コールバックをジェネレータの中に放り込むときに便利です。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> thunkify = <span class="built_in">require</span>(<span class="string">&#x27;thunkify&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> read = thunkify(fs.readFile);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">bar</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="keyword">yield</span> read(<span class="string">&#x27;input.txt&#x27;</span>);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gen = bar();</span><br><span class="line">gen.next().value(<span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(err) gen.throw(err);</span><br><span class="line">  gen.next(data.toString());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>十分な時間をとってこの例をパーツ毎に理解することが必要なのは、Koaを使うときにとても重要なことがあるからです。ジェネレータの使い方が特にクールです。同期的なコードのシンプルさがありながら、エラー処理もしっかりしているのに、これは非同期で動いています。</p>
 
@@ -321,7 +288,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -372,7 +338,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#リソース"><span class="nav-number">1.</span> <span class="nav-text">リソース</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ジェネレータ関数"><span class="nav-number">2.</span> <span class="nav-text">ジェネレータ関数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield"><span class="nav-number">3.</span> <span class="nav-text">yield</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#エラー処理"><span class="nav-number">4.</span> <span class="nav-text">エラー処理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for…of"><span class="nav-number">5.</span> <span class="nav-text">for…of</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield-1"><span class="nav-number">6.</span> <span class="nav-text">yield*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thunks"><span class="nav-number">7.</span> <span class="nav-text">Thunks</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9"><span class="nav-number">1.</span> <span class="nav-text">リソース</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B8%E3%82%A7%E3%83%8D%E3%83%AC%E3%83%BC%E3%82%BF%E9%96%A2%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">ジェネレータ関数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield"><span class="nav-number">3.</span> <span class="nav-text">yield</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A8%E3%83%A9%E3%83%BC%E5%87%A6%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">エラー処理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for%E2%80%A6of"><span class="nav-number">5.</span> <span class="nav-text">for…of</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yield-1"><span class="nav-number">6.</span> <span class="nav-text">yield*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thunks"><span class="nav-number">7.</span> <span class="nav-text">Thunks</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -404,10 +370,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -432,9 +401,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -474,13 +443,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

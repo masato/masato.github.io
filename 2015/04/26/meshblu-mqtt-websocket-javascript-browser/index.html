@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="MeshbluにはWebブラウザで使うmeshblu.jsのJavaScriptライブラリがあります。ArduinoなどからMQTTでpublishしたセンシングデータを通常のWebブラウザ上で受信できるようになります。JavaScriptが使える環境は多いのでコネクテッドデバイス間のメッセージングの選択肢が広がります。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MeshbluのRESTとMQTTのメッセージをWebブラウザで直接受信する">
 <meta property="og:url" content="https://masato.github.io/2015/04/26/meshblu-mqtt-websocket-javascript-browser/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="MeshbluにはWebブラウザで使うmeshblu.jsのJavaScriptライブラリがあります。ArduinoなどからMQTTでpublishしたセンシングデータを通常のWebブラウザ上で受信できるようになります。JavaScriptが使える環境は多いのでコネクテッドデバイス間のメッセージングの選択肢が広がります。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/04/26/meshblu-mqtt-websocket-javascript-browser/Meshblujs.png">
 <meta property="article:published_time" content="2015-04-26T06:00:36.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.764Z">
+<meta property="article:modified_time" content="2015-04-26T06:00:36.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="WebSocket">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>MeshbluのRESTとMQTTのメッセージをWebブラウザで直接受信する | masato's blog</title>
+  <title>MeshbluのRESTとMQTTのメッセージをWebブラウザで直接受信する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,22 +190,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 26 2015 15:00:36" itemprop="dateCreated datePublished" datetime="2015-04-26T15:00:36+09:00">Apr 26 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -251,25 +218,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>MeshbluにはWebブラウザで使う<a href="http://meshblu.octoblu.com/js/meshblu.js" target="_blank" rel="noopener">Meshblu.js</a>のJavaScriptライブラリがあります。ArduinoなどからMQTTでpublishしたセンシングデータを通常のWebブラウザ上で受信できるようになります。JavaScriptが使える環境は多いのでコネクテッドデバイス間のメッセージングの選択肢が広がります。</p>
-<a id="more"></a>
+        <p>MeshbluにはWebブラウザで使う<a target="_blank" rel="noopener" href="http://meshblu.octoblu.com/js/meshblu.js">Meshblu.js</a>のJavaScriptライブラリがあります。ArduinoなどからMQTTでpublishしたセンシングデータを通常のWebブラウザ上で受信できるようになります。JavaScriptが使える環境は多いのでコネクテッドデバイス間のメッセージングの選択肢が広がります。</p>
+<span id="more"></span>
 
 <h2 id="デバイスの作成"><a href="#デバイスの作成" class="headerlink" title="デバイスの作成"></a>デバイスの作成</h2><p>Meshbluのデバイス情報の<code>protocol</code>キーに使用しているプロトコルが記述されています。同じデバイスを使ってWebSocketとMQTTのメッセージ送信をする場合はprotocolを書き換える必要があります。WebSocketとMQTTのテスト用にデバイスを２つ用意します。</p>
 <p>WebSocket用のデバイスを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">"http://localhost/devices"</span> \</span><br><span class="line">  -d <span class="string">"name=websocket-pubsub&amp;uuid=websocket-pubsub&amp;protocol=websocket&amp;token=A9plQrTH"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">&quot;http://localhost/devices&quot;</span> \</span><br><span class="line">  -d <span class="string">&quot;name=websocket-pubsub&amp;uuid=websocket-pubsub&amp;protocol=websocket&amp;token=A9plQrTH&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>MQTT用のデバイスを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">"http://localhost/devices"</span> \</span><br><span class="line">  -d <span class="string">"name=mqtt-pub&amp;uuid=mqtt-pub&amp;protocol=mqtt&amp;token=RdHBvvYZ"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  <span class="string">&quot;http://localhost/devices&quot;</span> \</span><br><span class="line">  -d <span class="string">&quot;name=mqtt-pub&amp;uuid=mqtt-pub&amp;protocol=mqtt&amp;token=RdHBvvYZ&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h2><p>Meshbluのブローカーからメッセージを受信するJavaScriptを書きます。ローカルの適当な場所に配置するだけです。WebSocketでSubscribeするデバイスは<code>websocket-pubsub</code>をIDに持ちます。createConnectionの<code>server</code>はMeshbluが起動しているホスト名またはIPアドレスを指定します。</p>
-<figure class="highlight html"><figcaption><span>~/Documents/meshblu/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"ja"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Meshblu.js<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://meshblu.octoblu.com/js/meshblu.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">      <span class="keyword">var</span> conn = meshblu.createConnection(&#123;</span></span><br><span class="line"><span class="actionscript">        <span class="string">"uuid"</span>: <span class="string">"websocket-pubsub"</span>,</span></span><br><span class="line"><span class="actionscript">        <span class="string">"token"</span>: <span class="string">"A9plQrTH"</span>,</span></span><br><span class="line"><span class="actionscript">        <span class="string">"server"</span>: <span class="string">"&#123;MESHBLU_BROKER&#125;&#125;"</span>,</span></span><br><span class="line"><span class="actionscript">        <span class="string">"port"</span>: <span class="number">80</span></span></span><br><span class="line">      &#125;);</span><br><span class="line"><span class="actionscript">      conn.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span><span class="params">(data)</span></span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">'UUID AUTHENTICATED!'</span>);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(data);</span></span><br><span class="line"><span class="actionscript">        conn.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(message)</span> </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(<span class="string">'message received'</span>, message);</span></span><br><span class="line"><span class="javascript">          $(<span class="string">".activity"</span>).prepend(<span class="built_in">JSON</span>.stringify(message) + <span class="string">'&lt;br /&gt;'</span>);</span></span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">p</span>&gt;</span>Subscribe Messages<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"activity"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><figcaption><span>~/Documents/meshblu/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ja&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Meshblu.js<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://meshblu.octoblu.com/js/meshblu.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> conn = meshblu.createConnection(&#123;</span></span><br><span class="line"><span class="javascript">        <span class="string">&quot;uuid&quot;</span>: <span class="string">&quot;websocket-pubsub&quot;</span>,</span></span><br><span class="line"><span class="javascript">        <span class="string">&quot;token&quot;</span>: <span class="string">&quot;A9plQrTH&quot;</span>,</span></span><br><span class="line"><span class="javascript">        <span class="string">&quot;server&quot;</span>: <span class="string">&quot;&#123;MESHBLU_BROKER&#125;&#125;&quot;</span>,</span></span><br><span class="line"><span class="javascript">        <span class="string">&quot;port&quot;</span>: <span class="number">80</span></span></span><br><span class="line">      &#125;);</span><br><span class="line"><span class="javascript">      conn.on(<span class="string">&#x27;ready&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">&#x27;UUID AUTHENTICATED!&#x27;</span>);</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(data);</span></span><br><span class="line"><span class="javascript">        conn.on(<span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">          <span class="built_in">console</span>.log(<span class="string">&#x27;message received&#x27;</span>, message);</span></span><br><span class="line"><span class="javascript">          $(<span class="string">&quot;.activity&quot;</span>).prepend(<span class="built_in">JSON</span>.stringify(message) + <span class="string">&#x27;&lt;br /&gt;&#x27;</span>);</span></span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">p</span>&gt;</span>Subscribe Messages<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;activity&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="WebSocketとMQTTのテスト"><a href="#WebSocketとMQTTのテスト" class="headerlink" title="WebSocketとMQTTのテスト"></a>WebSocketとMQTTのテスト</h2><p>日本語を含んだpayloadがWebブラウザで正常に表示されるかも試します。Chromeブラウザから先ほど作成したローカルのindex.htmlファイルを開きます。</p>
 <p>最初にcurlコマンドからメッセージをHTTP POSTします。payloadに”川崎”という日本語を追加しました。</p>
-<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ curl -X POST  \</span><br><span class="line">  http:<span class="string">//localhost/messages</span>  \</span><br><span class="line">  -d '&#123;<span class="string">"devices"</span>: [<span class="string">"websocket-pubsub"</span>], <span class="string">"payload"</span>: &#123;<span class="string">"temperature"</span><span class="function">:25</span>,<span class="string">"city"</span>:<span class="string">"川崎"</span>&#125;&#125;'  \</span><br><span class="line">  <span class="params">--header</span> <span class="string">"meshblu_auth_uuid: websocket-pubsub"</span>  \</span><br><span class="line">  <span class="params">--header</span> <span class="string">"meshblu_auth_token: A9plQrTH"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ curl -X POST  \</span><br><span class="line">  http:<span class="string">//localhost/messages</span>  \</span><br><span class="line">  -d &#x27;&#123;<span class="string">&quot;devices&quot;</span>: [<span class="string">&quot;websocket-pubsub&quot;</span>], <span class="string">&quot;payload&quot;</span>: &#123;<span class="string">&quot;temperature&quot;</span><span class="function">:25</span>,<span class="string">&quot;city&quot;</span>:<span class="string">&quot;川崎&quot;</span>&#125;&#125;&#x27;  \</span><br><span class="line">  <span class="params">--header</span> <span class="string">&quot;meshblu_auth_uuid: websocket-pubsub&quot;</span>  \</span><br><span class="line">  <span class="params">--header</span> <span class="string">&quot;meshblu_auth_token: A9plQrTH&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>次にMosquittoからメッセージをMQTT publishします。同様にpayloadには日本語を含んでいます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t message \</span><br><span class="line">  -m <span class="string">'&#123;"devices": "websocket-pubsub", "payload": &#123;"temperature":26,"city":"横浜"&#125;&#125;'</span> \</span><br><span class="line">  -u mqtt-pub \</span><br><span class="line">  -P RdHBvvYZ \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_pub \</span><br><span class="line">  -h localhost  \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t message \</span><br><span class="line">  -m <span class="string">&#x27;&#123;&quot;devices&quot;: &quot;websocket-pubsub&quot;, &quot;payload&quot;: &#123;&quot;temperature&quot;:26,&quot;city&quot;:&quot;横浜&quot;&#125;&#125;&#x27;</span> \</span><br><span class="line">  -u mqtt-pub \</span><br><span class="line">  -P RdHBvvYZ \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザに2つの日本語を含むメッセージが正常に表示されました。</p>
 <p><img src="/2015/04/26/meshblu-mqtt-websocket-javascript-browser/Meshblujs.png" alt="Meshblujs.png"></p>
@@ -309,7 +276,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -360,7 +326,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#デバイスの作成"><span class="nav-number">1.</span> <span class="nav-text">デバイスの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#index-html"><span class="nav-number">2.</span> <span class="nav-text">index.html</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocketとMQTTのテスト"><span class="nav-number">3.</span> <span class="nav-text">WebSocketとMQTTのテスト</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">デバイスの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#index-html"><span class="nav-number">2.</span> <span class="nav-text">index.html</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocket%E3%81%A8MQTT%E3%81%AE%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">3.</span> <span class="nav-text">WebSocketとMQTTのテスト</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -392,10 +358,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -420,9 +389,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -462,13 +431,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

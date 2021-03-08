@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Reactのリアクティブとコンポーネント指向の考えはすごく良いのですが、どうも書き方に馴染めません。IsomorphicもJavaScriptで書くよりClojureで書く方が楽しいのでReagentを使っています。Node.jsのES6時代に向けたKoaのIsomorphicを調べていると、horseやDekuといったライブラリがありました。今回はDekuの方を試してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Koa入門 - Part4: ES6でIsomorphicなDeku">
 <meta property="og:url" content="https://masato.github.io/2015/06/28/koa-tutorial-es6-deku/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Reactのリアクティブとコンポーネント指向の考えはすごく良いのですが、どうも書き方に馴染めません。IsomorphicもJavaScriptで書くよりClojureで書く方が楽しいのでReagentを使っています。Node.jsのES6時代に向けたKoaのIsomorphicを調べていると、horseやDekuといったライブラリがありました。今回はDekuの方を試してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-06-27T18:12:14.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.723Z">
+<meta property="article:modified_time" content="2015-06-27T18:12:14.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="iojs">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Koa入門 - Part4: ES6でIsomorphicなDeku | masato's blog</title>
+  <title>Koa入門 - Part4: ES6でIsomorphicなDeku | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 28 2015 03:12:14" itemprop="dateCreated datePublished" datetime="2015-06-28T03:12:14+09:00">Jun 28 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Reactのリアクティブとコンポーネント指向の考えはすごく良いのですが、どうも書き方に馴染めません。IsomorphicもJavaScriptで書くよりClojureで書く方が楽しいのでReagentを使っています。Node.jsのES6時代に向けたKoaのIsomorphicを調べていると、horseやDekuといったライブラリがありました。今回はDekuの方を試してみます。</div>
@@ -241,49 +208,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://facebook.github.io/react/" target="_blank" rel="noopener">React</a>のリアクティブとコンポーネント指向の考えはすごく良いのですが、どうも書き方に馴染めません。IsomorphicもJavaScriptで書くよりClojureで書く方が楽しいので<a href="http://holmsand.github.io/reagent/" target="_blank" rel="noopener">Reagent</a>を使っています。Node.jsのES6時代に向けたKoaのIsomorphicを調べていると、<a href="https://github.com/reddit/horse" target="_blank" rel="noopener">horse</a>や<a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>といったライブラリがありました。今回はDekuの方を試してみます。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="http://facebook.github.io/react/">React</a>のリアクティブとコンポーネント指向の考えはすごく良いのですが、どうも書き方に馴染めません。IsomorphicもJavaScriptで書くよりClojureで書く方が楽しいので<a target="_blank" rel="noopener" href="http://holmsand.github.io/reagent/">Reagent</a>を使っています。Node.jsのES6時代に向けたKoaのIsomorphicを調べていると、<a target="_blank" rel="noopener" href="https://github.com/reddit/horse">horse</a>や<a target="_blank" rel="noopener" href="https://github.com/dekujs/deku">Deku</a>といったライブラリがありました。今回はDekuの方を試してみます。</p>
+<span id="more"></span>
 
-<h2 id="Deku"><a href="#Deku" class="headerlink" title="Deku"></a>Deku</h2><p><a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>はReactのalternativeとしてUIのコンポーネントを作成するライブラリです。</p>
-<h3 id="NIHではない"><a href="#NIHではない" class="headerlink" title="NIHではない"></a>NIHではない</h3><p>なぜDekuを開発し始めたかは<a href="https://segment.com/blog/deku-our-functional-alternative-to-react/" target="_blank" rel="noopener">Deku: How we built our functional alternative to React</a>に書いてあります。頭が痛いすぐ内製でやりたがる<a href="https://ja.wikipedia.org/wiki/NIH%E7%97%87%E5%80%99%E7%BE%A4" target="_blank" rel="noopener">NIH</a>ではないと言っています。彼らはフロントエンドのパッケージマネージャとして<a href="http://duojs.org/" target="_blank" rel="noopener">Duo</a>を使っているようです。Reactのような大きなブラックボックス中でたくさんの機能を実装するよりも、小さなモジュールで構成した方が見通しもよく、デバッグしやすいといった考え方が背景にあります。見通しがよく何か問題があったときに原因を特定しやすいというのはフレームワークを選ぶ上でとても重要なことです。</p>
+<h2 id="Deku"><a href="#Deku" class="headerlink" title="Deku"></a>Deku</h2><p><a target="_blank" rel="noopener" href="https://github.com/dekujs/deku">Deku</a>はReactのalternativeとしてUIのコンポーネントを作成するライブラリです。</p>
+<h3 id="NIHではない"><a href="#NIHではない" class="headerlink" title="NIHではない"></a>NIHではない</h3><p>なぜDekuを開発し始めたかは<a target="_blank" rel="noopener" href="https://segment.com/blog/deku-our-functional-alternative-to-react/">Deku: How we built our functional alternative to React</a>に書いてあります。頭が痛いすぐ内製でやりたがる<a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/NIH%E7%97%87%E5%80%99%E7%BE%A4">NIH</a>ではないと言っています。彼らはフロントエンドのパッケージマネージャとして<a target="_blank" rel="noopener" href="http://duojs.org/">Duo</a>を使っているようです。Reactのような大きなブラックボックス中でたくさんの機能を実装するよりも、小さなモジュールで構成した方が見通しもよく、デバッグしやすいといった考え方が背景にあります。見通しがよく何か問題があったときに原因を特定しやすいというのはフレームワークを選ぶ上でとても重要なことです。</p>
 <h3 id="IsomorphicかAPIサーバーか"><a href="#IsomorphicかAPIサーバーか" class="headerlink" title="IsomorphicかAPIサーバーか"></a>IsomorphicかAPIサーバーか</h3><p>以前<a href="/2015/06/19/reagent-client-server-connection/">Reagent入門 - Part3: クライアントとサーバーの通信パターン</a>や<a href="/2015/06/22/reagent-form-bootstrap/">Reagent入門 - Part4: SPAとフォームの要件</a>で考察しました。今のところSPAはIsomorphicでなくAPIサーバーにして、毎回面倒ですがルーティングやモデルはクライアントもサーバーも2回書くのがよいと思っています。</p>
 <p>Isomorphic初心者なので、Clojure/ClojureScriptで書いていてもサーバーのコードを書いているのかクライアントなのか時々わからなくなります。ルーティングを書いているときなどほとんど同じコードなので混乱してしまいます。</p>
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>今回のプロジェクトは以下の構成です。<a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>とサンプルの<a href="https://github.com/dekujs/todomvc" target="_blank" rel="noopener">todomvc</a>を読みながらインストールとKoaを使ったサーバサイドレンダリングを試してみます。</p>
-<h2 id="Dekuのビルド方法"><a href="#Dekuのビルド方法" class="headerlink" title="Dekuのビルド方法"></a>Dekuのビルド方法</h2><p><a href="https://github.com/dekujs/deku" target="_blank" rel="noopener">Deku</a>はクライアントサイドのライブラリです。ES6で書くのでいずれにいても<a href="https://babeljs.io/" target="_blank" rel="noopener">Babel</a>は必要です。</p>
-<h3 id="Browserfify"><a href="#Browserfify" class="headerlink" title="Browserfify"></a>Browserfify</h3><p><a href="http://browserify.org/" target="_blank" rel="noopener">Browserfify</a>を使うのが、サーバーサイドとクライアントサイドのどちらのレンダリングを使う場合でも一番簡単なようです。babelifyを使うとJSXのコンパイルも簡単にできます。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>今回のプロジェクトは以下の構成です。<a target="_blank" rel="noopener" href="https://github.com/dekujs/deku">Deku</a>とサンプルの<a target="_blank" rel="noopener" href="https://github.com/dekujs/todomvc">todomvc</a>を読みながらインストールとKoaを使ったサーバサイドレンダリングを試してみます。</p>
+<h2 id="Dekuのビルド方法"><a href="#Dekuのビルド方法" class="headerlink" title="Dekuのビルド方法"></a>Dekuのビルド方法</h2><p><a target="_blank" rel="noopener" href="https://github.com/dekujs/deku">Deku</a>はクライアントサイドのライブラリです。ES6で書くのでいずれにいても<a target="_blank" rel="noopener" href="https://babeljs.io/">Babel</a>は必要です。</p>
+<h3 id="Browserfify"><a href="#Browserfify" class="headerlink" title="Browserfify"></a>Browserfify</h3><p><a target="_blank" rel="noopener" href="http://browserify.org/">Browserfify</a>を使うのが、サーバーサイドとクライアントサイドのどちらのレンダリングを使う場合でも一番簡単なようです。babelifyを使うとJSXのコンパイルも簡単にできます。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ browserify -t babelify main.js &gt; build.js</span><br></pre></td></tr></table></figure>
 
-<h3 id="Duo"><a href="#Duo" class="headerlink" title="Duo"></a>Duo</h3><p><a href="http://duojs.org/" target="_blank" rel="noopener">Duo</a>は次世代のフロントエンドのパッケージマネージャです。DuoからBabelを使うときには<a href="https://github.com/babel/duo-babel" target="_blank" rel="noopener">duo-babel</a>が必要になります。Dekuは<a href="http://duojs.org/" target="_blank" rel="noopener">Duo</a>を推しているようなので使ってみようと思います。</p>
+<h3 id="Duo"><a href="#Duo" class="headerlink" title="Duo"></a>Duo</h3><p><a target="_blank" rel="noopener" href="http://duojs.org/">Duo</a>は次世代のフロントエンドのパッケージマネージャです。DuoからBabelを使うときには<a target="_blank" rel="noopener" href="https://github.com/babel/duo-babel">duo-babel</a>が必要になります。Dekuは<a target="_blank" rel="noopener" href="http://duojs.org/">Duo</a>を推しているようなので使ってみようと思います。</p>
 <p>Duoの考え方は1つのパッケージは1つの機能を提供することです。コード上のインポートは直接GitHubのパッケージを指定してます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;element,tree,render&#125; <span class="keyword">from</span> <span class="string">'segmentio/deku@0.2.1'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;element,tree,render&#125; <span class="keyword">from</span> <span class="string">&#x27;segmentio/deku@0.2.1&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>ES6で書いてBabelが必要になるので、duoコマンドには<code>--use duo-babel</code>フラグを付けてコンパイルして使います。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$ duo --use duo-babel main.js &gt; build.js</span><br></pre></td></tr></table></figure>
 
 <h3 id="babel-register"><a href="#babel-register" class="headerlink" title="babel/register"></a>babel/register</h3><p>単純なHello Worldなので、今回はindex.jsで<code>babel/register</code>のフックからrequireしたapp.es6を自動的にコンパイルします。本来のIsomorphicならばクライアント側のES6コードは<code>browserify</code>でコンパイルして、ES5<br>にビルド済みのjsファイルをindex.htmlなどから<code>&lt;script src=&quot;/build/index.js&quot;&gt;&lt;/script&gt;</code>として最初にロードする必要があります。次回はクライアント側の<code>browserify</code>を試してみます。</p>
-<h2 id="プロジェクト-1"><a href="#プロジェクト-1" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>適当なディレクトリにプロジェクトを作成します。リポジトリは<a href="https://github.com/masato/docker-deku-koa" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="プロジェクト-1"><a href="#プロジェクト-1" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>適当なディレクトリにプロジェクトを作成します。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-deku-koa">こちら</a>です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-deku-koa</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── client</span><br><span class="line">│   └── helloworld.es6</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">├── package.json</span><br><span class="line">└── server</span><br><span class="line">    ├── app.es6</span><br><span class="line">    └── index.js</span><br></pre></td></tr></table></figure>
 
-<h3 id="Dockerfileとdocker-compose-yml"><a href="#Dockerfileとdocker-compose-yml" class="headerlink" title="Dockerfileとdocker-compose.yml"></a>Dockerfileとdocker-compose.yml</h3><p>Dockerfileのベースイメージは<a href="https://registry.hub.docker.com/_/iojs/" target="_blank" rel="noopener">iojs</a>を使います。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/docker-deku-koa/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    npm install</span><br><span class="line"></span><br><span class="line">EXPOSE 3000</span><br><span class="line">COPY . /app</span><br><span class="line">ENTRYPOINT [<span class="string">"npm"</span>, <span class="string">"start"</span>]</span><br><span class="line">CMD []</span><br></pre></td></tr></table></figure>
+<h3 id="Dockerfileとdocker-compose-yml"><a href="#Dockerfileとdocker-compose-yml" class="headerlink" title="Dockerfileとdocker-compose.yml"></a>Dockerfileとdocker-compose.yml</h3><p>Dockerfileのベースイメージは<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/_/iojs/">iojs</a>を使います。</p>
+<figure class="highlight bash"><figcaption><span>~/node_apps/docker-deku-koa/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    npm install</span><br><span class="line"></span><br><span class="line">EXPOSE 3000</span><br><span class="line">COPY . /app</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br><span class="line">CMD []</span><br></pre></td></tr></table></figure>
 
 <p>docker-compose.ymlではDockerホストのカレントディレクトリごと、コンテナの<code>WORKDIR</code>である<code>/app</code>にマウントします。</p>
-<figure class="highlight yaml"><figcaption><span>~/node_apps/docker-deku-koa/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">deku:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3030:3000"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/node_apps/docker-deku-koa/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">deku:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3030:3000&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>コンテナにマウントしたときに<code>node_modules</code>が隠れないように、カレントディレクトリに予めシムリンクを作っておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ln -s /dist/node_modules .</span><br></pre></td></tr></table></figure>
 
 <h3 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h3><p>package.jsonに必要なパッケージをdependenciesに追加します。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/docker-deku-koa/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"deku-koa-example"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"deku-koa-example"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">        <span class="attr">"deku"</span>: <span class="string">"^0.4.5"</span>,</span><br><span class="line">        <span class="attr">"koa"</span>: <span class="string">"^0.21.0"</span>,</span><br><span class="line">        <span class="attr">"babel"</span>: <span class="string">"^5.6.7"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">        <span class="attr">"start"</span>: <span class="string">"node server/index.js"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>~/node_apps/docker-deku-koa/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;deku-koa-example&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;deku-koa-example&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;deku&quot;</span>: <span class="string">&quot;^0.4.5&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;koa&quot;</span>: <span class="string">&quot;^0.21.0&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;babel&quot;</span>: <span class="string">&quot;^5.6.7&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node server/index.js&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="サーバーサイド"><a href="#サーバーサイド" class="headerlink" title="サーバーサイド"></a>サーバーサイド</h2><p><code>babel/register</code>のフックで<code>app.es6</code>をrequireしたときに自動的にES5にコンパイルします。<code>jsxPragma</code>オプションに<code>element</code>を指定しています。こうするとJSXの変換にBabelがデフォルトのReact.createElementの代わりに、<code>import {element} from &#39;deku&#39;</code>のelementを使うようになります。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/server/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ES6 support</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'babel/register'</span>)(&#123; <span class="attr">jsxPragma</span>: <span class="string">'element'</span> &#125;);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./app'</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="サーバーサイド"><a href="#サーバーサイド" class="headerlink" title="サーバーサイド"></a>サーバーサイド</h2><p><code>babel/register</code>のフックで<code>app.es6</code>をrequireしたときに自動的にES5にコンパイルします。<code>jsxPragma</code>オプションに<code>element</code>を指定しています。こうするとJSXの変換にBabelがデフォルトのReact.createElementの代わりに、<code>import &#123;element&#125; from &#39;deku&#39;</code>のelementを使うようになります。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/server/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ES6 support</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;babel/register&#x27;</span>)(&#123; <span class="attr">jsxPragma</span>: <span class="string">&#x27;element&#x27;</span> &#125;);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;./app&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>app.es6はES6で書いたKoaのコードです。IsomorphicなKoaのテストなので、クライアントサイドのコードをimportしてレンダリングしています。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/server/app.es6</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> koa <span class="keyword">from</span> <span class="string">'koa'</span></span><br><span class="line"><span class="keyword">import</span> HelloWorld <span class="keyword">from</span> <span class="string">'../client/helloworld'</span></span><br><span class="line"><span class="keyword">import</span> &#123;element, tree, renderString&#125; <span class="keyword">from</span> <span class="string">'deku'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = koa()</span><br><span class="line"></span><br><span class="line">app.use(<span class="function"><span class="keyword">function</span> *(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.body = renderString(tree(<span class="xml"><span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">text</span>=<span class="string">"Hello World!"</span> /&gt;</span></span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/server/app.es6</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> koa <span class="keyword">from</span> <span class="string">&#x27;koa&#x27;</span></span><br><span class="line"><span class="keyword">import</span> HelloWorld <span class="keyword">from</span> <span class="string">&#x27;../client/helloworld&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123;element, tree, renderString&#125; <span class="keyword">from</span> <span class="string">&#x27;deku&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = koa()</span><br><span class="line"></span><br><span class="line">app.use(<span class="function"><span class="keyword">function</span> *(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">this</span>.body = renderString(tree(<span class="xml"><span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">text</span>=<span class="string">&quot;Hello World!&quot;</span> /&gt;</span></span>))</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="クライアントサイド"><a href="#クライアントサイド" class="headerlink" title="クライアントサイド"></a>クライアントサイド</h2><p><code>client/helloworld.es6</code>で、サーバーサイドの<code>server/app.es6</code>でも使う<code>HelloWorld</code>コンポーネントを定義しています。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/client/helloworld.es6</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;element, render&#125; <span class="keyword">from</span> <span class="string">'deku'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> HelloWorld = &#123;</span><br><span class="line">  render(component) &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123;props,state&#125; = component</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &#123;props.text&#125;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default HelloWorld</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-deku-koa/client/helloworld.es6</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;element, render&#125; <span class="keyword">from</span> <span class="string">&#x27;deku&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> HelloWorld = &#123;</span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params">component</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> &#123;props,state&#125; = component</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &#123;props.text&#125;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> HelloWorld</span><br></pre></td></tr></table></figure>
 
 <h2 id="Dockerイメージのビルドと起動Docker"><a href="#Dockerイメージのビルドと起動Docker" class="headerlink" title="Dockerイメージのビルドと起動Docker"></a>Dockerイメージのビルドと起動Docker</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-deku-koa</span><br><span class="line">$ docker-compose build</span><br><span class="line">$ docker-compose up</span><br><span class="line">Recreating dockerdekukoa_deku_1...</span><br><span class="line">Attaching to dockerdekukoa_deku_1</span><br><span class="line">deku_1 | npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">deku_1 | npm info using npm@2.11.1</span><br><span class="line">deku_1 | npm info using node@v2.3.0</span><br><span class="line">deku_1 | npm info prestart deku-koa-example@0.0.1</span><br><span class="line">deku_1 | npm info start deku-koa-example@0.0.1</span><br><span class="line">deku_1 |</span><br><span class="line">deku_1 | &gt; deku-koa-example@0.0.1 start /app</span><br><span class="line">deku_1 | &gt; node server/index.js</span><br><span class="line">deku_1 |</span><br></pre></td></tr></table></figure>
 
@@ -326,7 +293,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -377,7 +343,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deku"><span class="nav-number">1.</span> <span class="nav-text">Deku</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIHではない"><span class="nav-number">1.1.</span> <span class="nav-text">NIHではない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IsomorphicかAPIサーバーか"><span class="nav-number">1.2.</span> <span class="nav-text">IsomorphicかAPIサーバーか</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dekuのビルド方法"><span class="nav-number">3.</span> <span class="nav-text">Dekuのビルド方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Browserfify"><span class="nav-number">3.1.</span> <span class="nav-text">Browserfify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Duo"><span class="nav-number">3.2.</span> <span class="nav-text">Duo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel-register"><span class="nav-number">3.3.</span> <span class="nav-text">babel&#x2F;register</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト-1"><span class="nav-number">4.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfileとdocker-compose-yml"><span class="nav-number">4.1.</span> <span class="nav-text">Dockerfileとdocker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package-json"><span class="nav-number">4.2.</span> <span class="nav-text">package.json</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#サーバーサイド"><span class="nav-number">5.</span> <span class="nav-text">サーバーサイド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#クライアントサイド"><span class="nav-number">6.</span> <span class="nav-text">クライアントサイド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerイメージのビルドと起動Docker"><span class="nav-number">7.</span> <span class="nav-text">Dockerイメージのビルドと起動Docker</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deku"><span class="nav-number">1.</span> <span class="nav-text">Deku</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIH%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%84"><span class="nav-number">1.1.</span> <span class="nav-text">NIHではない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isomorphic%E3%81%8BAPI%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%8B"><span class="nav-number">1.2.</span> <span class="nav-text">IsomorphicかAPIサーバーか</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deku%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">Dekuのビルド方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Browserfify"><span class="nav-number">3.1.</span> <span class="nav-text">Browserfify</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Duo"><span class="nav-number">3.2.</span> <span class="nav-text">Duo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#babel-register"><span class="nav-number">3.3.</span> <span class="nav-text">babel&#x2F;register</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88-1"><span class="nav-number">4.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile%E3%81%A8docker-compose-yml"><span class="nav-number">4.1.</span> <span class="nav-text">Dockerfileとdocker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package-json"><span class="nav-number">4.2.</span> <span class="nav-text">package.json</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89"><span class="nav-number">5.</span> <span class="nav-text">サーバーサイド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%82%B5%E3%82%A4%E3%83%89"><span class="nav-number">6.</span> <span class="nav-text">クライアントサイド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89%E3%81%A8%E8%B5%B7%E5%8B%95Docker"><span class="nav-number">7.</span> <span class="nav-text">Dockerイメージのビルドと起動Docker</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -409,10 +375,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -437,9 +406,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -479,13 +448,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

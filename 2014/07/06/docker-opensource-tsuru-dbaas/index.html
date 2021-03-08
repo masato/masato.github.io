@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Flynnの場合Flynn PostgreSQLであったり、Dokkuの場合Pluginがあったりと、PaaSにとって何かしらのデータベースサービスが必要です。DokkuのPluginsにはMariaDBやPostgreSQL用のプラグインがあるので、tsuruが理解できたら試してみたいです。オープンソースで作るDBaaSでは、OpenStackのTroveが最近話題です。DBaaSやPaaSをも">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DockerでオープンソースPaaS - Part5: tsuruのDBaaS">
 <meta property="og:url" content="https://masato.github.io/2014/07/06/docker-opensource-tsuru-dbaas/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Flynnの場合Flynn PostgreSQLであったり、Dokkuの場合Pluginがあったりと、PaaSにとって何かしらのデータベースサービスが必要です。DokkuのPluginsにはMariaDBやPostgreSQL用のプラグインがあるので、tsuruが理解できたら試してみたいです。オープンソースで作るDBaaSでは、OpenStackのTroveが最近話題です。DBaaSやPaaSをも">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-07-05T15:10:43.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.600Z">
+<meta property="article:modified_time" content="2014-07-05T15:10:43.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="DBaaS">
 <meta property="article:tag" content="Dokku">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>DockerでオープンソースPaaS - Part5: tsuruのDBaaS | masato's blog</title>
+  <title>DockerでオープンソースPaaS - Part5: tsuruのDBaaS | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,19 +190,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 6 2014 00:10:43" itemprop="dateCreated datePublished" datetime="2014-07-06T00:10:43+09:00">Jul 6 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Flynnの場合Flynn PostgreSQLであったり、Dokkuの場合Pluginがあったりと、PaaSにとって何かしらのデータベースサービスが必要です。DokkuのPluginsにはMariaDBやPostgreSQL用のプラグインがあるので、tsuruが理解できたら試してみたいです。オープンソースで作るDBaaSでは、OpenStackのTroveが最近話題です。DBaaSやPaaSをもっとカジュアルに試せるように、そろそろOpenStackもどこかに作らないといけないです。</div>
@@ -245,34 +212,34 @@
         <ul>
 <li><code>Update 2014-08-17</code>: <a href="/2014/08/17/deis-in-idcf-cloud-dbaas/">Deis in IDCFクラウド - Part4: DBaaS</a></li>
 </ul>
-<p>Flynnの場合<a href="https://github.com/flynn/flynn-postgres" target="_blank" rel="noopener">Flynn PostgreSQL</a>であったり、Dokkuには<a href="https://github.com/progrium/dokku/wiki/Plugins" target="_blank" rel="noopener">Plugin</a>があったりと、PaaSにとって何かしらのデータベースサービスが必要です。</p>
-<p>Dokkuの<a href="https://github.com/progrium/dokku/wiki/Plugins" target="_blank" rel="noopener">Plugins</a>にはMariaDBやPostgreSQL用のプラグインがあるので、tsuruが理解できたら試してみたいです。</p>
-<p>オープンソースのDBaaSでは、OpenStackの<a href="https://github.com/openstack/trove" target="_blank" rel="noopener">Trove</a>が最近話題です。<br>DBaaSやPaaSをもっとカジュアルに試せるように、そろそろOpenStackもどこかに作らないといけないです。</p>
-<a id="more"></a>
+<p>Flynnの場合<a target="_blank" rel="noopener" href="https://github.com/flynn/flynn-postgres">Flynn PostgreSQL</a>であったり、Dokkuには<a target="_blank" rel="noopener" href="https://github.com/progrium/dokku/wiki/Plugins">Plugin</a>があったりと、PaaSにとって何かしらのデータベースサービスが必要です。</p>
+<p>Dokkuの<a target="_blank" rel="noopener" href="https://github.com/progrium/dokku/wiki/Plugins">Plugins</a>にはMariaDBやPostgreSQL用のプラグインがあるので、tsuruが理解できたら試してみたいです。</p>
+<p>オープンソースのDBaaSでは、OpenStackの<a target="_blank" rel="noopener" href="https://github.com/openstack/trove">Trove</a>が最近話題です。<br>DBaaSやPaaSをもっとカジュアルに試せるように、そろそろOpenStackもどこかに作らないといけないです。</p>
+<span id="more"></span>
 
-<h3 id="tsuruのサービス"><a href="#tsuruのサービス" class="headerlink" title="tsuruのサービス"></a>tsuruのサービス</h3><p><a href="http://docs.tsuru.io/en/0.5.1/apps/client/services.html" target="_blank" rel="noopener">Services</a>のページに手順が書いてありますが、ドキュメントはページに散らばっているので、わかりづらいのが残念です。</p>
+<h3 id="tsuruのサービス"><a href="#tsuruのサービス" class="headerlink" title="tsuruのサービス"></a>tsuruのサービス</h3><p><a target="_blank" rel="noopener" href="http://docs.tsuru.io/en/0.5.1/apps/client/services.html">Services</a>のページに手順が書いてありますが、ドキュメントはページに散らばっているので、わかりづらいのが残念です。</p>
 <p>tsuruのバージョンは0.10.2ですが、ドキュメントの最新は0.5.1です。x2?</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru version</span><br><span class="line">tsuru version 0.10.2.</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://docs.tsuru.io/en/0.5.1/services/mysql-example.html" target="_blank" rel="noopener">HOWTO Install a MySQL service</a>にMySQLサービスの作成手順があります。MySQLいってもMariaDBです。</p>
+<p><a target="_blank" rel="noopener" href="http://docs.tsuru.io/en/0.5.1/services/mysql-example.html">HOWTO Install a MySQL service</a>にMySQLサービスの作成手順があります。MySQLいってもMariaDBです。</p>
 <h3 id="MariaDBのインストール"><a href="#MariaDBのインストール" class="headerlink" title="MariaDBのインストール"></a>MariaDBのインストール</h3><p>MariaDBをインストールします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install software-properties-common</span><br><span class="line">$ sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db</span><br><span class="line">$ sudo add-apt-repository <span class="string">'deb http://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/10.1/ubuntu trusty main'</span></span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install mariadb-server</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install software-properties-common</span><br><span class="line">$ sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db</span><br><span class="line">$ sudo add-apt-repository <span class="string">&#x27;deb http://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/repo/10.1/ubuntu trusty main&#x27;</span></span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install mariadb-server</span><br></pre></td></tr></table></figure>
 
 <p>DBの管理ユーザーを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mysql -uroot -p</span><br><span class="line">Enter password:</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 43</span><br><span class="line">Server version: 10.1.0-MariaDB-1~trusty-log mariadb.org binary distribution</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2014, Oracle, SkySQL Ab and others.</span><br><span class="line"></span><br><span class="line">Type <span class="string">'help;'</span> or <span class="string">'\h'</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">'\c'</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">&gt; GRANT ALL PRIVILEGES ON *.* TO <span class="string">'tsuru'</span>@<span class="string">'%'</span> IDENTIFIED BY <span class="string">'password'</span> with GRANT OPTION;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mysql -uroot -p</span><br><span class="line">Enter password:</span><br><span class="line">Welcome to the MariaDB monitor.  Commands end with ; or \g.</span><br><span class="line">Your MariaDB connection id is 43</span><br><span class="line">Server version: 10.1.0-MariaDB-1~trusty-log mariadb.org binary distribution</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2014, Oracle, SkySQL Ab and others.</span><br><span class="line"></span><br><span class="line">Type <span class="string">&#x27;help;&#x27;</span> or <span class="string">&#x27;\h&#x27;</span> <span class="keyword">for</span> <span class="built_in">help</span>. Type <span class="string">&#x27;\c&#x27;</span> to clear the current input statement.</span><br><span class="line"></span><br><span class="line">&gt; GRANT ALL PRIVILEGES ON *.* TO <span class="string">&#x27;tsuru&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED BY <span class="string">&#x27;password&#x27;</span> with GRANT OPTION;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">&gt; FLUSH PRIVILEGES;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
 
 
 <p><code>bind-address</code>をコメントアウトして、外部接続を可能にします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo vi /etc/mysql/my.cnf</span><br><span class="line"><span class="comment">#bind-address           = 127.0.0.1</span></span><br><span class="line">$ sudo /etc/init.d/mysql restart</span><br></pre></td></tr></table></figure>
 
-<h3 id="MySQL-service-API-for-tsuru-PaaS"><a href="#MySQL-service-API-for-tsuru-PaaS" class="headerlink" title="MySQL service API for tsuru PaaS"></a>MySQL service API for tsuru PaaS</h3><p>MySQLサービスAPIの、<a href="https://github.com/tsuru/mysqlapi" target="_blank" rel="noopener">mysqlapi</a>アプリから利用するデータベースを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"CREATE DATABASE mysqlapi"</span> | mysql -h 10.1.1.17 -u tsuru -ppassword</span><br></pre></td></tr></table></figure>
+<h3 id="MySQL-service-API-for-tsuru-PaaS"><a href="#MySQL-service-API-for-tsuru-PaaS" class="headerlink" title="MySQL service API for tsuru PaaS"></a>MySQL service API for tsuru PaaS</h3><p>MySQLサービスAPIの、<a target="_blank" rel="noopener" href="https://github.com/tsuru/mysqlapi">mysqlapi</a>アプリから利用するデータベースを作成します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;CREATE DATABASE mysqlapi&quot;</span> | mysql -h 10.1.1.17 -u tsuru -ppassword</span><br></pre></td></tr></table></figure>
 
 <p>mysqlapiアプリを<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/globocom/mysqlapi</span><br></pre></td></tr></table></figure>
 
 <p><code>git push</code>する前に、tsuruにアプリを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-create mysql-api python</span><br><span class="line">App <span class="string">"mysql-api"</span> is being created!</span><br><span class="line">Use app-info to check the status of the app and its units.</span><br><span class="line">Your repository <span class="keyword">for</span> <span class="string">"mysql-api"</span> project is <span class="string">"git@10.1.1.17:mysql-api.git"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru app-create mysql-api python</span><br><span class="line">App <span class="string">&quot;mysql-api&quot;</span> is being created!</span><br><span class="line">Use app-info to check the status of the app and its units.</span><br><span class="line">Your repository <span class="keyword">for</span> <span class="string">&quot;mysql-api&quot;</span> project is <span class="string">&quot;git@10.1.1.17:mysql-api.git&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p><code>git push</code>してmysqlapiアプリをtsuruにデプロイします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/mysqlapi</span><br><span class="line">$ tsuru app-info -a mysql-api|grep Repository</span><br><span class="line">Repository: git@10.1.1.17:mysql-api.git</span><br><span class="line">$ git push git@10.1.1.17:mysql-api.git master</span><br><span class="line">...</span><br><span class="line">remote: Successfully installed Django MySQL-python boto crane-ec2 gunicorn gevent greenlet</span><br><span class="line">remote: Cleaning up...</span><br><span class="line">remote:</span><br><span class="line">remote: ---- Starting 1 unit ----</span><br><span class="line">remote:  ---&gt; Started unit 1/1...</span><br><span class="line">remote:</span><br><span class="line">remote:  ---&gt; App will be restarted, please check its logs <span class="keyword">for</span> more details...</span><br><span class="line">remote:</span><br><span class="line">remote:</span><br><span class="line">remote: OK</span><br><span class="line">To git@10.1.1.17:mysql-api.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br></pre></td></tr></table></figure>
@@ -287,7 +254,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tsuru run --app mysql-api -- python manage.py syncdb --noinput</span><br><span class="line">Creating tables ...</span><br><span class="line">Creating table auth_permission</span><br><span class="line">Creating table auth_group_permissions</span><br><span class="line">Creating table auth_group</span><br><span class="line">Creating table auth_user_groups</span><br><span class="line">Creating table auth_user_user_permissions</span><br><span class="line">Creating table auth_user</span><br><span class="line">Creating table django_content_type</span><br><span class="line">Creating table django_session</span><br><span class="line">Creating table django_site</span><br><span class="line">Creating table api_instance</span><br><span class="line">Creating table api_provisionedinstance</span><br><span class="line">Installing custom SQL ...</span><br><span class="line">Installing indexes ...</span><br><span class="line">Installed 0 object(s) from 0 fixture(s)</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="craneでサービスの作成"><a href="#craneでサービスの作成" class="headerlink" title="craneでサービスの作成"></a>craneでサービスの作成</h3><p>ここもtsuruのわかりづらいところですが、管理系のコマンドに、別途<code>crgane</code>が用意されています。<br>サービスの追加方法は<a href="http://docs.tsuru.io/en/0.5.1/services/api.html" target="_blank" rel="noopener">api workflow</a>にあります。</p>
+<h3 id="craneでサービスの作成"><a href="#craneでサービスの作成" class="headerlink" title="craneでサービスの作成"></a>craneでサービスの作成</h3><p>ここもtsuruのわかりづらいところですが、管理系のコマンドに、別途<code>crgane</code>が用意されています。<br>サービスの追加方法は<a target="_blank" rel="noopener" href="http://docs.tsuru.io/en/0.5.1/services/api.html">api workflow</a>にあります。</p>
 <p>craneをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install crane</span><br></pre></td></tr></table></figure>
 
@@ -349,7 +316,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -400,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tsuruのサービス"><span class="nav-number">1.</span> <span class="nav-text">tsuruのサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MariaDBのインストール"><span class="nav-number">2.</span> <span class="nav-text">MariaDBのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-service-API-for-tsuru-PaaS"><span class="nav-number">3.</span> <span class="nav-text">MySQL service API for tsuru PaaS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#環境変数の設定"><span class="nav-number">4.</span> <span class="nav-text">環境変数の設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syncdb"><span class="nav-number">5.</span> <span class="nav-text">syncdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#craneでサービスの作成"><span class="nav-number">6.</span> <span class="nav-text">craneでサービスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サービスインスタンスの作成"><span class="nav-number">7.</span> <span class="nav-text">サービスインスタンスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tsuru%E3%81%AE%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9"><span class="nav-number">1.</span> <span class="nav-text">tsuruのサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MariaDB%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">MariaDBのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-service-API-for-tsuru-PaaS"><span class="nav-number">3.</span> <span class="nav-text">MySQL service API for tsuru PaaS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E5%A4%89%E6%95%B0%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">4.</span> <span class="nav-text">環境変数の設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#syncdb"><span class="nav-number">5.</span> <span class="nav-text">syncdb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crane%E3%81%A7%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">6.</span> <span class="nav-text">craneでサービスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">7.</span> <span class="nav-text">サービスインスタンスの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -432,10 +398,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -460,9 +429,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -502,13 +471,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

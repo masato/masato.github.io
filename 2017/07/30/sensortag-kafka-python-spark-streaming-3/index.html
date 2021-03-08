@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Landoopが提供するfast-data-devのDockerイメージにはSchema Registryも含まれています。前回はSensorTagのデータはJSONフォーマットで送信しましたがApache Avroフォーマットも試してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 3: Apache AvroとSchema Registry">
 <meta property="og:url" content="https://masato.github.io/2017/07/30/sensortag-kafka-python-spark-streaming-3/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Landoopが提供するfast-data-devのDockerイメージにはSchema Registryも含まれています。前回はSensorTagのデータはJSONフォーマットで送信しましたがApache Avroフォーマットも試してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2017/07/30/sensortag-kafka-python-spark-streaming-3/schema-registry.png">
 <meta property="article:published_time" content="2017-07-30T03:46:11.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.898Z">
+<meta property="article:modified_time" content="2017-07-30T03:46:11.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Kafka">
 <meta property="article:tag" content="SensorTag">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 3: Apache AvroとSchema Registry | masato's blog</title>
+  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 3: Apache AvroとSchema Registry | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,22 +190,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 30 2017 12:46:11" itemprop="dateCreated datePublished" datetime="2017-07-30T12:46:11+09:00">Jul 30 2017</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -251,51 +218,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <a id="more"></a>
+        <span id="more"></span>
 
-<p>　<a href="http://www.landoop.com" target="_blank" rel="noopener">Landoop</a>が提供する<a href="https://hub.docker.com/r/landoop/fast-data-dev/" target="_blank" rel="noopener">fast-data-dev</a>のDockerイメージには<a href="https://www.confluent.io/product/confluent-open-source/" target="_blank" rel="noopener">Confluent Open Source</a>の<a href="http://docs.confluent.io/current/schema-registry/docs/index.html" target="_blank" rel="noopener">Schema Registry</a>とWebツールの<a href="https://github.com/Landoop/schema-registry-ui" target="_blank" rel="noopener">Schema Registry UI</a>が含まれています。<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">前回</a>SensorTagのデータはJSONフォーマットでKafkaへ送信していましたが<a href="https://avro.apache.org/" target="_blank" rel="noopener">Apache Avro</a>フォーマットも試してみます。Apache Avroはデータのシリアル化と言語に依存しないスキーマによるデータ交換の仕組みを提供します。Schema RegistryはREST APIから操作できるAvroスキーマを一元管理するためのストレージです。</p>
+<p>　<a target="_blank" rel="noopener" href="http://www.landoop.com/">Landoop</a>が提供する<a target="_blank" rel="noopener" href="https://hub.docker.com/r/landoop/fast-data-dev/">fast-data-dev</a>のDockerイメージには<a target="_blank" rel="noopener" href="https://www.confluent.io/product/confluent-open-source/">Confluent Open Source</a>の<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/schema-registry/docs/index.html">Schema Registry</a>とWebツールの<a target="_blank" rel="noopener" href="https://github.com/Landoop/schema-registry-ui">Schema Registry UI</a>が含まれています。<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">前回</a>SensorTagのデータはJSONフォーマットでKafkaへ送信していましたが<a target="_blank" rel="noopener" href="https://avro.apache.org/">Apache Avro</a>フォーマットも試してみます。Apache Avroはデータのシリアル化と言語に依存しないスキーマによるデータ交換の仕組みを提供します。Schema RegistryはREST APIから操作できるAvroスキーマを一元管理するためのストレージです。</p>
 <h2 id="Schema-Registry"><a href="#Schema-Registry" class="headerlink" title="Schema Registry"></a>Schema Registry</h2><p>　ローカルにあるAvroスキーマファイルを利用してデータをシリアライズすることもできますが、Schema Registryで一元管理することでAvroメッセージをデシリアライズする側も共通のデータフォーマットを参照することができます。</p>
 <h3 id="Schema-Registry-UI"><a href="#Schema-Registry-UI" class="headerlink" title="Schema Registry UI"></a>Schema Registry UI</h3><p>　fast-data-devのトップページからSCHEMASをクリックするとSchema Registry UIのページが開きます。左上にあるNEWボタンをクリックするとAvroスキーマを記述するエディタが起動します。</p>
 <p><img src="/2017/07/30/sensortag-kafka-python-spark-streaming-3/schema-registry.png" alt="schema-registry.png"></p>
-<p>　<a href="https://github.com/Landoop/schema-registry-ui" target="_blank" rel="noopener">Schema Registry UI</a>のエディタでAvroスキーマを記述します。保存する前にバリデーションを実行するため記述したJSONが正しいフォーマットか確認できます。</p>
+<p>　<a target="_blank" rel="noopener" href="https://github.com/Landoop/schema-registry-ui">Schema Registry UI</a>のエディタでAvroスキーマを記述します。保存する前にバリデーションを実行するため記述したJSONが正しいフォーマットか確認できます。</p>
 <p>　フォームの<code>Subject Name</code>はvalueスキーマの場合<code>topic名-value</code>と書くようです。SensorTagからAvroフォーマットで送信するtopic名は<code>sensortag-avro</code>なので、この場合は<code>sensortag-avro-value</code>になります。<code>Schema</code>のフィールドにSensorTag用のAvroスキーマをJSONフォーマットで記述します。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"type"</span>: <span class="string">"record"</span>,</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"SensorAvroValue"</span>,</span><br><span class="line">  <span class="attr">"fields"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"bid"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"string"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"time"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"long"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"ambient"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"double"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"objecttemp"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"double"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"humidity"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"double"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"name"</span>: <span class="string">"rh"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"double"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;record&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;SensorAvroValue&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;fields&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;bid&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;string&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;time&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;long&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;ambient&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;double&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;objecttemp&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;double&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;humidity&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;double&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;rh&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;double&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="Raspberry-Pi-3"><a href="#Raspberry-Pi-3" class="headerlink" title="Raspberry Pi 3"></a>Raspberry Pi 3</h2><p>　<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">前回</a>Raspberry Pi 3ではKafkaのPythonクライアントとして<a href="http://kafka-python.readthedocs.io/en/master/" target="_blank" rel="noopener">kafka-python</a>を利用しました。今回はAvroフォーマットに対応している<a href="https://github.com/confluentinc/confluent-kafka-python" target="_blank" rel="noopener">confluent-kafka-python</a>を使います。</p>
-<h3 id="librdkafkaのインストール"><a href="#librdkafkaのインストール" class="headerlink" title="librdkafkaのインストール"></a>librdkafkaのインストール</h3><p>　confluent-kafka-pythonのインストールには<a href="https://github.com/edenhill/librdkafka" target="_blank" rel="noopener">librdkafka</a>のヘッダが必要です。先にlibrdkafkaをビルドして共有ライブラリ情報を更新します。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update &amp;&amp; sudo apt-get install git build-essential -y</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/edenhill/librdkafka.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> librdkafka</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./configure </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make &amp;&amp; sudo make install</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ldconfig</span></span><br></pre></td></tr></table></figure>
+<h2 id="Raspberry-Pi-3"><a href="#Raspberry-Pi-3" class="headerlink" title="Raspberry Pi 3"></a>Raspberry Pi 3</h2><p>　<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">前回</a>Raspberry Pi 3ではKafkaのPythonクライアントとして<a target="_blank" rel="noopener" href="http://kafka-python.readthedocs.io/en/master/">kafka-python</a>を利用しました。今回はAvroフォーマットに対応している<a target="_blank" rel="noopener" href="https://github.com/confluentinc/confluent-kafka-python">confluent-kafka-python</a>を使います。</p>
+<h3 id="librdkafkaのインストール"><a href="#librdkafkaのインストール" class="headerlink" title="librdkafkaのインストール"></a>librdkafkaのインストール</h3><p>　confluent-kafka-pythonのインストールには<a target="_blank" rel="noopener" href="https://github.com/edenhill/librdkafka">librdkafka</a>のヘッダが必要です。先にlibrdkafkaをビルドして共有ライブラリ情報を更新します。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> sudo apt<span class="literal">-get</span> update &amp;&amp; sudo apt<span class="literal">-get</span> install git <span class="built_in">build-essential</span> <span class="literal">-y</span></span><br><span class="line"><span class="variable">$</span> git clone https://github.com/edenhill/librdkafka.git</span><br><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> librdkafka</span><br><span class="line"><span class="variable">$</span> ./configure </span><br><span class="line"><span class="variable">$</span> make &amp;&amp; sudo make install</span><br><span class="line"><span class="variable">$</span> sudo ldconfig</span><br></pre></td></tr></table></figure>
 
 <h3 id="confluent-kafkaのインストール"><a href="#confluent-kafkaのインストール" class="headerlink" title="confluent-kafkaのインストール"></a>confluent-kafkaのインストール</h3><p>　Pythonのヘッダファイルも必要です。Avroフォーマットを利用する場合pipパッケージ名は<code>confluent-kafka[avro]</code>になります。Avroが不要な場合は<code>confluent-kafka</code>です。</p>
 <figure class="highlight q"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="built_in">get</span> <span class="keyword">update</span> &amp;&amp; sudo apt-<span class="built_in">get</span> install python-<span class="built_in">dev</span> -y</span><br><span class="line">$ sudo pip install confluent-kafka[avro]</span><br></pre></td></tr></table></figure>
 
-<h3 id="Avro-Producer"><a href="#Avro-Producer" class="headerlink" title="Avro Producer"></a>Avro Producer</h3><p>　オフィシャルの<a href="https://github.com/confluentinc/confluent-kafka-python" target="_blank" rel="noopener">confluent-kafka-python</a>のページにあるコードを参考にAvro Producerを書きます。公式サンプルではローカルにあるスキーマファイルを利用しています。スキーマをSchema Registryから取得する機能は実装されていないようなので、ちょっと手間ですがSchema Registryから直接REST APIでスキーマを文字列として取得します。</p>
-<figure class="highlight python"><figcaption><span>avro_producer_sensortag.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bluepy.sensortag <span class="keyword">import</span> SensorTag</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> calendar</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> confluent_kafka <span class="keyword">import</span> avro</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro <span class="keyword">import</span> AvroProducer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    argvs = sys.argv</span><br><span class="line">    argc = len(argvs)</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>):</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Usage: # python &#123;0&#125; bd_address'</span>.format(argvs[<span class="number">0</span>])</span><br><span class="line">        quit()</span><br><span class="line">    bid = argvs[<span class="number">1</span>]</span><br><span class="line">    print(<span class="string">'Connecting to '</span> + bid)</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">10.0</span></span><br><span class="line"></span><br><span class="line">    tag = SensorTag(bid)</span><br><span class="line">    tag.IRtemperature.enable()</span><br><span class="line">    tag.humidity.enable()</span><br><span class="line"></span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">    get_schema_req_data = requests.get(</span><br><span class="line">        <span class="string">"http://&lt;fast-data-devのIPアドレス&gt;:8081/subjects/sensortag-avro-value/versions/latest"</span>)</span><br><span class="line">    get_schema_req_data.raise_for_status()</span><br><span class="line"></span><br><span class="line">    schema_string = get_schema_req_data.json()[<span class="string">'schema'</span>]</span><br><span class="line">    value_schema = avro.loads(schema_string)</span><br><span class="line"></span><br><span class="line">    avroProducer = AvroProducer(&#123;</span><br><span class="line">        <span class="string">'api.version.request'</span>:<span class="literal">True</span>,</span><br><span class="line">        <span class="string">'bootstrap.servers'</span>: <span class="string">'&lt;fast-data-devのIPアドレス&gt;:9092'</span>,</span><br><span class="line">        <span class="string">'schema.registry.url'</span>: <span class="string">'&lt;fast-data-devのIPアドレス&gt;:8081'</span></span><br><span class="line">    &#125;, default_value_schema=value_schema)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        tAmb, tObj = tag.IRtemperature.read()</span><br><span class="line">        humidity, rh = tag.humidity.read()</span><br><span class="line"></span><br><span class="line">        value = &#123;</span><br><span class="line">            <span class="string">"bid"</span> : bid,</span><br><span class="line">            <span class="string">"time"</span> : calendar.timegm(time.gmtime()),</span><br><span class="line">            <span class="string">"ambient"</span>: tAmb,</span><br><span class="line">            <span class="string">"objecttemp"</span>: tObj,</span><br><span class="line">            <span class="string">"humidity"</span>: humidity,</span><br><span class="line">            <span class="string">"rh"</span>: rh</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        avroProducer.produce(topic=<span class="string">'sensortag-avro'</span>, value=value)</span><br><span class="line">        avroProducer.flush()</span><br><span class="line">        print(value)</span><br><span class="line">        time.sleep(timeout)</span><br><span class="line"></span><br><span class="line">    tag.disconnect()</span><br><span class="line">    <span class="keyword">del</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h3 id="Avro-Producer"><a href="#Avro-Producer" class="headerlink" title="Avro Producer"></a>Avro Producer</h3><p>　オフィシャルの<a target="_blank" rel="noopener" href="https://github.com/confluentinc/confluent-kafka-python">confluent-kafka-python</a>のページにあるコードを参考にAvro Producerを書きます。公式サンプルではローカルにあるスキーマファイルを利用しています。スキーマをSchema Registryから取得する機能は実装されていないようなので、ちょっと手間ですがSchema Registryから直接REST APIでスキーマを文字列として取得します。</p>
+<figure class="highlight python"><figcaption><span>avro_producer_sensortag.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bluepy.sensortag <span class="keyword">import</span> SensorTag</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> calendar</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> confluent_kafka <span class="keyword">import</span> avro</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro <span class="keyword">import</span> AvroProducer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    argvs = sys.argv</span><br><span class="line">    argc = <span class="built_in">len</span>(argvs)</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;Usage: # python &#123;0&#125; bd_address&#x27;</span>.<span class="built_in">format</span>(argvs[<span class="number">0</span>])</span><br><span class="line">        quit()</span><br><span class="line">    bid = argvs[<span class="number">1</span>]</span><br><span class="line">    print(<span class="string">&#x27;Connecting to &#x27;</span> + bid)</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">10.0</span></span><br><span class="line"></span><br><span class="line">    tag = SensorTag(bid)</span><br><span class="line">    tag.IRtemperature.enable()</span><br><span class="line">    tag.humidity.enable()</span><br><span class="line"></span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">    get_schema_req_data = requests.get(</span><br><span class="line">        <span class="string">&quot;http://&lt;fast-data-devのIPアドレス&gt;:8081/subjects/sensortag-avro-value/versions/latest&quot;</span>)</span><br><span class="line">    get_schema_req_data.raise_for_status()</span><br><span class="line"></span><br><span class="line">    schema_string = get_schema_req_data.json()[<span class="string">&#x27;schema&#x27;</span>]</span><br><span class="line">    value_schema = avro.loads(schema_string)</span><br><span class="line"></span><br><span class="line">    avroProducer = AvroProducer(&#123;</span><br><span class="line">        <span class="string">&#x27;api.version.request&#x27;</span>:<span class="literal">True</span>,</span><br><span class="line">        <span class="string">&#x27;bootstrap.servers&#x27;</span>: <span class="string">&#x27;&lt;fast-data-devのIPアドレス&gt;:9092&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;schema.registry.url&#x27;</span>: <span class="string">&#x27;&lt;fast-data-devのIPアドレス&gt;:8081&#x27;</span></span><br><span class="line">    &#125;, default_value_schema=value_schema)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        tAmb, tObj = tag.IRtemperature.read()</span><br><span class="line">        humidity, rh = tag.humidity.read()</span><br><span class="line"></span><br><span class="line">        value = &#123;</span><br><span class="line">            <span class="string">&quot;bid&quot;</span> : bid,</span><br><span class="line">            <span class="string">&quot;time&quot;</span> : calendar.timegm(time.gmtime()),</span><br><span class="line">            <span class="string">&quot;ambient&quot;</span>: tAmb,</span><br><span class="line">            <span class="string">&quot;objecttemp&quot;</span>: tObj,</span><br><span class="line">            <span class="string">&quot;humidity&quot;</span>: humidity,</span><br><span class="line">            <span class="string">&quot;rh&quot;</span>: rh</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        avroProducer.produce(topic=<span class="string">&#x27;sensortag-avro&#x27;</span>, value=value)</span><br><span class="line">        avroProducer.flush()</span><br><span class="line">        print(value)</span><br><span class="line">        time.sleep(timeout)</span><br><span class="line"></span><br><span class="line">    tag.disconnect()</span><br><span class="line">    <span class="keyword">del</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>　SensorTagのBDアドレスをhcitoolを使い確認します。</p>
-<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ sudo hcitool lescan</span><br><span class="line">LE Scan ...</span><br><span class="line">...</span><br><span class="line"><span class="string">B0:</span><span class="string">B4:</span><span class="number">48</span>:<span class="string">BE:</span><span class="number">5</span><span class="string">E:</span><span class="number">00</span> CC2650 SensorTag</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo hcitool lescan</span><br><span class="line">LE Scan ...</span><br><span class="line">...</span><br><span class="line">B0:B4:48:BE:5E:00 CC2650 SensorTag</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>　BDアドレスを引数にして作成したPythonスクリプトを実行します。</p>
 <figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">python</span> avro_producer_sensortag.<span class="keyword">py</span> &lt;SensorTagのBDアドレス&gt;</span><br></pre></td></tr></table></figure>
 
 <p>　以下のようなログを出力してKafkaブローカーへメッセージ送信を開始します。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">&#123;'bid':</span> <span class="string">'B0:B4:48:BE:5E:00'</span><span class="string">,</span> <span class="attr">'time':</span> <span class="number">1501495463</span><span class="string">,</span> <span class="attr">'humidity':</span> <span class="number">27.04132080078125</span><span class="string">,</span> <span class="attr">'objecttemp':</span> <span class="number">22.5</span><span class="string">,</span> <span class="attr">'ambient':</span> <span class="number">26.84375</span><span class="string">,</span> <span class="attr">'rh':</span> <span class="number">69.05517578125</span><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#123;'bid':</span> <span class="string">'B0:B4:48:BE:5E:00'</span><span class="string">,</span> <span class="attr">'time':</span> <span class="number">1501495475</span><span class="string">,</span> <span class="attr">'humidity':</span> <span class="number">27.02117919921875</span><span class="string">,</span> <span class="attr">'objecttemp':</span> <span class="number">22.75</span><span class="string">,</span> <span class="attr">'ambient':</span> <span class="number">26.84375</span><span class="string">,</span> <span class="attr">'rh':</span> <span class="number">69.05517578125</span><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#123;'bid':</span> <span class="string">'B0:B4:48:BE:5E:00'</span><span class="string">,</span> <span class="attr">'time':</span> <span class="number">1501495486</span><span class="string">,</span> <span class="attr">'humidity':</span> <span class="number">27.04132080078125</span><span class="string">,</span> <span class="attr">'objecttemp':</span> <span class="number">22.96875</span><span class="string">,</span> <span class="attr">'ambient':</span> <span class="number">26.84375</span><span class="string">,</span> <span class="attr">'rh':</span> <span class="number">69.05517578125</span><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;bid&#x27;: &#x27;B0:B4:48:BE:5E:00&#x27;, &#x27;time&#x27;: <span class="number">1501495463</span>, &#x27;humidity&#x27;: <span class="number">27.04132080078125</span>, &#x27;objecttemp&#x27;: <span class="number">22.5</span>, &#x27;ambient&#x27;: <span class="number">26.84375</span>, &#x27;rh&#x27;: <span class="number">69.05517578125</span>&#125;</span><br><span class="line">&#123;&#x27;bid&#x27;: &#x27;B0:B4:48:BE:5E:00&#x27;, &#x27;time&#x27;: <span class="number">1501495475</span>, &#x27;humidity&#x27;: <span class="number">27.02117919921875</span>, &#x27;objecttemp&#x27;: <span class="number">22.75</span>, &#x27;ambient&#x27;: <span class="number">26.84375</span>, &#x27;rh&#x27;: <span class="number">69.05517578125</span>&#125;</span><br><span class="line">&#123;&#x27;bid&#x27;: &#x27;B0:B4:48:BE:5E:00&#x27;, &#x27;time&#x27;: <span class="number">1501495486</span>, &#x27;humidity&#x27;: <span class="number">27.04132080078125</span>, &#x27;objecttemp&#x27;: <span class="number">22.96875</span>, &#x27;ambient&#x27;: <span class="number">26.84375</span>, &#x27;rh&#x27;: <span class="number">69.05517578125</span>&#125;</span><br></pre></td></tr></table></figure>
 <p>　</p>
-<h3 id="Avro-Consumer"><a href="#Avro-Consumer" class="headerlink" title="Avro Consumer"></a>Avro Consumer</h3><p>　Avro Consumerのコードは<a href="https://github.com/confluentinc/confluent-kafka-python" target="_blank" rel="noopener">confluent-kafka-python</a>にあるサンプルをそのまま使います。</p>
-<figure class="highlight python"><figcaption><span>avro_consumer_sensortag.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> confluent_kafka <span class="keyword">import</span> KafkaError</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro <span class="keyword">import</span> AvroConsumer</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro.serializer <span class="keyword">import</span> SerializerError</span><br><span class="line"></span><br><span class="line">c = AvroConsumer(&#123;</span><br><span class="line">    <span class="string">'api.version.request'</span>:<span class="literal">True</span>,</span><br><span class="line">    <span class="string">'bootstrap.servers'</span>: <span class="string">'&lt;fast-data-devのIPアドレス&gt;:9092'</span>,</span><br><span class="line">    <span class="string">'group.id'</span>: <span class="string">'raspiavro'</span>,</span><br><span class="line">    <span class="string">'schema.registry.url'</span>: <span class="string">'http://&lt;fast-data-devのIPアドレス&gt;:8081'</span>&#125;)</span><br><span class="line">c.subscribe([<span class="string">'sensortag-avro'</span>])</span><br><span class="line"></span><br><span class="line">running = <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> running:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        msg = c.poll(<span class="number">10</span>)</span><br><span class="line">        print(msg)</span><br><span class="line">        <span class="keyword">if</span> msg:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> msg.error():</span><br><span class="line">                print(msg.value())</span><br><span class="line">            <span class="keyword">elif</span> msg.error().code() != KafkaError._PARTITION_EOF:</span><br><span class="line">                print(msg.error())</span><br><span class="line">                running = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">except</span> SerializerError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"Message deserialization failed for %s: %s"</span> % (msg, e))</span><br><span class="line">        running = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">c.close()</span><br></pre></td></tr></table></figure>
+<h3 id="Avro-Consumer"><a href="#Avro-Consumer" class="headerlink" title="Avro Consumer"></a>Avro Consumer</h3><p>　Avro Consumerのコードは<a target="_blank" rel="noopener" href="https://github.com/confluentinc/confluent-kafka-python">confluent-kafka-python</a>にあるサンプルをそのまま使います。</p>
+<figure class="highlight python"><figcaption><span>avro_consumer_sensortag.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> confluent_kafka <span class="keyword">import</span> KafkaError</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro <span class="keyword">import</span> AvroConsumer</span><br><span class="line"><span class="keyword">from</span> confluent_kafka.avro.serializer <span class="keyword">import</span> SerializerError</span><br><span class="line"></span><br><span class="line">c = AvroConsumer(&#123;</span><br><span class="line">    <span class="string">&#x27;api.version.request&#x27;</span>:<span class="literal">True</span>,</span><br><span class="line">    <span class="string">&#x27;bootstrap.servers&#x27;</span>: <span class="string">&#x27;&lt;fast-data-devのIPアドレス&gt;:9092&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;group.id&#x27;</span>: <span class="string">&#x27;raspiavro&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;schema.registry.url&#x27;</span>: <span class="string">&#x27;http://&lt;fast-data-devのIPアドレス&gt;:8081&#x27;</span>&#125;)</span><br><span class="line">c.subscribe([<span class="string">&#x27;sensortag-avro&#x27;</span>])</span><br><span class="line"></span><br><span class="line">running = <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> running:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        msg = c.poll(<span class="number">10</span>)</span><br><span class="line">        print(msg)</span><br><span class="line">        <span class="keyword">if</span> msg:</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> msg.error():</span><br><span class="line">                print(msg.value())</span><br><span class="line">            <span class="keyword">elif</span> msg.error().code() != KafkaError._PARTITION_EOF:</span><br><span class="line">                print(msg.error())</span><br><span class="line">                running = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">except</span> SerializerError <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;Message deserialization failed for %s: %s&quot;</span> % (msg, e))</span><br><span class="line">        running = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">c.close()</span><br></pre></td></tr></table></figure>
 
 
 <p>　作成したPythoのスクリプトを実行します。</p>
 <figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">python</span> avro_consumer_sensortag.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
 
 <p>　サンプルでは10秒間隔でpollingしています。タイミングがあわないとデータを取得できないためNoneが返ります。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;cimpl.Message object at <span class="number">0x7655de88</span>&gt;</span><br><span class="line">&lt;cimpl.Message object at <span class="number">0x764ee6f0</span>&gt;</span><br><span class="line">&#123;<span class="string">u'bid'</span>: <span class="string">u'B0:B4:48:BE:5E:00'</span>, <span class="string">u'time'</span>: <span class="number">1501495204L</span>, <span class="string">u'humidity'</span>: <span class="number">27.27294921875</span>, <span class="string">u'objecttemp'</span>: <span class="number">22.78125</span>, <span class="string">u'ambient'</span>: <span class="number">27.09375</span>, <span class="string">u'rh'</span>: <span class="number">69.671630859375</span>&#125;</span><br><span class="line">&lt;cimpl.Message object at <span class="number">0x7655de88</span>&gt;</span><br><span class="line"><span class="literal">None</span></span><br><span class="line">&lt;cimpl.Message object at <span class="number">0x7655de88</span>&gt;</span><br><span class="line">&#123;<span class="string">u'bid'</span>: <span class="string">u'B0:B4:48:BE:5E:00'</span>, <span class="string">u'time'</span>: <span class="number">1501495215L</span>, <span class="string">u'humidity'</span>: <span class="number">27.26287841796875</span>, <span class="string">u'objecttemp'</span>: <span class="number">22.9375</span>, <span class="string">u'ambient'</span>: <span class="number">27.09375</span>, <span class="string">u'rh'</span>: <span class="number">69.671630859375</span>&#125;</span><br><span class="line">&lt;cimpl.Message object at <span class="number">0x747caa98</span>&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;cimpl.Message <span class="built_in">object</span> at <span class="number">0x7655de88</span>&gt;</span><br><span class="line">&lt;cimpl.Message <span class="built_in">object</span> at <span class="number">0x764ee6f0</span>&gt;</span><br><span class="line">&#123;<span class="string">u&#x27;bid&#x27;</span>: <span class="string">u&#x27;B0:B4:48:BE:5E:00&#x27;</span>, <span class="string">u&#x27;time&#x27;</span>: <span class="number">1501495204L</span>, <span class="string">u&#x27;humidity&#x27;</span>: <span class="number">27.27294921875</span>, <span class="string">u&#x27;objecttemp&#x27;</span>: <span class="number">22.78125</span>, <span class="string">u&#x27;ambient&#x27;</span>: <span class="number">27.09375</span>, <span class="string">u&#x27;rh&#x27;</span>: <span class="number">69.671630859375</span>&#125;</span><br><span class="line">&lt;cimpl.Message <span class="built_in">object</span> at <span class="number">0x7655de88</span>&gt;</span><br><span class="line"><span class="literal">None</span></span><br><span class="line">&lt;cimpl.Message <span class="built_in">object</span> at <span class="number">0x7655de88</span>&gt;</span><br><span class="line">&#123;<span class="string">u&#x27;bid&#x27;</span>: <span class="string">u&#x27;B0:B4:48:BE:5E:00&#x27;</span>, <span class="string">u&#x27;time&#x27;</span>: <span class="number">1501495215L</span>, <span class="string">u&#x27;humidity&#x27;</span>: <span class="number">27.26287841796875</span>, <span class="string">u&#x27;objecttemp&#x27;</span>: <span class="number">22.9375</span>, <span class="string">u&#x27;ambient&#x27;</span>: <span class="number">27.09375</span>, <span class="string">u&#x27;rh&#x27;</span>: <span class="number">69.671630859375</span>&#125;</span><br><span class="line">&lt;cimpl.Message <span class="built_in">object</span> at <span class="number">0x747caa98</span>&gt;</span><br></pre></td></tr></table></figure>
 
 <h3 id="kafka-avro-console-consumer"><a href="#kafka-avro-console-consumer" class="headerlink" title="kafka-avro-console-consumer"></a>kafka-avro-console-consumer</h3><p>　最後にサーバー側でも<code>kafka-avro-console-consumer</code>コマンドからメッセージを取得してみます。</p>
 <figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">$ docker-compose exec kafka-stack <span class="string">\</span></span><br><span class="line">  kafka-avro-<span class="built_in">console</span>-consumer <span class="string">\</span></span><br><span class="line">  --bootstrap-server localhost:<span class="number">9092</span> <span class="string">\</span></span><br><span class="line">  --topic sensortag-avro</span><br></pre></td></tr></table></figure>
 
 <p>　こちらも同様にSensorTagのデータを取得することができます。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"bid"</span>:<span class="string">"B0:B4:48:BE:5E:00"</span>,<span class="attr">"time"</span>:<span class="number">1501495384</span>,<span class="attr">"ambient"</span>:<span class="number">26.9375</span>,<span class="attr">"objecttemp"</span>:<span class="number">22.96875</span>,<span class="attr">"humidity"</span>:<span class="number">27.11181640625</span>,<span class="attr">"rh"</span>:<span class="number">69.05517578125</span>&#125;</span><br><span class="line">&#123;<span class="attr">"bid"</span>:<span class="string">"B0:B4:48:BE:5E:00"</span>,<span class="attr">"time"</span>:<span class="number">1501495396</span>,<span class="attr">"ambient"</span>:<span class="number">26.90625</span>,<span class="attr">"objecttemp"</span>:<span class="number">22.6875</span>,<span class="attr">"humidity"</span>:<span class="number">27.0916748046875</span>,<span class="attr">"rh"</span>:<span class="number">69.05517578125</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;bid&quot;</span>:<span class="string">&quot;B0:B4:48:BE:5E:00&quot;</span>,<span class="attr">&quot;time&quot;</span>:<span class="number">1501495384</span>,<span class="attr">&quot;ambient&quot;</span>:<span class="number">26.9375</span>,<span class="attr">&quot;objecttemp&quot;</span>:<span class="number">22.96875</span>,<span class="attr">&quot;humidity&quot;</span>:<span class="number">27.11181640625</span>,<span class="attr">&quot;rh&quot;</span>:<span class="number">69.05517578125</span>&#125;</span><br><span class="line">&#123;<span class="attr">&quot;bid&quot;</span>:<span class="string">&quot;B0:B4:48:BE:5E:00&quot;</span>,<span class="attr">&quot;time&quot;</span>:<span class="number">1501495396</span>,<span class="attr">&quot;ambient&quot;</span>:<span class="number">26.90625</span>,<span class="attr">&quot;objecttemp&quot;</span>:<span class="number">22.6875</span>,<span class="attr">&quot;humidity&quot;</span>:<span class="number">27.0916748046875</span>,<span class="attr">&quot;rh&quot;</span>:<span class="number">69.05517578125</span>&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -332,7 +299,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -383,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Schema-Registry"><span class="nav-number">1.</span> <span class="nav-text">Schema Registry</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Schema-Registry-UI"><span class="nav-number">1.1.</span> <span class="nav-text">Schema Registry UI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-3"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#librdkafkaのインストール"><span class="nav-number">2.1.</span> <span class="nav-text">librdkafkaのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#confluent-kafkaのインストール"><span class="nav-number">2.2.</span> <span class="nav-text">confluent-kafkaのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avro-Producer"><span class="nav-number">2.3.</span> <span class="nav-text">Avro Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avro-Consumer"><span class="nav-number">2.4.</span> <span class="nav-text">Avro Consumer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-avro-console-consumer"><span class="nav-number">2.5.</span> <span class="nav-text">kafka-avro-console-consumer</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Schema-Registry"><span class="nav-number">1.</span> <span class="nav-text">Schema Registry</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Schema-Registry-UI"><span class="nav-number">1.1.</span> <span class="nav-text">Schema Registry UI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-3"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#librdkafka%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.1.</span> <span class="nav-text">librdkafkaのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#confluent-kafka%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.2.</span> <span class="nav-text">confluent-kafkaのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avro-Producer"><span class="nav-number">2.3.</span> <span class="nav-text">Avro Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avro-Consumer"><span class="nav-number">2.4.</span> <span class="nav-text">Avro Consumer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-avro-console-consumer"><span class="nav-number">2.5.</span> <span class="nav-text">kafka-avro-console-consumer</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,10 +381,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -443,9 +412,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -485,13 +454,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

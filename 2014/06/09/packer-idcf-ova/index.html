@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Part1,Part2を通してPackerで作成したOVAをテストするため、IDCFクラウドにプロビジョニングしてみました。ローカルのVirtualBoxとVMware Playerで動作しているので大丈夫だと思いましたが、結果的にPackerのGoの良いソースリードリーディングになりました。おかげでPackerやgoxが実現するGoのコンパイル環境のよい勉強になり、OVAが動いたことよりうれしか">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packerを使いWindows上でOVAを作成する - Part3: IDCFクラウド">
 <meta property="og:url" content="https://masato.github.io/2014/06/09/packer-idcf-ova/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Part1,Part2を通してPackerで作成したOVAをテストするため、IDCFクラウドにプロビジョニングしてみました。ローカルのVirtualBoxとVMware Playerで動作しているので大丈夫だと思いましたが、結果的にPackerのGoの良いソースリードリーディングになりました。おかげでPackerやgoxが実現するGoのコンパイル環境のよい勉強になり、OVAが動いたことよりうれしか">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-06-09T13:05:49.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:modified_time" content="2014-06-09T13:05:49.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Go">
 <meta property="article:tag" content="IDCFクラウド">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Packerを使いWindows上でOVAを作成する - Part3: IDCFクラウド | masato's blog</title>
+  <title>Packerを使いWindows上でOVAを作成する - Part3: IDCFクラウド | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 9 2014 22:05:49" itemprop="dateCreated datePublished" datetime="2014-06-09T22:05:49+09:00">Jun 9 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Part1,Part2を通してPackerで作成したOVAをテストするため、IDCFクラウドにプロビジョニングしてみました。ローカルのVirtualBoxとVMware Playerで動作しているので大丈夫だと思いましたが、結果的にPackerのGoの良いソースリードリーディングになりました。おかげでPackerやgoxが実現するGoのコンパイル環境のよい勉強になり、OVAが動いたことよりうれしかったりします。ESXi4.1用のOVAをovftoolで作る場合、OVFはのVirtualSystemTypはvmx-07にして、マニフェストファイルも削除する必要があります。</div>
@@ -243,9 +210,9 @@
       
         <p><a href="/2014/06/08/packer-windows-vmware-iso-ova-buildenv/">Part1</a>,<a href="/2014/06/08/packer-windows-vmware-iso-ova-build/">Part2</a>を通してPackerで作成したOVAをテストするため、IDCFクラウドにプロビジョニングしてみました。</p>
 <p>ローカルのVirtualBoxと<code>VMware Player</code>で動作しているので大丈夫だと思いましたが、<br>結果的にPackerのGoの良いソースリードリーディングになりました。</p>
-<p>おかげで<a href="http://www.packer.io/" target="_blank" rel="noopener">Packer</a>や<a href="https://github.com/mitchellh/gox" target="_blank" rel="noopener">gox</a>が実現するGoのコンパイル環境のよい勉強になり、OVAが動いたことよりうれしかったりします。</p>
+<p>おかげで<a target="_blank" rel="noopener" href="http://www.packer.io/">Packer</a>や<a target="_blank" rel="noopener" href="https://github.com/mitchellh/gox">gox</a>が実現するGoのコンパイル環境のよい勉強になり、OVAが動いたことよりうれしかったりします。</p>
 <h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p>ESXi4.1用のOVAをovftoolで作る場合、OVFはのVirtualSystemTypは<code>vmx-07</code>にして、<br>マニフェストファイルも削除する必要があります。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <p>Packerの開発をWindows上でするのはもうやめようと思いました。<br>Goなのでシングルバイナリが普通に動いて楽しいのですが、<br><code>VMware Player</code>がLinuxと違ったり、バックスラッシュの問題でISOをコピーできなかったり、<br>嵌まりどころが満載です。</p>
 <h3 id="バージョン情報"><a href="#バージョン情報" class="headerlink" title="バージョン情報"></a>バージョン情報</h3><p>OVAを作成したPackerの環境は以下です。</p>
@@ -260,9 +227,9 @@
 </ul>
 <p>Packerの<code>vmware-iso&#39;builder</code>はデフォルトでイメージを作っている環境のバージョンを使うので、<br>プロビジョニング先のバージョンがカレントでない場合、互換性を気にする必要があります。</p>
 <h3 id="VirtualBox用OVFの修正"><a href="#VirtualBox用OVFの修正" class="headerlink" title="VirtualBox用OVFの修正"></a>VirtualBox用OVFの修正</h3><p>まだovfの仕様がよくわからないのですが、今回の環境だと<code>VMware Workstation</code>で作成したOVAは、<br>VirtualBoxは<code>vmw:osType</code>がPackerデフォルトのotherだと動ず、<br>“ubuntu64Guest”と明示する必要がありました。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">OperatingSystemSection</span> <span class="attr">ovf:id</span>=<span class="string">"94"</span> <span class="attr">vmw:osType</span>=<span class="string">"ubuntu64Guest"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">OperatingSystemSection</span> <span class="attr">ovf:id</span>=<span class="string">&quot;94&quot;</span> <span class="attr">vmw:osType</span>=<span class="string">&quot;ubuntu64Guest&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="IDCFクラウド用OVFの修正"><a href="#IDCFクラウド用OVFの修正" class="headerlink" title="IDCFクラウド用OVFの修正"></a>IDCFクラウド用OVFの修正</h3><p><a href="http://www.idcf.jp/blog/cloud/vmimport/" target="_blank" rel="noopener">ここ</a>に従い、IDCFクラウドはESXi4.1を使っているので、vmxのバージョンは07にします。</p>
+<h3 id="IDCFクラウド用OVFの修正"><a href="#IDCFクラウド用OVFの修正" class="headerlink" title="IDCFクラウド用OVFの修正"></a>IDCFクラウド用OVFの修正</h3><p><a target="_blank" rel="noopener" href="http://www.idcf.jp/blog/cloud/vmimport/">ここ</a>に従い、IDCFクラウドはESXi4.1を使っているので、vmxのバージョンは07にします。</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">vssd:VirtualSystemType</span>&gt;</span>vmx-07<span class="tag">&lt;/<span class="name">vssd:VirtualSystemType</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>DMTFがCIMでXMLスキーマを策定しているので、バリデーションができないか何か探してみようとおもいます。</p>
@@ -307,7 +274,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -358,7 +324,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#バージョン情報"><span class="nav-number">2.</span> <span class="nav-text">バージョン情報</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualBox用OVFの修正"><span class="nav-number">3.</span> <span class="nav-text">VirtualBox用OVFの修正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCFクラウド用OVFの修正"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウド用OVFの修正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E6%83%85%E5%A0%B1"><span class="nav-number">2.</span> <span class="nav-text">バージョン情報</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VirtualBox%E7%94%A8OVF%E3%81%AE%E4%BF%AE%E6%AD%A3"><span class="nav-number">3.</span> <span class="nav-text">VirtualBox用OVFの修正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E7%94%A8OVF%E3%81%AE%E4%BF%AE%E6%AD%A3"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウド用OVFの修正</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -390,10 +356,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -418,9 +387,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -460,13 +429,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

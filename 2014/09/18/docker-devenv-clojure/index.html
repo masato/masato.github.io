@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="StreamProcessingでAlertingを出すために、Riemannを使い始めました。最近のインフラはDocker上で構築するようにしているので監視対象ホストもDockerコンテナです。StreamProcessingを記述する場合は、ClojureやScalaの関数型言語が適切です。The New Stack Makers Adrian Cockcroft on Sun, Netfli">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerで開発環境をつくる - Clojureのインストール">
 <meta property="og:url" content="https://masato.github.io/2014/09/18/docker-devenv-clojure/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="StreamProcessingでAlertingを出すために、Riemannを使い始めました。最近のインフラはDocker上で構築するようにしているので監視対象ホストもDockerコンテナです。StreamProcessingを記述する場合は、ClojureやScalaの関数型言語が適切です。The New Stack Makers Adrian Cockcroft on Sun, Netfli">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-09-17T15:07:30.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.589Z">
+<meta property="article:modified_time" content="2014-09-17T15:07:30.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="DockerDevEnv">
 <meta property="article:tag" content="Clojure">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Dockerで開発環境をつくる - Clojureのインストール | masato's blog</title>
+  <title>Dockerで開発環境をつくる - Clojureのインストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 18 2014 00:07:30" itemprop="dateCreated datePublished" datetime="2014-09-18T00:07:30+09:00">Sep 18 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">StreamProcessingでAlertingを出すために、Riemannを使い始めました。最近のインフラはDocker上で構築するようにしているので監視対象ホストもDockerコンテナです。StreamProcessingを記述する場合は、ClojureやScalaの関数型言語が適切です。The New Stack Makers Adrian Cockcroft on Sun, Netflix, Clojure, Go, Docker and Moreに、A lot of the best programmers and the most productive programmers I know are writing everything in Clojure and swearing by it, and then just producing ridiculously sophisticated things in a very short time.とコメントがあります。最近は会社でも10倍の生産性が話題ですが、Productive ProgrammerになるにはClojureもマスターしないと。</div>
@@ -241,14 +208,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>StreamProcessingでAlertingを出すために、Riemannを使い始めました。最近のインフラはDocker上で構築するようにしているので監視対象ホストもDockerコンテナです。StreamProcessingを記述する場合は、ClojureやScalaの関数型言語が適切です。<br><a href="http://thenewstack.io/the-new-stack-makers-adrian-cockcroft-on-sun-netflix-clojure-go-docker-and-more/" target="_blank" rel="noopener">The New Stack Makers: Adrian Cockcroft on Sun, Netflix, Clojure, Go, Docker and More</a>に、</p>
+        <p>StreamProcessingでAlertingを出すために、Riemannを使い始めました。最近のインフラはDocker上で構築するようにしているので監視対象ホストもDockerコンテナです。StreamProcessingを記述する場合は、ClojureやScalaの関数型言語が適切です。<br><a target="_blank" rel="noopener" href="http://thenewstack.io/the-new-stack-makers-adrian-cockcroft-on-sun-netflix-clojure-go-docker-and-more/">The New Stack Makers: Adrian Cockcroft on Sun, Netflix, Clojure, Go, Docker and More</a>に、</p>
 <blockquote>
 <p>A lot of the best programmers and the most productive programmers I know are writing everything in Clojure and swearing by it, and then just producing ridiculously sophisticated things in a very short time.</p>
 </blockquote>
-<p>とコメントがあります。最近は会社でも<a href="http://d.hatena.ne.jp/takeda25/20140222/1393072150" target="_blank" rel="noopener">10倍の生産性</a>が話題ですが、<code>Productive Programmer</code>になるにはClojureもマスターしないと。</p>
-<a id="more"></a>
+<p>とコメントがあります。最近は会社でも<a target="_blank" rel="noopener" href="http://d.hatena.ne.jp/takeda25/20140222/1393072150">10倍の生産性</a>が話題ですが、<code>Productive Programmer</code>になるにはClojureもマスターしないと。</p>
+<span id="more"></span>
 
-<h3 id="Dockerオフィシャルのclojure"><a href="#Dockerオフィシャルのclojure" class="headerlink" title="Dockerオフィシャルのclojure"></a>Dockerオフィシャルのclojure</h3><p>オフィシャルイメージの<a href="https://registry.hub.docker.com/_/clojure/" target="_blank" rel="noopener">clojure</a>を使います。<br>GitHubのリポジトリは、<a href="https://github.com/Quantisan/docker-clojure" target="_blank" rel="noopener">Quantisan/docker-clojure</a>です。</p>
+<h3 id="Dockerオフィシャルのclojure"><a href="#Dockerオフィシャルのclojure" class="headerlink" title="Dockerオフィシャルのclojure"></a>Dockerオフィシャルのclojure</h3><p>オフィシャルイメージの<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/_/clojure/">clojure</a>を使います。<br>GitHubのリポジトリは、<a target="_blank" rel="noopener" href="https://github.com/Quantisan/docker-clojure">Quantisan/docker-clojure</a>です。</p>
 <p>プロジェクトを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir ~/docker_apps/clojure</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
 
@@ -261,11 +228,11 @@
 <p>コンテナを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm --name clojuredev masato/clojure /bin/bash</span><br><span class="line">root@83f5b6b8748d:/root<span class="comment"># ls</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="Leiningen"><a href="#Leiningen" class="headerlink" title="Leiningen"></a>Leiningen</h3><p><a href="http://leiningen.org/" target="_blank" rel="noopener">Leiningen</a>の確認です。<br><code>Leiningen 2.4.3</code>が入っています。</p>
+<h3 id="Leiningen"><a href="#Leiningen" class="headerlink" title="Leiningen"></a>Leiningen</h3><p><a target="_blank" rel="noopener" href="http://leiningen.org/">Leiningen</a>の確認です。<br><code>Leiningen 2.4.3</code>が入っています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> lein</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/lein</span><br><span class="line">$ lein --version</span><br><span class="line">Leiningen 2.4.3 on Java 1.7.0_65 OpenJDK 64-Bit Server VM</span><br></pre></td></tr></table></figure>
 
 <p>REPLでClojureのバージョンを確認します。<br><code>Clojure 1.6.0</code>が入っています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lein new hello-world</span><br><span class="line">Generating a project called hello-world based on the <span class="string">'default'</span> template.</span><br><span class="line">The default template is intended <span class="keyword">for</span> library projects, not applications.</span><br><span class="line">To see other templates (app, plugin, etc), try `lein <span class="built_in">help</span> new`.</span><br><span class="line">$ <span class="built_in">cd</span> hello-world</span><br><span class="line">$ lein repl</span><br><span class="line">(Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.pom from central)</span><br><span class="line">(Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.jar from central)</span><br><span class="line">nREPL server started on port 45413 on host 127.0.0.1 - nrepl://127.0.0.1:45413</span><br><span class="line">REPL-y 0.3.2, nREPL 0.2.3</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_65-b32</span><br><span class="line">    Docs: (doc <span class="keyword">function</span>-name-here)</span><br><span class="line">          (find-doc <span class="string">"part-of-name-here"</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> <span class="keyword">function</span>-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt; (clojure-version)</span><br><span class="line"><span class="string">"1.6.0"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lein new hello-world</span><br><span class="line">Generating a project called hello-world based on the <span class="string">&#x27;default&#x27;</span> template.</span><br><span class="line">The default template is intended <span class="keyword">for</span> library projects, not applications.</span><br><span class="line">To see other templates (app, plugin, etc), try `lein <span class="built_in">help</span> new`.</span><br><span class="line">$ <span class="built_in">cd</span> hello-world</span><br><span class="line">$ lein repl</span><br><span class="line">(Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.pom from central)</span><br><span class="line">(Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.jar from central)</span><br><span class="line">nREPL server started on port 45413 on host 127.0.0.1 - nrepl://127.0.0.1:45413</span><br><span class="line">REPL-y 0.3.2, nREPL 0.2.3</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_65-b32</span><br><span class="line">    Docs: (doc function-name-here)</span><br><span class="line">          (find-doc <span class="string">&quot;part-of-name-here&quot;</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> function-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt; (clojure-version)</span><br><span class="line"><span class="string">&quot;1.6.0&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="今後の方針"><a href="#今後の方針" class="headerlink" title="今後の方針"></a>今後の方針</h3><p>データ分析の環境もそろそろリアルタイムストリーム分析を考えないといけないです。<br>とりあえずEmacsで開発環境をつくってから、RiemannとLaminaを試してみようと思います。</p>
 
@@ -305,7 +272,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -356,7 +322,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerオフィシャルのclojure"><span class="nav-number">1.</span> <span class="nav-text">Dockerオフィシャルのclojure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leiningen"><span class="nav-number">2.</span> <span class="nav-text">Leiningen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#今後の方針"><span class="nav-number">3.</span> <span class="nav-text">今後の方針</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%82%AA%E3%83%95%E3%82%A3%E3%82%B7%E3%83%A3%E3%83%AB%E3%81%AEclojure"><span class="nav-number">1.</span> <span class="nav-text">Dockerオフィシャルのclojure</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leiningen"><span class="nav-number">2.</span> <span class="nav-text">Leiningen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8A%E5%BE%8C%E3%81%AE%E6%96%B9%E9%87%9D"><span class="nav-number">3.</span> <span class="nav-text">今後の方針</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -388,10 +354,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -416,9 +385,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -458,13 +427,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

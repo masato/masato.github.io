@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="アボカドの種の水耕栽培を始めて１週間くらい経ちました。芽がでるまで1ヶ月くらいかかるようです。植物育成LEDライトはカビの防止と生育に効果があるみたいなので、半日照明を当てていたら乾燥しすぎて種にヒビが入ってしまいました。温度や湿度を見ながらLEDライトを当てる時間を調整する必要があります。LEDは電源コンセントにつながる普通のライトです。マイコンから制御する方法をいろいろ考えていると、USB連動">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IoTでアボカドの発芽促進とカビを防止する - Part2: BeagleBone Blackで植物育成LEDライトを制御する">
 <meta property="og:url" content="https://masato.github.io/2015/07/05/iot-avocado-growth-monitoring-bbb-led/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="アボカドの種の水耕栽培を始めて１週間くらい経ちました。芽がでるまで1ヶ月くらいかかるようです。植物育成LEDライトはカビの防止と生育に効果があるみたいなので、半日照明を当てていたら乾燥しすぎて種にヒビが入ってしまいました。温度や湿度を見ながらLEDライトを当てる時間を調整する必要があります。LEDは電源コンセントにつながる普通のライトです。マイコンから制御する方法をいろいろ考えていると、USB連動">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/05/iot-avocado-growth-monitoring-bbb-led/avocado_bbb.JPG">
 <meta property="article:published_time" content="2015-07-05T00:24:25.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.716Z">
+<meta property="article:modified_time" content="2015-07-05T00:24:25.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="アボカド">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>IoTでアボカドの発芽促進とカビを防止する - Part2: BeagleBone Blackで植物育成LEDライトを制御する | masato's blog</title>
+  <title>IoTでアボカドの発芽促進とカビを防止する - Part2: BeagleBone Blackで植物育成LEDライトを制御する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,22 +190,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 5 2015 09:24:25" itemprop="dateCreated datePublished" datetime="2015-07-05T09:24:25+09:00">Jul 5 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -254,28 +221,28 @@
         <p>アボカドの種の水耕栽培を始めて１週間くらい経ちました。芽がでるまで1ヶ月くらいかかるようです。植物育成LEDライトはカビの防止と生育に効果があるみたいなので、半日照明を当てていたら乾燥しすぎて種にヒビが入ってしまいました。温度や湿度を見ながらLEDライトを当てる時間を調整する必要があります。</p>
 <p>電源コンセントにつなげる普通のLEDライトをマイコンから制御する方法を調べました。USB連動電源タップとプログラムから制御可能なUSBハブを使うと上手くいきそうです。以下のポストを参考にさせていただきました。</p>
 <ul>
-<li><a href="http://www.ebimemo.net/diary/?date=20110530" target="_blank" rel="noopener">USBポートの電源を制御する_その１</a></li>
-<li><a href="http://solarisintel.blog.fc2.com/blog-entry-5.html" target="_blank" rel="noopener">スゴイHUB （SUGOI HUB4X）は本当に凄かった - USBポートの電源制御 -</a></li>
-<li><a href="http://yamada468.blogspot.jp/2012/05/usbonoff.html" target="_blank" rel="noopener">モーション検出でUSBライトのON・OFF</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ebimemo.net/diary/?date=20110530">USBポートの電源を制御する_その１</a></li>
+<li><a target="_blank" rel="noopener" href="http://solarisintel.blog.fc2.com/blog-entry-5.html">スゴイHUB （SUGOI HUB4X）は本当に凄かった - USBポートの電源制御 -</a></li>
+<li><a target="_blank" rel="noopener" href="http://yamada468.blogspot.jp/2012/05/usbonoff.html">モーション検出でUSBライトのON・OFF</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="用意するもの"><a href="#用意するもの" class="headerlink" title="用意するもの"></a>用意するもの</h2><p>以下の部材を用意しました。</p>
 <ul>
-<li><a href="http://www.amazon.co.jp/dp/B00CHHMZ9S" target="_blank" rel="noopener">BeagleBone Black</a></li>
-<li><a href="http://www.amazon.co.jp/dp/B001Q6N4EQ" target="_blank" rel="noopener">SUGOI HUB4Xシリーズ</a></li>
-<li><a href="http://www.amazon.co.jp/dp/B00LTKSI5O" target="_blank" rel="noopener">赤/青 植物育成LEDライト E26 小型スポットライト</a></li>
-<li><a href="http://www.amazon.co.jp/dp/B00008KEJ0" target="_blank" rel="noopener">サンワサプライ TAP-RE7U USB連動タップ</a></li>
-<li><a href="http://www.amazon.co.jp/dp/B00ESA34GA" target="_blank" rel="noopener">PLANEX 無線LAN子機</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B00CHHMZ9S">BeagleBone Black</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B001Q6N4EQ">SUGOI HUB4Xシリーズ</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B00LTKSI5O">赤/青 植物育成LEDライト E26 小型スポットライト</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B00008KEJ0">サンワサプライ TAP-RE7U USB連動タップ</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B00ESA34GA">PLANEX 無線LAN子機</a></li>
 </ul>
-<p><a href="http://www.belkin.com/us/Products/home-automation/c/wemo-home-automation/" target="_blank" rel="noopener">WeMo</a>をもっと単純にした感じです。</p>
-<h2 id="Raspberry-Pi-2はUSBの電源を上手く制御できない"><a href="#Raspberry-Pi-2はUSBの電源を上手く制御できない" class="headerlink" title="Raspberry Pi 2はUSBの電源を上手く制御できない"></a>Raspberry Pi 2はUSBの電源を上手く制御できない</h2><p><a href="https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=11558" target="_blank" rel="noopener">Raspberry Pi B+ turn usb power off</a>にもポストがあります。手元にあるRaspberry Pi 2だとUSBポートの電源を上手く制御できませんでした。一応プログラムからON/OFFできるですが、ハブにつながったUSBが全て同時に制御されます。USBには無線LANのドングルも挿しているのでネットワークが切断してしまい困ります。</p>
+<p><a target="_blank" rel="noopener" href="http://www.belkin.com/us/Products/home-automation/c/wemo-home-automation/">WeMo</a>をもっと単純にした感じです。</p>
+<h2 id="Raspberry-Pi-2はUSBの電源を上手く制御できない"><a href="#Raspberry-Pi-2はUSBの電源を上手く制御できない" class="headerlink" title="Raspberry Pi 2はUSBの電源を上手く制御できない"></a>Raspberry Pi 2はUSBの電源を上手く制御できない</h2><p><a target="_blank" rel="noopener" href="https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=11558">Raspberry Pi B+ turn usb power off</a>にもポストがあります。手元にあるRaspberry Pi 2だとUSBポートの電源を上手く制御できませんでした。一応プログラムからON/OFFできるですが、ハブにつながったUSBが全て同時に制御されます。USBには無線LANのドングルも挿しているのでネットワークが切断してしまい困ります。</p>
 <p>Raspberry Pi 2の場合、4つあるポートのどこにUSB連動電源タップを接続してもPort 2しかON/OFFの制御ができませんでした。電源はすべてのポートで連動しているようです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hub-ctrl -h 0 -P 2 -p 0</span><br></pre></td></tr></table></figure>
 
-<h2 id="AC-Power-Control-by-USB-Hub"><a href="#AC-Power-Control-by-USB-Hub" class="headerlink" title="AC Power Control by USB Hub"></a>AC Power Control by USB Hub</h2><p><a href="http://www.gniibe.org/development/ac-power-control-by-USB-hub/index.html" target="_blank" rel="noopener">AC Power Control by USB Hub</a>に紹介されっているライブラリを使うと、対応しているUSBハブのポートの電源を制御することができます。Cで実装された<a href="http://www.gniibe.org/oitoite/ac-power-control-by-USB-hub/hub-ctrl.c" target="_blank" rel="noopener">hub-ctrl.c</a>と、Pythonの<a href="http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob;f=tool/hub_ctrl.py" target="_blank" rel="noopener">hub_ctrl.py</a>があります。</p>
+<h2 id="AC-Power-Control-by-USB-Hub"><a href="#AC-Power-Control-by-USB-Hub" class="headerlink" title="AC Power Control by USB Hub"></a>AC Power Control by USB Hub</h2><p><a target="_blank" rel="noopener" href="http://www.gniibe.org/development/ac-power-control-by-USB-hub/index.html">AC Power Control by USB Hub</a>に紹介されっているライブラリを使うと、対応しているUSBハブのポートの電源を制御することができます。Cで実装された<a target="_blank" rel="noopener" href="http://www.gniibe.org/oitoite/ac-power-control-by-USB-hub/hub-ctrl.c">hub-ctrl.c</a>と、Pythonの<a target="_blank" rel="noopener" href="http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob;f=tool/hub_ctrl.py">hub_ctrl.py</a>があります。</p>
 <h3 id="Cのソースコード"><a href="#Cのソースコード" class="headerlink" title="Cのソースコード"></a>Cのソースコード</h3><p>BeagleBone BlackにはUbuntu 14.04をインストールしています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/os-release</span><br><span class="line">NAME=<span class="string">"Ubuntu"</span></span><br><span class="line">VERSION=<span class="string">"14.04.1 LTS, Trusty Tahr"</span></span><br><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.14.31-ti-r49 (root@a6-imx6q-wandboard-2gb) (gcc version 4.8.2 (Ubuntu/Linaro 4.8.2-19ubuntu1) ) <span class="comment">#1 SMP PREEMPT Sat Jan 31 14:17:42 UTC 2015</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/os-release</span><br><span class="line">NAME=<span class="string">&quot;Ubuntu&quot;</span></span><br><span class="line">VERSION=<span class="string">&quot;14.04.1 LTS, Trusty Tahr&quot;</span></span><br><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.14.31-ti-r49 (root@a6-imx6q-wandboard-2gb) (gcc version 4.8.2 (Ubuntu/Linaro 4.8.2-19ubuntu1) ) <span class="comment">#1 SMP PREEMPT Sat Jan 31 14:17:42 UTC 2015</span></span><br></pre></td></tr></table></figure>
 
 <p>プログラムの実行に必要なパッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install libusb-dev</span><br></pre></td></tr></table></figure>
@@ -286,23 +253,23 @@
 <p>コンパイルしたバイナリのヘルプを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./hub-ctrl --<span class="built_in">help</span></span><br><span class="line">Usage: ./hub-ctrl [&#123;-h HUBNUM | -b BUSNUM -d DEVNUM&#125;] \</span><br><span class="line">          [-P PORT] [&#123;-p [VALUE]|-l [VALUE]&#125;]</span><br></pre></td></tr></table></figure>
 
-<h3 id="Pythonのソースコード"><a href="#Pythonのソースコード" class="headerlink" title="Pythonのソースコード"></a>Pythonのソースコード</h3><p>Pythonの<a href="http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob;f=tool/hub_ctrl.py" target="_blank" rel="noopener">hub_ctrl.py</a>をダウンロードして実行権限を付けます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -O hub_ctrl.py <span class="string">"http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob_plain;f=tool/hub_ctrl.py;hb=HEAD"</span></span><br><span class="line">$ chmod u+x hub_ctrl.py</span><br></pre></td></tr></table></figure>
+<h3 id="Pythonのソースコード"><a href="#Pythonのソースコード" class="headerlink" title="Pythonのソースコード"></a>Pythonのソースコード</h3><p>Pythonの<a target="_blank" rel="noopener" href="http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob;f=tool/hub_ctrl.py">hub_ctrl.py</a>をダウンロードして実行権限を付けます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -O hub_ctrl.py <span class="string">&quot;http://git.gniibe.org/gitweb/?p=gnuk/gnuk.git;a=blob_plain;f=tool/hub_ctrl.py;hb=HEAD&quot;</span></span><br><span class="line">$ chmod u+x hub_ctrl.py</span><br></pre></td></tr></table></figure>
 
-<p>Pプログラム実行に必要なライブラリをインストールします。今回の環境では<a href="http://walac.github.io/pyusb/" target="_blank" rel="noopener">pyusb</a>は<code>--pre</code>フラグが必要でした。</p>
+<p>Pプログラム実行に必要なライブラリをインストールします。今回の環境では<a target="_blank" rel="noopener" href="http://walac.github.io/pyusb/">pyusb</a>は<code>--pre</code>フラグが必要でした。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install git build-essential python-dev python-smbus</span><br><span class="line">$ sudo pip install --pre pyusb</span><br><span class="line">...</span><br><span class="line">Successfully installed pyusb-1.0.0b2</span><br></pre></td></tr></table></figure>
 
 <p>ヘルプを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./hub_ctrl.py -h</span><br><span class="line">Usage: ./hub_ctrl.py [&#123;-h HUBNUM | -b BUSNUM -d DEVNUM&#125;]</span><br><span class="line">          [-P PORT] [&#123;-p [VALUE]|-l [VALUE]&#125;]</span><br></pre></td></tr></table></figure>
 
-<h2 id="使い方"><a href="#使い方" class="headerlink" title="使い方"></a>使い方</h2><p><a href="http://www.ebimemo.net/diary/?date=20110530" target="_blank" rel="noopener">USBポートの電源を制御する_その１</a>を参考にさせていただきます。</p>
+<h2 id="使い方"><a href="#使い方" class="headerlink" title="使い方"></a>使い方</h2><p><a target="_blank" rel="noopener" href="http://www.ebimemo.net/diary/?date=20110530">USBポートの電源を制御する_その１</a>を参考にさせていただきます。</p>
 <p>普通の電源タップにUSBケーブルが繋がっています。USBケーブルをテレビやパソコンなどに接続して、テレビの電源と連動してハードディスクなど周辺機器の電源もON/OFFさせます。節電が主な用途らしいです。</p>
 <p>今回はこれを応用して、植物育成LEDライトを連動する機器にします。LEDライトのコンセントUSB連動電源タップに挿してスイッチをONの状態にしておきます。電源タップのUSBケーブルはプログラムから電源の制御が可能なUSBハブのポートに接続してこれと連動させます。</p>
 <p>BeagleBone BlackのPythonのプログラムから、るUSBハブのポートの電源をON/OFFさせることで、LEDライトの電源をコントールしてみようと思います。</p>
 <h3 id="lsusbコマンド"><a href="#lsusbコマンド" class="headerlink" title="lsusbコマンド"></a>lsusbコマンド</h3><p><code>lsusb</code>コマンドを実行して、電源をON/OFFさせるUSBハブのポート番号、Bus番号、Device番号を確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsusb</span><br><span class="line">Bus 001 Device 003: ID 0411:01a2 BUFFALO INC. (formerly MelCo., Inc.) WLI-UC-GNM Wireless LAN Adapter [Ralink RT8070]</span><br><span class="line">Bus 001 Device 002: ID 0409:005a NEC Corp. HighSpeed Hub</span><br><span class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub Wireless LAN Adapter [Ralink RT8070]</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://www.gniibe.org/development/ac-power-control-by-USB-hub/index.html" target="_blank" rel="noopener">AC Power Control by USB Hub</a>のページに対応USBハブの記載がありますが、NEC製の<code>Bus 001 Device 002</code>がUSB連動電源タップをつないでいるデバイスです。root権限で<code>lsusb</code>コマンドの詳細が表示できます。</p>
+<p><a target="_blank" rel="noopener" href="http://www.gniibe.org/development/ac-power-control-by-USB-hub/index.html">AC Power Control by USB Hub</a>のページに対応USBハブの記載がありますが、NEC製の<code>Bus 001 Device 002</code>がUSB連動電源タップをつないでいるデバイスです。root権限で<code>lsusb</code>コマンドの詳細が表示できます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lsusb -v</span><br><span class="line">...</span><br><span class="line">Bus 001 Device 002: ID 0409:005a NEC Corp. HighSpeed Hub</span><br><span class="line">Device Descriptor:</span><br><span class="line">  bLength                18</span><br><span class="line">  bDescriptorType         1</span><br><span class="line">  bcdUSB               2.00</span><br><span class="line">  bDeviceClass            9 Hub</span><br><span class="line">...</span><br><span class="line"> Hub Port Status:</span><br><span class="line">   Port 1: 0000.0100 power</span><br><span class="line">   Port 2: 0000.0100 power</span><br><span class="line">   Port 3: 0000.0100 power</span><br><span class="line">   Port 4: 0000.0503 highspeed power <span class="built_in">enable</span> connect</span><br></pre></td></tr></table></figure>
 
 <p><code>Port 4</code>には無線LANのドングルを挿しています。BeagleBone BlackがクラウドのMQTTブローカーに接続して、LEDライトをコントールするメッセージをsubscribeするために使います。USBハブは<code>Port 1</code>が電源制御可能なポートになっていました。</p>
@@ -316,7 +283,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./hub-ctrl -b 1 -d 2 -P 1 -p 0</span><br></pre></td></tr></table></figure>
 
 <h3 id="Pythonのコマンド"><a href="#Pythonのコマンド" class="headerlink" title="Pythonのコマンド"></a>Pythonのコマンド</h3><p>Pythonのコマンドの場合は、バスとデバイス番号を指定するとエラーになりました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./hub_ctrl.py -b 1 -d 2 -P 1 -p 1</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"./hub_ctrl.py"</span>, line 236, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    uh = dev_hub.open()</span><br><span class="line">NameError: name <span class="string">'dev_hub'</span> is not defined</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./hub_ctrl.py -b 1 -d 2 -P 1 -p 1</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;./hub_ctrl.py&quot;</span>, line 236, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    uh = dev_hub.open()</span><br><span class="line">NameError: name <span class="string">&#x27;dev_hub&#x27;</span> is not defined</span><br></pre></td></tr></table></figure>
 
 <p>ハブの番号の指定で動作しました。<code>-p 1</code>で点灯します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ./hub_ctrl.py -h 0 -P 1 -p 1</span><br></pre></td></tr></table></figure>
@@ -363,7 +330,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -414,7 +380,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用意するもの"><span class="nav-number">1.</span> <span class="nav-text">用意するもの</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-2はUSBの電源を上手く制御できない"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 2はUSBの電源を上手く制御できない</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC-Power-Control-by-USB-Hub"><span class="nav-number">3.</span> <span class="nav-text">AC Power Control by USB Hub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cのソースコード"><span class="nav-number">3.1.</span> <span class="nav-text">Cのソースコード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのソースコード"><span class="nav-number">3.2.</span> <span class="nav-text">Pythonのソースコード</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使い方"><span class="nav-number">4.</span> <span class="nav-text">使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lsusbコマンド"><span class="nav-number">4.1.</span> <span class="nav-text">lsusbコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cのコマンド"><span class="nav-number">4.2.</span> <span class="nav-text">Cのコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのコマンド"><span class="nav-number">4.3.</span> <span class="nav-text">Pythonのコマンド</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#アボカドとコネクテッドデバイス"><span class="nav-number">5.</span> <span class="nav-text">アボカドとコネクテッドデバイス</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%84%8F%E3%81%99%E3%82%8B%E3%82%82%E3%81%AE"><span class="nav-number">1.</span> <span class="nav-text">用意するもの</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-2%E3%81%AFUSB%E3%81%AE%E9%9B%BB%E6%BA%90%E3%82%92%E4%B8%8A%E6%89%8B%E3%81%8F%E5%88%B6%E5%BE%A1%E3%81%A7%E3%81%8D%E3%81%AA%E3%81%84"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 2はUSBの電源を上手く制御できない</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AC-Power-Control-by-USB-Hub"><span class="nav-number">3.</span> <span class="nav-text">AC Power Control by USB Hub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C%E3%81%AE%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89"><span class="nav-number">3.1.</span> <span class="nav-text">Cのソースコード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%81%AE%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89"><span class="nav-number">3.2.</span> <span class="nav-text">Pythonのソースコード</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E3%81%84%E6%96%B9"><span class="nav-number">4.</span> <span class="nav-text">使い方</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lsusb%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">4.1.</span> <span class="nav-text">lsusbコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">4.2.</span> <span class="nav-text">Cのコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%81%AE%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">4.3.</span> <span class="nav-text">Pythonのコマンド</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A2%E3%83%9C%E3%82%AB%E3%83%89%E3%81%A8%E3%82%B3%E3%83%8D%E3%82%AF%E3%83%86%E3%83%83%E3%83%89%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9"><span class="nav-number">5.</span> <span class="nav-text">アボカドとコネクテッドデバイス</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -446,10 +412,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -474,9 +443,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -516,13 +485,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

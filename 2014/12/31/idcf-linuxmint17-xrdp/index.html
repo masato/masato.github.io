@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Ionicの開発用にWebブラウザからプレビューできる環境をDocker上につくりました。今度はエミュレーターを動かせるデスクトップ環境を用意します。以前Linux Mint 17 MateのデスクトップをIDCFクラウド上に構築しましたが、CordovaとIonicの開発用に新しく仮想マシンを作ることにします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする">
 <meta property="og:url" content="https://masato.github.io/2014/12/31/idcf-linuxmint17-xrdp/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Ionicの開発用にWebブラウザからプレビューできる環境をDocker上につくりました。今度はエミュレーターを動かせるデスクトップ環境を用意します。以前Linux Mint 17 MateのデスクトップをIDCFクラウド上に構築しましたが、CordovaとIonicの開発用に新しく仮想マシンを作ることにします。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/12/31/idcf-linuxmint17-xrdp/xrdp-color.png">
 <meta property="article:published_time" content="2014-12-31T07:52:17.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.696Z">
+<meta property="article:modified_time" content="2014-12-31T07:52:17.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="HTML5HybridMobileApps">
 <meta property="article:tag" content="Cordova">
@@ -57,7 +57,7 @@
   };
 </script>
 
-  <title>IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする | masato's blog</title>
+  <title>IDCFクラウドにLinux Mint 17 MATEとxrdpをインストールする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -97,7 +97,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -118,14 +118,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -134,51 +133,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -195,11 +170,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -212,7 +186,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -222,19 +196,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Dec 31 2014 16:52:17" itemprop="dateCreated datePublished" datetime="2014-12-31T16:52:17+09:00">Dec 31 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Ionicの開発用にWebブラウザからプレビューできる環境をDocker上につくりました。今度はエミュレーターを動かせるデスクトップ環境を用意します。以前Linux Mint 17 MateのデスクトップをIDCFクラウド上に構築しましたが、CordovaとIonicの開発用に新しく仮想マシンを作ることにします。</div>
@@ -249,14 +216,14 @@
 
       
         <p>Ionicの開発用にWebブラウザからプレビューできる環境を<a href="2014/12/30/docker-devenv-ionic-cordova/">Dockerコンテナ上につくりました</a>。今度はエミュレーターを動かせるデスクトップ環境を用意します。以前Linux Mint 17 Mateのデスクトップを<a href="2014/06/02/idcf-linuxmint17-part2/">IDCFクラウド上に構築</a>しましたが、CordovaとIonicの開発用にも、新しく仮想マシンを作ることにします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="ISOの登録"><a href="#ISOの登録" class="headerlink" title="ISOの登録"></a>ISOの登録</h3><p>2014-11-29に<a href="http://www.linuxmint.com/download.php" target="_blank" rel="noopener">Linux Mint 17.1 Rebecca</a>がリリースされていますが、以前インストールに成功しているLinux Mint 17 Qianaを使うことにします。</p>
+<h3 id="ISOの登録"><a href="#ISOの登録" class="headerlink" title="ISOの登録"></a>ISOの登録</h3><p>2014-11-29に<a target="_blank" rel="noopener" href="http://www.linuxmint.com/download.php">Linux Mint 17.1 Rebecca</a>がリリースされていますが、以前インストールに成功しているLinux Mint 17 Qianaを使うことにします。</p>
 <p>IDCFクラウドのポータルにログインして、ISOの登録をします。</p>
 <ul>
 <li>ISO名: linuxmint-17-mate-dvd-64bit</li>
 <li>説明: linuxmint-17-mate-dvd-64bit</li>
-<li>URL:  <a href="http://ftp.stust.edu.tw/pub/Linux/LinuxMint/isos//stable/17/linuxmint-17-mate-dvd-64bit.iso" target="_blank" rel="noopener">http://ftp.stust.edu.tw/pub/Linux/LinuxMint/isos//stable/17/linuxmint-17-mate-dvd-64bit.iso</a></li>
+<li>URL:  <a target="_blank" rel="noopener" href="http://ftp.stust.edu.tw/pub/Linux/LinuxMint/isos//stable/17/linuxmint-17-mate-dvd-64bit.iso">http://ftp.stust.edu.tw/pub/Linux/LinuxMint/isos//stable/17/linuxmint-17-mate-dvd-64bit.iso</a></li>
 <li>ゾーン: tesla</li>
 <li>OSタイプ: Ubuntu 12.04 (64-bit)</li>
 <li>エクスポート: 有効</li>
@@ -281,28 +248,34 @@
 <li><p>どこに住んでいますか？、Tokyo、「続ける」ボタン</p>
 </li>
 <li><p>インストールの種類</p>
-<ul>
-<li>ディスクを削除してLinux Mintをインストール</li>
-<li>Use LVM with the new Linux Mint instllationにチェック</li>
-<li>「インストール」ボタン</li>
-</ul>
+</li>
+<li><p>ディスクを削除してLinux Mintをインストール</p>
+</li>
+<li><p>Use LVM with the new Linux Mint instllationにチェック</p>
+</li>
+<li><p>「インストール」ボタン</p>
 </li>
 <li><p>キーボードレイアウト</p>
-<ul>
-<li>デフォルトのまま</li>
-<li>キーボードレイアウトの選択: 日本語、日本語</li>
-<li>「続ける」ボタン</li>
-</ul>
+</li>
+<li><p>デフォルトのまま</p>
+</li>
+<li><p>キーボードレイアウトの選択: 日本語、日本語</p>
+</li>
+<li><p>「続ける」ボタン</p>
 </li>
 <li><p>ユーザー</p>
-<ul>
-<li>あなたの名前: Masato Shimizu</li>
-<li>コンピューターの名前: mint-17</li>
-<li>ユーザー名: mshimizu</li>
-<li>パスワードの入力: xxx</li>
-<li>自動的にログインするにチェック</li>
-<li>「続ける」ボタン</li>
-</ul>
+</li>
+<li><p>あなたの名前: Masato Shimizu</p>
+</li>
+<li><p>コンピューターの名前: mint-17</p>
+</li>
+<li><p>ユーザー名: mshimizu</p>
+</li>
+<li><p>パスワードの入力: xxx</p>
+</li>
+<li><p>自動的にログインするにチェック</p>
+</li>
+<li><p>「続ける」ボタン</p>
 </li>
 </ul>
 <p>Linux Mintへようこその画面が表示され、インストールが開始します。インストールを完了して「今すぐ再起動する」ボタンを押します。 メッセージが表示が表示されるのでこのままの状態で、ポータル画面から仮装マシンを選択してISOをデタッチします。</p>
@@ -314,13 +287,13 @@
 <p>メニューから端末を開いてSSHをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install openssh-server</span><br></pre></td></tr></table></figure>
 <p>mint-mate-17の仮装マシンにパスワード認証でSSHでログインします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$  ssh mshimizu@linux-mint-mate-17 -o PreferredAuthentications=password</span><br><span class="line">mshimizu@linux-mint-mate-17<span class="string">'s password:</span></span><br><span class="line"><span class="string">Welcome to Linux Mint 17 Qiana (GNU/Linux 3.13.0-24-generic x86_64)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Welcome to Linux Mint</span></span><br><span class="line"><span class="string"> * Documentation:  http://www.linuxmint.com</span></span><br><span class="line"><span class="string">mshimizu@linux-mint-17 ~ $</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$  ssh mshimizu@linux-mint-mate-17 -o PreferredAuthentications=password</span><br><span class="line">mshimizu@linux-mint-mate-17<span class="string">&#x27;s password:</span></span><br><span class="line"><span class="string">Welcome to Linux Mint 17 Qiana (GNU/Linux 3.13.0-24-generic x86_64)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Welcome to Linux Mint</span></span><br><span class="line"><span class="string"> * Documentation:  http://www.linuxmint.com</span></span><br><span class="line"><span class="string">mshimizu@linux-mint-17 ~ $</span></span><br></pre></td></tr></table></figure>
 
 <p>SSH接続が確認できたら、ブラウザのコンソールはもう使わないので閉じます。</p>
 <h3 id="基本ツールのインストール"><a href="#基本ツールのインストール" class="headerlink" title="基本ツールのインストール"></a>基本ツールのインストール</h3><p>nanoは使いにくいのでデフォルトのエディタをvim.basicにします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install vim</span><br><span class="line">$ sudo update-alternatives --<span class="built_in">set</span> editor /usr/bin/vim.basic</span><br></pre></td></tr></table></figure>
 
-<p>Firefoxを起動してChromeを<a href="https://www.google.com/chrome/browser/desktop/index.html" target="_blank" rel="noopener">ダウンロード</a>します。</p>
+<p>Firefoxを起動してChromeを<a target="_blank" rel="noopener" href="https://www.google.com/chrome/browser/desktop/index.html">ダウンロード</a>します。</p>
 <p>64bit .deb (Debian/Ubuntu 版)をインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Downloads</span><br><span class="line">$ sudo apt-get install libcurl3</span><br><span class="line">$ sudo dpkg -i google-chrome-stable_current_amd64.deb</span><br></pre></td></tr></table></figure>
 
@@ -345,15 +318,15 @@
 
 <h3 id="3389ポートを使う"><a href="#3389ポートを使う" class="headerlink" title="3389ポートを使う"></a>3389ポートを使う</h3><p>IDCFクラウドのポータル画面から、IPアドレスのファイアウォールにRDPの3389ポートを開放します。</p>
 <h3 id="Windows-7の場合、付属のリモートデスクトップを使う"><a href="#Windows-7の場合、付属のリモートデスクトップを使う" class="headerlink" title="Windows 7の場合、付属のリモートデスクトップを使う"></a>Windows 7の場合、付属のリモートデスクトップを使う</h3><p>Windows 7の場合OSに付属しているリモートデスクトップがそのまま使えます。</p>
-<h3 id="OSXの場合、Microsoft-Remote-Desktop-Connection-Client-for-Macを使う"><a href="#OSXの場合、Microsoft-Remote-Desktop-Connection-Client-for-Macを使う" class="headerlink" title="OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う"></a>OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う</h3><p>OSXで使えるRDPクライアントは2種類ありますが、<a href="http://www.microsoft.com/ja-jp/download/details.aspx?id=18140" target="_blank" rel="noopener">Microsoft Remote Desktop Connection Client for Mac 2.1</a>をダウンロードしてインストールします。インストーラーを右クリックして開くを実行します。App Storeで配布されている<a href="https://itunes.apple.com/jp/app/microsoft-remote-desktop/id715768417" target="_blank" rel="noopener">Microsoft Remote Desktop</a>を使うと、日本語キーボードが正しく認識されず、\と_が入力できないので使い物になりません。</p>
+<h3 id="OSXの場合、Microsoft-Remote-Desktop-Connection-Client-for-Macを使う"><a href="#OSXの場合、Microsoft-Remote-Desktop-Connection-Client-for-Macを使う" class="headerlink" title="OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う"></a>OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う</h3><p>OSXで使えるRDPクライアントは2種類ありますが、<a target="_blank" rel="noopener" href="http://www.microsoft.com/ja-jp/download/details.aspx?id=18140">Microsoft Remote Desktop Connection Client for Mac 2.1</a>をダウンロードしてインストールします。インストーラーを右クリックして開くを実行します。App Storeで配布されている<a target="_blank" rel="noopener" href="https://itunes.apple.com/jp/app/microsoft-remote-desktop/id715768417">Microsoft Remote Desktop</a>を使うと、日本語キーボードが正しく認識されず、\と_が入力できないので使い物になりません。</p>
 <p>RDPのメニューから環境設定画面を開き、表示タブの色を約1670万色にします。デフォルトの約32000色の場合、Chromeがきれいに表示されません。</p>
 <img src="/2014/12/31/idcf-linuxmint17-xrdp/xrdp-color.png" class="center">
 
 
 <h3 id="キーボード-と-を入力できるようにする"><a href="#キーボード-と-を入力できるようにする" class="headerlink" title="キーボード \と_を入力できるようにする"></a>キーボード \と_を入力できるようにする</h3><p><code>/etc/default/keyboard</code>はデフォルトのまま使います。</p>
-<figure class="highlight bash"><figcaption><span>/etc/default/keyboard</span></figcaption><table><tr><td class="code"><pre><span class="line">XKBMODEL=<span class="string">"pc105"</span></span><br><span class="line">XKBLAYOUT=<span class="string">"jp"</span></span><br><span class="line">XKBVARIANT=<span class="string">""</span></span><br><span class="line">XKBOPTIONS=<span class="string">""</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/default/keyboard</span></figcaption><table><tr><td class="code"><pre><span class="line">XKBMODEL=<span class="string">&quot;pc105&quot;</span></span><br><span class="line">XKBLAYOUT=<span class="string">&quot;jp&quot;</span></span><br><span class="line">XKBVARIANT=<span class="string">&quot;&quot;</span></span><br><span class="line">XKBOPTIONS=<span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p><a href="https://gist.github.com/devlights/6337527" target="_blank" rel="noopener">Ubuntu 12.04でxrdpで日本語キーボードを認識させる</a>を参考にして、キーマップを変更します。</p>
+<p><a target="_blank" rel="noopener" href="https://gist.github.com/devlights/6337527">Ubuntu 12.04でxrdpで日本語キーボードを認識させる</a>を参考にして、キーマップを変更します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /etc/xrdp</span><br><span class="line">$ sudo wget http://www.mail-archive.com/xrdp-devel@lists.sourceforge.net/msg00263/km-e0010411.ini</span><br><span class="line">$ sudo mv km-e0010411.ini km-0411.ini </span><br><span class="line">$ sudo chmod 644 km-0411.ini</span><br><span class="line">$ sudo ln -s km-0411.ini km-e0010411.ini</span><br><span class="line">$ sudo ln -s km-0411.ini km-e0200411.ini</span><br><span class="line">$ sudo ln -s km-0411.ini km-e0210411.ini</span><br></pre></td></tr></table></figure>
 
 <p>xrdpを再起動します。</p>
@@ -407,7 +380,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -458,7 +430,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ISOの登録"><span class="nav-number">1.</span> <span class="nav-text">ISOの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仮装マシンの作成"><span class="nav-number">2.</span> <span class="nav-text">仮装マシンの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-Linux-Mint"><span class="nav-number">3.</span> <span class="nav-text">Install Linux Mint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンソールからSSHをインストール"><span class="nav-number">4.</span> <span class="nav-text">コンソールからSSHをインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本ツールのインストール"><span class="nav-number">5.</span> <span class="nav-text">基本ツールのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xrdpのインスト-ル"><span class="nav-number">6.</span> <span class="nav-text">xrdpのインスト-ル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3389ポートを使う"><span class="nav-number">7.</span> <span class="nav-text">3389ポートを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows-7の場合、付属のリモートデスクトップを使う"><span class="nav-number">8.</span> <span class="nav-text">Windows 7の場合、付属のリモートデスクトップを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSXの場合、Microsoft-Remote-Desktop-Connection-Client-for-Macを使う"><span class="nav-number">9.</span> <span class="nav-text">OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#キーボード-と-を入力できるようにする"><span class="nav-number">10.</span> <span class="nav-text">キーボード \と_を入力できるようにする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#日本語入力にibus-mozcを使う"><span class="nav-number">11.</span> <span class="nav-text">日本語入力にibus-mozcを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ディレクトリ名を英語にする"><span class="nav-number">12.</span> <span class="nav-text">ディレクトリ名を英語にする</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ISO%E3%81%AE%E7%99%BB%E9%8C%B2"><span class="nav-number">1.</span> <span class="nav-text">ISOの登録</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%AE%E8%A3%85%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">仮装マシンの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Install-Linux-Mint"><span class="nav-number">3.</span> <span class="nav-text">Install Linux Mint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E3%81%8B%E3%82%89SSH%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">4.</span> <span class="nav-text">コンソールからSSHをインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E3%83%84%E3%83%BC%E3%83%AB%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">5.</span> <span class="nav-text">基本ツールのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xrdp%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88-%E3%83%AB"><span class="nav-number">6.</span> <span class="nav-text">xrdpのインスト-ル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3389%E3%83%9D%E3%83%BC%E3%83%88%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">7.</span> <span class="nav-text">3389ポートを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows-7%E3%81%AE%E5%A0%B4%E5%90%88%E3%80%81%E4%BB%98%E5%B1%9E%E3%81%AE%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%88%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">8.</span> <span class="nav-text">Windows 7の場合、付属のリモートデスクトップを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OSX%E3%81%AE%E5%A0%B4%E5%90%88%E3%80%81Microsoft-Remote-Desktop-Connection-Client-for-Mac%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">9.</span> <span class="nav-text">OSXの場合、Microsoft Remote Desktop Connection Client for Macを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89-%E3%81%A8-%E3%82%92%E5%85%A5%E5%8A%9B%E3%81%A7%E3%81%8D%E3%82%8B%E3%82%88%E3%81%86%E3%81%AB%E3%81%99%E3%82%8B"><span class="nav-number">10.</span> <span class="nav-text">キーボード \と_を入力できるようにする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E6%9C%AC%E8%AA%9E%E5%85%A5%E5%8A%9B%E3%81%ABibus-mozc%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">11.</span> <span class="nav-text">日本語入力にibus-mozcを使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E5%90%8D%E3%82%92%E8%8B%B1%E8%AA%9E%E3%81%AB%E3%81%99%E3%82%8B"><span class="nav-number">12.</span> <span class="nav-text">ディレクトリ名を英語にする</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -490,10 +462,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -518,9 +493,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -560,13 +535,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

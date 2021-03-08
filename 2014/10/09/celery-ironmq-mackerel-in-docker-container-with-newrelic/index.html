@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="DockerコンテナにNewRelicエージェントをインストールしましたが、今度はMackerelエージェントをインストールしてみます。Mackerelははてなが提供している監視SaaSです。Freeプランがあるので気軽に試すことができます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール">
 <meta property="og:url" content="https://masato.github.io/2014/10/09/celery-ironmq-mackerel-in-docker-container-with-newrelic/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="DockerコンテナにNewRelicエージェントをインストールしましたが、今度はMackerelエージェントをインストールしてみます。Mackerelははてなが提供している監視SaaSです。Freeプランがあるので気軽に試すことができます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/10/09/celery-ironmq-mackerel-in-docker-container-with-newrelic/mackerel.png">
 <meta property="article:published_time" content="2014-10-08T15:51:31.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.559Z">
+<meta property="article:modified_time" content="2014-10-08T15:51:31.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ElephantSQL">
 <meta property="article:tag" content="IronMQ">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール | masato's blog</title>
+  <title>IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Oct 9 2014 00:51:31" itemprop="dateCreated datePublished" datetime="2014-10-09T00:51:31+09:00">Oct 9 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
 
@@ -244,18 +211,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Dockerコンテナに<a href="/2014/08/27/celery-ironmq-newrelic-in-docker-container/">NewRelicエージェント</a>をインストールしましたが、今度は<a href="http://help-ja.mackerel.io/entry/howto/install-agent" target="_blank" rel="noopener">Mackerelエージェント</a>をインストールしてみます。<br><a href="https://mackerel.io/" target="_blank" rel="noopener">Mackerel</a>は<a href="http://www.hatena.ne.jp/" target="_blank" rel="noopener">はてな</a>が提供している監視SaaSです。Freeプランがあるので気軽に試すことができます。</p>
-<a id="more"></a>
+        <p>Dockerコンテナに<a href="/2014/08/27/celery-ironmq-newrelic-in-docker-container/">NewRelicエージェント</a>をインストールしましたが、今度は<a target="_blank" rel="noopener" href="http://help-ja.mackerel.io/entry/howto/install-agent">Mackerelエージェント</a>をインストールしてみます。<br><a target="_blank" rel="noopener" href="https://mackerel.io/">Mackerel</a>は<a target="_blank" rel="noopener" href="http://www.hatena.ne.jp/">はてな</a>が提供している監視SaaSです。Freeプランがあるので気軽に試すことができます。</p>
+<span id="more"></span>
 
 <h3 id="ユースケース"><a href="#ユースケース" class="headerlink" title="ユースケース"></a>ユースケース</h3><p>今回は以下のようなユースケースでPoCをします。</p>
 <ul>
-<li><p>前提条件</p>
+<li>前提条件</li>
+</ul>
 <ol>
 <li>mackerel-agentをインストールするDebianコンテナを1台用意しておきます。</li>
 <li>DebianコンテナのIPアドレスを<code>account_uuid</code>に紐付けてElephantSQLに登録しておきます。</li>
 </ol>
-</li>
-<li><p>ユースケース</p>
+<ul>
+<li>ユースケース</li>
+</ul>
 <ol>
 <li>ワーカーがIronMQのqueueからJSON形式でメッセージをpullします。</li>
 <li>JSON形式でIronMQにenqueueします。</li>
@@ -263,28 +232,26 @@
 <li>ElephantSQLからクエリしたIPアドレスを使い、インストール対象のサーバーにFabricAPIでSSH接続します。</li>
 <li>mackerel-agentのdepパッケージのダウンロードとインストールを行います。(常に最新をインストール)</li>
 </ol>
-</li>
-</ul>
 <h3 id="Pythonのメインプログラム"><a href="#Pythonのメインプログラム" class="headerlink" title="Pythonのメインプログラム"></a>Pythonのメインプログラム</h3><p>mail-loopを持ったPythonのメインプログラムです。最初にMackerelにログインして、サービスとロールを登録しておきます。<br>サービスとロールは<code>&#39;roles = [&quot;MyService:router&quot;]&#39;</code>のようにmackerel-agent.confに設定します。</p>
 <p>PoCなのでDebianコンテナにはSSHはパスワード接続しますが、本番では鍵認証で接続します。</p>
 <ul>
 <li>USER = ‘root’</li>
 <li>PASSWORD = ‘mypass’</li>
 </ul>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/newrelic_custom.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> run</span><br><span class="line"><span class="keyword">from</span> fabric.contrib.files <span class="keyword">import</span> append</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"><span class="keyword">import</span> newrelic.agent</span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line">PROJECT_ID = <span class="string">'***'</span></span><br><span class="line">TOKEN = <span class="string">'***'</span></span><br><span class="line">USER = <span class="string">'root'</span></span><br><span class="line">PASSWORD = <span class="string">'mypass'</span></span><br><span class="line">DATABASE_URL = <span class="string">'postgres://***:***@***.elephantsql.com:5432/***'</span></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">'my_queue'</span>)</span><br><span class="line">db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_host_by</span><span class="params">(account_uuid)</span>:</span></span><br><span class="line">    account = db.accounts.filter_by(account_uuid=account_uuid).first()</span><br><span class="line">    <span class="keyword">if</span> account:</span><br><span class="line">        <span class="keyword">return</span> account.host</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">install_mackerel</span><span class="params">(apikey,host)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> settings(host_string=host,</span><br><span class="line">                  user=USER,password=PASSWORD):</span><br><span class="line">        run(<span class="string">'''</span></span><br><span class="line"><span class="string">        cat /etc/debian_version</span></span><br><span class="line"><span class="string">        apt-get update</span></span><br><span class="line"><span class="string">        apt-get -y install curl</span></span><br><span class="line"><span class="string">        curl -O http://file.mackerel.io/agent/deb/mackerel-agent_latest.all.deb</span></span><br><span class="line"><span class="string">        dpkg -i --force-confnew mackerel-agent_latest.all.deb</span></span><br><span class="line"><span class="string">        '''</span>)</span><br><span class="line">        sources = (<span class="string">'apikey = "&#123;0&#125;"'</span>.format(apikey),</span><br><span class="line">                   <span class="string">'roles = ["MyService:router"]'</span>)</span><br><span class="line">        append(<span class="string">'/etc/mackerel-agent/mackerel-agent.conf'</span>,sources)</span><br><span class="line">        run(<span class="string">'''</span></span><br><span class="line"><span class="string">        /etc/init.d/mackerel-agent start</span></span><br><span class="line"><span class="string">        tail -5 /var/log/mackerel-agent.log</span></span><br><span class="line"><span class="string">        '''</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">()</span>:</span></span><br><span class="line">    msg = q.get()</span><br><span class="line">    <span class="keyword">if</span> len(msg[<span class="string">'messages'</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">        time.sleep(<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        req = json.loads(msg[<span class="string">'messages'</span>][<span class="number">0</span>][<span class="string">'body'</span>])</span><br><span class="line">        print(<span class="string">'in task'</span>)</span><br><span class="line">        print(req)</span><br><span class="line">        apikey = req[<span class="string">'apikey'</span>]</span><br><span class="line">        account_uuid = req[<span class="string">'account_uuid'</span>]</span><br><span class="line">        print(<span class="string">'apikey: &#123;0&#125;'</span>.format(apikey))</span><br><span class="line">        print(<span class="string">'account_uuid &#123;0&#125;'</span>.format(account_uuid))</span><br><span class="line">        host = find_host_by(account_uuid)</span><br><span class="line">        <span class="keyword">if</span> host:</span><br><span class="line">            install_mackerel(apikey,host)</span><br><span class="line">    <span class="keyword">except</span> Exception, e:</span><br><span class="line">        traceback.print_exc()</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        print(<span class="string">"finally,&#123;0&#125;"</span>.format(msg[<span class="string">"messages"</span>][<span class="number">0</span>][<span class="string">"id"</span>]))</span><br><span class="line">        print(q.delete(msg[<span class="string">"messages"</span>][<span class="number">0</span>][<span class="string">"id"</span>]))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        application = newrelic.agent.application()</span><br><span class="line">        name = newrelic.agent.callable_name(task)</span><br><span class="line">        <span class="keyword">with</span> newrelic.agent.BackgroundTask(application, name):</span><br><span class="line">            task()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">print</span> &gt;&gt; sys.stderr, <span class="string">'\nExit.\n'</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/newrelic_custom.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> run</span><br><span class="line"><span class="keyword">from</span> fabric.contrib.files <span class="keyword">import</span> append</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urlparse</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">import</span> sqlsoup</span><br><span class="line"><span class="keyword">import</span> newrelic.agent</span><br><span class="line"><span class="keyword">from</span> pprint <span class="keyword">import</span> pprint</span><br><span class="line">PROJECT_ID = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">TOKEN = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">USER = <span class="string">&#x27;root&#x27;</span></span><br><span class="line">PASSWORD = <span class="string">&#x27;mypass&#x27;</span></span><br><span class="line">DATABASE_URL = <span class="string">&#x27;postgres://***:***@***.elephantsql.com:5432/***&#x27;</span></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">&#x27;my_queue&#x27;</span>)</span><br><span class="line">db = sqlsoup.SQLSoup(DATABASE_URL)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_host_by</span>(<span class="params">account_uuid</span>):</span></span><br><span class="line">    account = db.accounts.filter_by(account_uuid=account_uuid).first()</span><br><span class="line">    <span class="keyword">if</span> account:</span><br><span class="line">        <span class="keyword">return</span> account.host</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">install_mackerel</span>(<span class="params">apikey,host</span>):</span></span><br><span class="line">    <span class="keyword">with</span> settings(host_string=host,</span><br><span class="line">                  user=USER,password=PASSWORD):</span><br><span class="line">        run(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        cat /etc/debian_version</span></span><br><span class="line"><span class="string">        apt-get update</span></span><br><span class="line"><span class="string">        apt-get -y install curl</span></span><br><span class="line"><span class="string">        curl -O http://file.mackerel.io/agent/deb/mackerel-agent_latest.all.deb</span></span><br><span class="line"><span class="string">        dpkg -i --force-confnew mackerel-agent_latest.all.deb</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span>)</span><br><span class="line">        sources = (<span class="string">&#x27;apikey = &quot;&#123;0&#125;&quot;&#x27;</span>.<span class="built_in">format</span>(apikey),</span><br><span class="line">                   <span class="string">&#x27;roles = [&quot;MyService:router&quot;]&#x27;</span>)</span><br><span class="line">        append(<span class="string">&#x27;/etc/mackerel-agent/mackerel-agent.conf&#x27;</span>,sources)</span><br><span class="line">        run(<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        /etc/init.d/mackerel-agent start</span></span><br><span class="line"><span class="string">        tail -5 /var/log/mackerel-agent.log</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span>():</span></span><br><span class="line">    msg = q.get()</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(msg[<span class="string">&#x27;messages&#x27;</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">        time.sleep(<span class="number">10</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        req = json.loads(msg[<span class="string">&#x27;messages&#x27;</span>][<span class="number">0</span>][<span class="string">&#x27;body&#x27;</span>])</span><br><span class="line">        print(<span class="string">&#x27;in task&#x27;</span>)</span><br><span class="line">        print(req)</span><br><span class="line">        apikey = req[<span class="string">&#x27;apikey&#x27;</span>]</span><br><span class="line">        account_uuid = req[<span class="string">&#x27;account_uuid&#x27;</span>]</span><br><span class="line">        print(<span class="string">&#x27;apikey: &#123;0&#125;&#x27;</span>.<span class="built_in">format</span>(apikey))</span><br><span class="line">        print(<span class="string">&#x27;account_uuid &#123;0&#125;&#x27;</span>.<span class="built_in">format</span>(account_uuid))</span><br><span class="line">        host = find_host_by(account_uuid)</span><br><span class="line">        <span class="keyword">if</span> host:</span><br><span class="line">            install_mackerel(apikey,host)</span><br><span class="line">    <span class="keyword">except</span> Exception, e:</span><br><span class="line">        traceback.print_exc()</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        print(<span class="string">&quot;finally,&#123;0&#125;&quot;</span>.<span class="built_in">format</span>(msg[<span class="string">&quot;messages&quot;</span>][<span class="number">0</span>][<span class="string">&quot;id&quot;</span>]))</span><br><span class="line">        print(q.delete(msg[<span class="string">&quot;messages&quot;</span>][<span class="number">0</span>][<span class="string">&quot;id&quot;</span>]))</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span>():</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        application = newrelic.agent.application()</span><br><span class="line">        name = newrelic.agent.callable_name(task)</span><br><span class="line">        <span class="keyword">with</span> newrelic.agent.BackgroundTask(application, name):</span><br><span class="line">            task()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="built_in">print</span> &gt;&gt; sys.stderr, <span class="string">&#x27;\nExit.\n&#x27;</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="NewRelicでPythonアプリ監視が動くようになった"><a href="#NewRelicでPythonアプリ監視が動くようになった" class="headerlink" title="NewRelicでPythonアプリ監視が動くようになった"></a>NewRelicでPythonアプリ監視が動くようになった</h3><p><a href="/2014/08/27/celery-ironmq-newrelic-in-docker-container/">Part4</a>でPythonアプリの監視に失敗していましたが、NewRelicの方に親切にサポートしていただきアプリ監視ができるようになりました。</p>
-<p><code>while True:</code>のmain-loopで動かす場合は<a href="https://docs.newrelic.com/docs/agents/python-agent/customization-extension/python-instrumentation-api#BackgroundTaskManager-context" target="_blank" rel="noopener">BackgroundTaskManager (context manager)</a>に書かれているように、<code>context manager</code>を使いカスタムの命令を追加する必要があります。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/newrelic_custom.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span><span class="params">()</span>:</span></span><br><span class="line">    msg = q.get()</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        application = newrelic.agent.application()</span><br><span class="line">        name = newrelic.agent.callable_name(task)</span><br><span class="line">        <span class="keyword">with</span> newrelic.agent.BackgroundTask(application, name):</span><br><span class="line">            task()</span><br></pre></td></tr></table></figure>
+<p><code>while True:</code>のmain-loopで動かす場合は<a target="_blank" rel="noopener" href="https://docs.newrelic.com/docs/agents/python-agent/customization-extension/python-instrumentation-api#BackgroundTaskManager-context">BackgroundTaskManager (context manager)</a>に書かれているように、<code>context manager</code>を使いカスタムの命令を追加する必要があります。</p>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/newrelic_custom.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span>():</span></span><br><span class="line">    msg = q.get()</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span>():</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        application = newrelic.agent.application()</span><br><span class="line">        name = newrelic.agent.callable_name(task)</span><br><span class="line">        <span class="keyword">with</span> newrelic.agent.BackgroundTask(application, name):</span><br><span class="line">            task()</span><br></pre></td></tr></table></figure>
 
-<h3 id="Debianコンテナの用意"><a href="#Debianコンテナの用意" class="headerlink" title="Debianコンテナの用意"></a>Debianコンテナの用意</h3><p>DebianのイメージはTutumの<a href="https://registry.hub.docker.com/u/tutum/debian/" target="_blank" rel="noopener">tutum/debian</a>を使います。<br>PythonのプログラムからFabricAPI経由でパスワードのSSH接続をするため、環境変数でパスワードを設定します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull tutum/debian:wheezy</span><br><span class="line">$ docker run --name mackerel -d  -e ROOT_PASS=<span class="string">"mypass"</span> tutum/debian:wheezy</span><br></pre></td></tr></table></figure>
+<h3 id="Debianコンテナの用意"><a href="#Debianコンテナの用意" class="headerlink" title="Debianコンテナの用意"></a>Debianコンテナの用意</h3><p>DebianのイメージはTutumの<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/tutum/debian/">tutum/debian</a>を使います。<br>PythonのプログラムからFabricAPI経由でパスワードのSSH接続をするため、環境変数でパスワードを設定します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull tutum/debian:wheezy</span><br><span class="line">$ docker run --name mackerel -d  -e ROOT_PASS=<span class="string">&quot;mypass&quot;</span> tutum/debian:wheezy</span><br></pre></td></tr></table></figure>
 
 <p>DebianのIPアドレスを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;"</span> mackerel</span><br><span class="line">172.17.0.5</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .NetworkSettings.IPAddress &#125;&#125;&quot;</span> mackerel</span><br><span class="line">172.17.0.5</span><br></pre></td></tr></table></figure>
 
 <h3 id="ElephantSQLのaccount-uuidを更新する"><a href="#ElephantSQLのaccount-uuidを更新する" class="headerlink" title="ElephantSQLのaccount_uuidを更新する"></a>ElephantSQLのaccount_uuidを更新する</h3><p><a href="/2014/09/02/celery-ironmq-elephantsql/">ElephantSQLを使う</a>の手順でpsqlを使えるようにしておきます。<br>ElephantSQLにpsqlで接続します。前回起動したときのDebianコンテナとIPアドレスが変更になっているのでUPDATEします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ psql postgres://***:***@***.elephantsql.com:5432/***</span><br><span class="line">psql (9.3.5, server 9.2.8)</span><br><span class="line">SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line">***=&gt; select * from accounts;</span><br><span class="line"> id | account_uuid |    host</span><br><span class="line">----+--------------+------------</span><br><span class="line">  2 | 1234         | 172.17.0.109</span><br><span class="line">(1 row)</span><br><span class="line">***=&gt; update accounts <span class="built_in">set</span> host=<span class="string">'172.17.0.5'</span> <span class="built_in">where</span> id = 2;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ psql postgres://***:***@***.elephantsql.com:5432/***</span><br><span class="line">psql (9.3.5, server 9.2.8)</span><br><span class="line">SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)</span><br><span class="line">Type <span class="string">&quot;help&quot;</span> <span class="keyword">for</span> <span class="built_in">help</span>.</span><br><span class="line">***=&gt; select * from accounts;</span><br><span class="line"> id | account_uuid |    host</span><br><span class="line">----+--------------+------------</span><br><span class="line">  2 | 1234         | 172.17.0.109</span><br><span class="line">(1 row)</span><br><span class="line">***=&gt; update accounts <span class="built_in">set</span> host=<span class="string">&#x27;172.17.0.5&#x27;</span> <span class="built_in">where</span> id = 2;</span><br></pre></td></tr></table></figure>
 
 <h3 id="runitのサービス再起動"><a href="#runitのサービス再起動" class="headerlink" title="runitのサービス再起動"></a>runitのサービス再起動</h3><p>runitのサービスではnewrelic-adminを経由して、Pythonのプログラムを起動します。<br>newrelic-adminをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install newrelic</span><br></pre></td></tr></table></figure>
@@ -299,7 +266,7 @@
 <figure class="highlight bash"><figcaption><span>/etc/service/spike/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line">appdir=/home/docker/python_apps/spike_nocelery</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$appdir</span> &amp;&amp; \</span><br><span class="line">  <span class="built_in">exec</span> chpst -u docker -e env \</span><br><span class="line">  newrelic-admin run-python newrelic_custom.py</span><br></pre></td></tr></table></figure>
 
 <p>ログの設定です。</p>
-<figure class="highlight bash"><figcaption><span>/etc/service/spike/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/service/spike/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">&quot;/var/log/<span class="variable">$&#123;service&#125;</span>&quot;</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>ruintのサービスを再起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sv restart spike</span><br><span class="line">ok: run: spike: (pid 11430) 0s</span><br></pre></td></tr></table></figure>
@@ -308,10 +275,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo tail -f /var/<span class="built_in">log</span>/spike/current</span><br></pre></td></tr></table></figure>
 
 <h3 id="JSONをenqueueする"><a href="#JSONをenqueueする" class="headerlink" title="JSONをenqueueする"></a>JSONをenqueueする</h3><p><code>apikey</code>と<code>account_uuid</code>をキーにしたJSON形式のメッセージを、IronMQにenqueueします。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/queue.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    PROJECT_ID = <span class="string">'xxx'</span></span><br><span class="line">    TOKEN = <span class="string">'xxx'</span></span><br><span class="line">    mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">    q = mq.queue(<span class="string">'my_queue'</span>)</span><br><span class="line">    msg = dict(apikey=<span class="string">'xxx'</span>,</span><br><span class="line">           account_uuid=<span class="string">'1234'</span>)</span><br><span class="line">    ret = json.dumps(msg)</span><br><span class="line">    print(ret)</span><br><span class="line">    q.post(ret)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/spike_nocelery/queue.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    PROJECT_ID = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line">    TOKEN = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line">    mq = IronMQ(project_id=PROJECT_ID,token=TOKEN)</span><br><span class="line">    q = mq.queue(<span class="string">&#x27;my_queue&#x27;</span>)</span><br><span class="line">    msg = <span class="built_in">dict</span>(apikey=<span class="string">&#x27;xxx&#x27;</span>,</span><br><span class="line">           account_uuid=<span class="string">&#x27;1234&#x27;</span>)</span><br><span class="line">    ret = json.dumps(msg)</span><br><span class="line">    print(ret)</span><br><span class="line">    q.post(ret)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>Pythonスクリプトを実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python queue.py</span><br><span class="line">&#123;<span class="string">"apikey"</span>: <span class="string">"xxx"</span>, <span class="string">"account_uuid"</span>: <span class="string">"1234"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ python queue.py</span><br><span class="line">&#123;<span class="string">&quot;apikey&quot;</span>: <span class="string">&quot;xxx&quot;</span>, <span class="string">&quot;account_uuid&quot;</span>: <span class="string">&quot;1234&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="ログの確認"><a href="#ログの確認" class="headerlink" title="ログの確認"></a>ログの確認</h3><p>10秒間隔でメッセージをpollingしているので、すぐにインストール処理が開始します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo tail -f /var/<span class="built_in">log</span>/spike/current</span><br><span class="line">2014-10-08_13:13:14.51419 <span class="keyword">in</span> task</span><br><span class="line">...</span><br><span class="line">2014-10-08_13:13:18.38520 [172.17.0.5] out: Preparing to replace mackerel-agent 0.12.2-2 (using mackerel-agent_latest.all<span class="variable">$deb</span>) ...</span><br><span class="line">2014-10-08_13:13:18.38521 [172.17.0.5] out: Unpacking replacement mackerel-agent ...</span><br><span class="line">2014-10-08_13:13:18.41663 [172.17.0.5] out: Setting up mackerel-agent (0.12.2-2) ...</span><br><span class="line">...</span><br><span class="line">2014-10-08_13:13:18.95541 [172.17.0.5] run:</span><br><span class="line">2014-10-08_13:13:18.95542         /etc/init.d/mackerel-agent start</span><br><span class="line">2014-10-08_13:13:18.95542         tail -5 /var/<span class="built_in">log</span>/mackerel-agent.log</span><br><span class="line">2014-10-08_13:13:18.95543</span><br><span class="line">2014-10-08_13:13:18.95543 [172.17.0.5] out: Starting mackerel-agent: failed!</span><br><span class="line">2014-10-08_13:13:21.95972 [172.17.0.5] out: 2014/10/08 12:04:36 INFO <span class="built_in">command</span> Start: apibase = https://mackerel.io, hostName = fbe293fe4694, hostId = 2aYC54vyvGL</span><br><span class="line">2014-10-08_13:13:21.95973 [172.17.0.5] out: 2014/10/08 12:05:04 INFO main Starting mackerel-agent version:0.12.2, rev:67cbc69</span><br><span class="line">2014-10-08_13:13:21.95973 [172.17.0.5] out: 2014/10/08 12:09:34 INFO main Starting mackerel-agent version:0.12.2, rev:67cbc69</span><br><span class="line">2014-10-08_13:13:21.95974 [172.17.0.5] out: 2014/10/08 12:09:34 INFO <span class="built_in">command</span> Start: apibase = https://mackerel.io, hostName = fbe293fe4694, hostId = 2aYC54vyvGL</span><br><span class="line">2014-10-08_13:13:21.95974 [172.17.0.5] out: 2014/10/08 13:13:18 INFO main Starting mackerel-agent version:0.12.2, rev:67cbc69</span><br><span class="line">2014-10-08_13:13:21.95975 [172.17.0.5] out:</span><br></pre></td></tr></table></figure>
@@ -357,7 +324,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -408,7 +374,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ユースケース"><span class="nav-number">1.</span> <span class="nav-text">ユースケース</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのメインプログラム"><span class="nav-number">2.</span> <span class="nav-text">Pythonのメインプログラム</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NewRelicでPythonアプリ監視が動くようになった"><span class="nav-number">3.</span> <span class="nav-text">NewRelicでPythonアプリ監視が動くようになった</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debianコンテナの用意"><span class="nav-number">4.</span> <span class="nav-text">Debianコンテナの用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ElephantSQLのaccount-uuidを更新する"><span class="nav-number">5.</span> <span class="nav-text">ElephantSQLのaccount_uuidを更新する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runitのサービス再起動"><span class="nav-number">6.</span> <span class="nav-text">runitのサービス再起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail-f"><span class="nav-number">7.</span> <span class="nav-text">tail -f</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSONをenqueueする"><span class="nav-number">8.</span> <span class="nav-text">JSONをenqueueする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ログの確認"><span class="nav-number">9.</span> <span class="nav-text">ログの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mackerelのダッシュボード"><span class="nav-number">10.</span> <span class="nav-text">Mackerelのダッシュボード</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%A6%E3%83%BC%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%B9"><span class="nav-number">1.</span> <span class="nav-text">ユースケース</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%81%AE%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">2.</span> <span class="nav-text">Pythonのメインプログラム</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NewRelic%E3%81%A7Python%E3%82%A2%E3%83%97%E3%83%AA%E7%9B%A3%E8%A6%96%E3%81%8C%E5%8B%95%E3%81%8F%E3%82%88%E3%81%86%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%9F"><span class="nav-number">3.</span> <span class="nav-text">NewRelicでPythonアプリ監視が動くようになった</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Debian%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E7%94%A8%E6%84%8F"><span class="nav-number">4.</span> <span class="nav-text">Debianコンテナの用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ElephantSQL%E3%81%AEaccount-uuid%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B"><span class="nav-number">5.</span> <span class="nav-text">ElephantSQLのaccount_uuidを更新する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runit%E3%81%AE%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E5%86%8D%E8%B5%B7%E5%8B%95"><span class="nav-number">6.</span> <span class="nav-text">runitのサービス再起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tail-f"><span class="nav-number">7.</span> <span class="nav-text">tail -f</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON%E3%82%92enqueue%E3%81%99%E3%82%8B"><span class="nav-number">8.</span> <span class="nav-text">JSONをenqueueする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%AD%E3%82%B0%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">9.</span> <span class="nav-text">ログの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mackerel%E3%81%AE%E3%83%80%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9C%E3%83%BC%E3%83%89"><span class="nav-number">10.</span> <span class="nav-text">Mackerelのダッシュボード</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -440,10 +406,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -468,9 +437,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -510,13 +479,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

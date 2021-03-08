@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Netatmo ウェザーステーションを使うと、屋内や屋外に設置したモジュールから簡単に環境データを計測して、スマホやデスクトップブラウザのダッシュボードから確認することができます。計測できるデータは気温、湿度、気圧、二酸化炭素濃度、騒音などです。myThingsにも対応しています。オフィシャルではAPIを使うためのSDKはPHP、Objective-C、Windows8、Android用が用意され">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Netatmo ウェザーステーションのAPIを使ってみる - Part1: Node.jsのサンプル">
 <meta property="og:url" content="https://masato.github.io/2015/08/29/netatmo-setup/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Netatmo ウェザーステーションを使うと、屋内や屋外に設置したモジュールから簡単に環境データを計測して、スマホやデスクトップブラウザのダッシュボードから確認することができます。計測できるデータは気温、湿度、気圧、二酸化炭素濃度、騒音などです。myThingsにも対応しています。オフィシャルではAPIを使うためのSDKはPHP、Objective-C、Windows8、Android用が用意され">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/08/29/netatmo-setup/netatmo-station.png">
 <meta property="og:image" content="https://masato.github.io/2015/08/29/netatmo-setup/netatmo-apikey.png">
 <meta property="article:published_time" content="2015-08-29T12:28:12.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.800Z">
+<meta property="article:modified_time" content="2015-08-29T12:28:12.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="Nodejs">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Netatmo ウェザーステーションのAPIを使ってみる - Part1: Node.jsのサンプル | masato's blog</title>
+  <title>Netatmo ウェザーステーションのAPIを使ってみる - Part1: Node.jsのサンプル | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,22 +193,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 29 2015 21:28:12" itemprop="dateCreated datePublished" datetime="2015-08-29T21:28:12+09:00">Aug 29 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -253,19 +220,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Netatmo ウェザーステーションを使うと、屋内や屋外に設置したモジュールから簡単に環境データを計測して、スマホやデスクトップブラウザのダッシュボードから確認することができます。計測できるデータは気温、湿度、気圧、二酸化炭素濃度、騒音などです。<a href="http://mythings.yahoo.co.jp/" target="_blank" rel="noopener">myThings</a>にも対応しています。オフィシャルでは<a href="https://dev.netatmo.com/doc/" target="_blank" rel="noopener">API</a>を使うためのSDKはPHP、Objective-C、Windows8、Android用が用意されています。コミュニティーベースですが、Node.js用のライブラリもGitHubにリポジトリがあったので、こちらを使ってみようと思います。</p>
-<a id="more"></a>
+        <p>Netatmo ウェザーステーションを使うと、屋内や屋外に設置したモジュールから簡単に環境データを計測して、スマホやデスクトップブラウザのダッシュボードから確認することができます。計測できるデータは気温、湿度、気圧、二酸化炭素濃度、騒音などです。<a target="_blank" rel="noopener" href="http://mythings.yahoo.co.jp/">myThings</a>にも対応しています。オフィシャルでは<a target="_blank" rel="noopener" href="https://dev.netatmo.com/doc/">API</a>を使うためのSDKはPHP、Objective-C、Windows8、Android用が用意されています。コミュニティーベースですが、Node.js用のライブラリもGitHubにリポジトリがあったので、こちらを使ってみようと思います。</p>
+<span id="more"></span>
 
-<h2 id="Netatmoのセットアップ"><a href="#Netatmoのセットアップ" class="headerlink" title="Netatmoのセットアップ"></a>Netatmoのセットアップ</h2><p><a href="http://gigazine.net/news/20140829-netatmo/" target="_blank" rel="noopener">室内＆屋外の気温・湿度・CO2等を計測して詳細な天気情報を出してくれる「netatmo ウェザーステーション＆雨量計」レビュー</a>が写真入りで解説されているので参考にさせていただきます。また、スマホアプリのガイドも丁寧でわかりやすいので、アプリを操作していくだけでも簡単に設定していくことができます。</p>
-<h3 id="サインアップ"><a href="#サインアップ" class="headerlink" title="サインアップ"></a>サインアップ</h3><p>iPhoneの場合は<a href="https://itunes.apple.com/ja/app/netatmo-weather-station/id532538499" target="_blank" rel="noopener">Weather Station by Netatmo</a>、Androidは<a href="https://play.google.com/store/apps/details?id=com.netatmo.netatmo&hl=ja" target="_blank" rel="noopener">ステーション Netatmo</a>をインストールして、Netatmoのセットアップetatmoにサインアップします。</p>
+<h2 id="Netatmoのセットアップ"><a href="#Netatmoのセットアップ" class="headerlink" title="Netatmoのセットアップ"></a>Netatmoのセットアップ</h2><p><a target="_blank" rel="noopener" href="http://gigazine.net/news/20140829-netatmo/">室内＆屋外の気温・湿度・CO2等を計測して詳細な天気情報を出してくれる「netatmo ウェザーステーション＆雨量計」レビュー</a>が写真入りで解説されているので参考にさせていただきます。また、スマホアプリのガイドも丁寧でわかりやすいので、アプリを操作していくだけでも簡単に設定していくことができます。</p>
+<h3 id="サインアップ"><a href="#サインアップ" class="headerlink" title="サインアップ"></a>サインアップ</h3><p>iPhoneの場合は<a target="_blank" rel="noopener" href="https://itunes.apple.com/ja/app/netatmo-weather-station/id532538499">Weather Station by Netatmo</a>、Androidは<a target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=com.netatmo.netatmo&hl=ja">ステーション Netatmo</a>をインストールして、Netatmoのセットアップetatmoにサインアップします。</p>
 <h3 id="屋外モジュールとステーションの設置"><a href="#屋外モジュールとステーションの設置" class="headerlink" title="屋外モジュールとステーションの設置"></a>屋外モジュールとステーションの設置</h3><p>屋外モジュールに電池ををセットします。ステーションはMicro USBケーブルで電源プラグに接続します。ステーションの上部をタッチして側面が青色に点滅させます。</p>
 <h3 id="ステーションのWi-Fi設定"><a href="#ステーションのWi-Fi設定" class="headerlink" title="ステーションのWi-Fi設定"></a>ステーションのWi-Fi設定</h3><p>スマホアプリからステーションにBluetoothでペアリングしたあと、ステーションにWi-Fiのセットアップを行います。接続に成功するとステーションをNetatmoに登録して終了します。</p>
-<h3 id="デスクトップブラウザ"><a href="#デスクトップブラウザ" class="headerlink" title="デスクトップブラウザ"></a>デスクトップブラウザ</h3><p>デスクトップブラウザから<a href="https://auth.netatmo.com/access/login" target="_blank" rel="noopener">ログイン</a>します。<a href="https://my.netatmo.com/app/station" target="_blank" rel="noopener">ウェザーステーション</a>のページを開くと以下のように表示されます。</p>
+<h3 id="デスクトップブラウザ"><a href="#デスクトップブラウザ" class="headerlink" title="デスクトップブラウザ"></a>デスクトップブラウザ</h3><p>デスクトップブラウザから<a target="_blank" rel="noopener" href="https://auth.netatmo.com/access/login">ログイン</a>します。<a target="_blank" rel="noopener" href="https://my.netatmo.com/app/station">ウェザーステーション</a>のページを開くと以下のように表示されます。</p>
 <p><img src="/2015/08/29/netatmo-setup/netatmo-station.png" alt="netatmo-station.png"></p>
-<h2 id="APIを使う準備"><a href="#APIを使う準備" class="headerlink" title="APIを使う準備"></a>APIを使う準備</h2><p>APIを使ったサンプルは、<a href="http://tips.hecomi.com/entry/2014/04/14/211252" target="_blank" rel="noopener">Netatmo ウェザーステーションを買ってみたので Node.js でいじってみた</a>を参考にさせていただきました。試してみたいNode.jsのライブラリの例なので助かりました。</p>
-<h3 id="アプリの登録"><a href="#アプリの登録" class="headerlink" title="アプリの登録"></a>アプリの登録</h3><p><a href="https://dev.netatmo.com/" target="_blank" rel="noopener">Netatmo Developers</a>のページを開いてログインします。上メニューに<a href="https://dev.netatmo.com/doc/" target="_blank" rel="noopener">DOCUMENTATION</a>と<a href="https://dev.netatmo.com/dev/createapp" target="_blank" rel="noopener">CREATE AN APPLICATION</a>などが表示されています。CREATE AN APPLICATIONのページを開き「Name」と「Description」に適当な名前をつけて登録すると、Client idとClient secretが発行されます。APIではこのidとsecretを使います。</p>
+<h2 id="APIを使う準備"><a href="#APIを使う準備" class="headerlink" title="APIを使う準備"></a>APIを使う準備</h2><p>APIを使ったサンプルは、<a target="_blank" rel="noopener" href="http://tips.hecomi.com/entry/2014/04/14/211252">Netatmo ウェザーステーションを買ってみたので Node.js でいじってみた</a>を参考にさせていただきました。試してみたいNode.jsのライブラリの例なので助かりました。</p>
+<h3 id="アプリの登録"><a href="#アプリの登録" class="headerlink" title="アプリの登録"></a>アプリの登録</h3><p><a target="_blank" rel="noopener" href="https://dev.netatmo.com/">Netatmo Developers</a>のページを開いてログインします。上メニューに<a target="_blank" rel="noopener" href="https://dev.netatmo.com/doc/">DOCUMENTATION</a>と<a target="_blank" rel="noopener" href="https://dev.netatmo.com/dev/createapp">CREATE AN APPLICATION</a>などが表示されています。CREATE AN APPLICATIONのページを開き「Name」と「Description」に適当な名前をつけて登録すると、Client idとClient secretが発行されます。APIではこのidとsecretを使います。</p>
 <p><img src="/2015/08/29/netatmo-setup/netatmo-apikey.png" alt="netatmo-apikey.png"></p>
-<h2 id="Node-jsのサンプル"><a href="#Node-jsのサンプル" class="headerlink" title="Node.jsのサンプル"></a>Node.jsのサンプル</h2><p>Node.jsの<a href="https://github.com/karbassi/netatmo" target="_blank" rel="noopener">netatmo</a>を利用してAPIを使ったサンプルを書いてみます。リポジトリは<a href="https://github.com/masato/docker-netatmo" target="_blank" rel="noopener">こちら</a>です。今回もベースイメージに<a href="https://hub.docker.com/_/iojs/" target="_blank" rel="noopener">io.js</a>の<a href="https://github.com/nodejs/docker-iojs/blob/68a13ab0f190d079b484c67b9eb266ce999420b0/3.2/Dockerfile" target="_blank" rel="noopener">3.2</a>を利用してDocker Composeから構成管理します。</p>
+<h2 id="Node-jsのサンプル"><a href="#Node-jsのサンプル" class="headerlink" title="Node.jsのサンプル"></a>Node.jsのサンプル</h2><p>Node.jsの<a target="_blank" rel="noopener" href="https://github.com/karbassi/netatmo">netatmo</a>を利用してAPIを使ったサンプルを書いてみます。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-netatmo">こちら</a>です。今回もベースイメージに<a target="_blank" rel="noopener" href="https://hub.docker.com/_/iojs/">io.js</a>の<a target="_blank" rel="noopener" href="https://github.com/nodejs/docker-iojs/blob/68a13ab0f190d079b484c67b9eb266ce999420b0/3.2/Dockerfile">3.2</a>を利用してDocker Composeから構成管理します。</p>
 <h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>docker-compose.yml.defaultファイルをdocker-compose.ymlにリネームしてから環境変数を編集します。</p>
 <ul>
 <li>CLIENT_ID: 作成したアプリのClient id</li>
@@ -276,12 +243,12 @@
 </ul>
 <figure class="highlight yml"><figcaption><span>~/node_apps/docker-netatmo/docker-compose.yml.default</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">netatmo:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CLIENT_ID=</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CLIENT_SECRET=</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">USERNAME=</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">PASSWORD=</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">INTERVAL=1800000</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3033</span><span class="string">:3000</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="app-js"><a href="#app-js" class="headerlink" title="app.js"></a>app.js</h3><p>Netatomoには<a href="https://dev.netatmo.com/doc/methods/getmeasure" target="_blank" rel="noopener">GETMEASURE</a>というAPIもありますが、デバイス(ステーション)とモジュール(屋外モジュール)のどちらかしかデータを取得できないようです。親子関係を紐付けるidをつかって一つのJSONオブジェクトにまとめてみました。</p>
+<h3 id="app-js"><a href="#app-js" class="headerlink" title="app.js"></a>app.js</h3><p>Netatomoには<a target="_blank" rel="noopener" href="https://dev.netatmo.com/doc/methods/getmeasure">GETMEASURE</a>というAPIもありますが、デバイス(ステーション)とモジュール(屋外モジュール)のどちらかしかデータを取得できないようです。親子関係を紐付けるidをつかって一つのJSONオブジェクトにまとめてみました。</p>
 <p>また、モジュールのtypeフィールドが<code>NAModule4</code>の場合は追加の屋内モジュールになります。こちらはCO2を検出できるので追加します。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/docker-netatmo/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> netatmo = <span class="built_in">require</span>(<span class="string">'netatmo'</span>),</span><br><span class="line">    <span class="keyword">async</span> = <span class="built_in">require</span>(<span class="string">'async'</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">'lodash'</span>),</span><br><span class="line">    moment = <span class="built_in">require</span>(<span class="string">'moment-timezone'</span>),</span><br><span class="line">    api = <span class="keyword">new</span> netatmo(&#123;</span><br><span class="line">        <span class="string">'client_id'</span>: process.env.CLIENT_ID,</span><br><span class="line">        <span class="string">'client_secret'</span>: process.env.CLIENT_SECRET,</span><br><span class="line">        <span class="string">'username'</span>: process.env.USERNAME,</span><br><span class="line">        <span class="string">'password'</span>: process.env.PASSWORD,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMyDevices</span>(<span class="params">deviceIds, devices, modules, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myDevices = _.map(deviceIds, <span class="function"><span class="keyword">function</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            device: _.find(devices, <span class="function"><span class="keyword">function</span>(<span class="params">device</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id == device._id;</span><br><span class="line">            &#125;),</span><br><span class="line">            modules: _.filter(modules, <span class="function"><span class="keyword">function</span>(<span class="params">module</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id == <span class="built_in">module</span>.main_device;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;);</span><br><span class="line">    callback(<span class="literal">null</span>, myDevices);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toJST</span>(<span class="params">time_utc</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> moment(time_utc, <span class="string">'X'</span>).tz(<span class="string">"Asia/Tokyo"</span>).format();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pluckDevice</span>(<span class="params">device</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        module_name: device.module_name,</span><br><span class="line">        time_utc: toJST(device.dashboard_data.time_utc),</span><br><span class="line">        noise: device.dashboard_data.Noise,</span><br><span class="line">        temperature: device.dashboard_data.Temperature,</span><br><span class="line">        humidity: device.dashboard_data.Humidity,</span><br><span class="line">        pressure: device.dashboard_data.Pressure,</span><br><span class="line">        co2: device.dashboard_data.CO2</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pluckModule</span>(<span class="params">module</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> retval = &#123;</span><br><span class="line">        module_name: <span class="built_in">module</span>.module_name,</span><br><span class="line">        time_utc: toJST(<span class="built_in">module</span>.dashboard_data.time_utc),</span><br><span class="line">        temperature: <span class="built_in">module</span>.dashboard_data.Temperature,</span><br><span class="line">        humidity: <span class="built_in">module</span>.dashboard_data.Humidity</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// for the additionnal indoor module</span></span><br><span class="line">    <span class="comment">// https://dev.netatmo.com/doc/methods/devicelist</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">module</span>.type == <span class="string">'NAModule4'</span>)&#123;</span><br><span class="line">        retval[co2] = <span class="built_in">module</span>.dashboard_data.CO2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> retval;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resultsOut</span>(<span class="params">results</span>) </span>&#123;</span><br><span class="line">    _.forEach(results, <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(pluckDevice(result.device));</span><br><span class="line">        _.forEach(result.modules, <span class="function"><span class="keyword">function</span>(<span class="params">module</span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(pluckModule(<span class="built_in">module</span>));</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">measure</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">async</span>.waterfall([</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">            api.getUser(callback);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">user, callback</span>) </span>&#123;</span><br><span class="line">            api.getDevicelist(<span class="function"><span class="keyword">function</span>(<span class="params">err, devices, modules</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (err) <span class="keyword">return</span> callback(err);</span><br><span class="line">                getMyDevices(user.devices,</span><br><span class="line">                             devices, modules,</span><br><span class="line">                             callback);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;], <span class="function"><span class="keyword">function</span>(<span class="params">err, results</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="built_in">console</span>.log(err);</span><br><span class="line">            resultsOut(results);</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'----'</span>);</span><br><span class="line">            setTimeout(callback, process.env.INTERVAL);</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span>.forever( measure, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="built_in">console</span>.log(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/docker-netatmo/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> netatmo = <span class="built_in">require</span>(<span class="string">&#x27;netatmo&#x27;</span>),</span><br><span class="line">    <span class="keyword">async</span> = <span class="built_in">require</span>(<span class="string">&#x27;async&#x27;</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">&#x27;lodash&#x27;</span>),</span><br><span class="line">    moment = <span class="built_in">require</span>(<span class="string">&#x27;moment-timezone&#x27;</span>),</span><br><span class="line">    api = <span class="keyword">new</span> netatmo(&#123;</span><br><span class="line">        <span class="string">&#x27;client_id&#x27;</span>: process.env.CLIENT_ID,</span><br><span class="line">        <span class="string">&#x27;client_secret&#x27;</span>: process.env.CLIENT_SECRET,</span><br><span class="line">        <span class="string">&#x27;username&#x27;</span>: process.env.USERNAME,</span><br><span class="line">        <span class="string">&#x27;password&#x27;</span>: process.env.PASSWORD,</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getMyDevices</span>(<span class="params">deviceIds, devices, modules, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> myDevices = _.map(deviceIds, <span class="function"><span class="keyword">function</span>(<span class="params">id</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            device: _.find(devices, <span class="function"><span class="keyword">function</span>(<span class="params">device</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id == device._id;</span><br><span class="line">            &#125;),</span><br><span class="line">            modules: _.filter(modules, <span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">module</span></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> id == <span class="built_in">module</span>.main_device;</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;);</span><br><span class="line">    callback(<span class="literal">null</span>, myDevices);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toJST</span>(<span class="params">time_utc</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> moment(time_utc, <span class="string">&#x27;X&#x27;</span>).tz(<span class="string">&quot;Asia/Tokyo&quot;</span>).format();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pluckDevice</span>(<span class="params">device</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        module_name: device.module_name,</span><br><span class="line">        time_utc: toJST(device.dashboard_data.time_utc),</span><br><span class="line">        noise: device.dashboard_data.Noise,</span><br><span class="line">        temperature: device.dashboard_data.Temperature,</span><br><span class="line">        humidity: device.dashboard_data.Humidity,</span><br><span class="line">        pressure: device.dashboard_data.Pressure,</span><br><span class="line">        co2: device.dashboard_data.CO2</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pluckModule</span>(<span class="params"><span class="built_in">module</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> retval = &#123;</span><br><span class="line">        module_name: <span class="built_in">module</span>.module_name,</span><br><span class="line">        time_utc: toJST(<span class="built_in">module</span>.dashboard_data.time_utc),</span><br><span class="line">        temperature: <span class="built_in">module</span>.dashboard_data.Temperature,</span><br><span class="line">        humidity: <span class="built_in">module</span>.dashboard_data.Humidity</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// for the additionnal indoor module</span></span><br><span class="line">    <span class="comment">// https://dev.netatmo.com/doc/methods/devicelist</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">module</span>.type == <span class="string">&#x27;NAModule4&#x27;</span>)&#123;</span><br><span class="line">        retval[co2] = <span class="built_in">module</span>.dashboard_data.CO2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> retval;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resultsOut</span>(<span class="params">results</span>) </span>&#123;</span><br><span class="line">    _.forEach(results, <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(pluckDevice(result.device));</span><br><span class="line">        _.forEach(result.modules, <span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">module</span></span>) </span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(pluckModule(<span class="built_in">module</span>));</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">measure</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">async</span>.waterfall([</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">            api.getUser(callback);</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="function"><span class="keyword">function</span>(<span class="params">user, callback</span>) </span>&#123;</span><br><span class="line">            api.getDevicelist(<span class="function"><span class="keyword">function</span>(<span class="params">err, devices, modules</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (err) <span class="keyword">return</span> callback(err);</span><br><span class="line">                getMyDevices(user.devices,</span><br><span class="line">                             devices, modules,</span><br><span class="line">                             callback);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;], <span class="function"><span class="keyword">function</span>(<span class="params">err, results</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="built_in">console</span>.log(err);</span><br><span class="line">            resultsOut(results);</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">&#x27;----&#x27;</span>);</span><br><span class="line">            <span class="built_in">setTimeout</span>(callback, process.env.INTERVAL);</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span>.forever( measure, <span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="built_in">console</span>.log(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h3 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h3><p>プログラムを実行すると環境変数INTERVALに定義した間隔(1800000ミリ秒=30分)でNetatomoからデータを取得して標準出力します。本体とモジュールのセンシング時間は完全に一致はしていないようです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up netatmo</span><br><span class="line">...</span><br><span class="line">netatmo_1 | npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">netatmo_1 | npm info using npm@2.13.3</span><br><span class="line">netatmo_1 | npm info using node@v3.2.0</span><br><span class="line">netatmo_1 | npm info prestart netatmo-docker@0.0.1</span><br><span class="line">netatmo_1 | npm info start netatmo-docker@0.0.1</span><br><span class="line">netatmo_1 |</span><br><span class="line">netatmo_1 | &gt; netatmo-docker@0.0.1 start /app</span><br><span class="line">netatmo_1 | &gt; node app.js</span><br><span class="line">netatmo_1 |</span><br><span class="line">netatmo_1 | &#123; module_name: <span class="string">'リビング'</span>,</span><br><span class="line">netatmo_1 |   time_jst: <span class="string">'2015-08-31T09:34:30+09:00'</span>,</span><br><span class="line">netatmo_1 |   noise: 38,</span><br><span class="line">netatmo_1 |   temperature: 24.5,</span><br><span class="line">netatmo_1 |   humidity: 84,</span><br><span class="line">netatmo_1 |   pressure: 1081.7,</span><br><span class="line">netatmo_1 |   co2: 395 &#125;</span><br><span class="line">netatmo_1 | &#123; module_name: <span class="string">'ベランダ'</span>,</span><br><span class="line">netatmo_1 |   time_jst: <span class="string">'2015-08-31T09:34:28+09:00'</span>,</span><br><span class="line">netatmo_1 |   temperature: 22.9,</span><br><span class="line">netatmo_1 |   humidity: 86 &#125;</span><br><span class="line">netatmo_1 | ----</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up netatmo</span><br><span class="line">...</span><br><span class="line">netatmo_1 | npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">netatmo_1 | npm info using npm@2.13.3</span><br><span class="line">netatmo_1 | npm info using node@v3.2.0</span><br><span class="line">netatmo_1 | npm info prestart netatmo-docker@0.0.1</span><br><span class="line">netatmo_1 | npm info start netatmo-docker@0.0.1</span><br><span class="line">netatmo_1 |</span><br><span class="line">netatmo_1 | &gt; netatmo-docker@0.0.1 start /app</span><br><span class="line">netatmo_1 | &gt; node app.js</span><br><span class="line">netatmo_1 |</span><br><span class="line">netatmo_1 | &#123; module_name: <span class="string">&#x27;リビング&#x27;</span>,</span><br><span class="line">netatmo_1 |   time_jst: <span class="string">&#x27;2015-08-31T09:34:30+09:00&#x27;</span>,</span><br><span class="line">netatmo_1 |   noise: 38,</span><br><span class="line">netatmo_1 |   temperature: 24.5,</span><br><span class="line">netatmo_1 |   humidity: 84,</span><br><span class="line">netatmo_1 |   pressure: 1081.7,</span><br><span class="line">netatmo_1 |   co2: 395 &#125;</span><br><span class="line">netatmo_1 | &#123; module_name: <span class="string">&#x27;ベランダ&#x27;</span>,</span><br><span class="line">netatmo_1 |   time_jst: <span class="string">&#x27;2015-08-31T09:34:28+09:00&#x27;</span>,</span><br><span class="line">netatmo_1 |   temperature: 22.9,</span><br><span class="line">netatmo_1 |   humidity: 86 &#125;</span><br><span class="line">netatmo_1 | ----</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -319,7 +286,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -370,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Netatmoのセットアップ"><span class="nav-number">1.</span> <span class="nav-text">Netatmoのセットアップ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#サインアップ"><span class="nav-number">1.1.</span> <span class="nav-text">サインアップ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#屋外モジュールとステーションの設置"><span class="nav-number">1.2.</span> <span class="nav-text">屋外モジュールとステーションの設置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ステーションのWi-Fi設定"><span class="nav-number">1.3.</span> <span class="nav-text">ステーションのWi-Fi設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デスクトップブラウザ"><span class="nav-number">1.4.</span> <span class="nav-text">デスクトップブラウザ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APIを使う準備"><span class="nav-number">2.</span> <span class="nav-text">APIを使う準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#アプリの登録"><span class="nav-number">2.1.</span> <span class="nav-text">アプリの登録</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-jsのサンプル"><span class="nav-number">3.</span> <span class="nav-text">Node.jsのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#app-js"><span class="nav-number">3.2.</span> <span class="nav-text">app.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#実行"><span class="nav-number">3.3.</span> <span class="nav-text">実行</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Netatmo%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97"><span class="nav-number">1.</span> <span class="nav-text">Netatmoのセットアップ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B5%E3%82%A4%E3%83%B3%E3%82%A2%E3%83%83%E3%83%97"><span class="nav-number">1.1.</span> <span class="nav-text">サインアップ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%8B%E5%A4%96%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%A8%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E8%A8%AD%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">屋外モジュールとステーションの設置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AEWi-Fi%E8%A8%AD%E5%AE%9A"><span class="nav-number">1.3.</span> <span class="nav-text">ステーションのWi-Fi設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%82%B9%E3%82%AF%E3%83%88%E3%83%83%E3%83%97%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6"><span class="nav-number">1.4.</span> <span class="nav-text">デスクトップブラウザ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API%E3%82%92%E4%BD%BF%E3%81%86%E6%BA%96%E5%82%99"><span class="nav-number">2.</span> <span class="nav-text">APIを使う準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E7%99%BB%E9%8C%B2"><span class="nav-number">2.1.</span> <span class="nav-text">アプリの登録</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">Node.jsのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#app-js"><span class="nav-number">3.2.</span> <span class="nav-text">app.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9F%E8%A1%8C"><span class="nav-number">3.3.</span> <span class="nav-text">実行</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -402,10 +368,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -430,9 +399,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -472,13 +441,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Eclimを使いSpringBootを試すことができたので、もう少し開発環境を整えていきます。Webアプリの開発用にweb-modeなどEmacsパッケージを追加します。expand-region.elをはじめて使ってみました。最近の中で一番便利な気がします。大きな範囲のリージョン選択でキータイプが減ってうれしいです。これからはOracle Java 8に切り替えてモダンなJavaも勉強していきた">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う">
 <meta property="og:url" content="https://masato.github.io/2014/10/06/docker-devenv-emacs24-eclim-java8-failed-spring-boot/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Eclimを使いSpringBootを試すことができたので、もう少し開発環境を整えていきます。Webアプリの開発用にweb-modeなどEmacsパッケージを追加します。expand-region.elをはじめて使ってみました。最近の中で一番便利な気がします。大きな範囲のリージョン選択でキータイプが減ってうれしいです。これからはOracle Java 8に切り替えてモダンなJavaも勉強していきた">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-10-05T17:24:50.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.589Z">
+<meta property="article:modified_time" content="2014-10-05T17:24:50.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="DockerDevEnv">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う | masato's blog</title>
+  <title>Docker開発環境をつくる - Emacs24とEclimでOracle Java 8のSpring Boot開発環境は失敗したのでOpenJDK 7を使う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Oct 6 2014 02:24:50" itemprop="dateCreated datePublished" datetime="2014-10-06T02:24:50+09:00">Oct 6 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Eclimを使いSpringBootを試すことができたので、もう少し開発環境を整えていきます。Webアプリの開発用にweb-modeなどEmacsパッケージを追加します。expand-region.elをはじめて使ってみました。最近の中で一番便利な気がします。大きな範囲のリージョン選択でキータイプが減ってうれしいです。これからはOracle Java 8に切り替えてモダンなJavaも勉強していきたいのですが、eclimdの起動に失敗してしまいました。仕方がないのでopenjdk-7-jdkのまま使うことにします。</div>
@@ -241,12 +208,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Eclimを使い<a href="/2014/10/05/spring-boot-emacs-eclim-helloworld/">SpringBootの開発</a>を試すことができたので、もう少し開発環境を整えていきます。<br>Webアプリの開発用に<a href="http://web-mode.org/" target="_blank" rel="noopener">web-mode</a>などEmacsパッケージを追加します。<a href="https://github.com/magnars/expand-region.el" target="_blank" rel="noopener">expand-region.el</a>をはじめて使ってみました。最近の中で一番便利な気がします。大きな範囲のリージョン選択でキータイプが減ってうれしいです。<br>これからは<code>Oracle Java 8</code>に切り替えてモダンなJavaも勉強していきたいのですが、eclimdの起動に失敗してしまいました。仕方がないのでopenjdk-7-jdkのまま使うことにします。</p>
-<a id="more"></a>
+        <p>Eclimを使い<a href="/2014/10/05/spring-boot-emacs-eclim-helloworld/">SpringBootの開発</a>を試すことができたので、もう少し開発環境を整えていきます。<br>Webアプリの開発用に<a target="_blank" rel="noopener" href="http://web-mode.org/">web-mode</a>などEmacsパッケージを追加します。<a target="_blank" rel="noopener" href="https://github.com/magnars/expand-region.el">expand-region.el</a>をはじめて使ってみました。最近の中で一番便利な気がします。大きな範囲のリージョン選択でキータイプが減ってうれしいです。<br>これからは<code>Oracle Java 8</code>に切り替えてモダンなJavaも勉強していきたいのですが、eclimdの起動に失敗してしまいました。仕方がないのでopenjdk-7-jdkのまま使うことにします。</p>
+<span id="more"></span>
 
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p><code>Oracler Java 8</code>用に編集したDockerfileです。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.15</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD mykey.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree\</span><br><span class="line">                       python</span><br><span class="line"><span class="comment"># Add Un-Root User</span></span><br><span class="line">RUN useradd -m -d /home/docker -s /bin/bash docker \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">"docker:docker"</span> | chpasswd \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 700 /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; cp /root/.ssh/authorized_keys /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 600 /home/docker/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">"export LANG=ja_JP.UTF-8"</span> &gt;&gt; /home/docker/.profile \</span><br><span class="line"> &amp;&amp; chown -R docker:docker /home/docker/.ssh</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">"docker ALL=(ALL) NOPASSWD:ALL"</span> &gt;&gt; /etc/sudoers</span><br><span class="line"><span class="comment"># oracle-java8 didn't work well with eclim</span></span><br><span class="line"><span class="comment">#RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \</span></span><br><span class="line"><span class="comment"># &amp;&amp; add-apt-repository -y ppa:webupd8team/java \</span></span><br><span class="line"><span class="comment"># &amp;&amp; apt-get update \</span></span><br><span class="line"><span class="comment"># &amp;&amp; apt-get install -y oracle-java8-installer oracle-java8-set-default</span></span><br><span class="line"><span class="comment"># openjdk-7-jdk,eclim</span></span><br><span class="line">RUN apt-get install -y openjdk-7-jdk ant maven \</span><br><span class="line">    xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic</span><br><span class="line">ADD .emacs.d /home/docker/.emacs.d</span><br><span class="line">RUN chown -R docker:docker /home/docker/.emacs.d</span><br><span class="line">USER docker</span><br><span class="line">ENV HOME /home/docker</span><br><span class="line">WORKDIR /home/docker</span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">RUN /bin/bash -c <span class="string">'echo export PATH="/home/docker/.cask/bin:$PATH" &gt;&gt; /home/docker/.profile'</span> \</span><br><span class="line"> &amp;&amp; /bin/bash -c <span class="string">'source /home/docker/.profile &amp;&amp; cd /home/docker/.emacs.d &amp;&amp; cask install'</span></span><br><span class="line"><span class="comment"># eclipse,eclim</span></span><br><span class="line">RUN wget -P /home/docker http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/luna/R/eclipse-java-luna-R-linux-gtk-x86_64.tar.gz \</span><br><span class="line"> &amp;&amp; tar xzvf eclipse-java-luna-R-linux-gtk-x86_64.tar.gz -C /home/docker \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/workspace \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> /home/docker &amp;&amp; git <span class="built_in">clone</span> git://github.com/ervandew/eclim.git \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> eclim &amp;&amp; ant -Declipse.home=/home/docker/eclipse</span><br><span class="line">USER root</span><br><span class="line"><span class="comment"># Spring Boot</span></span><br><span class="line">RUN add-apt-repository ppa:cwchien/gradle \</span><br><span class="line"> &amp;&amp; apt-get update \</span><br><span class="line"> &amp;&amp; apt-get install -y gradle-ppa</span><br><span class="line">ADD sv /etc/service</span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.15</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"><span class="comment"># Set correct environment variables.</span></span><br><span class="line">ENV HOME /root</span><br><span class="line"><span class="comment"># Regenerate SSH host keys.</span></span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD mykey.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree\</span><br><span class="line">                       python</span><br><span class="line"><span class="comment"># Add Un-Root User</span></span><br><span class="line">RUN useradd -m -d /home/docker -s /bin/bash docker \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;docker:docker&quot;</span> | chpasswd \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 700 /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; cp /root/.ssh/authorized_keys /home/docker/.ssh \</span><br><span class="line"> &amp;&amp; chmod 600 /home/docker/.ssh/authorized_keys \</span><br><span class="line"> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;export LANG=ja_JP.UTF-8&quot;</span> &gt;&gt; /home/docker/.profile \</span><br><span class="line"> &amp;&amp; chown -R docker:docker /home/docker/.ssh</span><br><span class="line">RUN <span class="built_in">echo</span> <span class="string">&quot;docker ALL=(ALL) NOPASSWD:ALL&quot;</span> &gt;&gt; /etc/sudoers</span><br><span class="line"><span class="comment"># oracle-java8 didn&#x27;t work well with eclim</span></span><br><span class="line"><span class="comment">#RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \</span></span><br><span class="line"><span class="comment"># &amp;&amp; add-apt-repository -y ppa:webupd8team/java \</span></span><br><span class="line"><span class="comment"># &amp;&amp; apt-get update \</span></span><br><span class="line"><span class="comment"># &amp;&amp; apt-get install -y oracle-java8-installer oracle-java8-set-default</span></span><br><span class="line"><span class="comment"># openjdk-7-jdk,eclim</span></span><br><span class="line">RUN apt-get install -y openjdk-7-jdk ant maven \</span><br><span class="line">    xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic</span><br><span class="line">ADD .emacs.d /home/docker/.emacs.d</span><br><span class="line">RUN chown -R docker:docker /home/docker/.emacs.d</span><br><span class="line">USER docker</span><br><span class="line">ENV HOME /home/docker</span><br><span class="line">WORKDIR /home/docker</span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">RUN /bin/bash -c <span class="string">&#x27;echo export PATH=&quot;/home/docker/.cask/bin:$PATH&quot; &gt;&gt; /home/docker/.profile&#x27;</span> \</span><br><span class="line"> &amp;&amp; /bin/bash -c <span class="string">&#x27;source /home/docker/.profile &amp;&amp; cd /home/docker/.emacs.d &amp;&amp; cask install&#x27;</span></span><br><span class="line"><span class="comment"># eclipse,eclim</span></span><br><span class="line">RUN wget -P /home/docker http://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/luna/R/eclipse-java-luna-R-linux-gtk-x86_64.tar.gz \</span><br><span class="line"> &amp;&amp; tar xzvf eclipse-java-luna-R-linux-gtk-x86_64.tar.gz -C /home/docker \</span><br><span class="line"> &amp;&amp; mkdir /home/docker/workspace \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> /home/docker &amp;&amp; git <span class="built_in">clone</span> git://github.com/ervandew/eclim.git \</span><br><span class="line"> &amp;&amp; <span class="built_in">cd</span> eclim &amp;&amp; ant -Declipse.home=/home/docker/eclipse</span><br><span class="line">USER root</span><br><span class="line"><span class="comment"># Spring Boot</span></span><br><span class="line">RUN add-apt-repository ppa:cwchien/gradle \</span><br><span class="line"> &amp;&amp; apt-get update \</span><br><span class="line"> &amp;&amp; apt-get install -y gradle-ppa</span><br><span class="line">ADD sv /etc/service</span><br><span class="line">CMD [<span class="string">&quot;/sbin/my_init&quot;</span>]</span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
 <h3 id="Oracle-Java-JDK"><a href="#Oracle-Java-JDK" class="headerlink" title="Oracle Java JDK"></a>Oracle Java JDK</h3><p>通常Oracle Javaをインストールする際はラインセンスに承諾するためダイアログが表示されます。Dockerでサイレントインストールするために事前設定ファイルを作成します。</p>
 <figure class="highlight bash"><figcaption><span>~/docker_apps/eclim/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># oracle-java8</span></span><br><span class="line">RUN <span class="built_in">echo</span> oracle-java8-installer shared/accepted-oracle-license-v1-1 select <span class="literal">true</span> | debconf-set-selections \</span><br><span class="line"> &amp;&amp; add-apt-repository -y ppa:webupd8team/java \</span><br><span class="line"> &amp;&amp; apt-get update \</span><br><span class="line"> &amp;&amp; apt-get install -y oracle-java8-installer oracle-java8-set-default</span><br></pre></td></tr></table></figure>
@@ -256,39 +223,39 @@
 <p>nsenterやSSHでコンテナにログインした時に<code>JAVA_HOME</code>が設定されています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh docker@172.17.0.238</span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></span><br><span class="line">/usr/lib/jvm/java-8-oracle</span><br></pre></td></tr></table></figure>
 
-<h3 id="Caskファイル"><a href="#Caskファイル" class="headerlink" title="Caskファイル"></a>Caskファイル</h3><p><a href="http://cask.github.io/" target="_blank" rel="noopener">Cask</a>ファイルです。multi-termやexpand-regionのパッケージを追加します。</p>
+<h3 id="Caskファイル"><a href="#Caskファイル" class="headerlink" title="Caskファイル"></a>Caskファイル</h3><p><a target="_blank" rel="noopener" href="http://cask.github.io/">Cask</a>ファイルです。multi-termやexpand-regionのパッケージを追加します。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(source gnu)</span><br><span class="line">(source marmalade)</span><br><span class="line">(source melpa)</span><br><span class="line">(depends-on &quot;pallet&quot;)</span><br><span class="line">(depends-on &quot;init-loader&quot;)</span><br><span class="line">(depends-on &quot;multi-term&quot;)</span><br><span class="line">(depends-on &quot;expand-region&quot;)</span><br><span class="line">(depends-on &quot;color-theme-solarized&quot;)</span><br><span class="line">;; web-mode</span><br><span class="line">(depends-on &quot;web-mode&quot;)</span><br><span class="line">;; emacs-eclim</span><br><span class="line">(depends-on &quot;auto-complete&quot;)</span><br><span class="line">(depends-on &quot;emacs-eclim&quot;)</span><br></pre></td></tr></table></figure>
 
 <h3 id="init-loader-el"><a href="#init-loader-el" class="headerlink" title="init-loader.el"></a>init-loader.el</h3><p>init-loader.elのinitsにいくつか初期設定ファイルを追加します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree -a ~/docker_apps/eclim/</span><br><span class="line">~/docker_apps/eclim/</span><br><span class="line">├── .emacs.d</span><br><span class="line">│   ├── Cask</span><br><span class="line">│   ├── init.el</span><br><span class="line">│   └── inits</span><br><span class="line">│       ├── 00-keybinds.el</span><br><span class="line">│       ├── 01-files.el</span><br><span class="line">│       ├── 03-multi-term.el</span><br><span class="line">│       ├── 04-eclim.el</span><br><span class="line">│       ├── 05-color-theme-solarized.el</span><br><span class="line">│       ├── 06-web-mode.el</span><br><span class="line">│       └── 07-expand-region.el</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── mykey.pub</span><br><span class="line">└── sv</span><br><span class="line">    └── xvfb</span><br><span class="line">        ├── <span class="built_in">log</span></span><br><span class="line">        │   └── run</span><br><span class="line">        └── run</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://www.emacswiki.org/MultiTerm" target="_blank" rel="noopener">multi-term</a>の設定です。</p>
+<p><a target="_blank" rel="noopener" href="http://www.emacswiki.org/MultiTerm">multi-term</a>の設定です。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/inits/03-multi-term.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;multi-term)</span><br><span class="line">(setq multi-term-program shell-file-name)</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/sellout/emacs-color-theme-solarized" target="_blank" rel="noopener">Solarized Colorscheme for Emacs</a>のテーマを追加します。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/sellout/emacs-color-theme-solarized">Solarized Colorscheme for Emacs</a>のテーマを追加します。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/inits/color-theme-solarized.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(load-theme &#39;solarized-dark t)</span><br></pre></td></tr></table></figure>
 
 <p>iTermを使っているとDiredのディレクトリが青く見づらいので、iTremのカラーを変更する。</p>
 <figure class="highlight xl"><table><tr><td class="code"><pre><span class="line">P<span class="function"><span class="title">references</span> -&gt;</span> C<span class="function"><span class="title">olors</span> -&gt;</span> L<span class="function"><span class="title">oad</span> Presets -&gt;</span> Tango Dark</span><br></pre></td></tr></table></figure>
 
 
-<p>HTMLファイルの編集用に<a href="http://web-mode.org/" target="_blank" rel="noopener">web-mode</a>を追加します。faceで色がつかないので、<code>custom-set-faces</code>で以下のページを参考に色の設定をします。</p>
+<p>HTMLファイルの編集用に<a target="_blank" rel="noopener" href="http://web-mode.org/">web-mode</a>を追加します。faceで色がつかないので、<code>custom-set-faces</code>で以下のページを参考に色の設定をします。</p>
 <ul>
-<li><a href="http://wadap.hatenablog.com/entry/2013/09/10/101315" target="_blank" rel="noopener">emacsでviewファイルをいじるならweb-modeを使うべき</a></li>
+<li><a target="_blank" rel="noopener" href="http://wadap.hatenablog.com/entry/2013/09/10/101315">emacsでviewファイルをいじるならweb-modeを使うべき</a></li>
 </ul>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/inits/06-web-mode.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;web-mode)</span><br><span class="line">(add-to-list &#39;auto-mode-alist &#39;(&quot;\\.[gj]sp\\&#39;&quot; . web-mode))</span><br><span class="line">(add-to-list &#39;auto-mode-alist &#39;(&quot;\\.html?\\&#39;&quot; . web-mode))</span><br><span class="line"></span><br><span class="line">(add-hook</span><br><span class="line"> &#39;web-mode-hook</span><br><span class="line">  (lambda ()</span><br><span class="line">   (setq web-mode-markup-indent-offset 2)</span><br><span class="line">   (setq web-mode-css-indent-offset 2)</span><br><span class="line">   (setq web-mode-code-indent-offset 2)))</span><br><span class="line"></span><br><span class="line">(custom-set-faces</span><br><span class="line"> &#39;(web-mode-doctype-face</span><br><span class="line">   ((t (:foreground &quot;#82AE46&quot;))))</span><br><span class="line"> &#39;(web-mode-html-tag-face</span><br><span class="line">   ((t (:foreground &quot;#E6B422&quot; :weight bold))))</span><br><span class="line"> &#39;(web-mode-html-attr-name-face</span><br><span class="line">   ((t (:foreground &quot;#C97586&quot;))))</span><br><span class="line"> &#39;(web-mode-html-attr-value-face</span><br><span class="line">   ((t (:foreground &quot;#82AE46&quot;))))</span><br><span class="line"> &#39;(web-mode-comment-face</span><br><span class="line">   ((t (:foreground &quot;#D9333F&quot;))))</span><br><span class="line"> &#39;(web-mode-server-comment-face</span><br><span class="line">   ((t (:foreground &quot;#D9333F&quot;))))</span><br><span class="line"> &#39;(web-mode-css-rule-face</span><br><span class="line">   ((t (:foreground &quot;#A0D8EF&quot;))))</span><br><span class="line"> &#39;(web-mode-css-pseudo-class-face</span><br><span class="line">   ((t (:foreground &quot;#FF7F00&quot;))))</span><br><span class="line"> &#39;(web-mode-css-at-rule-face</span><br><span class="line">   ((t (:foreground &quot;#FF7F00&quot;))))</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/magnars/expand-region.el" target="_blank" rel="noopener">expand-region.el</a>の設定は以下を参考にしました。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/magnars/expand-region.el">expand-region.el</a>の設定は以下を参考にしました。</p>
 <ul>
-<li><a href="http://qiita.com/ongaeshi/items/abd1016bf484c4e05ab1" target="_blank" rel="noopener">Emacsで選択範囲をインタラクティブに広げる expand-region</a></li>
+<li><a target="_blank" rel="noopener" href="http://qiita.com/ongaeshi/items/abd1016bf484c4e05ab1">Emacsで選択範囲をインタラクティブに広げる expand-region</a></li>
 </ul>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/eclim/.emacs.d/inits/07-expand-region.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;expand-region)</span><br><span class="line">(global-set-key (kbd &quot;C-@&quot;) &#39;er&#x2F;expand-region)</span><br><span class="line">(global-set-key (kbd &quot;C-M-@&quot;) &#39;er&#x2F;contract-region)</span><br></pre></td></tr></table></figure>
 
 <h3 id="Oracke-Javaだとeclimdが起動しない"><a href="#Oracke-Javaだとeclimdが起動しない" class="headerlink" title="Oracke Javaだとeclimdが起動しない"></a>Oracke Javaだとeclimdが起動しない</h3><p><code>OpenJDK 7</code>ではeclimdが起動するのですが、<code>Oracke Java 8</code>と<code>Oracke Java 7</code>を使うとeclimdの起動に失敗します。<br>まだ原因がわからないのでデバッグ中です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed <span class="keyword">in</span> 8.0</span><br><span class="line"></span><br><span class="line">docker@639d66636d75:~$ Exception <span class="keyword">in</span> thread <span class="string">"Thread-4"</span> java.lang.NoClassDefFoundError: org/eclipse/ui/PlatformUI</span><br><span class="line">        at org.eclim.eclipse.EclimApplication.shutdown(EclimApplication.java:135)</span><br><span class="line">        at org.eclim.eclipse.EclimApplication<span class="variable">$1</span>.run(EclimApplication.java:93)</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.eclipse.ui.PlatformUI cannot be found by org.eclim_2.4.0.25-g65a1584</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:423)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:336)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:328)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:160)</span><br><span class="line">        at java.lang.ClassLoader.loadClass(ClassLoader.java:357)</span><br><span class="line">        ... 2 more</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br><span class="line">Java HotSpot(TM) 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed <span class="keyword">in</span> 8.0</span><br><span class="line"></span><br><span class="line">docker@639d66636d75:~$ Exception <span class="keyword">in</span> thread <span class="string">&quot;Thread-4&quot;</span> java.lang.NoClassDefFoundError: org/eclipse/ui/PlatformUI</span><br><span class="line">        at org.eclim.eclipse.EclimApplication.shutdown(EclimApplication.java:135)</span><br><span class="line">        at org.eclim.eclipse.EclimApplication<span class="variable">$1</span>.run(EclimApplication.java:93)</span><br><span class="line">Caused by: java.lang.ClassNotFoundException: org.eclipse.ui.PlatformUI cannot be found by org.eclim_2.4.0.25-g65a1584</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:423)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:336)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:328)</span><br><span class="line">        at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:160)</span><br><span class="line">        at java.lang.ClassLoader.loadClass(ClassLoader.java:357)</span><br><span class="line">        ... 2 more</span><br></pre></td></tr></table></figure>
 
-<h3 id="OpenJDK-7だとeclimdが起動できる"><a href="#OpenJDK-7だとeclimdが起動できる" class="headerlink" title="OpenJDK 7だとeclimdが起動できる"></a>OpenJDK 7だとeclimdが起動できる</h3><p>Dockerfileを修正してOpenJDK 7をインストールします。以前の通りにeclimdが起動しました。<br><a href="http://packages.ubuntu.com/utopic/openjdk-8-jdk" target="_blank" rel="noopener">Utopicからopenjdk-8-jdk</a>がパッケージからインストールできるのでリリースまでしばらく待とうと思います。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br><span class="line">$ ps ux | grep <span class="string">"[e]clim"</span></span><br><span class="line">docker     122  3.7  5.8 3199800 480900 pts/0  Sl   19:58   0:37 /usr/bin/java -d64 -Dosgi.requiredJavaVersion=1.6 -XX:MaxPermSize=256m -Xms40m -Xmx512m -jar /home/docker/eclipse/plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -debug -clean -refresh -application org.eclim.application</span><br></pre></td></tr></table></figure>
+<h3 id="OpenJDK-7だとeclimdが起動できる"><a href="#OpenJDK-7だとeclimdが起動できる" class="headerlink" title="OpenJDK 7だとeclimdが起動できる"></a>OpenJDK 7だとeclimdが起動できる</h3><p>Dockerfileを修正してOpenJDK 7をインストールします。以前の通りにeclimdが起動しました。<br><a target="_blank" rel="noopener" href="http://packages.ubuntu.com/utopic/openjdk-8-jdk">Utopicからopenjdk-8-jdk</a>がパッケージからインストールできるのでリリースまでしばらく待とうと思います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ DISPLAY=:1 ./eclipse/eclimd -b</span><br><span class="line">$ ps ux | grep <span class="string">&quot;[e]clim&quot;</span></span><br><span class="line">docker     122  3.7  5.8 3199800 480900 pts/0  Sl   19:58   0:37 /usr/bin/java -d64 -Dosgi.requiredJavaVersion=1.6 -XX:MaxPermSize=256m -Xms40m -Xmx512m -jar /home/docker/eclipse/plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar -debug -clean -refresh -application org.eclim.application</span><br></pre></td></tr></table></figure>
 
 
 
@@ -332,7 +299,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -383,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oracle-Java-JDK"><span class="nav-number">2.</span> <span class="nav-text">Oracle Java JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Caskファイル"><span class="nav-number">3.</span> <span class="nav-text">Caskファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init-loader-el"><span class="nav-number">4.</span> <span class="nav-text">init-loader.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oracke-Javaだとeclimdが起動しない"><span class="nav-number">5.</span> <span class="nav-text">Oracke Javaだとeclimdが起動しない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenJDK-7だとeclimdが起動できる"><span class="nav-number">6.</span> <span class="nav-text">OpenJDK 7だとeclimdが起動できる</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oracle-Java-JDK"><span class="nav-number">2.</span> <span class="nav-text">Oracle Java JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cask%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">Caskファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init-loader-el"><span class="nav-number">4.</span> <span class="nav-text">init-loader.el</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Oracke-Java%E3%81%A0%E3%81%A8eclimd%E3%81%8C%E8%B5%B7%E5%8B%95%E3%81%97%E3%81%AA%E3%81%84"><span class="nav-number">5.</span> <span class="nav-text">Oracke Javaだとeclimdが起動しない</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenJDK-7%E3%81%A0%E3%81%A8eclimd%E3%81%8C%E8%B5%B7%E5%8B%95%E3%81%A7%E3%81%8D%E3%82%8B"><span class="nav-number">6.</span> <span class="nav-text">OpenJDK 7だとeclimdが起動できる</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,10 +381,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -443,9 +412,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -485,13 +454,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

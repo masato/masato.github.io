@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Raspberry Piのプログラムからセンサーデータをmessageトピックにpublishして、IDCFクラウドのサーバー側のプログラムでsubscribeと閾値監視を行うパターンです。トリガーの発火条件をRaspberry Piのセンサーデータに加えてサーバー側で他のデータと組み合わせたい場合に使います。一度データをsubscribeしているので、閾値監視以外にもデータベースに保存したり、さ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="myThingsをはじめよう - Part8: トリガーの閾値監視をIDCFクラウド側で行う">
 <meta property="og:url" content="https://masato.github.io/2015/09/17/mythings-idcfchannel-trigger-cloud/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Raspberry Piのプログラムからセンサーデータをmessageトピックにpublishして、IDCFクラウドのサーバー側のプログラムでsubscribeと閾値監視を行うパターンです。トリガーの発火条件をRaspberry Piのセンサーデータに加えてサーバー側で他のデータと組み合わせたい場合に使います。一度データをsubscribeしているので、閾値監視以外にもデータベースに保存したり、さ">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-09-17T05:40:21.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.791Z">
+<meta property="article:modified_time" content="2015-09-17T05:40:21.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="Meshblu">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>myThingsをはじめよう - Part8: トリガーの閾値監視をIDCFクラウド側で行う | masato's blog</title>
+  <title>myThingsをはじめよう - Part8: トリガーの閾値監視をIDCFクラウド側で行う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,22 +189,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 17 2015 14:40:21" itemprop="dateCreated datePublished" datetime="2015-09-17T14:40:21+09:00">Sep 17 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -251,7 +218,7 @@
 
       
         <p>Raspberry Piのプログラムからセンサーデータをmessageトピックにpublishして、IDCFクラウドのサーバー側のプログラムでsubscribeと閾値監視を行うパターンです。トリガーの発火条件をRaspberry Piのセンサーデータに加えてサーバー側で他のデータと組み合わせたい場合に使います。一度データをsubscribeしているので、閾値監視以外にもデータベースに保存したり、さらに別のデバイスにメッセージをpublishすることもできます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="はじめに"><a href="#はじめに" class="headerlink" title="はじめに"></a>はじめに</h2><h3 id="作業の流れ"><a href="#作業の流れ" class="headerlink" title="作業の流れ"></a>作業の流れ</h3><p>以下の手順で作業を進めていきます。</p>
 <ol>
@@ -259,14 +226,14 @@
 <li>Raspberry PiからIDCFチャンネルサーバーの<code>message</code>トピックにMQTT publishする</li>
 <li>IDCFクラウドのサーバープログラムで<code>actionのuuid</code>トピックをMQTT subscribeする</li>
 <li>IDCFクラウドのサーバープログラムで閾値監視をする</li>
-<li>IDCFクラウドのサーバープログラムからHTTP POST <code>/data/{triggerのuuid}</code>する</li>
+<li>IDCFクラウドのサーバープログラムからHTTP POST <code>/data/&#123;triggerのuuid&#125;</code>する</li>
 <li>myThingsアプリから組合せを「手動実行」する</li>
 <li>Gmailにメールが届く</li>
 </ol>
 <h2 id="trigger-1とaction-1の確認"><a href="#trigger-1とaction-1の確認" class="headerlink" title="trigger-1とaction-1の確認"></a>trigger-1とaction-1の確認</h2><p>IDCFチャンネルサーバーの仮想マシンにログインして<code>list</code>コマンドを実行します。今回使用するtrigger-1とaction-1のuuidとtokenを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose/</span><br><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line">...</span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ d74ebedf │ 21c83792-b25e-4ae7-a627-714af57a1a4b │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">...</span><br><span class="line">│ action-1  │ 8a781e76 │ 3a78814a-6879-4543-bacf-9a206cd951a6 │</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h2 id="Raspberry-Pi側のプログラム"><a href="#Raspberry-Pi側のプログラム" class="headerlink" title="Raspberry Pi側のプログラム"></a>Raspberry Pi側のプログラム</h2><p>GitHubの<a href="https://github.com/IDCFChannel/bme280-meshblu-py" target="_blank" rel="noopener">リポジトリ</a>から最新のコードをダウンロードします。</p>
+<h2 id="Raspberry-Pi側のプログラム"><a href="#Raspberry-Pi側のプログラム" class="headerlink" title="Raspberry Pi側のプログラム"></a>Raspberry Pi側のプログラム</h2><p>GitHubの<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/bme280-meshblu-py">リポジトリ</a>から最新のコードをダウンロードします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/python_apps/bme280-meshblu-py</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
 
 <p>新規の場合はgit cloneします。</p>
@@ -276,10 +243,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat requirements.txt</span><br><span class="line">paho-mqtt==1.1</span><br><span class="line">requests==2.7.0</span><br><span class="line">$ sudo pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
 
 <p>root権限でプログラムを実行します。5秒間隔で計測したセンサーデータがpublishされます。</p>
-<figure class="highlight python"><figcaption><span>bme280_pubcloud.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span><span class="params">(client, userdata, mid)</span>:</span></span><br><span class="line">    print(<span class="string">"publish: &#123;&#125;"</span>.format(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># MQTT</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line">    client.username_pw_set(conf[<span class="string">"TRIGGER_1_UUID"</span>], conf[<span class="string">"TRIGGER_1_TOKEN"</span>])</span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">"devices"</span>: conf[<span class="string">"ACTION_1_UUID"</span>],</span><br><span class="line">                                   <span class="string">"payload"</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">"message"</span>, message)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>bme280_pubcloud.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span>():</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span>(<span class="params">client, userdata, mid</span>):</span></span><br><span class="line">    print(<span class="string">&quot;publish: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># MQTT</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>], conf[<span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>])</span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">&quot;devices&quot;</span>: conf[<span class="string">&quot;ACTION_1_UUID&quot;</span>],</span><br><span class="line">                                   <span class="string">&quot;payload&quot;</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">&quot;message&quot;</span>, message)</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>config.pyは環境にあわせて設定します。trigger-1とaction-1を使います。</p>
-<figure class="highlight python"><figcaption><span>config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">"IDCF_CHANNEL_URL"</span>: <span class="string">"210.140.162.58"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_1_UUID"</span>: <span class="string">"21c83792-b25e-4ae7-a627-714af57a1a4b"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_1_TOKEN"</span>: <span class="string">"d74ebedf"</span>,</span><br><span class="line">     <span class="string">"ACTION_1_UUID"</span>: <span class="string">"3a78814a-6879-4543-bacf-9a206cd951a6"</span>,</span><br><span class="line">     <span class="string">"THRESHOLD"</span>: <span class="number">27.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>: <span class="string">&quot;210.140.162.58&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_1_UUID&quot;</span>: <span class="string">&quot;21c83792-b25e-4ae7-a627-714af57a1a4b&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>: <span class="string">&quot;d74ebedf&quot;</span>,</span><br><span class="line">     <span class="string">&quot;ACTION_1_UUID&quot;</span>: <span class="string">&quot;3a78814a-6879-4543-bacf-9a206cd951a6&quot;</span>,</span><br><span class="line">     <span class="string">&quot;THRESHOLD&quot;</span>: <span class="number">27.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="trigger-1からaction-1にpublishする"><a href="#trigger-1からaction-1にpublishする" class="headerlink" title="trigger-1からaction-1にpublishする"></a>trigger-1からaction-1にpublishする</h3><p>現状のMeshbluのMQTTブローカーはpublishとsubscribeに同じuuidを使うと2回メッセージが届くようです。そのためこのサンプルではpublishとsubscribeで別のuuidを選択します。publishはtrigger-1、subscribeはaction-1のuuidを使います。</p>
 <ul>
@@ -287,7 +254,7 @@
 <li>subscribeするuuid: action-1</li>
 </ul>
 <p>前回と同様にBME280からセンサーデータを計測し、5秒間隔でJSON形式のデータをpublishします。</p>
-<h3 id="インストールと実行"><a href="#インストールと実行" class="headerlink" title="インストールと実行"></a>インストールと実行</h3><p>GitHubの<a href="https://github.com/IDCFChannel/bme280-meshblu-py" target="_blank" rel="noopener">リポジトリ</a>から最新のコードをダウンロードします。</p>
+<h3 id="インストールと実行"><a href="#インストールと実行" class="headerlink" title="インストールと実行"></a>インストールと実行</h3><p>GitHubの<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/bme280-meshblu-py">リポジトリ</a>から最新のコードをダウンロードします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/python_apps/bme280-meshblu-py</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
 
 <p>新規の場合はgit cloneします。</p>
@@ -300,39 +267,39 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat requirements.txt</span><br><span class="line">paho-mqtt==1.1</span><br><span class="line">requests==2.7.0</span><br><span class="line">$ sudo pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
 
 <p>root権限でプログラムを実行します。5秒間隔で</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo python bme280_pubcloud.py</span><br><span class="line">&#123;<span class="string">"payload"</span>: &#123;<span class="string">"pressure"</span>: <span class="string">"1008.85"</span>, <span class="string">"temperature"</span>: <span class="string">"30.24"</span>, <span class="string">"humidity"</span>: <span class="string">"39.20"</span>&#125;, <span class="string">"devices"</span>: <span class="string">"3a78814a-6879-4543-bacf-9a206cd951a6"</span>&#125;</span><br><span class="line">publish: 1</span><br><span class="line">&#123;<span class="string">"payload"</span>: &#123;<span class="string">"pressure"</span>: <span class="string">"1008.87"</span>, <span class="string">"temperature"</span>: <span class="string">"30.25"</span>, <span class="string">"humidity"</span>: <span class="string">"39.20"</span>&#125;, <span class="string">"devices"</span>: <span class="string">"3a78814a-6879-4543-bacf-9a206cd951a6"</span>&#125;</span><br><span class="line">publish: 2</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo python bme280_pubcloud.py</span><br><span class="line">&#123;<span class="string">&quot;payload&quot;</span>: &#123;<span class="string">&quot;pressure&quot;</span>: <span class="string">&quot;1008.85&quot;</span>, <span class="string">&quot;temperature&quot;</span>: <span class="string">&quot;30.24&quot;</span>, <span class="string">&quot;humidity&quot;</span>: <span class="string">&quot;39.20&quot;</span>&#125;, <span class="string">&quot;devices&quot;</span>: <span class="string">&quot;3a78814a-6879-4543-bacf-9a206cd951a6&quot;</span>&#125;</span><br><span class="line">publish: 1</span><br><span class="line">&#123;<span class="string">&quot;payload&quot;</span>: &#123;<span class="string">&quot;pressure&quot;</span>: <span class="string">&quot;1008.87&quot;</span>, <span class="string">&quot;temperature&quot;</span>: <span class="string">&quot;30.25&quot;</span>, <span class="string">&quot;humidity&quot;</span>: <span class="string">&quot;39.20&quot;</span>&#125;, <span class="string">&quot;devices&quot;</span>: <span class="string">&quot;3a78814a-6879-4543-bacf-9a206cd951a6&quot;</span>&#125;</span><br><span class="line">publish: 2</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h2 id="IDCFクラウドのサーバープログラム"><a href="#IDCFクラウドのサーバープログラム" class="headerlink" title="IDCFクラウドのサーバープログラム"></a>IDCFクラウドのサーバープログラム</h2><p><a href="https://github.com/IDCFChannel/meshblu-compose/blob/master/bme280/bme280_subcloud.py" target="_blank" rel="noopener">bme280_subcloud.py</a>がMQTTのメッセージをsubscribeするプログラムです。</p>
-<figure class="highlight python"><figcaption><span>bme280_subcloud.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://&#123;0&#125;/data/&#123;1&#125;"</span>.format(conf[<span class="string">"IDCF_CHANNEL_URL"</span>],</span><br><span class="line">                                       conf[<span class="string">"TRIGGER_1_UUID"</span>])</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">"meshblu_auth_uuid"</span>: conf[<span class="string">"TRIGGER_1_UUID"</span>],</span><br><span class="line">    <span class="string">"meshblu_auth_token"</span>: conf[<span class="string">"TRIGGER_1_TOKEN"</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">payload = <span class="string">"trigger on"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">"ACTION_1_UUID"</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_subscribe</span><span class="params">(client, userdata, mid, granted_qos)</span>:</span></span><br><span class="line">    print(<span class="string">"Subscribed mid: &#123;0&#125;,  qos: &#123;1&#125;"</span>.format(str(mid), str(granted_qos)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span><span class="params">(client, userdata, msg)</span>:</span></span><br><span class="line">    payload = json.loads(msg.payload)</span><br><span class="line">    data = payload[<span class="string">"data"</span>]</span><br><span class="line">    <span class="keyword">if</span> data:</span><br><span class="line">        retval = data[<span class="string">"payload"</span>]</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">            print(<span class="string">"-"</span>*<span class="number">10</span>)</span><br><span class="line">            print(<span class="string">"temperature: &#123;&#125;"</span>.format(retval[<span class="string">"temperature"</span>]))</span><br><span class="line">            <span class="keyword">if</span> float(retval[<span class="string">"temperature"</span>]) &gt; conf[<span class="string">"THRESHOLD"</span>]:</span><br><span class="line">                print(<span class="string">"threshold over: &#123;0&#125; &gt; &#123;1&#125;"</span>.format(float(retval[<span class="string">"temperature"</span>]),</span><br><span class="line">                                                         conf[<span class="string">"THRESHOLD"</span>]))</span><br><span class="line">                r = requests.post(url, headers=headers, data=payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># MQTT</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line">    client.username_pw_set(conf[<span class="string">"ACTION_1_UUID"</span>], conf[<span class="string">"ACTION_1_TOKEN"</span>])</span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_subscribe = on_subscribe</span><br><span class="line">    client.on_message = on_message</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line">    client.loop_forever()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h2 id="IDCFクラウドのサーバープログラム"><a href="#IDCFクラウドのサーバープログラム" class="headerlink" title="IDCFクラウドのサーバープログラム"></a>IDCFクラウドのサーバープログラム</h2><p><a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose/blob/master/bme280/bme280_subcloud.py">bme280_subcloud.py</a>がMQTTのメッセージをsubscribeするプログラムです。</p>
+<figure class="highlight python"><figcaption><span>bme280_subcloud.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://&#123;0&#125;/data/&#123;1&#125;&quot;</span>.<span class="built_in">format</span>(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>],</span><br><span class="line">                                       conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>])</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;meshblu_auth_uuid&quot;</span>: conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>],</span><br><span class="line">    <span class="string">&quot;meshblu_auth_token&quot;</span>: conf[<span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">payload = <span class="string">&quot;trigger on&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">&quot;ACTION_1_UUID&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_subscribe</span>(<span class="params">client, userdata, mid, granted_qos</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Subscribed mid: &#123;0&#125;,  qos: &#123;1&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">str</span>(mid), <span class="built_in">str</span>(granted_qos)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span>(<span class="params">client, userdata, msg</span>):</span></span><br><span class="line">    payload = json.loads(msg.payload)</span><br><span class="line">    data = payload[<span class="string">&quot;data&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> data:</span><br><span class="line">        retval = data[<span class="string">&quot;payload&quot;</span>]</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">            print(<span class="string">&quot;-&quot;</span>*<span class="number">10</span>)</span><br><span class="line">            print(<span class="string">&quot;temperature: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(retval[<span class="string">&quot;temperature&quot;</span>]))</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]) &gt; conf[<span class="string">&quot;THRESHOLD&quot;</span>]:</span><br><span class="line">                print(<span class="string">&quot;threshold over: &#123;0&#125; &gt; &#123;1&#125;&quot;</span>.<span class="built_in">format</span>(<span class="built_in">float</span>(retval[<span class="string">&quot;temperature&quot;</span>]),</span><br><span class="line">                                                         conf[<span class="string">&quot;THRESHOLD&quot;</span>]))</span><br><span class="line">                r = requests.post(url, headers=headers, data=payload)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># MQTT</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;ACTION_1_UUID&quot;</span>], conf[<span class="string">&quot;ACTION_1_TOKEN&quot;</span>])</span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_subscribe = on_subscribe</span><br><span class="line">    client.on_message = on_message</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line">    client.loop_forever()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <h3 id="action-1でsubscribeする"><a href="#action-1でsubscribeする" class="headerlink" title="action-1でsubscribeする"></a>action-1でsubscribeする</h3><p>Raspberry Pi側のプログラムではtrigger-1からaction-1にMQTTのメッセージをpublishしました。クラウド側のプログラムでもMQTTのメッセージはaction-1でsubscribeします。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">"ACTION_1_UUID"</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">&quot;ACTION_1_UUID&quot;</span>])</span><br></pre></td></tr></table></figure>
 
-<h3 id="trigger-1にPOSTしてmyThingsのトリガーを発火する"><a href="#trigger-1にPOSTしてmyThingsのトリガーを発火する" class="headerlink" title="trigger-1にPOSTしてmyThingsのトリガーを発火する"></a>trigger-1にPOSTしてmyThingsのトリガーを発火する</h3><p>少々ややこしくなりますがsubscribeしたセンサーデータが閾値を超えた場合、今度はtrigger-1のuuidを<code>/data/{trigger-1のuuid}</code>に入れたURLに任意のデータをPOSTします。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">"http://&#123;0&#125;/data/&#123;1&#125;"</span>.format(conf[<span class="string">"IDCF_CHANNEL_URL"</span>],</span><br><span class="line">                                       conf[<span class="string">"TRIGGER_1_UUID"</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="trigger-1にPOSTしてmyThingsのトリガーを発火する"><a href="#trigger-1にPOSTしてmyThingsのトリガーを発火する" class="headerlink" title="trigger-1にPOSTしてmyThingsのトリガーを発火する"></a>trigger-1にPOSTしてmyThingsのトリガーを発火する</h3><p>少々ややこしくなりますがsubscribeしたセンサーデータが閾値を超えた場合、今度はtrigger-1のuuidを<code>/data/&#123;trigger-1のuuid&#125;</code>に入れたURLに任意のデータをPOSTします。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">url = <span class="string">&quot;http://&#123;0&#125;/data/&#123;1&#125;&quot;</span>.<span class="built_in">format</span>(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>],</span><br><span class="line">                                       conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>])</span><br></pre></td></tr></table></figure>
 
 <p>現在のmyThingsはIDCFチャンネルをトリガーにしてアクションにデータを渡すことができないため、POSTするデータは任意です。POSTしてmyThings連携用のデータベースにレコードを作成することが目的です。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">"trigger on"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = <span class="string">&quot;trigger on&quot;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="meshblu-composeプログラムの更新"><a href="#meshblu-composeプログラムの更新" class="headerlink" title="meshblu-composeプログラムの更新"></a>meshblu-composeプログラムの更新</h3><p>GitHubの<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">リポジトリ</a>から最新のコードを取得します。現在起動しているコンテナは破棄して新しいコンテナを起動します。<code>mongo</code>と<code>redis</code>ディレクトリに永続化データが保存されているので、このディレクトリを削除しなければ以前のデータを引き続き使えます</p>
+<h3 id="meshblu-composeプログラムの更新"><a href="#meshblu-composeプログラムの更新" class="headerlink" title="meshblu-composeプログラムの更新"></a>meshblu-composeプログラムの更新</h3><p>GitHubの<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose">リポジトリ</a>から最新のコードを取得します。現在起動しているコンテナは破棄して新しいコンテナを起動します。<code>mongo</code>と<code>redis</code>ディレクトリに永続化データが保存されているので、このディレクトリを削除しなければ以前のデータを引き続き使えます</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose/</span><br><span class="line">$ docker-compose stop</span><br><span class="line">$ docker-compose rm</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
 
 <p>新しいプログラムをダウンロードしたらmeshblu-composeを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d openresty</span><br></pre></td></tr></table></figure>
 
-<h3 id="イメージのビルドと実行"><a href="#イメージのビルドと実行" class="headerlink" title="イメージのビルドと実行"></a>イメージのビルドと実行</h3><p>メッセージのsubscribeと閾値監視を行うIDCFクラウド側のプログラムをビルドします。<a href="https://github.com/IDCFChannel/meshblu-compose/blob/master/docker-compose.yml" target="_blank" rel="noopener">docker-compose.yml</a>にサービスが定義してあります。リポジトリは<a href="https://github.com/IDCFChannel/meshblu-compose/tree/master/bme280" target="_blank" rel="noopener">こちら</a>です。</p>
+<h3 id="イメージのビルドと実行"><a href="#イメージのビルドと実行" class="headerlink" title="イメージのビルドと実行"></a>イメージのビルドと実行</h3><p>メッセージのsubscribeと閾値監視を行うIDCFクラウド側のプログラムをビルドします。<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose/blob/master/docker-compose.yml">docker-compose.yml</a>にサービスが定義してあります。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose/tree/master/bme280">こちら</a>です。</p>
 <figure class="highlight yml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">bme280:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">./bme280</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br></pre></td></tr></table></figure>
 
-<p>オフィシャル<a href="https://hub.docker.com/_/python/" target="_blank" rel="noopener">Python</a>のベースイメージを使います。ONBUILDのベースイメージはビルドするときにカレントディレクトリのrequirements.txtをCOPYして必要なパッケージをインストールしてくれます。</p>
+<p>オフィシャル<a target="_blank" rel="noopener" href="https://hub.docker.com/_/python/">Python</a>のベースイメージを使います。ONBUILDのベースイメージはビルドするときにカレントディレクトリのrequirements.txtをCOPYして必要なパッケージをインストールしてくれます。</p>
 <figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM python:2.7</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /usr/src/app</span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">ONBUILD COPY requirements.txt /usr/src/app/</span><br><span class="line">ONBUILD RUN pip install --no-cache-dir -r requirements.txt</span><br><span class="line"></span><br><span class="line">ONBUILD COPY . /usr/src/app</span><br></pre></td></tr></table></figure>
 
-<p>またONBUILDでカレントディレクトリのファイルがCOPYされるので、<a href="https://github.com/IDCFChannel/meshblu-compose/blob/master/bme280/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>では実行したいプログラムをCMDに指定します。</p>
-<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM python:2-onbuild</span><br><span class="line">CMD [ <span class="string">"python"</span>, <span class="string">"./bme280_subcloud.py"</span> ]</span><br></pre></td></tr></table></figure>
+<p>またONBUILDでカレントディレクトリのファイルがCOPYされるので、<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose/blob/master/bme280/Dockerfile">Dockerfile</a>では実行したいプログラムをCMDに指定します。</p>
+<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM python:2-onbuild</span><br><span class="line">CMD [ <span class="string">&quot;python&quot;</span>, <span class="string">&quot;./bme280_subcloud.py&quot;</span> ]</span><br></pre></td></tr></table></figure>
 
 <p>Dockerイメージをビルドします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose build bme280</span><br></pre></td></tr></table></figure>
 
-<p>Raspberry PiでBME280から計測したデータをmessageトピックにMQTT publishしてIDCFクラウド側でMQTT subscribeします。センサーデータが閾値を超えた場合に<code>/data/{triggerのuuid}</code>へHTTP POSTするとmyThingsのトリガーが発火されます。</p>
+<p>Raspberry PiでBME280から計測したデータをmessageトピックにMQTT publishしてIDCFクラウド側でMQTT subscribeします。センサーデータが閾値を超えた場合に<code>/data/&#123;triggerのuuid&#125;</code>へHTTP POSTするとmyThingsのトリガーが発火されます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm bme280</span><br><span class="line">Connected with result code 0</span><br><span class="line">Subscribed mid: 1,  qos: (0,)</span><br><span class="line">----------</span><br><span class="line">temperature: 30.07</span><br><span class="line">threshold over: 30.07 &gt; 27.0</span><br><span class="line">----------</span><br><span class="line">temperature: 30.07</span><br><span class="line">threshold over: 30.07 &gt; 27.0</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -371,7 +338,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -422,7 +388,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#はじめに"><span class="nav-number">1.</span> <span class="nav-text">はじめに</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作業の流れ"><span class="nav-number">1.1.</span> <span class="nav-text">作業の流れ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#trigger-1とaction-1の確認"><span class="nav-number">2.</span> <span class="nav-text">trigger-1とaction-1の確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi側のプログラム"><span class="nav-number">3.</span> <span class="nav-text">Raspberry Pi側のプログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#trigger-1からaction-1にpublishする"><span class="nav-number">3.1.</span> <span class="nav-text">trigger-1からaction-1にpublishする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールと実行"><span class="nav-number">3.2.</span> <span class="nav-text">インストールと実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDCFクラウドのサーバープログラム"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウドのサーバープログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#action-1でsubscribeする"><span class="nav-number">4.1.</span> <span class="nav-text">action-1でsubscribeする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trigger-1にPOSTしてmyThingsのトリガーを発火する"><span class="nav-number">4.2.</span> <span class="nav-text">trigger-1にPOSTしてmyThingsのトリガーを発火する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#meshblu-composeプログラムの更新"><span class="nav-number">4.3.</span> <span class="nav-text">meshblu-composeプログラムの更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#イメージのビルドと実行"><span class="nav-number">4.4.</span> <span class="nav-text">イメージのビルドと実行</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB"><span class="nav-number">1.</span> <span class="nav-text">はじめに</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E6%A5%AD%E3%81%AE%E6%B5%81%E3%82%8C"><span class="nav-number">1.1.</span> <span class="nav-text">作業の流れ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#trigger-1%E3%81%A8action-1%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">2.</span> <span class="nav-text">trigger-1とaction-1の確認</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi%E5%81%B4%E3%81%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">3.</span> <span class="nav-text">Raspberry Pi側のプログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#trigger-1%E3%81%8B%E3%82%89action-1%E3%81%ABpublish%E3%81%99%E3%82%8B"><span class="nav-number">3.1.</span> <span class="nav-text">trigger-1からaction-1にpublishする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%A8%E5%AE%9F%E8%A1%8C"><span class="nav-number">3.2.</span> <span class="nav-text">インストールと実行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDCF%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%81%AE%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">4.</span> <span class="nav-text">IDCFクラウドのサーバープログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#action-1%E3%81%A7subscribe%E3%81%99%E3%82%8B"><span class="nav-number">4.1.</span> <span class="nav-text">action-1でsubscribeする</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trigger-1%E3%81%ABPOST%E3%81%97%E3%81%A6myThings%E3%81%AE%E3%83%88%E3%83%AA%E3%82%AC%E3%83%BC%E3%82%92%E7%99%BA%E7%81%AB%E3%81%99%E3%82%8B"><span class="nav-number">4.2.</span> <span class="nav-text">trigger-1にPOSTしてmyThingsのトリガーを発火する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#meshblu-compose%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0%E3%81%AE%E6%9B%B4%E6%96%B0"><span class="nav-number">4.3.</span> <span class="nav-text">meshblu-composeプログラムの更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89%E3%81%A8%E5%AE%9F%E8%A1%8C"><span class="nav-number">4.4.</span> <span class="nav-text">イメージのビルドと実行</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -454,10 +420,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -482,9 +451,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -524,13 +493,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

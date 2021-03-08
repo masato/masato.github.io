@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="以前少し調べてたDockerコンテナ管理ツールのRancher.ioをIDCFクラウドに構築していこうと思います。はじめにSaltを使ってDockerをインストールします。以前Azureに構築したSaltクラスタと同様にsalt-configのテンプレートを使います。IDCFクラウド上にsalt-masterとsalt-minion用の仮想マシンを1台ずつ作成しておきます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Rancher.ioでDockerコンテナを管理する - Part2: IDCFクラウドにSaltとDockerをインストールする">
 <meta property="og:url" content="https://masato.github.io/2015/01/06/rancherio-install-salt-docker/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="以前少し調べてたDockerコンテナ管理ツールのRancher.ioをIDCFクラウドに構築していこうと思います。はじめにSaltを使ってDockerをインストールします。以前Azureに構築したSaltクラスタと同様にsalt-configのテンプレートを使います。IDCFクラウド上にsalt-masterとsalt-minion用の仮想マシンを1台ずつ作成しておきます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-01-06T06:06:35.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.830Z">
+<meta property="article:modified_time" content="2015-01-06T06:06:35.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Docker管理">
 <meta property="article:tag" content="Salt">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>Rancher.ioでDockerコンテナを管理する - Part2: IDCFクラウドにSaltとDockerをインストールする | masato's blog</title>
+  <title>Rancher.ioでDockerコンテナを管理する - Part2: IDCFクラウドにSaltとDockerをインストールする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,19 +190,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jan 6 2015 15:06:35" itemprop="dateCreated datePublished" datetime="2015-01-06T15:06:35+09:00">Jan 6 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">以前少し調べてたDockerコンテナ管理ツールのRancher.ioをIDCFクラウドに構築していこうと思います。はじめにSaltを使ってDockerをインストールします。以前Azureに構築したSaltクラスタと同様にsalt-configのテンプレートを使います。IDCFクラウド上にsalt-masterとsalt-minion用の仮想マシンを1台ずつ作成しておきます。</div>
@@ -242,33 +209,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>以前少し調べてた<a href="/2014/12/14/rancherio-docker-for-container-service/">Dockerコンテナ管理ツールのRancher.io</a>をIDCFクラウドに構築していこうと思います。はじめにSaltを使ってDockerをインストールします。<a href="/2014/12/18/microsoft-azure-salt-docker-install/">Azure</a>に構築したSaltクラスタと同様に<a href="https://github.com/masato/salt-config" target="_blank" rel="noopener">salt-config</a>のテンプレートを使います。IDCFクラウド上にsalt-masterとsalt-minion用の仮想マシンを1台ずつ作成しておきます。</p>
-<a id="more"></a>
+        <p>以前少し調べてた<a href="/2014/12/14/rancherio-docker-for-container-service/">Dockerコンテナ管理ツールのRancher.io</a>をIDCFクラウドに構築していこうと思います。はじめにSaltを使ってDockerをインストールします。<a href="/2014/12/18/microsoft-azure-salt-docker-install/">Azure</a>に構築したSaltクラスタと同様に<a target="_blank" rel="noopener" href="https://github.com/masato/salt-config">salt-config</a>のテンプレートを使います。IDCFクラウド上にsalt-masterとsalt-minion用の仮想マシンを1台ずつ作成しておきます。</p>
+<span id="more"></span>
 
 <h3 id="SLSファイル"><a href="#SLSファイル" class="headerlink" title="SLSファイル"></a>SLSファイル</h3><p>このテンプレートに用意しているSLSファイルは以下になります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree /srv/salt/config/salt/</span><br><span class="line">/srv/salt/config/salt/</span><br><span class="line">├── base.sls</span><br><span class="line">├── common.sls</span><br><span class="line">├── docker</span><br><span class="line">│   └── init.sls</span><br><span class="line">├── emacs</span><br><span class="line">│   └── init.sls</span><br><span class="line">├── misc.sls</span><br><span class="line">├── s3cmd</span><br><span class="line">│   ├── init.sls</span><br><span class="line">│   └── s3cfg</span><br><span class="line">└── top.sls</span><br></pre></td></tr></table></figure>
 
 <p>top.slsにGrainで定義したロールごとにインストールするパッケージを分けています。Dockerはどちらのロールでもインストールされます。</p>
-<figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">'*'</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">users</span></span><br><span class="line">  <span class="attr">'roles:salt-master':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br><span class="line">  <span class="attr">'roles:dev':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">&#x27;*&#x27;</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">users</span></span><br><span class="line">  <span class="attr">&#x27;roles:salt-master&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br><span class="line">  <span class="attr">&#x27;roles:dev&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br></pre></td></tr></table></figure>
 
 <p>まだIDCFオブジェクトストレージは使いませんが、Pillarを編集してキー情報を設定すれば使えるようにしています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /srv/salt/config/pillar</span><br><span class="line">$ cp s3cmd.sls.sample s3cmd.sls</span><br><span class="line">$ vi s3cmd.sls</span><br><span class="line">s3cmd:</span><br><span class="line">  access_key: xxx</span><br><span class="line">  secret_key: xxx</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="salt-masterのインストール"><a href="#salt-masterのインストール" class="headerlink" title="salt-masterのインストール"></a>salt-masterのインストール</h3><p>salt-masterの仮想マシンにログインしてrootで作業します。ホスト名は<code>salt.cs3d0idcfcloud.internal</code>です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ apt-get update &amp;&amp; apt-get install -y git</span><br><span class="line">$ git config --global user.name <span class="string">"Masato Shimizu"</span> </span><br><span class="line">$ git config --global user.email <span class="string">"ma6ato@gmail.com"</span> </span><br><span class="line">$ git config --global push.default simple</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ apt-get update &amp;&amp; apt-get install -y git</span><br><span class="line">$ git config --global user.name <span class="string">&quot;Masato Shimizu&quot;</span> </span><br><span class="line">$ git config --global user.email <span class="string">&quot;ma6ato@gmail.com&quot;</span> </span><br><span class="line">$ git config --global push.default simple</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/masato/salt-config" target="_blank" rel="noopener">salt-configure</a>のテンプレートを<code>git clone</code>します。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/masato/salt-config">salt-configure</a>のテンプレートを<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --recursive git@github.com:masato/salt-config.git /srv/salt/config</span><br><span class="line">$ <span class="built_in">cd</span> /srv/salt/config</span><br></pre></td></tr></table></figure>
 
 <p>作業ユーザーを作成します。<code>ssh_auth</code>は公開鍵を設定します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /srv/salt/config/pillar/users</span><br><span class="line">$ cp init.sls.sample init.sls</span><br><span class="line">$ vi init.sls</span><br><span class="line">users:</span><br><span class="line">  mshimizu:</span><br><span class="line">    fullname: Masato Shimizu</span><br><span class="line">    password: xxx</span><br><span class="line">    sudouser: True</span><br><span class="line">    sudo_rules:</span><br><span class="line">      - ALL=(ALL) NOPASSWD:ALL</span><br><span class="line">    groups:</span><br><span class="line">      - docker</span><br><span class="line">    ssh_auth:</span><br><span class="line">      - ssh-rsa AAAAB3Nzxxx</span><br></pre></td></tr></table></figure>
 
-<p>SLSや設定ファイルをコピーします。Salt Formulaは<a href="https://github.com/saltstack-formulas/users-formula" target="_blank" rel="noopener">users-formula</a>を使うため、GitHubのリポジトリをサブモジュールにしています。</p>
+<p>SLSや設定ファイルをコピーします。Salt Formulaは<a target="_blank" rel="noopener" href="https://github.com/saltstack-formulas/users-formula">users-formula</a>を使うため、GitHubのリポジトリをサブモジュールにしています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /etc/salt/master.d</span><br><span class="line">$ cp /srv/salt/config/etc/salt/master.d/master.conf /etc/salt/master.d</span><br><span class="line">$ cat /etc/salt/master.d/master.conf</span><br><span class="line">pillar_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/pillar</span><br><span class="line"></span><br><span class="line">file_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/salt</span><br><span class="line">    - /srv/salt/config/formulas/users-formula</span><br></pre></td></tr></table></figure>
 
 <p>salt-masterをインストールする仮想マシンにはsalt-minioもインストールします。Grainにsalt-minionのroleを定義します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /etc/salt/minion.d</span><br><span class="line">$ cat &lt;&lt;EOF &gt;  /etc/salt/minion.d/grains.conf</span><br><span class="line">grains:</span><br><span class="line">  roles:</span><br><span class="line">    - salt-master</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /etc/salt/minion.d</span><br><span class="line">$ cat &lt;&lt;<span class="string">EOF &gt;  /etc/salt/minion.d/grains.conf</span></span><br><span class="line"><span class="string">grains:</span></span><br><span class="line"><span class="string">  roles:</span></span><br><span class="line"><span class="string">    - salt-master</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
 
 <p>salt-masterをbootstrapからインストールします。salt-minionサービスも起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L http://bootstrap.saltstack.com | sh -s -- -M</span><br><span class="line">$ service salt-minion start</span><br></pre></td></tr></table></figure>
@@ -277,7 +244,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt --version</span><br><span class="line">salt 2014.7.0 (Helium)</span><br></pre></td></tr></table></figure>
 
 <h3 id="salt-minionのインストール"><a href="#salt-minionのインストール" class="headerlink" title="salt-minionのインストール"></a>salt-minionのインストール</h3><p>salt-minionの仮想マシンにログインしてrootで作業します。Grainにsalt-minionのroleを定義します。ホスト名は<code>minion1.cs3d0idcfcloud.internal</code>です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /etc/salt/minion.d</span><br><span class="line">$ cat &lt;&lt;EOF &gt;  /etc/salt/minion.d/grains.conf</span><br><span class="line">grains:</span><br><span class="line">  roles:</span><br><span class="line">    - dev</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /etc/salt/minion.d</span><br><span class="line">$ cat &lt;&lt;<span class="string">EOF &gt;  /etc/salt/minion.d/grains.conf</span></span><br><span class="line"><span class="string">grains:</span></span><br><span class="line"><span class="string">  roles:</span></span><br><span class="line"><span class="string">    - dev</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
 
 <p>salt-minionをbootstrapからインストールしてサービスを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L https://bootstrap.saltstack.com | sh</span><br><span class="line">$ service salt-minion start</span><br></pre></td></tr></table></figure>
@@ -286,10 +253,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt-key -A</span><br><span class="line">The following keys are going to be accepted:</span><br><span class="line">Unaccepted Keys:</span><br><span class="line">minion1.cs3d0idcfcloud.internal</span><br><span class="line">salt.cs3d0idcfcloud.internal</span><br><span class="line">Proceed? [n/Y] Y</span><br><span class="line">Key <span class="keyword">for</span> minion minion1.cs3d0idcfcloud.internal accepted.</span><br><span class="line">Key <span class="keyword">for</span> minion salt.cs3d0idcfcloud.internal accepted.</span><br></pre></td></tr></table></figure>
 
 <h3 id="state-highstate"><a href="#state-highstate" class="headerlink" title="state.highstate"></a>state.highstate</h3><p>state.highstateを実行して、すべてのSLSをsalt-minionに適応します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;*&#x27;</span> state.highstate</span><br></pre></td></tr></table></figure>
 
 <h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>SaltでインストールしたDockerのバージョンを確認します。Dockerは1.4.1、Goは1.3.3がインストールされました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> cmd.run <span class="string">'docker version'</span></span><br><span class="line">salt.cs3d0idcfcloud.internal:</span><br><span class="line">    Client version: 1.4.1</span><br><span class="line">    Client API version: 1.16</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 5bc2ff8</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.4.1</span><br><span class="line">    Server API version: 1.16</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 5bc2ff8</span><br><span class="line">minion1.cs3d0idcfcloud.internal:</span><br><span class="line">    Client version: 1.4.1</span><br><span class="line">    Client API version: 1.16</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 5bc2ff8</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.4.1</span><br><span class="line">    Server API version: 1.16</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 5bc2ff8</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;*&#x27;</span> cmd.run <span class="string">&#x27;docker version&#x27;</span></span><br><span class="line">salt.cs3d0idcfcloud.internal:</span><br><span class="line">    Client version: 1.4.1</span><br><span class="line">    Client API version: 1.16</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 5bc2ff8</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.4.1</span><br><span class="line">    Server API version: 1.16</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 5bc2ff8</span><br><span class="line">minion1.cs3d0idcfcloud.internal:</span><br><span class="line">    Client version: 1.4.1</span><br><span class="line">    Client API version: 1.16</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 5bc2ff8</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.4.1</span><br><span class="line">    Server API version: 1.16</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 5bc2ff8</span><br></pre></td></tr></table></figure>
 
 
 
@@ -330,7 +297,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -381,7 +347,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLSファイル"><span class="nav-number">1.</span> <span class="nav-text">SLSファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-masterのインストール"><span class="nav-number">2.</span> <span class="nav-text">salt-masterのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-minionのインストール"><span class="nav-number">3.</span> <span class="nav-text">salt-minionのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-keyで公開鍵の認証"><span class="nav-number">4.</span> <span class="nav-text">salt-keyで公開鍵の認証</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-highstate"><span class="nav-number">5.</span> <span class="nav-text">state.highstate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLS%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">SLSファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-master%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">salt-masterのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-minion%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">salt-minionのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#salt-key%E3%81%A7%E5%85%AC%E9%96%8B%E9%8D%B5%E3%81%AE%E8%AA%8D%E8%A8%BC"><span class="nav-number">4.</span> <span class="nav-text">salt-keyで公開鍵の認証</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state-highstate"><span class="nav-number">5.</span> <span class="nav-text">state.highstate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A2%BA%E8%AA%8D"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -413,10 +379,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -441,9 +410,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -483,13 +452,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

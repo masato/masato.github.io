@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,27 +13,27 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="これまでMeshbluのリポジトリにあるDockerfileを修正して使っていましたが、最近になりnode 0.10-onbuildをベースイメージにした構成に大きく変更になりました。一つのイメージになっていたMongoDBとRedisもインストールされなくなりました。これにあわせてDocker Copmoseを使ってMeshblu、MongoDB、Redisのコンテナを起動するように変更しようと">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MeshbluとMongoDBとRedisをDocker Composeで起動する">
 <meta property="og:url" content="https://masato.github.io/2015/04/16/meshblu-docker-compose-mongodb-redis/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="これまでMeshbluのリポジトリにあるDockerfileを修正して使っていましたが、最近になりnode 0.10-onbuildをベースイメージにした構成に大きく変更になりました。一つのイメージになっていたMongoDBとRedisもインストールされなくなりました。これにあわせてDocker Copmoseを使ってMeshblu、MongoDB、Redisのコンテナを起動するように変更しようと">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-04-16T14:00:29.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.763Z">
+<meta property="article:modified_time" content="2015-04-16T14:00:29.000Z">
 <meta property="article:author" content="Masato Shimizu">
-<meta property="article:tag" content="Redis">
-<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="Meshblu">
+<meta property="article:tag" content="Redis">
 <meta property="article:tag" content="MongoDB">
 <meta name="twitter:card" content="summary">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>MeshbluとMongoDBとRedisをDocker Composeで起動する | masato's blog</title>
+  <title>MeshbluとMongoDBとRedisをDocker Composeで起動する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,22 +189,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 16 2015 23:00:29" itemprop="dateCreated datePublished" datetime="2015-04-16T23:00:29+09:00">Apr 16 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -250,15 +217,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>これまで<a href="https://github.com/octoblu/meshblu" target="_blank" rel="noopener">Meshblu</a>のリポジトリにあるDockerfileを修正して使っていましたが、最近になり<a href="https://registry.hub.docker.com/u/library/node/" target="_blank" rel="noopener">node:0.10-onbuild</a>をベースイメージにした構成に大きく変更になりました。一つのイメージになっていたMongoDBとRedisもインストールされなくなりました。これにあわせて<a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Copmose</a>を使ってMeshblu、MongoDB、Redisのコンテナを起動するように変更しようと思います。</p>
-<a id="more"></a>
+        <p>これまで<a target="_blank" rel="noopener" href="https://github.com/octoblu/meshblu">Meshblu</a>のリポジトリにあるDockerfileを修正して使っていましたが、最近になり<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/library/node/">node:0.10-onbuild</a>をベースイメージにした構成に大きく変更になりました。一つのイメージになっていたMongoDBとRedisもインストールされなくなりました。これにあわせて<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/">Docker Copmose</a>を使ってMeshblu、MongoDB、Redisのコンテナを起動するように変更しようと思います。</p>
+<span id="more"></span>
 
 <h2 id="準備"><a href="#準備" class="headerlink" title="準備"></a>準備</h2><p>以下の作業はすべてrootで行います。Ubuntu 14.04のサーバーを用意して実行します。</p>
 <h3 id="DockerとDocker-Composeのインストール"><a href="#DockerとDocker-Composeのインストール" class="headerlink" title="DockerとDocker Composeのインストール"></a>DockerとDocker Composeのインストール</h3><p>DockerとDocker Composeはそれぞれオフィシャルのone-liner-installerが提供されているのでインストールはとても簡単です。</p>
-<p>Dockerを<a href="http://docs.docker.com/installation/ubuntulinux/" target="_blank" rel="noopener">インストール</a>します。</p>
+<p>Dockerを<a target="_blank" rel="noopener" href="http://docs.docker.com/installation/ubuntulinux/">インストール</a>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget -qO- https://get.docker.com/ | sh</span><br><span class="line">$ docker --version</span><br><span class="line">Docker version 1.6.0, build 4749651</span><br></pre></td></tr></table></figure>
 
-<p>Docker Composeを<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">インストール</a>します。</p>
+<p>Docker Composeを<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/install/">インストール</a>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L https://github.com/docker/compose/releases/download/1.2.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose; chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br><span class="line">$ docker-compose --version</span><br><span class="line">docker-compose 1.2.0</span><br></pre></td></tr></table></figure>
 
 
@@ -266,12 +233,12 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /opt/docker_apps/certs/meshblu</span><br><span class="line">$ <span class="built_in">cd</span> /opt/docker_apps/certs/meshblu</span><br><span class="line">$ openssl genrsa  -out server.key 4096</span><br><span class="line">$ openssl req -new -batch -key server.key -out server.csr</span><br><span class="line">$ openssl x509 -req -days 3650 -<span class="keyword">in</span> server.csr -signkey server.key -out server.crt</span><br></pre></td></tr></table></figure>
 
 <h2 id="Docker-Composeを使う"><a href="#Docker-Composeを使う" class="headerlink" title="Docker Composeを使う"></a>Docker Composeを使う</h2><p>Docker Composeは以前Figと呼ばれていたDockerコンテナの管理ツールです。Meshbluのように環境変数の指定が多い場合や、複数コンテナをリンクしてサービスを起動するときオーケストレーションをYAMLに定義して、docker-composeコマンドでまとめて管理できます。Dockerオフィシャルツールなので安心して使えます。</p>
-<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>環境変数<code>MONGODB_URI</code>のURLに指定するホスト名をどうやって取得するのか調べていると、<a href="http://blog.docker.com/2015/04/easily-configure-apps-for-multiple-environments-with-compose-1-2-and-much-more/" target="_blank" rel="noopener">Easily Configure Apps for Multiple Environments with Compose 1.2 and Much More</a>に環境変数について書いてありました。</p>
+<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>環境変数<code>MONGODB_URI</code>のURLに指定するホスト名をどうやって取得するのか調べていると、<a target="_blank" rel="noopener" href="http://blog.docker.com/2015/04/easily-configure-apps-for-multiple-environments-with-compose-1-2-and-much-more/">Easily Configure Apps for Multiple Environments with Compose 1.2 and Much More</a>に環境変数について書いてありました。</p>
 <p>linkで指定した<code>mongo</code>の名前はhostsに登録されるためそのまま使えます。</p>
 <figure class="highlight bash"><figcaption><span>/etc/hosts</span></figcaption><table><tr><td class="code"><pre><span class="line">172.17.0.2	root_mongo_1 6291efdef64e</span><br><span class="line">172.17.0.2	mongo 6291efdef64e root_mongo_1</span><br><span class="line">172.17.0.2	mongo_1 6291efdef64e root_mongo_1</span><br></pre></td></tr></table></figure>
 
 <p>Meshblu、MongoDB、Redisのコンテナをdocker-compose.ymlに定義します。</p>
-<figure class="highlight yml"><figcaption><span>~/meshblu_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">meshblu:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">octoblu/meshblu:0c3e5bd</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/var/www</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./docker:/etc/supervisor/conf.d</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/opt/docker_apps/certs/meshblu:/opt/meshblu/certs</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">PORT=80</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MQTT_PORT=1883</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MQTT_PASSWORD=skynetpass</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MONGODB_URI=mongodb://mongo:27017/skynet</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_PORT=443</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_CERT=/opt/meshblu/certs/server.crt</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_KEY=/opt/meshblu/certs/server.key</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"80:80"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"443:443"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"5683:5683"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"1883:1883"</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>~/meshblu_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">meshblu:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">octoblu/meshblu:0c3e5bd</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/var/www</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./docker:/etc/supervisor/conf.d</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/opt/docker_apps/certs/meshblu:/opt/meshblu/certs</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">PORT=80</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MQTT_PORT=1883</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MQTT_PASSWORD=skynetpass</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">MONGODB_URI=mongodb://mongo:27017/skynet</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_PORT=443</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_CERT=/opt/meshblu/certs/server.crt</span></span><br><span class="line">   <span class="bullet">-</span> <span class="string">SSL_KEY=/opt/meshblu/certs/server.key</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;80:80&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;443:443&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;5683:5683&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;1883:1883&quot;</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line"><span class="attr">redis:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="コンテナの起動"><a href="#コンテナの起動" class="headerlink" title="コンテナの起動"></a>コンテナの起動</h3><p>指定されたコンテナを3つ起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d</span><br><span class="line">Creating root_redis_1...</span><br><span class="line">Creating root_mongo_1...</span><br><span class="line">Creating root_meshblu_1...</span><br></pre></td></tr></table></figure>
@@ -286,10 +253,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Redis/" rel="tag"># Redis</a>
-              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/Meshblu/" rel="tag"># Meshblu</a>
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
               <a href="/tags/MongoDB/" rel="tag"># MongoDB</a>
           </div>
 
@@ -314,7 +281,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -365,7 +331,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#準備"><span class="nav-number">1.</span> <span class="nav-text">準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DockerとDocker-Composeのインストール"><span class="nav-number">1.1.</span> <span class="nav-text">DockerとDocker Composeのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL証明書"><span class="nav-number">1.2.</span> <span class="nav-text">SSL証明書</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Composeを使う"><span class="nav-number">2.</span> <span class="nav-text">Docker Composeを使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#コンテナの起動"><span class="nav-number">2.2.</span> <span class="nav-text">コンテナの起動</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%96%E5%82%99"><span class="nav-number">1.</span> <span class="nav-text">準備</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%81%A8Docker-Compose%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.1.</span> <span class="nav-text">DockerとDocker Composeのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL%E8%A8%BC%E6%98%8E%E6%9B%B8"><span class="nav-number">1.2.</span> <span class="nav-text">SSL証明書</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">2.</span> <span class="nav-text">Docker Composeを使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">2.2.</span> <span class="nav-text">コンテナの起動</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -397,10 +363,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -425,9 +394,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -467,13 +436,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

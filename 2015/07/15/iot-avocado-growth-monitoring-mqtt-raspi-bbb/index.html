@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回はHubotでMQTTを使いPubSubをするサンプルを書きました。それぞれに対応するMQTTクライアントのPubSubをBeagleBone BlackとRaspberry Pi 2に実装します。BeagleBone BlackはHubotからLEDライトをオンオフするメッセージをsubscribeします。USB連動電源タップのUSBポートが接続されたUSBハブの特定のポートの電源を操作する">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IoTでアボカドの発芽促進とカビを防止する - Part4: MQTTでRaspberry Piのデータを送信、BeagleBone Blackのライトをつける">
 <meta property="og:url" content="https://masato.github.io/2015/07/15/iot-avocado-growth-monitoring-mqtt-raspi-bbb/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回はHubotでMQTTを使いPubSubをするサンプルを書きました。それぞれに対応するMQTTクライアントのPubSubをBeagleBone BlackとRaspberry Pi 2に実装します。BeagleBone BlackはHubotからLEDライトをオンオフするメッセージをsubscribeします。USB連動電源タップのUSBポートが接続されたUSBハブの特定のポートの電源を操作する">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/15/iot-avocado-growth-monitoring-mqtt-raspi-bbb/freeboard-3-metrics.png">
 <meta property="article:published_time" content="2015-07-15T12:46:47.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.719Z">
+<meta property="article:modified_time" content="2015-07-15T12:46:47.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="IoT">
@@ -56,7 +56,7 @@
   };
 </script>
 
-  <title>IoTでアボカドの発芽促進とカビを防止する - Part4: MQTTでRaspberry Piのデータを送信、BeagleBone Blackのライトをつける | masato's blog</title>
+  <title>IoTでアボカドの発芽促進とカビを防止する - Part4: MQTTでRaspberry Piのデータを送信、BeagleBone Blackのライトをつける | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -96,7 +96,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -117,14 +117,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,51 +132,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -194,11 +169,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -211,7 +185,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -221,22 +195,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 15 2015 21:46:47" itemprop="dateCreated datePublished" datetime="2015-07-15T21:46:47+09:00">Jul 15 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -257,21 +224,21 @@
 
       
         <p><a href="/2015/07/14/iot-avocado-growth-monitoring-hubot-slack-mqtt/">前回は</a>HubotでMQTTを使いPubSubをするサンプルを書きました。それぞれに対応するMQTTクライアントのPubSubをBeagleBone BlackとRaspberry Pi 2に実装します。BeagleBone BlackはHubotからLEDライトをオンオフするメッセージをsubscribeします。USB連動電源タップのUSBポートが接続されたUSBハブの特定のポートの電源を操作することで、植物育成LEDの電源を制御します。またDS18B20で計測したアボカドが入っているガラス瓶の水温をfreeboardのダッシュボードにpublishします。Raspberry Pi 2はBME280からアボカド周辺の気温、湿度、気圧をfreeboardにpublishします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="BeagleBone-Black"><a href="#BeagleBone-Black" class="headerlink" title="BeagleBone Black"></a>BeagleBone Black</h2><p>BeagleBone Blackには防水仕様のDS18B20で計測した水温をMQTTブローカーにpublishするプロセスと、Slackから植物育成LEDライトをon/offするメッセージをsubscribeするプロセスを起動します。リポジトリは<a href="https://github.com/IDCFChannel/glow-light-py" target="_blank" rel="noopener">こちら</a>です。</p>
-<h3 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h3><p>プロセスのデモナイズに<a href="http://supervisord.org/" target="_blank" rel="noopener">Supervisor</a>を使います。</p>
+<h2 id="BeagleBone-Black"><a href="#BeagleBone-Black" class="headerlink" title="BeagleBone Black"></a>BeagleBone Black</h2><p>BeagleBone Blackには防水仕様のDS18B20で計測した水温をMQTTブローカーにpublishするプロセスと、Slackから植物育成LEDライトをon/offするメッセージをsubscribeするプロセスを起動します。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/glow-light-py">こちら</a>です。</p>
+<h3 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h3><p>プロセスのデモナイズに<a target="_blank" rel="noopener" href="http://supervisord.org/">Supervisor</a>を使います。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install supervisor</span><br></pre></td></tr></table></figure>
 
 <h3 id="DS18B20"><a href="#DS18B20" class="headerlink" title="DS18B20"></a>DS18B20</h3><p>1-wireのDS18B20をBeagleBone Blackのcapemgrの設定は毎回必要です。Supervisorから管理するプロセスの起動スクリプトを用意して最初に有効化の処理を書きます。その後にDS18B20から計測した水温をMQTTブローカーにpublishするPythonスクリプトを実行します。</p>
-<figure class="highlight bash"><figcaption><span>~/python_apps/glow-light-py/start_w1.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo sh -c <span class="string">'echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots'</span></span><br><span class="line">/home/debian/python_apps/glow-light-py/w1_publish.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/python_apps/glow-light-py/start_w1.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo sh -c <span class="string">&#x27;echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots&#x27;</span></span><br><span class="line">/home/debian/python_apps/glow-light-py/w1_publish.py</span><br></pre></td></tr></table></figure>
 
 <p>DS18B20で計測した温度をMQTTブローカーにpubishするPythonのプログラムです。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/w1_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">w1=<span class="string">"/sys/bus/w1/devices/&#123;&#125;/w1_slave"</span>.format(conf[<span class="string">"W1_ID"</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span><span class="params">()</span>:</span></span><br><span class="line">    raw = open(w1, <span class="string">"r"</span>).read()</span><br><span class="line">    celsius = float(raw.split(<span class="string">"t="</span>)[<span class="number">-1</span>])/<span class="number">1000</span></span><br><span class="line">    retval = dict(temperature=<span class="string">"&#123;:.2f&#125;"</span>.format(celsius))</span><br><span class="line">    <span class="keyword">return</span> retval</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span><span class="params">(client, userdata, mid)</span>:</span></span><br><span class="line">    print(<span class="string">"publish: &#123;&#125;"</span>.format(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">"TRIGGER_5_UUID"</span>], conf[<span class="string">"TRIGGER_5_TOKEN"</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">"devices"</span>:</span><br><span class="line">	                       conf[<span class="string">"ACTION_5_UUID"</span>],</span><br><span class="line">                              <span class="string">"payload"</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">"message"</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/w1_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">w1=<span class="string">&quot;/sys/bus/w1/devices/&#123;&#125;/w1_slave&quot;</span>.<span class="built_in">format</span>(conf[<span class="string">&quot;W1_ID&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span>():</span></span><br><span class="line">    raw = <span class="built_in">open</span>(w1, <span class="string">&quot;r&quot;</span>).read()</span><br><span class="line">    celsius = <span class="built_in">float</span>(raw.split(<span class="string">&quot;t=&quot;</span>)[-<span class="number">1</span>])/<span class="number">1000</span></span><br><span class="line">    retval = <span class="built_in">dict</span>(temperature=<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(celsius))</span><br><span class="line">    <span class="keyword">return</span> retval</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span>(<span class="params">client, userdata, mid</span>):</span></span><br><span class="line">    print(<span class="string">&quot;publish: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;TRIGGER_5_UUID&quot;</span>], conf[<span class="string">&quot;TRIGGER_5_TOKEN&quot;</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">&quot;devices&quot;</span>:</span><br><span class="line">	                       conf[<span class="string">&quot;ACTION_5_UUID&quot;</span>],</span><br><span class="line">                              <span class="string">&quot;payload&quot;</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">&quot;message&quot;</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 
 <p>DS18B20のIDはデバイス毎に異なるため、<code>/sys/bus/w1/devices</code>に作成される<code>28*</code>のIDを設定ファイルに記述します。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">...</span><br><span class="line">     <span class="string">"W1_ID"</span>: <span class="string">"28-xxx"</span>,</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">...</span><br><span class="line">     <span class="string">&quot;W1_ID&quot;</span>: <span class="string">&quot;28-xxx&quot;</span>,</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>PahoのPythonクライアントをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install paho-mqtt</span><br></pre></td></tr></table></figure>
@@ -286,13 +253,13 @@
 <figure class="highlight bash"><figcaption><span>/etc/supervisor/conf.d/led.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:led]</span><br><span class="line"><span class="built_in">command</span>=/home/debian/python_apps/glow-light-py/led_subscribe.py</span><br><span class="line">numprocs=1</span><br><span class="line">redirect_stderr=<span class="literal">true</span></span><br><span class="line">stdout_logfile=/var/<span class="built_in">log</span>/led.log</span><br><span class="line">user=debian</span><br></pre></td></tr></table></figure>
 
 <p>Hubutからの指示をsubscribeしてLEDライトをon/offします。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/led_subscribe.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">"ACTION_3_UUID"</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_subscribe</span><span class="params">(client, userdata, mid, granted_qos)</span>:</span></span><br><span class="line">    print(<span class="string">"Subscribed: "</span>+str(mid)+<span class="string">" "</span>+str(granted_qos))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">led_on_off</span><span class="params">(on_off)</span>:</span></span><br><span class="line">    cmd = os.path.abspath(os.path.join(os.path.dirname(__file__), <span class="string">"hub-ctrl"</span>))</span><br><span class="line">    p = subprocess.Popen([<span class="string">"sudo"</span>,cmd,</span><br><span class="line">	<span class="string">"-b"</span>, <span class="string">"1"</span>,</span><br><span class="line">	<span class="string">"-d"</span>, conf[<span class="string">"DEVICE_NO"</span>],</span><br><span class="line">	<span class="string">"-P"</span>, conf[<span class="string">"PORT_NO"</span>],</span><br><span class="line">	<span class="string">"-p"</span>, on_off], stdout=subprocess.PIPE)</span><br><span class="line">    out, err = p.communicate()</span><br><span class="line">    print(out)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span><span class="params">(client, userdata, msg)</span>:</span></span><br><span class="line">    print(msg.topic+<span class="string">" "</span>+str(msg.payload))</span><br><span class="line">    payload = json.loads(msg.payload)</span><br><span class="line">    on_off_str = payload[<span class="string">"data"</span>]</span><br><span class="line">    <span class="keyword">if</span> on_off_str == <span class="string">"led-on"</span> :</span><br><span class="line">        led_on_off(<span class="string">"1"</span>)</span><br><span class="line">    <span class="keyword">elif</span> on_off_str == <span class="string">"led-off"</span> :</span><br><span class="line">        led_on_off(<span class="string">"0"</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">"ACTION_3_UUID"</span>], conf[<span class="string">"ACTION_3_TOKEN"</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_subscribe = on_subscribe</span><br><span class="line">    client.on_message = on_message</span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    client.loop_forever()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/led_subscribe.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line">    client.subscribe(conf[<span class="string">&quot;ACTION_3_UUID&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_subscribe</span>(<span class="params">client, userdata, mid, granted_qos</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Subscribed: &quot;</span>+<span class="built_in">str</span>(mid)+<span class="string">&quot; &quot;</span>+<span class="built_in">str</span>(granted_qos))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">led_on_off</span>(<span class="params">on_off</span>):</span></span><br><span class="line">    cmd = os.path.abspath(os.path.join(os.path.dirname(__file__), <span class="string">&quot;hub-ctrl&quot;</span>))</span><br><span class="line">    p = subprocess.Popen([<span class="string">&quot;sudo&quot;</span>,cmd,</span><br><span class="line">	<span class="string">&quot;-b&quot;</span>, <span class="string">&quot;1&quot;</span>,</span><br><span class="line">	<span class="string">&quot;-d&quot;</span>, conf[<span class="string">&quot;DEVICE_NO&quot;</span>],</span><br><span class="line">	<span class="string">&quot;-P&quot;</span>, conf[<span class="string">&quot;PORT_NO&quot;</span>],</span><br><span class="line">	<span class="string">&quot;-p&quot;</span>, on_off], stdout=subprocess.PIPE)</span><br><span class="line">    out, err = p.communicate()</span><br><span class="line">    print(out)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span>(<span class="params">client, userdata, msg</span>):</span></span><br><span class="line">    print(msg.topic+<span class="string">&quot; &quot;</span>+<span class="built_in">str</span>(msg.payload))</span><br><span class="line">    payload = json.loads(msg.payload)</span><br><span class="line">    on_off_str = payload[<span class="string">&quot;data&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> on_off_str == <span class="string">&quot;led-on&quot;</span> :</span><br><span class="line">        led_on_off(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="keyword">elif</span> on_off_str == <span class="string">&quot;led-off&quot;</span> :</span><br><span class="line">        led_on_off(<span class="string">&quot;0&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;ACTION_3_UUID&quot;</span>], conf[<span class="string">&quot;ACTION_3_TOKEN&quot;</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_subscribe = on_subscribe</span><br><span class="line">    client.on_message = on_message</span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    client.loop_forever()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>hub-ctrlで指定して電源をコントロールするUSBのデバイス番号とポート番号は変わる場合があるので、lsusbコマンドで確認します。<code>NEC Corp. HighSpeed Hub</code>がコントロール先のデバイスです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo lsusb</span><br><span class="line">Bus 001 Device 002: ID 0409:005a NEC Corp. HighSpeed Hub</span><br><span class="line">Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</span><br><span class="line">Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</span><br><span class="line">Bus 001 Device 003: ID 2019:ab2a PLANEX GW-USNano2 802.11n Wireless Adapter [Realtek RTL8188CUS]</span><br></pre></td></tr></table></figure>
 
 <p>確認したデバイス番号と、USB連動電源タップを接続したUSBハブのポート番号の1(左端)を設定ファイルに記述します。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">...</span><br><span class="line">     <span class="string">"DEVICE_NO"</span>: <span class="string">"2"</span>,</span><br><span class="line">     <span class="string">"PORT_NO"</span>: <span class="string">"1"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">...</span><br><span class="line">     <span class="string">&quot;DEVICE_NO&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">     <span class="string">&quot;PORT_NO&quot;</span>: <span class="string">&quot;1&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>同様にSupervisorの子プロセスに追加します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo supervisorctl reread</span><br><span class="line">led: available</span><br><span class="line">$ sudo supervisorctl add led</span><br><span class="line">led: added process group</span><br></pre></td></tr></table></figure>
@@ -300,7 +267,7 @@
 <p>Supervisorに追加した時点で子プロセスが起動します。<code>status</code>でステータスを確認すると「RUNNING」になっています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo supervisorctl status</span><br><span class="line">led                              RUNNING    pid 3218, uptime 0:00:03</span><br><span class="line">w1                               RUNNING    pid 3190, uptime 0:03:51</span><br></pre></td></tr></table></figure>
 
-<h2 id="Raspberry-Pi-2"><a href="#Raspberry-Pi-2" class="headerlink" title="Raspberry Pi 2"></a>Raspberry Pi 2</h2><p>Raspberry Pi 2にはBME280の環境センサーをMQTTブローカーにpublishするプロセスを起動します。リポジトリは<a href="https://github.com/IDCFChannel/bme280-meshblu-py" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="Raspberry-Pi-2"><a href="#Raspberry-Pi-2" class="headerlink" title="Raspberry Pi 2"></a>Raspberry Pi 2</h2><p>Raspberry Pi 2にはBME280の環境センサーをMQTTブローカーにpublishするプロセスを起動します。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/bme280-meshblu-py">こちら</a>です。</p>
 <h3 id="Supervisor-1"><a href="#Supervisor-1" class="headerlink" title="Supervisor"></a>Supervisor</h3><p>Supervisorをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install supervisor</span><br></pre></td></tr></table></figure>
 
@@ -311,7 +278,7 @@
 <figure class="highlight bash"><figcaption><span>/etc/supervisor/conf.d/bme280.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:bme280]</span><br><span class="line"><span class="built_in">command</span>=/home/pi/python_apps/bme280-meshblu-py/bme280_publish.py</span><br><span class="line">numprocs=1</span><br><span class="line">redirect_stderr=<span class="literal">true</span></span><br><span class="line">stdout_logfile=/var/<span class="built_in">log</span>/bme280.log</span><br><span class="line">user=pi</span><br></pre></td></tr></table></figure>
 
 <p><code>ACTION_1_UUID</code>と<code>ACTION_2_UUID</code>にBME280から計測した環境データをpublishします。<code>ACTION_1_UUID</code>はHubotのMQTTがsubscribeしているuuidです。<code>ACTION_2_UUID</code>はfreeboardのダッシュボードがWebSocketでsubscribeしているuuidです。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/bme280-meshblu-py/bme280_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span><span class="params">(client, userdata, mid)</span>:</span></span><br><span class="line">    print(<span class="string">"publish: &#123;&#125;"</span>.format(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">"TRIGGER_1_UUID"</span>], conf[<span class="string">"TRIGGER_1_TOKEN"</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">"devices"</span>:</span><br><span class="line">	                      [conf[<span class="string">"ACTION_1_UUID"</span>],</span><br><span class="line">	                       conf[<span class="string">"ACTION_2_UUID"</span>]],</span><br><span class="line">                              <span class="string">"payload"</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">"message"</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/bme280-meshblu-py/bme280_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> bme280</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span>():</span></span><br><span class="line">    <span class="keyword">return</span> bme280.readData()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span>(<span class="params">client, userdata, mid</span>):</span></span><br><span class="line">    print(<span class="string">&quot;publish: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">	                 clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;TRIGGER_1_UUID&quot;</span>], conf[<span class="string">&quot;TRIGGER_1_TOKEN&quot;</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">&quot;devices&quot;</span>:</span><br><span class="line">	                      [conf[<span class="string">&quot;ACTION_1_UUID&quot;</span>],</span><br><span class="line">	                       conf[<span class="string">&quot;ACTION_2_UUID&quot;</span>]],</span><br><span class="line">                              <span class="string">&quot;payload&quot;</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">&quot;message&quot;</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 <p>PahoのPythonクライアントをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install paho-mqtt</span><br></pre></td></tr></table></figure>
@@ -321,7 +288,7 @@
 
 
 <p>trigger-1はデフォルトでaction-1にメッセージを送信できますが、action-2への送信も許可します。DockerホストのMeshbluコンテナが起動しているディレクトリで実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil whiten -- -f trigger-1 -t action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"whiten"</span> <span class="string">"-f"</span> <span class="string">"trigger-1"</span> <span class="string">"-t"</span> <span class="string">"action-2"</span></span><br><span class="line"></span><br><span class="line">trigger-1 can send message to action-2</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil whiten -- -f trigger-1 -t action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;whiten&quot;</span> <span class="string">&quot;-f&quot;</span> <span class="string">&quot;trigger-1&quot;</span> <span class="string">&quot;-t&quot;</span> <span class="string">&quot;action-2&quot;</span></span><br><span class="line"></span><br><span class="line">trigger-1 can send message to action-2</span><br></pre></td></tr></table></figure>
 
 <h2 id="freeboard"><a href="#freeboard" class="headerlink" title="freeboard"></a>freeboard</h2><p>freeboardのダッシュボードにアボカド周辺の環境データが4種類表示できました。</p>
 <p><img src="/2015/07/15/iot-avocado-growth-monitoring-mqtt-raspi-bbb/freeboard-3-metrics.png" alt="freeboard-3-metrics.png"></p>
@@ -366,7 +333,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -417,7 +383,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BeagleBone-Black"><span class="nav-number">1.</span> <span class="nav-text">BeagleBone Black</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor"><span class="nav-number">1.1.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DS18B20"><span class="nav-number">1.2.</span> <span class="nav-text">DS18B20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#植物育成LED"><span class="nav-number">1.3.</span> <span class="nav-text">植物育成LED</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-2"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor-1"><span class="nav-number">2.1.</span> <span class="nav-text">Supervisor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboard"><span class="nav-number">3.</span> <span class="nav-text">freeboard</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BeagleBone-Black"><span class="nav-number">1.</span> <span class="nav-text">BeagleBone Black</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor"><span class="nav-number">1.1.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DS18B20"><span class="nav-number">1.2.</span> <span class="nav-text">DS18B20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A4%8D%E7%89%A9%E8%82%B2%E6%88%90LED"><span class="nav-number">1.3.</span> <span class="nav-text">植物育成LED</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspberry-Pi-2"><span class="nav-number">2.</span> <span class="nav-text">Raspberry Pi 2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor-1"><span class="nav-number">2.1.</span> <span class="nav-text">Supervisor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboard"><span class="nav-number">3.</span> <span class="nav-text">freeboard</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -449,10 +415,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -477,9 +446,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -519,13 +488,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

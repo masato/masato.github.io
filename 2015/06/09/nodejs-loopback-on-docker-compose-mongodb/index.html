@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="去年MBaaSのバックエンドの調査で少しLoopBackを使ってからしばらく触ってませんでした。今回は一般的なREST APIを公開するプロダクション環境用のフレームワークとして調査しています。alternativesにはExpress、restify、 Hapi.js、Koa、actionhero.jsといったフレームワークがあります。LoopBackの良い点はモデルを定義するだけでREST A">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node.js LoopBack on Docker - Part3: MongoDB connector">
 <meta property="og:url" content="https://masato.github.io/2015/06/09/nodejs-loopback-on-docker-compose-mongodb/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="去年MBaaSのバックエンドの調査で少しLoopBackを使ってからしばらく触ってませんでした。今回は一般的なREST APIを公開するプロダクション環境用のフレームワークとして調査しています。alternativesにはExpress、restify、 Hapi.js、Koa、actionhero.jsといったフレームワークがあります。LoopBackの良い点はモデルを定義するだけでREST A">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/06/09/nodejs-loopback-on-docker-compose-mongodb/todo-create.png">
 <meta property="og:image" content="https://masato.github.io/2015/06/09/nodejs-loopback-on-docker-compose-mongodb/filter.png">
 <meta property="article:published_time" content="2015-06-09T05:17:42.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.818Z">
+<meta property="article:modified_time" content="2015-06-09T05:17:42.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="DockerCompose">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Node.js LoopBack on Docker - Part3: MongoDB connector | masato's blog</title>
+  <title>Node.js LoopBack on Docker - Part3: MongoDB connector | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 9 2015 14:17:42" itemprop="dateCreated datePublished" datetime="2015-06-09T14:17:42+09:00">Jun 9 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">去年MBaaSのバックエンドの調査で少しLoopBackを使ってからしばらく触ってませんでした。今回は一般的なREST APIを公開するプロダクション環境用のフレームワークとして調査しています。alternativesにはExpress、restify、 Hapi.js、Koa、actionhero.jsといったフレームワークがあります。LoopBackの良い点はモデルを定義するだけでREST APIを公開できる手軽さにあります。他と比べて圧倒的に書くコード数が少ないです。Hapi.jsなどの軽量フレームワークより依存するライブラリが多くサイズも大きくなりますが、メリットは大きいです。</div>
@@ -244,53 +211,53 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>去年MBaaSの<a href="/2014/12/25/nodejs-loopback-docker-getting-started-strongloop/">バックエンド</a>の調査で少し<a href="https://strongloop.com/node-js/loopback-framework/" target="_blank" rel="noopener">LoopBack</a>を使ってからしばらく触ってませんでした。今回は一般的なREST APIを公開するプロダクション環境用のフレームワークとして調査しています。alternativesには<a href="http://expressjs.com/" target="_blank" rel="noopener">Express</a>、<a href="https://github.com/restify/node-restify" target="_blank" rel="noopener">restify</a>、 <a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>、<a href="https://github.com/koajs/koa" target="_blank" rel="noopener">Koa</a>、<a href="http://www.actionherojs.com/" target="_blank" rel="noopener">actionhero.js</a>といったフレームワークがあります。LoopBackの良い点はモデルを定義するだけでREST APIを公開できる手軽さにあります。他と比べて圧倒的に書くコード数が少ないです。Hapi.jsなどの軽量フレームワークより依存するライブラリが多くサイズも大きくなりますが、メリットは大きいです。</p>
-<a id="more"></a>
+        <p>去年MBaaSの<a href="/2014/12/25/nodejs-loopback-docker-getting-started-strongloop/">バックエンド</a>の調査で少し<a target="_blank" rel="noopener" href="https://strongloop.com/node-js/loopback-framework/">LoopBack</a>を使ってからしばらく触ってませんでした。今回は一般的なREST APIを公開するプロダクション環境用のフレームワークとして調査しています。alternativesには<a target="_blank" rel="noopener" href="http://expressjs.com/">Express</a>、<a target="_blank" rel="noopener" href="https://github.com/restify/node-restify">restify</a>、 <a target="_blank" rel="noopener" href="http://hapijs.com/">Hapi.js</a>、<a target="_blank" rel="noopener" href="https://github.com/koajs/koa">Koa</a>、<a target="_blank" rel="noopener" href="http://www.actionherojs.com/">actionhero.js</a>といったフレームワークがあります。LoopBackの良い点はモデルを定義するだけでREST APIを公開できる手軽さにあります。他と比べて圧倒的に書くコード数が少ないです。Hapi.jsなどの軽量フレームワークより依存するライブラリが多くサイズも大きくなりますが、メリットは大きいです。</p>
+<span id="more"></span>
 
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>LoopBackやMongoDBのコンテナをDocker Composeで構成管理します。コードは<a href="https://github.com/masato/docker-loopback" target="_blank" rel="noopener">リポジトリ</a>にpushしています。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>LoopBackやMongoDBのコンテナをDocker Composeで構成管理します。コードは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-loopback">リポジトリ</a>にpushしています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-loopback</span><br><span class="line">$ tree .</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">└── docker-compose.yml</span><br><span class="line"></span><br><span class="line">0 directories, 3 files</span><br></pre></td></tr></table></figure>
 
 <p>slcコマンドを非rootユーザーで実行してアプリ作成します。アプリのコードはDockerホストにマウントして編集したいので作業ユーザーを作ります。strongloopパッケージはグローバルインストールするので、nvmで仮想環境を用意してもよいですが今回はsudoをつけるようにしました。ユーザーはDockerホストの作業ユーザーと同じuidを指定します。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/docker-loopback/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    apt-get install -y sudo &amp;&amp; \</span><br><span class="line">    rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">'docker ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /app</span><br><span class="line"></span><br><span class="line">RUN npm install -g --unsafe-perm strongloop</span><br><span class="line">USER docker</span><br><span class="line">ENTRYPOINT [<span class="string">"npm"</span>, <span class="string">"start"</span>]</span><br><span class="line">CMD []</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/node_apps/docker-loopback/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    apt-get install -y sudo &amp;&amp; \</span><br><span class="line">    rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;docker ALL=(ALL) NOPASSWD:ALL&#x27;</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /app</span><br><span class="line"></span><br><span class="line">RUN npm install -g --unsafe-perm strongloop</span><br><span class="line">USER docker</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br><span class="line">CMD []</span><br></pre></td></tr></table></figure>
 
 <p>Dockerイメージをビルドします。</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker build -t loopback .</span><br></pre></td></tr></table></figure>
 
 <p>slcコマンドからしてアプリを作成します。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm slc loopback</span><br><span class="line"></span><br><span class="line">     _-----_</span><br><span class="line">    |       |    .--------------------------.</span><br><span class="line">    |--(o)--|    |  Let<span class="string">'s create a LoopBack |</span></span><br><span class="line"><span class="string">   `---------´   |       application!       |</span></span><br><span class="line"><span class="string">    ( _´U`_ )    '</span>--------------------------<span class="string">'</span></span><br><span class="line"><span class="string">    /___A___\</span></span><br><span class="line"><span class="string">     |  ~  |</span></span><br><span class="line"><span class="string">   __'</span>.___.<span class="string">'__</span></span><br><span class="line"><span class="string"> ´   `  |° ´ Y `</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">? What'</span>s the name of your application? spike-todo</span><br><span class="line">   create spike-todo/</span><br><span class="line">     info change the working directory to spike-todo</span><br><span class="line">...</span><br><span class="line">Next steps:</span><br><span class="line"></span><br><span class="line">  Change directory to your app</span><br><span class="line">    $ <span class="built_in">cd</span> spike-todo</span><br><span class="line"></span><br><span class="line">  Create a model <span class="keyword">in</span> your app</span><br><span class="line">    $ slc loopback:model</span><br><span class="line"></span><br><span class="line">  Optional: Enable StrongOps monitoring</span><br><span class="line">    $ slc strongops</span><br><span class="line"></span><br><span class="line">  Run the app</span><br><span class="line">    $ slc run .</span><br><span class="line"></span><br><span class="line">Removing dockerloopback_slc_run_1...</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm slc loopback</span><br><span class="line"></span><br><span class="line">     _-----_</span><br><span class="line">    |       |    .--------------------------.</span><br><span class="line">    |--(o)--|    |  Let<span class="string">&#x27;s create a LoopBack |</span></span><br><span class="line"><span class="string">   `---------´   |       application!       |</span></span><br><span class="line"><span class="string">    ( _´U`_ )    &#x27;</span>--------------------------<span class="string">&#x27;</span></span><br><span class="line"><span class="string">    /___A___\</span></span><br><span class="line"><span class="string">     |  ~  |</span></span><br><span class="line"><span class="string">   __&#x27;</span>.___.<span class="string">&#x27;__</span></span><br><span class="line"><span class="string"> ´   `  |° ´ Y `</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">? What&#x27;</span>s the name of your application? spike-todo</span><br><span class="line">   create spike-todo/</span><br><span class="line">     info change the working directory to spike-todo</span><br><span class="line">...</span><br><span class="line">Next steps:</span><br><span class="line"></span><br><span class="line">  Change directory to your app</span><br><span class="line">    $ <span class="built_in">cd</span> spike-todo</span><br><span class="line"></span><br><span class="line">  Create a model <span class="keyword">in</span> your app</span><br><span class="line">    $ slc loopback:model</span><br><span class="line"></span><br><span class="line">  Optional: Enable StrongOps monitoring</span><br><span class="line">    $ slc strongops</span><br><span class="line"></span><br><span class="line">  Run the app</span><br><span class="line">    $ slc run .</span><br><span class="line"></span><br><span class="line">Removing dockerloopback_slc_run_1...</span><br></pre></td></tr></table></figure>
 
 <h2 id="アプリの設定"><a href="#アプリの設定" class="headerlink" title="アプリの設定"></a>アプリの設定</h2><p>slcコマンドで作成したアプリ名をdocker-compose.ymlの<code>working_dir</code>に指定します。コンテナの作業ディレクトリは<code>/app</code>なので上記のアプリの場合は、<code>/app/spike-todo</code>になります。</p>
 <p>MongoDBのコンテナはサービスを<code>mongo</code>とつけて<code>server</code>サービスからlinkします。<code>server</code>サービスの<code>/etc/hosts</code>に<code>mongo</code>の名前で自動的に登録されるためコンテナ間の名前解決が簡単になります。</p>
-<figure class="highlight yaml"><figcaption><span>~/node_apps/docker-loopback/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">slc:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">loopback</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/app/spike-todo</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["slc"]</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["slc","run"]</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["npm"]</span></span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./mongo:/data/db</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/node_apps/docker-loopback/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">slc:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">loopback</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/app/spike-todo</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">entrypoint:</span> [<span class="string">&quot;slc&quot;</span>]</span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> [<span class="string">&quot;slc&quot;</span>,<span class="string">&quot;run&quot;</span>]</span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> [<span class="string">&quot;npm&quot;</span>]</span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./mongo:/data/db</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="MondoDBサービス"><a href="#MondoDBサービス" class="headerlink" title="MondoDBサービス"></a>MondoDBサービス</h3><p>docker-compose.ymlに定義したnpmサービスを使ってMongoDBコネクタの<a href="https://github.com/strongloop/loopback-connector-mongodb" target="_blank" rel="noopener">loopback-connector-mongodb</a>パッケージをインストールします。<code>--save</code>フラグをつけると<code>package.json</code>に依存関係を追記してくれます。</p>
+<h3 id="MondoDBサービス"><a href="#MondoDBサービス" class="headerlink" title="MondoDBサービス"></a>MondoDBサービス</h3><p>docker-compose.ymlに定義したnpmサービスを使ってMongoDBコネクタの<a target="_blank" rel="noopener" href="https://github.com/strongloop/loopback-connector-mongodb">loopback-connector-mongodb</a>パッケージをインストールします。<code>--save</code>フラグをつけると<code>package.json</code>に依存関係を追記してくれます。</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm npm install loopback-connector-mongodb --save</span><br><span class="line">...</span><br><span class="line">loopback-connector-mongodb@1.11.0 node_modules/loopback-connector-mongodb</span><br><span class="line">├── debug@2.2.0 (ms@0.7.1)</span><br><span class="line">├── loopback-connector@2.2.1</span><br><span class="line">├── async@1.2.1</span><br><span class="line">└── mongodb@2.0.33 (readable-stream@1.0.31, mongodb-core@1.1.32)</span><br><span class="line">Removing dockerloopback_npm_run_1...</span><br></pre></td></tr></table></figure>
 
 <p>slcコマンドで作成したアプリの<code>spike-todo</code>ディレクトリにあるデータベース接続の設定ファイルを編集します。dbディレクティブはデフォルトで定義されています。mongodb_devという名前でディレクティブを作成します。</p>
-<figure class="highlight"><figcaption><span>~/node_apps/docker-loopback/spike-todo/server/datasources.json</span></figcaption><table><tr><td class="code"><pre><span class="line">  "db": &#123;</span><br><span class="line">    "name": "db",</span><br><span class="line">    "connector": "memory"</span><br><span class="line">  &#125;,</span><br><span class="line">  "mongodb_dev": &#123;</span><br><span class="line">    "host": "mongo",</span><br><span class="line">    "port": 27017,</span><br><span class="line">    "database": "devDB",</span><br><span class="line">    "username": "devUser",</span><br><span class="line">    "password": "",</span><br><span class="line">    "name": "",</span><br><span class="line">    "connector": "mongodb"</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><figcaption><span>~/node_apps/docker-loopback/spike-todo/server/datasources.json</span></figcaption><table><tr><td class="code"><pre><span class="line">  &quot;db&quot;: &#123;</span><br><span class="line">    &quot;name&quot;: &quot;db&quot;,</span><br><span class="line">    &quot;connector&quot;: &quot;memory&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;mongodb_dev&quot;: &#123;</span><br><span class="line">    &quot;host&quot;: &quot;mongo&quot;,</span><br><span class="line">    &quot;port&quot;: 27017,</span><br><span class="line">    &quot;database&quot;: &quot;devDB&quot;,</span><br><span class="line">    &quot;username&quot;: &quot;devUser&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;&quot;,</span><br><span class="line">    &quot;connector&quot;: &quot;mongodb&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="モデルの作成"><a href="#モデルの作成" class="headerlink" title="モデルの作成"></a>モデルの作成</h3><p>MongoDBコネクタをインストールして、datasources.jsonにエントリを追加したのでslcコマンドのdata-sourceの選択にmongodbが表示されます。ベースクラスはPersistedModelを選択してデータベースのCRUD操作ができるようにします。続くモデルのプロパティ設定はToDoアプリっぽくstringの<code>titie</code>とbooleanの<code>created</code>の2つを追加します。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm slc loopback:model</span><br><span class="line">? Enter the model name: Todo</span><br><span class="line">? Select the data-source to attach Todo to: mongodb_dev (mongodb)</span><br><span class="line">? Select model<span class="string">'s base class: PersistedModel</span></span><br><span class="line"><span class="string">? Expose Todo via the REST API? Yes</span></span><br><span class="line"><span class="string">? Custom plural form (used to build REST URL): Todos</span></span><br><span class="line"><span class="string">Let'</span>s add some Todo properties now.</span><br><span class="line"></span><br><span class="line">Enter an empty property name when <span class="keyword">done</span>.</span><br><span class="line">? Property name: title</span><br><span class="line">   invoke   loopback:property</span><br><span class="line">? Property <span class="built_in">type</span>: string</span><br><span class="line">? Required? Yes</span><br><span class="line"></span><br><span class="line">Let<span class="string">'s add another Todo property.</span></span><br><span class="line"><span class="string">Enter an empty property name when done.</span></span><br><span class="line"><span class="string">? Property name: completed</span></span><br><span class="line"><span class="string">   invoke   loopback:property</span></span><br><span class="line"><span class="string">? Property type: boolean</span></span><br><span class="line"><span class="string">? Required? No</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Let'</span>s add another Todo property.</span><br><span class="line">Enter an empty property name when <span class="keyword">done</span>.</span><br><span class="line">? Property name:</span><br><span class="line">Removing dockerloopback_slc_run_1...</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm slc loopback:model</span><br><span class="line">? Enter the model name: Todo</span><br><span class="line">? Select the data-source to attach Todo to: mongodb_dev (mongodb)</span><br><span class="line">? Select model<span class="string">&#x27;s base class: PersistedModel</span></span><br><span class="line"><span class="string">? Expose Todo via the REST API? Yes</span></span><br><span class="line"><span class="string">? Custom plural form (used to build REST URL): Todos</span></span><br><span class="line"><span class="string">Let&#x27;</span>s add some Todo properties now.</span><br><span class="line"></span><br><span class="line">Enter an empty property name when <span class="keyword">done</span>.</span><br><span class="line">? Property name: title</span><br><span class="line">   invoke   loopback:property</span><br><span class="line">? Property <span class="built_in">type</span>: string</span><br><span class="line">? Required? Yes</span><br><span class="line"></span><br><span class="line">Let<span class="string">&#x27;s add another Todo property.</span></span><br><span class="line"><span class="string">Enter an empty property name when done.</span></span><br><span class="line"><span class="string">? Property name: completed</span></span><br><span class="line"><span class="string">   invoke   loopback:property</span></span><br><span class="line"><span class="string">? Property type: boolean</span></span><br><span class="line"><span class="string">? Required? No</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Let&#x27;</span>s add another Todo property.</span><br><span class="line">Enter an empty property name when <span class="keyword">done</span>.</span><br><span class="line">? Property name:</span><br><span class="line">Removing dockerloopback_slc_run_1...</span><br></pre></td></tr></table></figure>
 
 <h3 id="サーバーの起動"><a href="#サーバーの起動" class="headerlink" title="サーバーの起動"></a>サーバーの起動</h3><p><code>docker-compose up</code>からサービスを起動するとdocker-compose.ymlに定義したホストへのポートマップが有効になります。Dockerホストの外側からはDockerホストのIPアドレスを指定して<code>http://xxx..xxx.xxx:3000/explorer</code>をブラウザで開きます。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose up server</span><br><span class="line">Creating dockerloopback_mongo_1...</span><br><span class="line">Creating dockerloopback_server_1...</span><br><span class="line">Attaching to dockerloopback_server_1</span><br><span class="line">server_1 | INFO strong-agent v1.6.0 profiling app <span class="string">'spike-todo'</span> pid <span class="string">'1'</span></span><br><span class="line">server_1 | INFO strong-agent[1] started profiling agent</span><br><span class="line">server_1 | INFO supervisor reporting metrics to `internal:`</span><br><span class="line">server_1 | supervisor running without clustering (unsupervised)</span><br><span class="line">server_1 | INFO strong-agent not profiling, agent metrics requires a valid license.</span><br><span class="line">server_1 | Please contact sales@strongloop.com <span class="keyword">for</span> assistance.</span><br><span class="line">server_1 | Browse your REST API at http://0.0.0.0:3000/explorer</span><br><span class="line">server_1 | Web server listening at: http://0.0.0.0:3000/</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker-compose up server</span><br><span class="line">Creating dockerloopback_mongo_1...</span><br><span class="line">Creating dockerloopback_server_1...</span><br><span class="line">Attaching to dockerloopback_server_1</span><br><span class="line">server_1 | INFO strong-agent v1.6.0 profiling app <span class="string">&#x27;spike-todo&#x27;</span> pid <span class="string">&#x27;1&#x27;</span></span><br><span class="line">server_1 | INFO strong-agent[1] started profiling agent</span><br><span class="line">server_1 | INFO supervisor reporting metrics to `internal:`</span><br><span class="line">server_1 | supervisor running without clustering (unsupervised)</span><br><span class="line">server_1 | INFO strong-agent not profiling, agent metrics requires a valid license.</span><br><span class="line">server_1 | Please contact sales@strongloop.com <span class="keyword">for</span> assistance.</span><br><span class="line">server_1 | Browse your REST API at http://0.0.0.0:3000/explorer</span><br><span class="line">server_1 | Web server listening at: http://0.0.0.0:3000/</span><br></pre></td></tr></table></figure>
 
 <h2 id="Swagger-UIとREST-APIの実行"><a href="#Swagger-UIとREST-APIの実行" class="headerlink" title="Swagger UIとREST APIの実行"></a>Swagger UIとREST APIの実行</h2><p>3000ポートを開くとLoopBackサーバーのuptimeが表示されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl http://localhost:3000</span><br><span class="line">&#123;<span class="string">"started"</span>:<span class="string">"2015-06-09T02:31:05.307Z"</span>,<span class="string">"uptime"</span>:37.229&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl http://localhost:3000</span><br><span class="line">&#123;<span class="string">&quot;started&quot;</span>:<span class="string">&quot;2015-06-09T02:31:05.307Z&quot;</span>,<span class="string">&quot;uptime&quot;</span>:37.229&#125;</span><br></pre></td></tr></table></figure>
 
-<p>DBの設定ファイルを定義してslcコマンドからモデルを作成しただけで、ここまでコードは1行も書いていませんがこれだけで<a href="https://github.com/swagger-api/swagger-ui" target="_blank" rel="noopener">Swagger UI</a>とREST APIが使えるようになります。初めてRailsを触ったときのようなちょっとした感動があります。Swagger UIの画面上からAPIの実行をすることもできます。</p>
+<p>DBの設定ファイルを定義してslcコマンドからモデルを作成しただけで、ここまでコードは1行も書いていませんがこれだけで<a target="_blank" rel="noopener" href="https://github.com/swagger-api/swagger-ui">Swagger UI</a>とREST APIが使えるようになります。初めてRailsを触ったときのようなちょっとした感動があります。Swagger UIの画面上からAPIの実行をすることもできます。</p>
 <p><img src="/2015/06/09/nodejs-loopback-on-docker-compose-mongodb/todo-create.png" alt="todo-create.png"></p>
 <p>今回はcurlでREST APIを実行します。JSON形式でPOSTしてレコードを作成します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -H <span class="string">"Content-Type:application/json"</span> \</span><br><span class="line">-d <span class="string">'&#123;"title": "サンプル", "completed": false&#125;'</span> \</span><br><span class="line">http:<span class="comment">//localhost:3000/api/ToDos</span></span><br><span class="line">&#123;<span class="string">"title"</span>:<span class="string">"サンプル"</span>,<span class="string">"completed"</span>:<span class="literal">false</span>,<span class="string">"id"</span>:<span class="string">"55766dcba3148801001e6e42"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$ curl -X POST -H <span class="string">&quot;Content-Type:application/json&quot;</span> \</span><br><span class="line">-d <span class="string">&#x27;&#123;&quot;title&quot;: &quot;サンプル&quot;, &quot;completed&quot;: false&#125;&#x27;</span> \</span><br><span class="line">http:<span class="comment">//localhost:3000/api/ToDos</span></span><br><span class="line">&#123;<span class="string">&quot;title&quot;</span>:<span class="string">&quot;サンプル&quot;</span>,<span class="string">&quot;completed&quot;</span>:<span class="literal">false</span>,<span class="string">&quot;id&quot;</span>:<span class="string">&quot;55766dcba3148801001e6e42&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <p>今回はクエリ文字列に日本語を使っているので、素ではURIエンコードは書けませんがGETメソッドを使いフィルタしたレコードを取得することができます。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ curl -X GET localhost:3000/api/Todos?filter=%7B%22where%22%3A%7B%22title%22%3A%22%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%22%7D%7D</span><br><span class="line">[&#123;<span class="string">"title"</span>:<span class="string">"サンプル"</span>,<span class="string">"completed"</span>:<span class="literal">false</span>,<span class="string">"id"</span>:<span class="string">"55766dcba3148801001e6e42"</span>&#125;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ curl -X GET localhost:3000/api/Todos?filter=%7B%22where%22%3A%7B%22title%22%3A%22%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%22%7D%7D</span><br><span class="line">[&#123;<span class="string">&quot;title&quot;</span>:<span class="string">&quot;サンプル&quot;</span>,<span class="string">&quot;completed&quot;</span>:<span class="literal">false</span>,<span class="string">&quot;id&quot;</span>:<span class="string">&quot;55766dcba3148801001e6e42&quot;</span>&#125;]</span><br></pre></td></tr></table></figure>
 
 <p>上記のクエリ文字列は以下のWhere句をURIエンコードしたものです。Swagger UIの場合クエリをフィールドに入力すれば自動的にURIエンコードしたURLを生成して実行してくれます。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">"where"</span>:&#123;<span class="string">"title"</span>:<span class="string">"サンプル"</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&quot;where&quot;</span>:&#123;<span class="string">&quot;title&quot;</span>:<span class="string">&quot;サンプル&quot;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
 <p><img src="/2015/06/09/nodejs-loopback-on-docker-compose-mongodb/filter.png" alt="filter.png"></p>
 <p>念のため起動中のMongoDBコンテナに入りレコードが追加されたことを確認します。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it dockerloopback_mongo_1 mongo devDB</span><br><span class="line">MongoDB shell version: 3.0.3</span><br><span class="line">connecting to: devDB</span><br><span class="line">&gt; db.Todo.find(&#123;title:<span class="string">"サンプル"</span>&#125;);</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"55766dcba3148801001e6e42"</span>), <span class="string">"title"</span> : <span class="string">"サンプル"</span>, <span class="string">"completed"</span> : <span class="literal">false</span> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it dockerloopback_mongo_1 mongo devDB</span><br><span class="line">MongoDB shell version: 3.0.3</span><br><span class="line">connecting to: devDB</span><br><span class="line">&gt; db.Todo.find(&#123;title:<span class="string">&quot;サンプル&quot;</span>&#125;);</span><br><span class="line">&#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55766dcba3148801001e6e42&quot;</span>), <span class="string">&quot;title&quot;</span> : <span class="string">&quot;サンプル&quot;</span>, <span class="string">&quot;completed&quot;</span> : <span class="literal">false</span> &#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -328,7 +295,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -379,7 +345,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#アプリの設定"><span class="nav-number">2.</span> <span class="nav-text">アプリの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MondoDBサービス"><span class="nav-number">2.1.</span> <span class="nav-text">MondoDBサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#モデルの作成"><span class="nav-number">2.2.</span> <span class="nav-text">モデルの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サーバーの起動"><span class="nav-number">2.3.</span> <span class="nav-text">サーバーの起動</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swagger-UIとREST-APIの実行"><span class="nav-number">3.</span> <span class="nav-text">Swagger UIとREST APIの実行</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">2.</span> <span class="nav-text">アプリの設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MondoDB%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">MondoDBサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">2.2.</span> <span class="nav-text">モデルの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">2.3.</span> <span class="nav-text">サーバーの起動</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swagger-UI%E3%81%A8REST-API%E3%81%AE%E5%AE%9F%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">Swagger UIとREST APIの実行</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -411,10 +377,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -439,9 +408,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -481,13 +450,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

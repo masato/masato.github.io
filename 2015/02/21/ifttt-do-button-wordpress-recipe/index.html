@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,25 +13,25 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="先日IFTTTからDoアプリがリリースされました。Do Button、Do Camera、Do Noteの3つあり、iOS と Androidから使えるようになっています。すでにWordPressを使ったCreate a photo post with a map of your locationというDoレシピがあるので使ってみようと思います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IFTTTのDo Buttonアプリを使いBeagleBoneBlackへ位置情報のGoogleマップを送る">
 <meta property="og:url" content="https://masato.github.io/2015/02/21/ifttt-do-button-wordpress-recipe/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="先日IFTTTからDoアプリがリリースされました。Do Button、Do Camera、Do Noteの3つあり、iOS と Androidから使えるようになっています。すでにWordPressを使ったCreate a photo post with a map of your locationというDoレシピがあるので使ってみようと思います。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/02/21/ifttt-do-button-wordpress-recipe/do-recipe-wordpress.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/21/ifttt-do-button-wordpress-recipe/wordpress-channel.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/21/ifttt-do-button-wordpress-recipe/do-button-android.png">
 <meta property="article:published_time" content="2015-02-21T04:14:47.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.707Z">
+<meta property="article:modified_time" content="2015-02-21T04:14:47.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="Nodejs">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>IFTTTのDo Buttonアプリを使いBeagleBoneBlackへ位置情報のGoogleマップを送る | masato's blog</title>
+  <title>IFTTTのDo Buttonアプリを使いBeagleBoneBlackへ位置情報のGoogleマップを送る | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -95,7 +95,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -116,14 +116,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -132,51 +131,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -193,11 +168,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -210,7 +184,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -220,19 +194,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 21 2015 13:14:47" itemprop="dateCreated datePublished" datetime="2015-02-21T13:14:47+09:00">Feb 21 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">先日IFTTTからDoアプリがリリースされました。Do Button、Do Camera、Do Noteの3つあり、iOS と Androidから使えるようになっています。すでにWordPressを使ったCreate a photo post with a map of your locationというDoレシピがあるので使ってみようと思います。</div>
@@ -246,25 +213,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>先日IFTTTから<a href="http://blog.ifttt.com/post/111467477713/introducing-do-a-new-class-of-apps-by-ifttt" target="_blank" rel="noopener">Doアプリ</a>がリリースされました。Do Button、Do Camera、Do Noteの3つあり、iOS と Androidから使えるようになっています。すでにWordPressを使った<a href="https://ifttt.com/recipes/259548-create-a-photo-post-with-a-map-of-your-location" target="_blank" rel="noopener">Create a photo post with a map of your location</a>というDoレシピがあるので使ってみようと思います。</p>
-<a id="more"></a>
+        <p>先日IFTTTから<a target="_blank" rel="noopener" href="http://blog.ifttt.com/post/111467477713/introducing-do-a-new-class-of-apps-by-ifttt">Doアプリ</a>がリリースされました。Do Button、Do Camera、Do Noteの3つあり、iOS と Androidから使えるようになっています。すでにWordPressを使った<a target="_blank" rel="noopener" href="https://ifttt.com/recipes/259548-create-a-photo-post-with-a-map-of-your-location">Create a photo post with a map of your location</a>というDoレシピがあるので使ってみようと思います。</p>
+<span id="more"></span>
 
 <h2 id="Do-Button"><a href="#Do-Button" class="headerlink" title="Do Button"></a>Do Button</h2><p>これまでのレシピはIFレシピのタブにまとめられ、新たにDoレシピのタブが追加されました。Do Buttonの動作は簡単です。Yoトリガーを使うようにシンプルにAndroidアプリのボタンを押すだけです。ちょうどIFTTTとYoを連携させたレシピを書いて使っているところなので、Do Button用にレシピを作成します。</p>
-<h2 id="Do-WordPress"><a href="#Do-WordPress" class="headerlink" title="Do WordPress"></a>Do WordPress</h2><h3 id="Yoトリガーとexpress-ifttt-webhookアクションのサンプル"><a href="#Yoトリガーとexpress-ifttt-webhookアクションのサンプル" class="headerlink" title="Yoトリガーとexpress-ifttt-webhookアクションのサンプル"></a>Yoトリガーとexpress-ifttt-webhookアクションのサンプル</h3><p><a href="/2015/02/17/express-ifttt-webhook-requestbin/">前回</a>Yoトリガーを使ったIFレシピのサンプルを作りました。<a href="https://ifttt.com/wordpress" target="_blank" rel="noopener">WordPress Channel</a>のXML-RPCを借りて、クラウド上に構築したNode.js製の<a href="https://github.com/b00giZm/express-ifttt-webhook" target="_blank" rel="noopener">express-ifttt-webhook</a>ゲートウェイに向けてアクションを実行します。ゲートウェイではMQTTにブリッジしてpublishします。結果としてYoからMQTTでsubscribeしているローカルのBegleBone Blackへ任意のメッセージを送ることができます。</p>
-<h3 id="Do-レシピ"><a href="#Do-レシピ" class="headerlink" title="Do レシピ"></a>Do レシピ</h3><p><a href="https://ifttt.com/recipes/259548-create-a-photo-post-with-a-map-of-your-location" target="_blank" rel="noopener">Create a photo post with a map of your location</a>のDoレシピは、AndroidのDo Buttonアプリのボタンを押すと、モバイルの位置情報からGoogleマップの位置情報を取得してWordPressにポストしてくれます。</p>
+<h2 id="Do-WordPress"><a href="#Do-WordPress" class="headerlink" title="Do WordPress"></a>Do WordPress</h2><h3 id="Yoトリガーとexpress-ifttt-webhookアクションのサンプル"><a href="#Yoトリガーとexpress-ifttt-webhookアクションのサンプル" class="headerlink" title="Yoトリガーとexpress-ifttt-webhookアクションのサンプル"></a>Yoトリガーとexpress-ifttt-webhookアクションのサンプル</h3><p><a href="/2015/02/17/express-ifttt-webhook-requestbin/">前回</a>Yoトリガーを使ったIFレシピのサンプルを作りました。<a target="_blank" rel="noopener" href="https://ifttt.com/wordpress">WordPress Channel</a>のXML-RPCを借りて、クラウド上に構築したNode.js製の<a target="_blank" rel="noopener" href="https://github.com/b00giZm/express-ifttt-webhook">express-ifttt-webhook</a>ゲートウェイに向けてアクションを実行します。ゲートウェイではMQTTにブリッジしてpublishします。結果としてYoからMQTTでsubscribeしているローカルのBegleBone Blackへ任意のメッセージを送ることができます。</p>
+<h3 id="Do-レシピ"><a href="#Do-レシピ" class="headerlink" title="Do レシピ"></a>Do レシピ</h3><p><a target="_blank" rel="noopener" href="https://ifttt.com/recipes/259548-create-a-photo-post-with-a-map-of-your-location">Create a photo post with a map of your location</a>のDoレシピは、AndroidのDo Buttonアプリのボタンを押すと、モバイルの位置情報からGoogleマップの位置情報を取得してWordPressにポストしてくれます。</p>
 <p><img src="/2015/02/21/ifttt-do-button-wordpress-recipe/do-recipe-wordpress.png" alt="do-recipe-wordpress"></p>
-<h3 id="WordPress-Channel"><a href="#WordPress-Channel" class="headerlink" title="WordPress Channel"></a>WordPress Channel</h3><p>Do WordPressレシピのページを開きます。WordPressのアイコンをクリックするとWordPress Channelの構成画面に移動します。<a href="/2015/02/17/express-ifttt-webhook-requestbin/">前回</a>すでにチャンネルは構成済みなので変更はありません。Blog URLはクラウドの仮想マシン上に構築した<a href="https://github.com/b00giZm/express-ifttt-webhook" target="_blank" rel="noopener">express-ifttt-webhook</a>のURLを指定します。</p>
+<h3 id="WordPress-Channel"><a href="#WordPress-Channel" class="headerlink" title="WordPress Channel"></a>WordPress Channel</h3><p>Do WordPressレシピのページを開きます。WordPressのアイコンをクリックするとWordPress Channelの構成画面に移動します。<a href="/2015/02/17/express-ifttt-webhook-requestbin/">前回</a>すでにチャンネルは構成済みなので変更はありません。Blog URLはクラウドの仮想マシン上に構築した<a target="_blank" rel="noopener" href="https://github.com/b00giZm/express-ifttt-webhook">express-ifttt-webhook</a>のURLを指定します。</p>
 <p><img src="/2015/02/21/ifttt-do-button-wordpress-recipe/wordpress-channel.png" alt="wordpress-channel"></p>
 <p>Do WordPressレシピのページに戻り<code>Add Recipe</code>ボタンをクリックしてレシピを追加します。レシピページのActionはデフォルトで動作しますが適宜フィールドに入力して<code>Update</code>ボタンをクリックします。</p>
 <h2 id="テスト"><a href="#テスト" class="headerlink" title="テスト"></a>テスト</h2><h3 id="BeagleBone-BlackのCylon-jsアプリ"><a href="#BeagleBone-BlackのCylon-jsアプリ" class="headerlink" title="BeagleBone BlackのCylon.jsアプリ"></a>BeagleBone BlackのCylon.jsアプリ</h3><p>BeagleBone BlackでMQTTをsubsribeするプログラムは前回と同じです。単純にメッセージを受信して標準出力します。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    server: &#123; <span class="attr">adaptor</span>: <span class="string">'mqtt'</span>, <span class="attr">host</span>: <span class="string">'mqtt://xxx.xxx.xxx.xxx:1883'</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">'beaglebone'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.server.subscribe(<span class="string">'ifttt/bbb'</span>);</span><br><span class="line">    my.server.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">topic, data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(topic + <span class="string">": "</span> + data);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    server: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">host</span>: <span class="string">&#x27;mqtt://xxx.xxx.xxx.xxx:1883&#x27;</span> &#125;,</span><br><span class="line">    beaglebone: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;beaglebone&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.server.subscribe(<span class="string">&#x27;ifttt/bbb&#x27;</span>);</span><br><span class="line">    my.server.on(<span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">topic, data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(topic + <span class="string">&quot;: &quot;</span> + data);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 
 <p><code>npm start</code>を実行してアプリを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; cylon-test@0.0.1 start /home/ubuntu/node_modules/orion/.workspace/cylonjs</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-21T05:01:32.480Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-21T05:01:34.608Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-21T05:01:34.621Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-21T05:01:34.681Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-21T05:01:34.684Z]  INFO -- : Working.</span><br></pre></td></tr></table></figure>
 
 <h3 id="AndroidのDo-Buttonアプリ"><a href="#AndroidのDo-Buttonアプリ" class="headerlink" title="AndroidのDo Buttonアプリ"></a>AndroidのDo Buttonアプリ</h3><p>AndroidのDo Buttonアプリを起動すると、先ほど追加したDo WordPressが追加されています。中央のWordPressロゴをタップするとアプリが実行されます。BeagleBone BlackのコンソールにGoogleマップのURLとIFTTTのシェアページの短縮URLが通知されました。</p>
 <p><img src="/2015/02/21/ifttt-do-button-wordpress-recipe/do-button-android.png" alt="do-button-android"></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; cylon-test@0.0.1 start /home/ubuntu/node_modules/orion/.workspace/cylonjs</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-21T05:01:32.480Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-21T05:01:34.608Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-21T05:01:34.621Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-21T05:01:34.681Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-21T05:01:34.684Z]  INFO -- : Working.</span><br><span class="line">ifttt/bbb: &#123;<span class="string">"username"</span>:<span class="string">"username"</span>,<span class="string">"password"</span>:<span class="string">"password"</span>,<span class="string">"title"</span>:<span class="string">""</span>,<span class="string">"description"</span>:<span class="string">"&lt;div&gt;&lt;img src='http://maps.google.com/maps/api/staticmap?center=35.xx,139.xxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxx,139.xxx' style='max-width:600px;' /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 21, 2015 at 02:04PM http://ift.tt/1EltQE2&lt;/div&gt;&lt;/div&gt;"</span>,<span class="string">"tags"</span>:&#123;<span class="string">"string"</span>:<span class="string">"Do Button"</span>&#125;,<span class="string">"post_status"</span>:<span class="string">"publish"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; cylon-test@0.0.1 start /home/ubuntu/node_modules/orion/.workspace/cylonjs</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-21T05:01:32.480Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-21T05:01:34.608Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-21T05:01:34.621Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-21T05:01:34.681Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-21T05:01:34.684Z]  INFO -- : Working.</span><br><span class="line">ifttt/bbb: &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;username&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;password&quot;</span>,<span class="string">&quot;title&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;description&quot;</span>:<span class="string">&quot;&lt;div&gt;&lt;img src=&#x27;http://maps.google.com/maps/api/staticmap?center=35.xx,139.xxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxx,139.xxx&#x27; style=&#x27;max-width:600px;&#x27; /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 21, 2015 at 02:04PM http://ift.tt/1EltQE2&lt;/div&gt;&lt;/div&gt;&quot;</span>,<span class="string">&quot;tags&quot;</span>:&#123;<span class="string">&quot;string&quot;</span>:<span class="string">&quot;Do Button&quot;</span>&#125;,<span class="string">&quot;post_status&quot;</span>:<span class="string">&quot;publish&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -303,7 +270,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -354,7 +320,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-Button"><span class="nav-number">1.</span> <span class="nav-text">Do Button</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-WordPress"><span class="nav-number">2.</span> <span class="nav-text">Do WordPress</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yoトリガーとexpress-ifttt-webhookアクションのサンプル"><span class="nav-number">2.1.</span> <span class="nav-text">Yoトリガーとexpress-ifttt-webhookアクションのサンプル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-レシピ"><span class="nav-number">2.2.</span> <span class="nav-text">Do レシピ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordPress-Channel"><span class="nav-number">2.3.</span> <span class="nav-text">WordPress Channel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#テスト"><span class="nav-number">3.</span> <span class="nav-text">テスト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BeagleBone-BlackのCylon-jsアプリ"><span class="nav-number">3.1.</span> <span class="nav-text">BeagleBone BlackのCylon.jsアプリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AndroidのDo-Buttonアプリ"><span class="nav-number">3.2.</span> <span class="nav-text">AndroidのDo Buttonアプリ</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-Button"><span class="nav-number">1.</span> <span class="nav-text">Do Button</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Do-WordPress"><span class="nav-number">2.</span> <span class="nav-text">Do WordPress</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yo%E3%83%88%E3%83%AA%E3%82%AC%E3%83%BC%E3%81%A8express-ifttt-webhook%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB"><span class="nav-number">2.1.</span> <span class="nav-text">Yoトリガーとexpress-ifttt-webhookアクションのサンプル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-%E3%83%AC%E3%82%B7%E3%83%94"><span class="nav-number">2.2.</span> <span class="nav-text">Do レシピ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WordPress-Channel"><span class="nav-number">2.3.</span> <span class="nav-text">WordPress Channel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">3.</span> <span class="nav-text">テスト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BeagleBone-Black%E3%81%AECylon-js%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">3.1.</span> <span class="nav-text">BeagleBone BlackのCylon.jsアプリ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android%E3%81%AEDo-Button%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">3.2.</span> <span class="nav-text">AndroidのDo Buttonアプリ</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -386,10 +352,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -414,9 +383,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -456,13 +425,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

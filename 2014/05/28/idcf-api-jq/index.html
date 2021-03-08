@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="これまで何度かdockerコマンドとjqを組み合わせて使ってきました。IDCFクラウドCLIのidcf-compute-apiコマンドは、デフォルトでレスポンスをJSONで返すので、同じようにjqでパースしてみます。また、idcf-compute-apiコマンドはJSON以外にも、CSVや表形式でレスポンスを表示できるので、サンプルを見ようと思います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDCFクラウドのCLIをjqで便利に使う">
 <meta property="og:url" content="https://masato.github.io/2014/05/28/idcf-api-jq/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="これまで何度かdockerコマンドとjqを組み合わせて使ってきました。IDCFクラウドCLIのidcf-compute-apiコマンドは、デフォルトでレスポンスをJSONで返すので、同じようにjqでパースしてみます。また、idcf-compute-apiコマンドはJSON以外にも、CSVや表形式でレスポンスを表示できるので、サンプルを見ようと思います。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-05-27T15:43:46.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.671Z">
+<meta property="article:modified_time" content="2014-05-27T15:43:46.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IDCFクラウド">
 <meta property="article:tag" content="CLI">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>IDCFクラウドのCLIをjqで便利に使う | masato's blog</title>
+  <title>IDCFクラウドのCLIをjqで便利に使う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 28 2014 00:43:46" itemprop="dateCreated datePublished" datetime="2014-05-28T00:43:46+09:00">May 28 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">これまで何度かdockerコマンドとjqを組み合わせて使ってきました。IDCFクラウドCLIのidcf-compute-apiコマンドは、デフォルトでレスポンスをJSONで返すので、同じようにjqでパースしてみます。また、idcf-compute-apiコマンドはJSON以外にも、CSVや表形式でレスポンスを表示できるので、サンプルを見ようと思います。</div>
@@ -240,11 +207,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>これまで何度かdockerコマンドと<a href="http://stedolan.github.io/jq/" target="_blank" rel="noopener">jq</a>を組み合わせて使ってきました。<br>IDCFクラウドCLIの<a href="http://www.idcf.jp/cloud/docs/Getting%20Started" target="_blank" rel="noopener">idcf-compute-api</a>コマンドは、デフォルトでレスポンスをJSONで返すので、同じようにjqでパースしてみます。</p>
+        <p>これまで何度かdockerコマンドと<a target="_blank" rel="noopener" href="http://stedolan.github.io/jq/">jq</a>を組み合わせて使ってきました。<br>IDCFクラウドCLIの<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/docs/Getting%20Started">idcf-compute-api</a>コマンドは、デフォルトでレスポンスをJSONで返すので、同じようにjqでパースしてみます。</p>
 <p>また、idcf-compute-apiコマンドはJSON以外にも、CSVや表形式でレスポンスを表示できるので、サンプルを見ようと思います。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="deployVirtualMachine"><a href="#deployVirtualMachine" class="headerlink" title="deployVirtualMachine"></a>deployVirtualMachine</h3><p><a href="http://www.idcf.jp/cloud/docs/api/user/deployVirtualMachine" target="_blank" rel="noopener">deployVirtualMachine</a>コマンドを使うと、IDCFクラウドにインスタンスを作成できます。<br>このコマンドは、非同期APIなのでジョブIDを返して終了します。</p>
+<h3 id="deployVirtualMachine"><a href="#deployVirtualMachine" class="headerlink" title="deployVirtualMachine"></a>deployVirtualMachine</h3><p><a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/docs/api/user/deployVirtualMachine">deployVirtualMachine</a>コマンドを使うと、IDCFクラウドにインスタンスを作成できます。<br>このコマンドは、非同期APIなのでジョブIDを返して終了します。</p>
 <p><code>--serviceofferingid</code>、<code>--templateid</code>、<code>--zoneid</code>は必須のパラメータのため、値は予め調べておく必要があります。<br>調べ方はあとで書きますが、数値はそれぞれ以下のIDを表しています。</p>
 <ul>
 <li><code>--serviceofferingid 21</code> -&gt; M4サイズ</li>
@@ -252,37 +219,37 @@
 <li><code>--zoneid 1</code> -&gt; jp-east-t1ゾーン</li>
 </ul>
 <p>とりあえずサンプルです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jobid=$(idcf-compute-api deployVirtualMachine --keypair mykey \</span><br><span class="line">          --serviceofferingid 21 --templateid 7183 --zoneid 1 \</span><br><span class="line">          --name myhostname --displayname myhostname  \</span><br><span class="line">          | jq <span class="string">'.deployvirtualmachineresponse | .jobid'</span>)</span><br><span class="line"><span class="built_in">echo</span> jobid: <span class="variable">$&#123;jobid&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jobid=$(idcf-compute-api deployVirtualMachine --keypair mykey \</span><br><span class="line">          --serviceofferingid 21 --templateid 7183 --zoneid 1 \</span><br><span class="line">          --name myhostname --displayname myhostname  \</span><br><span class="line">          | jq <span class="string">&#x27;.deployvirtualmachineresponse | .jobid&#x27;</span>)</span><br><span class="line"><span class="built_in">echo</span> jobid: <span class="variable">$&#123;jobid&#125;</span>　</span><br></pre></td></tr></table></figure>
 
 <p>このジョブIDを使い、インスタンスの作成の終了をポーリングしてみます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  jobstatus=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span> \</span><br><span class="line">              | jq <span class="string">'.queryasyncjobresultresponse | .jobstatus'</span>)</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;jobstatus&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">"."</span></span><br><span class="line">    sleep 10s  </span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse | .jobresult | .virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;'</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">  jobstatus=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span> \</span><br><span class="line">              | jq <span class="string">&#x27;.queryasyncjobresultresponse | .jobstatus&#x27;</span>)</span><br><span class="line">  <span class="keyword">if</span> [ <span class="variable">$&#123;jobstatus&#125;</span> -eq 1 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> -ne <span class="string">&quot;.&quot;</span></span><br><span class="line">    sleep 10s  </span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    json=$(idcf-compute-api queryAsyncJobResult --jobid=<span class="variable">$&#123;jobid&#125;</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">&#x27;.queryasyncjobresultresponse | .jobresult | .virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;&#x27;</span></span><br><span class="line">    <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="レスポンスJSONのjqパース例"><a href="#レスポンスJSONのjqパース例" class="headerlink" title="レスポンスJSONのjqパース例"></a>レスポンスJSONのjqパース例</h3><p><code>queryAsyncJobResult</code>コマンドは、以下のようにレスポンスを返します。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"queryasyncjobresultresponse"</span>: &#123;</span><br><span class="line">    <span class="string">"jobid"</span>: <span class="number">1068081</span>,</span><br><span class="line">    <span class="string">"jobprocstatus"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">"jobresult"</span>: &#123;</span><br><span class="line">      <span class="string">"virtualmachine"</span>: &#123;</span><br><span class="line">...</span><br><span class="line">        <span class="string">"name"</span>: <span class="string">"minion2"</span>,</span><br><span class="line">        <span class="string">"nic"</span>: [</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="string">"gateway"</span>: <span class="string">"10.1.0.1"</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;queryasyncjobresultresponse&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;jobid&quot;</span>: <span class="number">1068081</span>,</span><br><span class="line">    <span class="string">&quot;jobprocstatus&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&quot;jobresult&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;virtualmachine&quot;</span>: &#123;</span><br><span class="line">...</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;minion2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;nic&quot;</span>: [</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="string">&quot;gateway&quot;</span>: <span class="string">&quot;10.1.0.1&quot;</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>先ほど、</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">'.queryasyncjobresultresponse | .jobresult | .virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;json&#125;</span> | jq <span class="string">&#x27;.queryasyncjobresultresponse | .jobresult | .virtualmachine | &#123;id,password,name,displayname&#125;, &#123;ipaddress: .nic[].ipaddress&#125;&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>のようにパースしましたが、JSONの構造をドット(.)でパイプしながら降りていきます。<br>パイプの最後が出力される結果になり、上記の例ではでは一つ深い<code>nic</code>要素の<code>ipaddress</code>をオブジェクトとして作り直しています。</p>
-<p>ちょっとわかりずらいですが、<a href="http://stedolan.github.io/jq/manual/" target="_blank" rel="noopener">マニュアル</a>もあるので、使っていくうちにだんだん覚えていくと思います。</p>
+<p>ちょっとわかりずらいですが、<a target="_blank" rel="noopener" href="http://stedolan.github.io/jq/manual/">マニュアル</a>もあるので、使っていくうちにだんだん覚えていくと思います。</p>
 <h3 id="listServiceOfferings"><a href="#listServiceOfferings" class="headerlink" title="listServiceOfferings"></a>listServiceOfferings</h3><p><code>listServiceOfferings</code>コマンドは、作成するインスタンスサイズをリストします。<br><code>deployVirtualMachine</code>の<code>--serviceofferingid</code>オプションではIDを指定するので、予め調べておきます。</p>
 <p>jqを使うとこんな感じです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings | jq <span class="string">'.listserviceofferingsresponse | .serviceoffering[] | &#123;id,name&#125;'</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"DL32"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 14</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"XL16"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 15</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings | jq <span class="string">&#x27;.listserviceofferingsresponse | .serviceoffering[] | &#123;id,name&#125;&#x27;</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;DL32&quot;</span>,</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: 14</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;XL16&quot;</span>,</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: 15</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p><code>idcf-copute-api</code>には、結果をCSV型式で表示する<code>-c</code>や、表形式の<code>t</code>オプションがあります。<br>表示したいプロパティを指定できるので、便利な場合もあります。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings -c=id,name</span><br><span class="line"><span class="string">"id"</span>,<span class="string">"name"</span></span><br><span class="line">14,<span class="string">"DL32"</span></span><br><span class="line">15,<span class="string">"XL16"</span></span><br><span class="line">...</span><br><span class="line">$ idcf-compute-api listServiceOfferings -t=id,name</span><br><span class="line">+----+------+</span><br><span class="line">| id | name |</span><br><span class="line">+----+------+</span><br><span class="line">| 14 | DL32 |</span><br><span class="line">| 15 | XL16 |</span><br><span class="line">| 16 | L32  |</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listServiceOfferings -c=id,name</span><br><span class="line"><span class="string">&quot;id&quot;</span>,<span class="string">&quot;name&quot;</span></span><br><span class="line">14,<span class="string">&quot;DL32&quot;</span></span><br><span class="line">15,<span class="string">&quot;XL16&quot;</span></span><br><span class="line">...</span><br><span class="line">$ idcf-compute-api listServiceOfferings -t=id,name</span><br><span class="line">+----+------+</span><br><span class="line">| id | name |</span><br><span class="line">+----+------+</span><br><span class="line">| 14 | DL32 |</span><br><span class="line">| 15 | XL16 |</span><br><span class="line">| 16 | L32  |</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <h3 id="listTemplates"><a href="#listTemplates" class="headerlink" title="listTemplates"></a>listTemplates</h3><p><code>deployVirtualMachine</code>の<code>--templateid</code>オプションで指定する、テンプレートのイメージをリストします。</p>
 <p>jqのフィルタを使いUbuntuだけに限定し、idとname要素だけ選択してみます。<br>書き方はORMのDSLみたいでちょっと苦手です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listTemplates --templatefilter=featured | jq <span class="string">'.listtemplatesresponse | .template[] | select(contains(&#123;name:"Ubuntu"&#125;) and contains(&#123;name:"LATEST"&#125;)) | &#123;id,name&#125;'</span></span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 2213</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"[LATEST] Ubuntu Server 10.04 LTS 64-bit"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 1022</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"name"</span>: <span class="string">"[LATEST] Ubuntu Server 10.04 LTS 64-bit"</span>,</span><br><span class="line">  <span class="string">"id"</span>: 1022</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listTemplates --templatefilter=featured | jq <span class="string">&#x27;.listtemplatesresponse | .template[] | select(contains(&#123;name:&quot;Ubuntu&quot;&#125;) and contains(&#123;name:&quot;LATEST&quot;&#125;)) | &#123;id,name&#125;&#x27;</span></span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit&quot;</span>,</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: 2213</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;[LATEST] Ubuntu Server 10.04 LTS 64-bit&quot;</span>,</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: 1022</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;name&quot;</span>: <span class="string">&quot;[LATEST] Ubuntu Server 10.04 LTS 64-bit&quot;</span>,</span><br><span class="line">  <span class="string">&quot;id&quot;</span>: 1022</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>同じことを<code>idcf-compute-api</code>の<code>-c</code>オプションと、sortやgrepをパイプした例を試してみます。<br>UNIXコマンドに慣れていれば、jqのフィルタよりわかりやすいかも知れません。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listTemplates --templatefilter=featured  -c=id,name | egrep <span class="string">'LATEST.*Ubuntu'</span> | sort -t , -k 2</span><br><span class="line">1022,<span class="string">"[LATEST] Ubuntu Server 10.04 LTS 64-bit"</span></span><br><span class="line">1022,<span class="string">"[LATEST] Ubuntu Server 10.04 LTS 64-bit"</span></span><br><span class="line">7183,<span class="string">"[LATEST] Ubuntu Server 12.04.04 LTS 64-bit"</span></span><br><span class="line">7183,<span class="string">"[LATEST] Ubuntu Server 12.04.04 LTS 64-bit"</span></span><br><span class="line">1012,<span class="string">"[LATEST][Dedicated Hardware] Ubuntu Server 10.04 LTS 64-bit"</span></span><br><span class="line">3303,<span class="string">"[LATEST][Dedicated Hardware] Ubuntu Server 10.04 LTS 64-bit"</span></span><br><span class="line">2213,<span class="string">"[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit"</span></span><br><span class="line">3311,<span class="string">"[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ idcf-compute-api listTemplates --templatefilter=featured  -c=id,name | egrep <span class="string">&#x27;LATEST.*Ubuntu&#x27;</span> | sort -t , -k 2</span><br><span class="line">1022,<span class="string">&quot;[LATEST] Ubuntu Server 10.04 LTS 64-bit&quot;</span></span><br><span class="line">1022,<span class="string">&quot;[LATEST] Ubuntu Server 10.04 LTS 64-bit&quot;</span></span><br><span class="line">7183,<span class="string">&quot;[LATEST] Ubuntu Server 12.04.04 LTS 64-bit&quot;</span></span><br><span class="line">7183,<span class="string">&quot;[LATEST] Ubuntu Server 12.04.04 LTS 64-bit&quot;</span></span><br><span class="line">1012,<span class="string">&quot;[LATEST][Dedicated Hardware] Ubuntu Server 10.04 LTS 64-bit&quot;</span></span><br><span class="line">3303,<span class="string">&quot;[LATEST][Dedicated Hardware] Ubuntu Server 10.04 LTS 64-bit&quot;</span></span><br><span class="line">2213,<span class="string">&quot;[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit&quot;</span></span><br><span class="line">3311,<span class="string">&quot;[LATEST][Dedicated Hardware] Ubuntu Server 12.04.1 LTS 64-bit&quot;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>--keypair</code>は<a href="http://www.idcf.jp/cloud/docs/api/user/listSSHKeyPairs" target="_blank" rel="noopener">listSSHKeyPairs</a>コマンドで、<code>--zoneid</code>は<a href="http://www.idcf.jp/cloud/docs/api/user/listZones" target="_blank" rel="noopener">listZones</a>コマンドで確認できます。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p><code>--keypair</code>は<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/docs/api/user/listSSHKeyPairs">listSSHKeyPairs</a>コマンドで、<code>--zoneid</code>は<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/docs/api/user/listZones">listZones</a>コマンドで確認できます。</p>
 <p>jqを使うと、ジョブIDやステータスをAPIのレスポンスから抽出できるので、<br>シェルスクリプトで変数に詰めたり、if分で評価するときに便利に使えます。</p>
 <p><a href="/2014/05/15/gce-salt-cloud/">この前</a>は、Saltを使ってGCEにプロビジョニングしました。<br>IDCFクラウドでも、GCEやCoreOSで便利なcloud-initが使えたらよいのですが、今のAPIだとちょっと難しそうです。</p>
-<p>また、CloudStack用のAPIライブラリに、Goで書かれた<a href="https://github.com/mindjiver/gopherstack" target="_blank" rel="noopener">gopherstack</a><br>があります。わかりやすいGoのコードなのであとで読んでみようと思います。</p>
+<p>また、CloudStack用のAPIライブラリに、Goで書かれた<a target="_blank" rel="noopener" href="https://github.com/mindjiver/gopherstack">gopherstack</a><br>があります。わかりやすいGoのコードなのであとで読んでみようと思います。</p>
 <p>そのため、次回はシェルスクリプトでidcf-compute-apiを使いsalt-masterとsalt-minionをプロビジョニングしてみます。</p>
 
     </div>
@@ -320,7 +287,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -371,7 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployVirtualMachine"><span class="nav-number">1.</span> <span class="nav-text">deployVirtualMachine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#レスポンスJSONのjqパース例"><span class="nav-number">2.</span> <span class="nav-text">レスポンスJSONのjqパース例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listServiceOfferings"><span class="nav-number">3.</span> <span class="nav-text">listServiceOfferings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listTemplates"><span class="nav-number">4.</span> <span class="nav-text">listTemplates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployVirtualMachine"><span class="nav-number">1.</span> <span class="nav-text">deployVirtualMachine</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%AC%E3%82%B9%E3%83%9D%E3%83%B3%E3%82%B9JSON%E3%81%AEjq%E3%83%91%E3%83%BC%E3%82%B9%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">レスポンスJSONのjqパース例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listServiceOfferings"><span class="nav-number">3.</span> <span class="nav-text">listServiceOfferings</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listTemplates"><span class="nav-number">4.</span> <span class="nav-text">listTemplates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -403,10 +369,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -431,9 +400,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -473,13 +442,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

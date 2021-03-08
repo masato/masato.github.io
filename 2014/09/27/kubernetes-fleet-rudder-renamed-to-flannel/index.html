@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Rudderのプロジェクト名がflannelに変わりました。すでに同じ名前のプロジェクトが存在しているからのようです。環境変数やバイナリ、ディレクトリなど修正する必要があります。この前つくったfleetクラスタの復習も兼ねてk8sクラスタを作り直すことにします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part6: Rudder renamed to flannel">
 <meta property="og:url" content="https://masato.github.io/2014/09/27/kubernetes-fleet-rudder-renamed-to-flannel/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Rudderのプロジェクト名がflannelに変わりました。すでに同じ名前のプロジェクトが存在しているからのようです。環境変数やバイナリ、ディレクトリなど修正する必要があります。この前つくったfleetクラスタの復習も兼ねてk8sクラスタを作り直すことにします。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-09-26T17:24:41.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.740Z">
+<meta property="article:modified_time" content="2014-09-26T17:24:41.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="CoreOS">
 <meta property="article:tag" content="Docker管理">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part6: Rudder renamed to flannel | masato's blog</title>
+  <title>Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part6: Rudder renamed to flannel | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 27 2014 02:24:41" itemprop="dateCreated datePublished" datetime="2014-09-27T02:24:41+09:00">Sep 27 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Rudderのプロジェクト名がflannelに変わりました。すでに同じ名前のプロジェクトが存在しているからのようです。環境変数やバイナリ、ディレクトリなど修正する必要があります。この前つくったfleetクラスタの復習も兼ねてk8sクラスタを作り直すことにします。</div>
@@ -246,12 +213,12 @@
         <ul>
 <li><code>Update 2014-10-02</code>: <a href="/2014/10/02/kubernetes-fleet-flannel-guestbook/">Kubernetes on CoreOS with Fleet and flannel on IDCFクラウド - Part7: flannel版GuestBook</a></li>
 </ul>
-<p>Rudderのプロジェクト名が<a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel</a>に<a href="https://groups.google.com/forum/#!topic/coreos-user/usueEDHR3uQ" target="_blank" rel="noopener">変わりました</a>。すでに<a href="http://www.rudder-project.org/site/" target="_blank" rel="noopener">同じ名前</a>のプロジェクトが存在しているからのようです。環境変数やバイナリ、ディレクトリなど修正する必要があります。</p>
+<p>Rudderのプロジェクト名が<a target="_blank" rel="noopener" href="https://github.com/coreos/flannel">flannel</a>に<a target="_blank" rel="noopener" href="https://groups.google.com/forum/#!topic/coreos-user/usueEDHR3uQ">変わりました</a>。すでに<a target="_blank" rel="noopener" href="http://www.rudder-project.org/site/">同じ名前</a>のプロジェクトが存在しているからのようです。環境変数やバイナリ、ディレクトリなど修正する必要があります。</p>
 <p>この前つくった<a href="/2014/09/22/kubernetes-fleet-rudder-on-idcf/">fleetクラスタ</a>の復習も兼ねてk8sクラスタを作り直すことにします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="etcdのインスタンス"><a href="#etcdのインスタンス" class="headerlink" title="etcdのインスタンス"></a>etcdのインスタンス</h3><p><a href="/2014/09/22/kubernetes-fleet-rudder-on-idcf/">前回</a>と同様に、CoreOSは444.0.0のalphaのISOを使いインスタンスを作成します。</p>
-<p><a href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial" target="_blank" rel="noopener">kubernetes-fleet-tutorial</a>の<a href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial/blob/master/configs/etcd.yml" target="_blank" rel="noopener">etcd.yml</a>を参考にcloud-config.ymlを編集します。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial">kubernetes-fleet-tutorial</a>の<a target="_blank" rel="noopener" href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial/blob/master/configs/etcd.yml">etcd.yml</a>を参考にcloud-config.ymlを編集します。</p>
 <ul>
 <li>IPアドレスが<code>10.1.3.124</code>のところを、IDCFクラウドでインスタンスにアサインされた<code>10.1.3.124</code>に変更</li>
 <li>static.networkのunitsを省略</li>
@@ -275,14 +242,14 @@
 <figure class="highlight jboss-cli"><table><tr><td class="code"><pre><span class="line">$ etcdctl <span class="params">--version</span></span><br><span class="line">etcdctl <span class="keyword">version</span> 0.4.6</span><br><span class="line">$ etcdctl <span class="keyword">ls</span> /</span><br></pre></td></tr></table></figure>
 
 <h3 id="flannelの設定"><a href="#flannelの設定" class="headerlink" title="flannelの設定"></a>flannelの設定</h3><p>etcdctlコマンドを使い、flannelで使用するネットワークを設定します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ etcdctl mk /coreos.com/network/config <span class="string">'&#123;"Network":"10.0.0.0/16"&#125;'</span></span><br><span class="line">&#123;<span class="string">"Network"</span>:<span class="string">"10.0.0.0/16"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ etcdctl mk /coreos.com/network/config <span class="string">&#x27;&#123;&quot;Network&quot;:&quot;10.0.0.0/16&quot;&#125;&#x27;</span></span><br><span class="line">&#123;<span class="string">&quot;Network&quot;</span>:<span class="string">&quot;10.0.0.0/16&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="fleetクラスタの作成"><a href="#fleetクラスタの作成" class="headerlink" title="fleetクラスタの作成"></a>fleetクラスタの作成</h3><p>Kubernetes用ノードは3台用意します。<a href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial/blob/master/configs/node.yml" target="_blank" rel="noopener">node.yml</a>を参考にcloud-config.ymlを作成します。<br>この前rudderだった箇所がflannelに変更になっています。</p>
+<h3 id="fleetクラスタの作成"><a href="#fleetクラスタの作成" class="headerlink" title="fleetクラスタの作成"></a>fleetクラスタの作成</h3><p>Kubernetes用ノードは3台用意します。<a target="_blank" rel="noopener" href="https://github.com/kelseyhightower/kubernetes-fleet-tutorial/blob/master/configs/node.yml">node.yml</a>を参考にcloud-config.ymlを作成します。<br>この前rudderだった箇所がflannelに変更になっています。</p>
 <ul>
 <li><code>etcd-endpoint</code>を作成したetcdサーバーのIPアドレス<code>10.1.3.124</code>を指定します。</li>
 <li>公開鍵を変更</li>
 </ul>
-<figure class="highlight yaml"><figcaption><span>~/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">fleet:</span></span><br><span class="line">    <span class="attr">etcd_servers:</span> <span class="string">http://10.1.3.124:4001</span></span><br><span class="line">    <span class="attr">metadata:</span> <span class="string">role=kubernetes</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">mask:</span> <span class="literal">true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">flannel.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">After=network-online.target</span> </span><br><span class="line">        <span class="string">Wants=network-online.target</span></span><br><span class="line">        <span class="string">Description=flannel</span> <span class="string">is</span> <span class="string">an</span> <span class="string">etcd</span> <span class="string">backed</span> <span class="string">overlay</span> <span class="string">network</span> <span class="string">for</span> <span class="string">containers</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">ExecStartPre=-/usr/bin/mkdir</span> <span class="string">-p</span> <span class="string">/opt/bin</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/wget</span> <span class="string">-N</span> <span class="string">-P</span> <span class="string">/opt/bin</span> <span class="string">http://storage.googleapis.com/flannel/flanneld</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/chmod</span> <span class="string">+x</span> <span class="string">/opt/bin/flanneld</span></span><br><span class="line">        <span class="string">ExecStart=/opt/bin/flanneld</span> <span class="string">-etcd-endpoint</span> <span class="string">http://10.1.3.124:4001</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">docker.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">After=flannel.service</span></span><br><span class="line">        <span class="string">Wants=flannel.service</span></span><br><span class="line">        <span class="string">Description=Docker</span> <span class="string">Application</span> <span class="string">Container</span> <span class="string">Engine</span></span><br><span class="line">        <span class="string">Documentation=http://docs.docker.io</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">EnvironmentFile=/run/flannel/subnet.env</span></span><br><span class="line">        <span class="string">ExecStartPre=/bin/mount</span> <span class="string">--make-rprivate</span> <span class="string">/</span></span><br><span class="line">        <span class="string">ExecStart=/usr/bin/docker</span> <span class="string">-d</span> <span class="string">--bip=$&#123;FLANNEL_SUBNET&#125;</span> <span class="string">--mtu=$&#123;FLANNEL_MTU&#125;</span> <span class="string">-s=btrfs</span> <span class="string">-H</span> <span class="string">fd://</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Install]</span></span><br><span class="line">        <span class="string">WantedBy=multi-user.target</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">setup-network-environment.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">Description=Setup</span> <span class="string">Network</span> <span class="string">Environment</span></span><br><span class="line">        <span class="string">Documentation=https://github.com/kelseyhightower/setup-network-environment</span></span><br><span class="line">        <span class="string">Requires=network-online.target</span></span><br><span class="line">        <span class="string">After=network-online.target</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">ExecStartPre=-/usr/bin/mkdir</span> <span class="string">-p</span> <span class="string">/opt/bin</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/wget</span> <span class="string">-N</span> <span class="string">-P</span> <span class="string">/opt/bin</span> <span class="string">http://storage.googleapis.com/snenv/setup-network-environment</span> </span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/chmod</span> <span class="string">+x</span> <span class="string">/opt/bin/setup-network-environment</span></span><br><span class="line">        <span class="string">ExecStart=/opt/bin/setup-network-environment</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">  <span class="attr">update:</span></span><br><span class="line">    <span class="attr">group:</span> <span class="string">alpha</span></span><br><span class="line">    <span class="attr">reboot-strategy:</span> <span class="string">off</span></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3NzaC1yc2EAAAADAQABAAABAQDaMqAk6OeBLkyU6kj9HHq18xIBgSewSzZDRT3dYRnE92F5tz/16W/McxQ3XoIu8Z7aDNt5WEE+vWatAAItUPWQLRKjM0zwPC04hciMXloC7WjEeIikksg9hGzuc6nals7sfItCOx1aKqLFnEpRmXnzmKycYT8YqRBFzbGFJ+RSGmskVJeMaKUXunF43JH93ugmMCFqv92OnUHsY0tNeqI/EEncghHIKRwoHq46dNvECsvhX8ZruscQB3oGK24+sjZlL78kXeFXM4q3ZbefZESF4iKhs3BMfmT7ihNnuntdZhAHupBxg5npolw6yGZLjZcilduSnuTR6BDWtNEIS0S1</span> <span class="string">deis</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">fleet:</span></span><br><span class="line">    <span class="attr">etcd_servers:</span> <span class="string">http://10.1.3.124:4001</span></span><br><span class="line">    <span class="attr">metadata:</span> <span class="string">role=kubernetes</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">mask:</span> <span class="literal">true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">flannel.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        [<span class="string">Unit</span>]</span><br><span class="line">        <span class="string">After=network-online.target</span> </span><br><span class="line">        <span class="string">Wants=network-online.target</span></span><br><span class="line">        <span class="string">Description=flannel</span> <span class="string">is</span> <span class="string">an</span> <span class="string">etcd</span> <span class="string">backed</span> <span class="string">overlay</span> <span class="string">network</span> <span class="string">for</span> <span class="string">containers</span></span><br><span class="line"></span><br><span class="line">        [<span class="string">Service</span>]</span><br><span class="line">        <span class="string">ExecStartPre=-/usr/bin/mkdir</span> <span class="string">-p</span> <span class="string">/opt/bin</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/wget</span> <span class="string">-N</span> <span class="string">-P</span> <span class="string">/opt/bin</span> <span class="string">http://storage.googleapis.com/flannel/flanneld</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/chmod</span> <span class="string">+x</span> <span class="string">/opt/bin/flanneld</span></span><br><span class="line">        <span class="string">ExecStart=/opt/bin/flanneld</span> <span class="string">-etcd-endpoint</span> <span class="string">http://10.1.3.124:4001</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">docker.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        [<span class="string">Unit</span>]</span><br><span class="line">        <span class="string">After=flannel.service</span></span><br><span class="line">        <span class="string">Wants=flannel.service</span></span><br><span class="line">        <span class="string">Description=Docker</span> <span class="string">Application</span> <span class="string">Container</span> <span class="string">Engine</span></span><br><span class="line">        <span class="string">Documentation=http://docs.docker.io</span></span><br><span class="line"></span><br><span class="line">        [<span class="string">Service</span>]</span><br><span class="line">        <span class="string">EnvironmentFile=/run/flannel/subnet.env</span></span><br><span class="line">        <span class="string">ExecStartPre=/bin/mount</span> <span class="string">--make-rprivate</span> <span class="string">/</span></span><br><span class="line">        <span class="string">ExecStart=/usr/bin/docker</span> <span class="string">-d</span> <span class="string">--bip=$&#123;FLANNEL_SUBNET&#125;</span> <span class="string">--mtu=$&#123;FLANNEL_MTU&#125;</span> <span class="string">-s=btrfs</span> <span class="string">-H</span> <span class="string">fd://</span></span><br><span class="line"></span><br><span class="line">        [<span class="string">Install</span>]</span><br><span class="line">        <span class="string">WantedBy=multi-user.target</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">setup-network-environment.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        [<span class="string">Unit</span>]</span><br><span class="line">        <span class="string">Description=Setup</span> <span class="string">Network</span> <span class="string">Environment</span></span><br><span class="line">        <span class="string">Documentation=https://github.com/kelseyhightower/setup-network-environment</span></span><br><span class="line">        <span class="string">Requires=network-online.target</span></span><br><span class="line">        <span class="string">After=network-online.target</span></span><br><span class="line"></span><br><span class="line">        [<span class="string">Service</span>]</span><br><span class="line">        <span class="string">ExecStartPre=-/usr/bin/mkdir</span> <span class="string">-p</span> <span class="string">/opt/bin</span></span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/wget</span> <span class="string">-N</span> <span class="string">-P</span> <span class="string">/opt/bin</span> <span class="string">http://storage.googleapis.com/snenv/setup-network-environment</span> </span><br><span class="line">        <span class="string">ExecStartPre=/usr/bin/chmod</span> <span class="string">+x</span> <span class="string">/opt/bin/setup-network-environment</span></span><br><span class="line">        <span class="string">ExecStart=/opt/bin/setup-network-environment</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">  <span class="attr">update:</span></span><br><span class="line">    <span class="attr">group:</span> <span class="string">alpha</span></span><br><span class="line">    <span class="attr">reboot-strategy:</span> <span class="string">off</span></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAAAB3NzaC1yc2EAAAADAQABAAABAQDaMqAk6OeBLkyU6kj9HHq18xIBgSewSzZDRT3dYRnE92F5tz/16W/McxQ3XoIu8Z7aDNt5WEE+vWatAAItUPWQLRKjM0zwPC04hciMXloC7WjEeIikksg9hGzuc6nals7sfItCOx1aKqLFnEpRmXnzmKycYT8YqRBFzbGFJ+RSGmskVJeMaKUXunF43JH93ugmMCFqv92OnUHsY0tNeqI/EEncghHIKRwoHq46dNvECsvhX8ZruscQB3oGK24+sjZlL78kXeFXM4q3ZbefZESF4iKhs3BMfmT7ihNnuntdZhAHupBxg5npolw6yGZLjZcilduSnuTR6BDWtNEIS0S1</span> <span class="string">deis</span></span><br></pre></td></tr></table></figure>
 
 <p><code>CoreOS alpha 444.0.0</code>から<code>/dev/sda</code>にCoreOSをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo coreos-install -d /dev/sda  -C alpha -c ./cloud-config.yml</span><br><span class="line">...</span><br><span class="line">Installing cloud-config...</span><br><span class="line">Success! CoreOS alpha 444.0.0 is installed on /dev/sda</span><br></pre></td></tr></table></figure>
@@ -320,9 +287,9 @@
 <p><code>list-units</code>で確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ fleetctl list-units</span><br><span class="line">UNIT                            MACHINE                 ACTIVE  SUB</span><br><span class="line">kube-apiserver.service          2f706a2d.../10.1.1.99   active  running</span><br><span class="line">kube-controller-manager.service 2f706a2d.../10.1.1.99   active  running</span><br><span class="line">kube-kubelet.service            2f706a2d.../10.1.1.99   active  running</span><br><span class="line">kube-kubelet.service            6d444a3b.../10.1.3.229  active  running</span><br><span class="line">kube-kubelet.service            ad6fa03e.../10.1.0.207  active  running</span><br><span class="line">kube-proxy.service              2f706a2d.../10.1.1.99   active  running</span><br><span class="line">kube-proxy.service              6d444a3b.../10.1.3.229  active  running</span><br><span class="line">kube-proxy.service              ad6fa03e.../10.1.0.207  active  running</span><br><span class="line">kube-scheduler.service          2f706a2d.../10.1.1.99   active  running</span><br></pre></td></tr></table></figure>
 
-<h3 id="kube-register"><a href="#kube-register" class="headerlink" title="kube-register"></a>kube-register</h3><p><a href="https://github.com/kelseyhightower/kube-register" target="_blank" rel="noopener">kube-register</a>は、fleetのデータを使いKubelet マシンを登録できる便利なツールです。<br>これまで作成したunitsはfleetクラスタの世界なので、k8sクラスタとしては認識されていません。</p>
+<h3 id="kube-register"><a href="#kube-register" class="headerlink" title="kube-register"></a>kube-register</h3><p><a target="_blank" rel="noopener" href="https://github.com/kelseyhightower/kube-register">kube-register</a>は、fleetのデータを使いKubelet マシンを登録できる便利なツールです。<br>これまで作成したunitsはfleetクラスタの世界なので、k8sクラスタとしては認識されていません。</p>
 <p>kube-apiserver の環境変数<code>KUBERNETES_MASTER</code>を作業マシンに設定します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> KUBERNETES_MASTER=<span class="string">"http://10.1.1.99:8080"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> KUBERNETES_MASTER=<span class="string">&quot;http://10.1.1.99:8080&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>kube-registerを使い<code>Kubernetes API Server</code> に新しいノードの追加を通知します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/kubernetes-fleet-tutorial/units</span><br><span class="line">$ fleetctl start kube-register.service</span><br><span class="line">Unit kube-register.service launched on 2f706a2d.../10.1.1.99</span><br></pre></td></tr></table></figure>
@@ -336,7 +303,7 @@
 <p>Podsはまだ作成していないのでリストされません。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ kubecfg list /pods</span><br><span class="line">ID                  Image(s)            Host                Labels              Status</span><br><span class="line">----------          ----------          ----------          ----------          ----------</span><br></pre></td></tr></table></figure>
 
-<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>だいぶ慣れてきたのでfleetクラスタとk8sクラスタの構築も、flannelのインストールも問題なくできるようになりました。<br>ようやく<a href="https://github.com/GoogleCloudPlatform/kubernetes/tree/master/examples/guestbook" target="_blank" rel="noopener">GuestBook example</a>を新しいクラスタにデプロイできるようになりました。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>だいぶ慣れてきたのでfleetクラスタとk8sクラスタの構築も、flannelのインストールも問題なくできるようになりました。<br>ようやく<a target="_blank" rel="noopener" href="https://github.com/GoogleCloudPlatform/kubernetes/tree/master/examples/guestbook">GuestBook example</a>を新しいクラスタにデプロイできるようになりました。</p>
 
     </div>
 
@@ -376,7 +343,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -427,7 +393,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#etcdのインスタンス"><span class="nav-number">1.</span> <span class="nav-text">etcdのインスタンス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンのfleetとetcd"><span class="nav-number">2.</span> <span class="nav-text">作業マシンのfleetとetcd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flannelの設定"><span class="nav-number">3.</span> <span class="nav-text">flannelの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fleetクラスタの作成"><span class="nav-number">4.</span> <span class="nav-text">fleetクラスタの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンからfleetクラスタを確認"><span class="nav-number">5.</span> <span class="nav-text">作業マシンからfleetクラスタを確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetesのunitsファイルを用意"><span class="nav-number">6.</span> <span class="nav-text">Kubernetesのunitsファイルを用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetesのインストール"><span class="nav-number">7.</span> <span class="nav-text">Kubernetesのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kube-register"><span class="nav-number">8.</span> <span class="nav-text">kube-register</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作業マシンにkubecfgのインストール"><span class="nav-number">9.</span> <span class="nav-text">作業マシンにkubecfgのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#etcd%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9"><span class="nav-number">1.</span> <span class="nav-text">etcdのインスタンス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E6%A5%AD%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%AEfleet%E3%81%A8etcd"><span class="nav-number">2.</span> <span class="nav-text">作業マシンのfleetとetcd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flannel%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="nav-number">3.</span> <span class="nav-text">flannelの設定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fleet%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">4.</span> <span class="nav-text">fleetクラスタの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E6%A5%AD%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%8B%E3%82%89fleet%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E7%A2%BA%E8%AA%8D"><span class="nav-number">5.</span> <span class="nav-text">作業マシンからfleetクラスタを確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes%E3%81%AEunits%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E7%94%A8%E6%84%8F"><span class="nav-number">6.</span> <span class="nav-text">Kubernetesのunitsファイルを用意</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">7.</span> <span class="nav-text">Kubernetesのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kube-register"><span class="nav-number">8.</span> <span class="nav-text">kube-register</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E6%A5%AD%E3%83%9E%E3%82%B7%E3%83%B3%E3%81%ABkubecfg%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">9.</span> <span class="nav-text">作業マシンにkubecfgのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -459,10 +425,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -487,9 +456,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -529,13 +498,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

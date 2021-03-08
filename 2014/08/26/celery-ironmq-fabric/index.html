@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="IronMQを使いワーカーへのタスクのqueueを分散環境から行いたいのが目的です。シリーズのタイトルにCeleryとしていますが今回は使いません。CeleryはPythonのプログラムからdelayメソッドでタスクの非同期実行をしますが、分散環境にPythonの実行環境がなかったり、他システムとの連携を考えると、IronMQにREST APIでメッセージをqueueできると便利です。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CeleryとIronMQで非同期分散処理 - Part3: ワーカーからFabricでSSH接続">
 <meta property="og:url" content="https://masato.github.io/2014/08/26/celery-ironmq-fabric/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="IronMQを使いワーカーへのタスクのqueueを分散環境から行いたいのが目的です。シリーズのタイトルにCeleryとしていますが今回は使いません。CeleryはPythonのプログラムからdelayメソッドでタスクの非同期実行をしますが、分散環境にPythonの実行環境がなかったり、他システムとの連携を考えると、IronMQにREST APIでメッセージをqueueできると便利です。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-08-26T03:31:31.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.559Z">
+<meta property="article:modified_time" content="2014-08-26T03:31:31.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="DockerDevEnv">
 <meta property="article:tag" content="Celery">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>CeleryとIronMQで非同期分散処理 - Part3: ワーカーからFabricでSSH接続 | masato's blog</title>
+  <title>CeleryとIronMQで非同期分散処理 - Part3: ワーカーからFabricでSSH接続 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 26 2014 12:31:31" itemprop="dateCreated datePublished" datetime="2014-08-26T12:31:31+09:00">Aug 26 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">IronMQを使いワーカーへのタスクのqueueを分散環境から行いたいのが目的です。シリーズのタイトルにCeleryとしていますが今回は使いません。CeleryはPythonのプログラムからdelayメソッドでタスクの非同期実行をしますが、分散環境にPythonの実行環境がなかったり、他システムとの連携を考えると、IronMQにREST APIでメッセージをqueueできると便利です。</div>
@@ -247,15 +214,15 @@
 <li><code>Update 2014-10-09</code>: <a href="/2014/08/27/celery-ironmq-newrelic-in-docker-container/">IronMQの非同期処理をNewRelicで監視 - Part7: mackerel-agentをFabricでインストール</a></li>
 </ul>
 <p>IronMQを使いワーカーへのタスクのqueueを分散環境から行いたいのが目的です。シリーズのタイトルにCeleryとしていますが今回は使いません。CeleryはPythonのプログラムからdelayメソッドでタスクの非同期実行をしますが、分散環境にPythonの実行環境がなかったり、他システムとの連携を考えると、IronMQに<code>REST API</code>でメッセージをqueueできると便利です。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Celeryのメッセージフォーマット"><a href="#Celeryのメッセージフォーマット" class="headerlink" title="Celeryのメッセージフォーマット"></a>Celeryのメッセージフォーマット</h3><p>Celeryの<a href="http://celery.readthedocs.org/en/latest/internals/protocol.html#message-format" target="_blank" rel="noopener">メッセージフォーマット</a>の仕様によるとJSON書式は以下です。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"id"</span>: <span class="string">"4cc7438e-afd4-4f8f-a2f3-f46567e7ca77"</span>,</span><br><span class="line"> <span class="attr">"task"</span>: <span class="string">"celery.task.PingTask"</span>,</span><br><span class="line"> <span class="attr">"args"</span>: [],</span><br><span class="line"> <span class="attr">"kwargs"</span>: &#123;&#125;,</span><br><span class="line"> <span class="attr">"retries"</span>: <span class="number">0</span>,</span><br><span class="line"> <span class="attr">"eta"</span>: <span class="string">"2009-11-17T12:30:56.527191"</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Celeryのメッセージフォーマット"><a href="#Celeryのメッセージフォーマット" class="headerlink" title="Celeryのメッセージフォーマット"></a>Celeryのメッセージフォーマット</h3><p>Celeryの<a target="_blank" rel="noopener" href="http://celery.readthedocs.org/en/latest/internals/protocol.html#message-format">メッセージフォーマット</a>の仕様によるとJSON書式は以下です。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;id&quot;</span>: <span class="string">&quot;4cc7438e-afd4-4f8f-a2f3-f46567e7ca77&quot;</span>,</span><br><span class="line"> <span class="attr">&quot;task&quot;</span>: <span class="string">&quot;celery.task.PingTask&quot;</span>,</span><br><span class="line"> <span class="attr">&quot;args&quot;</span>: [],</span><br><span class="line"> <span class="attr">&quot;kwargs&quot;</span>: &#123;&#125;,</span><br><span class="line"> <span class="attr">&quot;retries&quot;</span>: <span class="number">0</span>,</span><br><span class="line"> <span class="attr">&quot;eta&quot;</span>: <span class="string">&quot;2009-11-17T12:30:56.527191&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <p>このメッセージをqueueするとタスクを実行できそうなのですが、IronMQをブローカーにしたときの使い方がよくわかりませんでした。<br>そのうち理解できてきたら、Celeryも試してみます。</p>
-<p>今回はRackspaceの<code>Developer Blog</code>の<a href="https://developer.rackspace.com/blog/using-ironmq/" target="_blank" rel="noopener">Using IronMQ for Delayed Processing and Increasing Scale</a>というポストを参考に、IronMQとPythonのメインループだけで実装してみようと思います。</p>
+<p>今回はRackspaceの<code>Developer Blog</code>の<a target="_blank" rel="noopener" href="https://developer.rackspace.com/blog/using-ironmq/">Using IronMQ for Delayed Processing and Increasing Scale</a>というポストを参考に、IronMQとPythonのメインループだけで実装してみようと思います。</p>
 <p>IronMQには<code>REST API</code>があるので、curlでもメッセージが送れます。キューをPUTする場合は以下のようになります。<br>OAuthの<code>TOKEN</code>と<code>PROJECT_ID</code>をIronMQの画面にログインして取得しておきます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: OAuth ***"</span> -d <span class="string">'&#123;"messages":[&#123;"body":"hello world!"&#125;]&#125;'</span> <span class="string">"https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">&quot;Content-Type: application/json&quot;</span> -H <span class="string">&quot;Authorization: OAuth ***&quot;</span> -d <span class="string">&#x27;&#123;&quot;messages&quot;:[&#123;&quot;body&quot;:&quot;hello world!&quot;&#125;]&#125;&#x27;</span> <span class="string">&quot;https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>このqueueをワーカーからpollingして<code>pull queue</code>します。<code>push queue</code>のワーカーを作る場合は、IronMQからHTTP/HTTPSでコールバック用のエンドポイントを公開しないといけないので、社内用途では使えません。</p>
 <p>テスト用に簡単なPythonプログラムを書きました。<code>main loop</code>でpollingしてqueueにメッセージがPUTされたらGETして処理をするようにします。</p>
@@ -272,22 +239,22 @@
 <h3 id="Pythonのメインループ"><a href="#Pythonのメインループ" class="headerlink" title="Pythonのメインループ"></a>Pythonのメインループ</h3><p>SSH接続するサーバーは、CentOSなので簡単に<code>/etc/redhat-release</code>をcatしてみます。</p>
 <p>メインループでqueueにメッセージがあるかpollingして、取得できたら標準出力します。<br>実際のプロジェクトではSSH接続して実行するコマンドの引数を、分散環境からメッセージで渡します。</p>
 <p>処理が終わったら忘れずにqueueからメッセージを削除します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> (run,put)</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">'***'</span></span><br><span class="line">TOKEN = <span class="string">'***'</span></span><br><span class="line">HOST = <span class="string">'10.1.1.73'</span></span><br><span class="line">USER = <span class="string">'mshimizu'</span></span><br><span class="line">KEY_FILENAME = <span class="string">'/home/docker/.ssh/deis'</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,</span><br><span class="line">            token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">'my_queue'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        msg = q.get()</span><br><span class="line">        <span class="keyword">if</span> len(msg[<span class="string">"messages"</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">            time.sleep(<span class="number">10</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        print(msg)</span><br><span class="line">        <span class="keyword">with</span> settings(host_string=HOST,</span><br><span class="line">                      user=USER,</span><br><span class="line">                      key_filename=KEY_FILENAME):</span><br><span class="line">            run(<span class="string">'cat /etc/redhat-release'</span>)</span><br><span class="line">            q.delete(msg[<span class="string">"messages"</span>][<span class="number">0</span>][<span class="string">"id"</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="keyword">print</span> &gt;&gt; sys.stderr, <span class="string">'\nExit.\n'</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> fabric.context_managers <span class="keyword">import</span> settings</span><br><span class="line"><span class="keyword">from</span> fabric.api <span class="keyword">import</span> (run,put)</span><br><span class="line"><span class="keyword">from</span> iron_mq <span class="keyword">import</span> IronMQ</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">PROJECT_ID = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">TOKEN = <span class="string">&#x27;***&#x27;</span></span><br><span class="line">HOST = <span class="string">&#x27;10.1.1.73&#x27;</span></span><br><span class="line">USER = <span class="string">&#x27;mshimizu&#x27;</span></span><br><span class="line">KEY_FILENAME = <span class="string">&#x27;/home/docker/.ssh/deis&#x27;</span></span><br><span class="line"></span><br><span class="line">mq = IronMQ(project_id=PROJECT_ID,</span><br><span class="line">            token=TOKEN)</span><br><span class="line">q = mq.queue(<span class="string">&#x27;my_queue&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_loop</span>():</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        msg = q.get()</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(msg[<span class="string">&quot;messages&quot;</span>]) &lt; <span class="number">1</span>:</span><br><span class="line">            time.sleep(<span class="number">10</span>)</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        print(msg)</span><br><span class="line">        <span class="keyword">with</span> settings(host_string=HOST,</span><br><span class="line">                      user=USER,</span><br><span class="line">                      key_filename=KEY_FILENAME):</span><br><span class="line">            run(<span class="string">&#x27;cat /etc/redhat-release&#x27;</span>)</span><br><span class="line">            q.delete(msg[<span class="string">&quot;messages&quot;</span>][<span class="number">0</span>][<span class="string">&quot;id&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main_loop()</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="built_in">print</span> &gt;&gt; sys.stderr, <span class="string">&#x27;\nExit.\n&#x27;</span></span><br><span class="line">        sys.exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="起動テスト"><a href="#起動テスト" class="headerlink" title="起動テスト"></a>起動テスト</h3><p>テスト用にフォアグラウンドでプログラムを実行します。</p>
 <figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>cd ~<span class="regexp">/python_apps/spike</span>_nocelery/</span><br><span class="line"><span class="variable">$ </span>python tasks.py</span><br></pre></td></tr></table></figure>
 
 <p>curlでメッセージをqueueにPUTします。今回はワーカーをキックするだけなので、メッセージの内容に意味はありません。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: OAuth ***"</span> -d <span class="string">'&#123;"messages":[&#123;"body":"hello world!"&#125;]&#125;'</span> <span class="string">"https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">&quot;Content-Type: application/json&quot;</span> -H <span class="string">&quot;Authorization: OAuth ***&quot;</span> -d <span class="string">&#x27;&#123;&quot;messages&quot;:[&#123;&quot;body&quot;:&quot;hello world!&quot;&#125;]&#125;&#x27;</span> <span class="string">&quot;https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>ワーカーの標準出力に、リモートホストにSSH接続してcatを実行した結果が表示されます。</p>
-<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">u'messages'</span>: [&#123;<span class="string">u'body'</span>: <span class="string">u'hello world!'</span>, <span class="string">u'reserved_count'</span>: <span class="number">1</span>, <span class="string">u'push_status'</span>: &#123;&#125;, <span class="string">u'id'</span>: <span class="string">u'6051713210758384919'</span>, <span class="string">u'timeout'</span>: <span class="number">60</span>&#125;]&#125;</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] run: cat <span class="regexp">/etc/</span>redhat-release</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] out: CentOS release <span class="number">6.4</span> (Final)</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] out:</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">u&#x27;messages&#x27;</span>: [&#123;<span class="string">u&#x27;body&#x27;</span>: <span class="string">u&#x27;hello world!&#x27;</span>, <span class="string">u&#x27;reserved_count&#x27;</span>: <span class="number">1</span>, <span class="string">u&#x27;push_status&#x27;</span>: &#123;&#125;, <span class="string">u&#x27;id&#x27;</span>: <span class="string">u&#x27;6051713210758384919&#x27;</span>, <span class="string">u&#x27;timeout&#x27;</span>: <span class="number">60</span>&#125;]&#125;</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] run: cat <span class="regexp">/etc/</span>redhat-release</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] out: CentOS release <span class="number">6.4</span> (Final)</span><br><span class="line">[<span class="number">10.1</span>.<span class="number">1.73</span>] out:</span><br></pre></td></tr></table></figure>
 
 <h3 id="runitでデモナイズ"><a href="#runitでデモナイズ" class="headerlink" title="runitでデモナイズ"></a>runitでデモナイズ</h3><p>runitの起動スクリプトを用意します。</p>
 <figure class="highlight bash"><figcaption><span>/etc/service/spike/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line">appdir=/home/docker/python_apps/spike_nocelery</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$appdir</span> &amp;&amp; <span class="built_in">exec</span> chpst -u docker python tasks.py</span><br></pre></td></tr></table></figure>
 
 <p>runitに付属しているsvlogdコマンドを使ったログの設定をします。</p>
-<figure class="highlight bash"><figcaption><span>/etc/service/spike/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/service/spike/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">set</span> -eo pipefail</span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">&quot;/var/log/<span class="variable">$&#123;service&#125;</span>&quot;</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>runitを有効にするため、一度コンテナをrestart します。</p>
 <figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>docker restart a05a1d</span><br></pre></td></tr></table></figure>
@@ -296,10 +263,10 @@
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ sudo tail -f <span class="regexp">/var/</span>log<span class="regexp">/spike/</span>current</span><br></pre></td></tr></table></figure>
 
 <p>メッセージをqueueにPUTします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">"Content-Type: application/json"</span> -H <span class="string">"Authorization: OAuth ***"</span> -d <span class="string">'&#123;"messages":[&#123;"body":"hello world!"&#125;]&#125;'</span> <span class="string">"https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -H <span class="string">&quot;Content-Type: application/json&quot;</span> -H <span class="string">&quot;Authorization: OAuth ***&quot;</span> -d <span class="string">&#x27;&#123;&quot;messages&quot;:[&#123;&quot;body&quot;:&quot;hello world!&quot;&#125;]&#125;&#x27;</span> <span class="string">&quot;https://mq-aws-us-east-1.iron.io/1/projects/***/queues/my_queue/messages&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>ログにも同様にcatの結果が出力されます。</p>
-<figure class="highlight bash"><figcaption><span>/var/log/spike/current</span></figcaption><table><tr><td class="code"><pre><span class="line">2014-08-26_03:42:23.60780 &#123;u<span class="string">'messages'</span>: [&#123;u<span class="string">'body'</span>: u<span class="string">'hello world!'</span>, u<span class="string">'reserved_count'</span>: 1, u<span class="string">'push_status'</span>: &#123;&#125;, u<span class="string">'id'</span>: u<span class="string">'6051714293089978639'</span>, u<span class="string">'timeout'</span>: 60&#125;]&#125;</span><br><span class="line">2014-08-26_03:42:23.60784 [10.1.1.73] run: cat /etc/redhat-release</span><br><span class="line">2014-08-26_03:42:23.60785 [10.1.1.73] out: CentOS release 6.4 (Final)</span><br><span class="line">2014-08-26_03:42:23.60786 [10.1.1.73] out:</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/var/log/spike/current</span></figcaption><table><tr><td class="code"><pre><span class="line">2014-08-26_03:42:23.60780 &#123;u<span class="string">&#x27;messages&#x27;</span>: [&#123;u<span class="string">&#x27;body&#x27;</span>: u<span class="string">&#x27;hello world!&#x27;</span>, u<span class="string">&#x27;reserved_count&#x27;</span>: 1, u<span class="string">&#x27;push_status&#x27;</span>: &#123;&#125;, u<span class="string">&#x27;id&#x27;</span>: u<span class="string">&#x27;6051714293089978639&#x27;</span>, u<span class="string">&#x27;timeout&#x27;</span>: 60&#125;]&#125;</span><br><span class="line">2014-08-26_03:42:23.60784 [10.1.1.73] run: cat /etc/redhat-release</span><br><span class="line">2014-08-26_03:42:23.60785 [10.1.1.73] out: CentOS release 6.4 (Final)</span><br><span class="line">2014-08-26_03:42:23.60786 [10.1.1.73] out:</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -338,7 +305,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -389,7 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Celeryのメッセージフォーマット"><span class="nav-number">1.</span> <span class="nav-text">Celeryのメッセージフォーマット</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fabricのインストール"><span class="nav-number">3.</span> <span class="nav-text">Fabricのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pythonのメインループ"><span class="nav-number">4.</span> <span class="nav-text">Pythonのメインループ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#起動テスト"><span class="nav-number">5.</span> <span class="nav-text">起動テスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runitでデモナイズ"><span class="nav-number">6.</span> <span class="nav-text">runitでデモナイズ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Celery%E3%81%AE%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88"><span class="nav-number">1.</span> <span class="nav-text">Celeryのメッセージフォーマット</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fabric%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">Fabricのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E3%81%AE%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%AB%E3%83%BC%E3%83%97"><span class="nav-number">4.</span> <span class="nav-text">Pythonのメインループ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%B7%E5%8B%95%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">5.</span> <span class="nav-text">起動テスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runit%E3%81%A7%E3%83%87%E3%83%A2%E3%83%8A%E3%82%A4%E3%82%BA"><span class="nav-number">6.</span> <span class="nav-text">runitでデモナイズ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -421,10 +387,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -449,9 +418,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -491,13 +460,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

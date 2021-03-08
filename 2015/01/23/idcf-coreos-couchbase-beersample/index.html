@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,18 +13,18 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Couchbase Serverクラスタにサンプルデータをロードして、Node.jsのプログラムからデータを表示してみます。サンプルでよく使われるBeer sampleのデータを使います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Couchbase on Docker - Part5: Beer sampleデータをNode.jsで表示する">
 <meta property="og:url" content="https://masato.github.io/2015/01/23/idcf-coreos-couchbase-beersample/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Couchbase Serverクラスタにサンプルデータをロードして、Node.jsのプログラムからデータを表示してみます。サンプルでよく使われるBeer sampleのデータを使います。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/01/23/idcf-coreos-couchbase-beersample/design_dev_beer_by_name.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://masato.github.io/2015/01/23/idcf-coreos-couchbase-beersample/couchbase_beer_sample.png">
 <meta property="og:image" content="https://masato.github.io/2015/01/23/idcf-coreos-couchbase-beersample/couchbase_beer_sample_beers.png">
 <meta property="article:published_time" content="2015-01-23T11:26:26.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.671Z">
+<meta property="article:modified_time" content="2015-01-23T11:26:26.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="CoreOS">
 <meta property="article:tag" content="Nodejs">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>Couchbase on Docker - Part5: Beer sampleデータをNode.jsで表示する | masato's blog</title>
+  <title>Couchbase on Docker - Part5: Beer sampleデータをNode.jsで表示する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -95,7 +95,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -116,14 +116,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -132,51 +131,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -193,11 +168,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -210,7 +184,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -220,19 +194,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jan 23 2015 20:26:26" itemprop="dateCreated datePublished" datetime="2015-01-23T20:26:26+09:00">Jan 23 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Couchbase Serverクラスタにサンプルデータをロードして、Node.jsのプログラムからデータを表示してみます。サンプルでよく使われるBeer sampleのデータを使います。</div>
@@ -246,25 +213,25 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Couchbase Serverクラスタにサンプルデータをロードして、Node.jsのプログラムからデータを表示してみます。<a href="https://github.com/couchbase/couchbase-examples" target="_blank" rel="noopener">サンプル</a>でよく使われるBeer sampleのデータを使います。</p>
-<a id="more"></a>
+        <p>Couchbase Serverクラスタにサンプルデータをロードして、Node.jsのプログラムからデータを表示してみます。<a target="_blank" rel="noopener" href="https://github.com/couchbase/couchbase-examples">サンプル</a>でよく使われるBeer sampleのデータを使います。</p>
+<span id="more"></span>
 
 <h2 id="beer-sample-zipのロード"><a href="#beer-sample-zipのロード" class="headerlink" title="beer-sample.zipのロード"></a>beer-sample.zipのロード</h2><p>3つ起動しているCouchbase Serverコンテナのどれかに接続します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it 97a45d86ed2d /bin/bash</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/couchbase/couchbase-examples" target="_blank" rel="noopener">couchbase-examples</a>のリポジトリにある、beer-sample.zipをダウンロードします。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/couchbase/couchbase-examples">couchbase-examples</a>のリポジトリにある、beer-sample.zipをダウンロードします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget https://github.com/couchbase/couchbase-examples/raw/master/beer-sample.zip</span><br></pre></td></tr></table></figure>
 
 <p>cbdocloaderを使いサンプルデータを<code>beer-sample</code>バケットにロードします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /opt/couchbase/bin/cbdocloader -u user -p passw0rd -b beer-sample beer-sample.zip</span><br><span class="line">[2015-01-20 13:35:50,684] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">'default'</span>]</span><br><span class="line">[2015-01-20 13:35:50,693] - [rest_client] [140528307840768] - INFO - http://127.0.0.1:8091//pools/default/buckets with param: proxyPort=11211&amp;bucketType=membase&amp;authType=sasl&amp;name=beer-sample&amp;replicaNumber=1&amp;saslPassword=&amp;ramQuotaMB=100</span><br><span class="line">[2015-01-20 13:35:50,784] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">'default'</span>]</span><br><span class="line">.[2015-01-20 13:35:52,908] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">'beer-sample'</span>, u<span class="string">'default'</span>]</span><br><span class="line">[2015-01-20 13:35:52,909] - [rest_client] [140528307840768] - INFO - found bucket beer-sample</span><br><span class="line">..bucket creation is successful</span><br><span class="line">.</span><br><span class="line">bucket: beer-sample.zip, msgs transferred...</span><br><span class="line">       :                total |       last |    per sec</span><br><span class="line"> byte  :              2541549 |    2541549 |   687339.7</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ /opt/couchbase/bin/cbdocloader -u user -p passw0rd -b beer-sample beer-sample.zip</span><br><span class="line">[2015-01-20 13:35:50,684] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">&#x27;default&#x27;</span>]</span><br><span class="line">[2015-01-20 13:35:50,693] - [rest_client] [140528307840768] - INFO - http://127.0.0.1:8091//pools/default/buckets with param: proxyPort=11211&amp;bucketType=membase&amp;authType=sasl&amp;name=beer-sample&amp;replicaNumber=1&amp;saslPassword=&amp;ramQuotaMB=100</span><br><span class="line">[2015-01-20 13:35:50,784] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">&#x27;default&#x27;</span>]</span><br><span class="line">.[2015-01-20 13:35:52,908] - [rest_client] [140528307840768] - INFO - existing buckets : [u<span class="string">&#x27;beer-sample&#x27;</span>, u<span class="string">&#x27;default&#x27;</span>]</span><br><span class="line">[2015-01-20 13:35:52,909] - [rest_client] [140528307840768] - INFO - found bucket beer-sample</span><br><span class="line">..bucket creation is successful</span><br><span class="line">.</span><br><span class="line">bucket: beer-sample.zip, msgs transferred...</span><br><span class="line">       :                total |       last |    per sec</span><br><span class="line"> byte  :              2541549 |    2541549 |   687339.7</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="データ確認用のNode-jsコンテナ"><a href="#データ確認用のNode-jsコンテナ" class="headerlink" title="データ確認用のNode.jsコンテナ"></a>データ確認用のNode.jsコンテナ</h2><p><a href="https://registry.hub.docker.com/u/dockerfile/nodejs/" target="_blank" rel="noopener">dockerfile/nodejs</a>Dockerイメージを使いNode.jsのコンテナを起動します。コンテナ内でExpressを起動するためポートをマッピングします。</p>
+<h2 id="データ確認用のNode-jsコンテナ"><a href="#データ確認用のNode-jsコンテナ" class="headerlink" title="データ確認用のNode.jsコンテナ"></a>データ確認用のNode.jsコンテナ</h2><p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/dockerfile/nodejs/">dockerfile/nodejs</a>Dockerイメージを使いNode.jsのコンテナを起動します。コンテナ内でExpressを起動するためポートをマッピングします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull dockerfile/nodejs</span><br><span class="line">$ docker run -it --name couchnode -p 1337:1337 dockerfile/nodejs</span><br></pre></td></tr></table></figure>
 
 <p>Node.jsのバージョンは、0.10.35です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">v0.10.35</span><br></pre></td></tr></table></figure>
 
-<h2 id="Node-js-SDK-2-0-のサンプルアプリ"><a href="#Node-js-SDK-2-0-のサンプルアプリ" class="headerlink" title="Node.js SDK 2.0 のサンプルアプリ"></a>Node.js SDK 2.0 のサンプルアプリ</h2><p><a href="http://docs.couchbase.com/developer/node-2.0/tutorial-intro.html" target="_blank" rel="noopener">Node.js SDK 2.0 チュートリアル</a>を読みながらサンプルプリを起動します。</p>
+<h2 id="Node-js-SDK-2-0-のサンプルアプリ"><a href="#Node-js-SDK-2-0-のサンプルアプリ" class="headerlink" title="Node.js SDK 2.0 のサンプルアプリ"></a>Node.js SDK 2.0 のサンプルアプリ</h2><p><a target="_blank" rel="noopener" href="http://docs.couchbase.com/developer/node-2.0/tutorial-intro.html">Node.js SDK 2.0 チュートリアル</a>を読みながらサンプルプリを起動します。</p>
 <p>サンプルアプリのリポジトリをcloneして<code>npm install</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git://github.com/couchbaselabs/beersample-node </span><br><span class="line">$ <span class="built_in">cd</span> beersample-node </span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
 
@@ -275,7 +242,7 @@
 </ul>
 <p><img src="/2015/01/23/idcf-coreos-couchbase-beersample/design_dev_beer_by_name.png" alt="design_dev_beer_by_name.png"></p>
 <p>MapのView codeを編集します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">doc, meta</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (doc.type &amp;&amp; doc.type == <span class="string">"beer"</span>) &#123;</span><br><span class="line">        emit(doc.name, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">doc, meta</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (doc.type &amp;&amp; doc.type == <span class="string">&quot;beer&quot;</span>) &#123;</span><br><span class="line">        emit(doc.name, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>Filter Results &gt; Show Resultsをクリックするとサンプルのフィルタ結果を確認できます。</p>
 <p><img src="/2015/01/23/idcf-coreos-couchbase-beersample/development_view_by_name.png" alt="development_view_by_name.png"></p>
@@ -284,7 +251,7 @@
 <li>beer-sample &gt; Views &gt; Create Development View</li>
 </ul>
 <p>MapのView codeを編集します。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">doc, meta</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (doc.type &amp;&amp; doc.type == <span class="string">"brewery"</span>) &#123;</span><br><span class="line">        emit(doc.name, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">doc, meta</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (doc.type &amp;&amp; doc.type == <span class="string">&quot;brewery&quot;</span>) &#123;</span><br><span class="line">        emit(doc.name, <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="サーバーの起動"><a href="#サーバーの起動" class="headerlink" title="サーバーの起動"></a>サーバーの起動</h3><p>ExpressはDockerコンテナで起動しています。サンプルのbeer.jsのIPアドレスをCoreOSホスト仮想マシンのIPアドレスに変更します。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">var config &#x3D; &#123;</span><br><span class="line">    &#x2F;&#x2F;connstr : &quot;http:&#x2F;&#x2F;localhost:8091&quot;,</span><br><span class="line">    connstr : &quot;http:&#x2F;&#x2F;10.3.0.7:8091&quot;,</span><br><span class="line">    bucket : &#39;beer-sample&#39;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -293,7 +260,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node beer.js</span><br><span class="line">Server running at http://127.0.0.1:1337/</span><br><span class="line">Couchbase Connected</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザからCoreOSホスト仮想マシンのIPアドレスを開きます。</p>
-<p><a href="http://10.3.0.7:1337/" target="_blank" rel="noopener">http://10.3.0.7:1337/</a></p>
+<p><a target="_blank" rel="noopener" href="http://10.3.0.7:1337/">http://10.3.0.7:1337/</a></p>
 <p><img src="/2015/01/23/idcf-coreos-couchbase-beersample/couchbase_beer_sample.png" alt="couchbase_beer_sample.png"></p>
 <p>Beersの画面から、beer-sampleバケットにロードした<code>beer-sample.zip</code>のデータを表示できました。</p>
 <p><img src="/2015/01/23/idcf-coreos-couchbase-beersample/couchbase_beer_sample_beers.png" alt="couchbase_beer_sample_beers.png"></p>
@@ -334,7 +301,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -385,7 +351,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#beer-sample-zipのロード"><span class="nav-number">1.</span> <span class="nav-text">beer-sample.zipのロード</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#データ確認用のNode-jsコンテナ"><span class="nav-number">2.</span> <span class="nav-text">データ確認用のNode.jsコンテナ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js-SDK-2-0-のサンプルアプリ"><span class="nav-number">3.</span> <span class="nav-text">Node.js SDK 2.0 のサンプルアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#デザインドキュメント"><span class="nav-number">3.1.</span> <span class="nav-text">デザインドキュメント</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#サーバーの起動"><span class="nav-number">3.2.</span> <span class="nav-text">サーバーの起動</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#beer-sample-zip%E3%81%AE%E3%83%AD%E3%83%BC%E3%83%89"><span class="nav-number">1.</span> <span class="nav-text">beer-sample.zipのロード</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E7%A2%BA%E8%AA%8D%E7%94%A8%E3%81%AENode-js%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A"><span class="nav-number">2.</span> <span class="nav-text">データ確認用のNode.jsコンテナ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js-SDK-2-0-%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">3.</span> <span class="nav-text">Node.js SDK 2.0 のサンプルアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88"><span class="nav-number">3.1.</span> <span class="nav-text">デザインドキュメント</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">3.2.</span> <span class="nav-text">サーバーの起動</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -417,10 +383,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -445,9 +414,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -487,13 +456,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

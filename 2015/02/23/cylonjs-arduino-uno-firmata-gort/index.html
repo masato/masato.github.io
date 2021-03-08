@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,25 +13,25 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="FirmataはホストマシンからUSBシリアル通信を経由してArduinoを操作できるプロトコルです。Cylon.jsのcylon-firmataアダプタを使い、Node.jsからArduino Uno R3を動かす環境を用意しようと思います。Cylon.jsのフレームワークで抽象化してくれるのでBeagleBone BlackにデプロイしたNode.jsのプログラムがPIN番号を変更するだけで動">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Arduino UnoをUbuntuホストマシンからCylon.jsとFirmataを使って操作する">
 <meta property="og:url" content="https://masato.github.io/2015/02/23/cylonjs-arduino-uno-firmata-gort/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="FirmataはホストマシンからUSBシリアル通信を経由してArduinoを操作できるプロトコルです。Cylon.jsのcylon-firmataアダプタを使い、Node.jsからArduino Uno R3を動かす環境を用意しようと思います。Cylon.jsのフレームワークで抽象化してくれるのでBeagleBone BlackにデプロイしたNode.jsのプログラムがPIN番号を変更するだけで動">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/02/23/cylonjs-arduino-uno-firmata-gort/arduino-ide.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/23/cylonjs-arduino-uno-firmata-gort/dialout-group.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/23/cylonjs-arduino-uno-firmata-gort/standardfirmata-upload.png">
 <meta property="article:published_time" content="2015-02-23T13:36:51.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.578Z">
+<meta property="article:modified_time" content="2015-02-23T13:36:51.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="ArduinoUno">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Arduino UnoをUbuntuホストマシンからCylon.jsとFirmataを使って操作する | masato's blog</title>
+  <title>Arduino UnoをUbuntuホストマシンからCylon.jsとFirmataを使って操作する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 23 2015 22:36:51" itemprop="dateCreated datePublished" datetime="2015-02-23T22:36:51+09:00">Feb 23 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">FirmataはホストマシンからUSBシリアル通信を経由してArduinoを操作できるプロトコルです。Cylon.jsのcylon-firmataアダプタを使い、Node.jsからArduino Uno R3を動かす環境を用意しようと思います。Cylon.jsのフレームワークで抽象化してくれるのでBeagleBone BlackにデプロイしたNode.jsのプログラムがPIN番号を変更するだけで動きます。</div>
@@ -245,12 +212,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://arduino.cc/en/reference/firmata" target="_blank" rel="noopener">Firmata</a>はホストマシンからUSBシリアル通信を経由してArduinoを操作できるプロトコルです。Cylon.jsの<a href="https://github.com/hybridgroup/cylon-firmata" target="_blank" rel="noopener">cylon-firmata</a>アダプタを使い、Node.jsから<a href="http://arduino.cc/en/Main/arduinoBoardUno" target="_blank" rel="noopener">Arduino Uno R3</a>を動かす環境を用意しようと思います。Cylon.jsのフレームワークが抽象化してくれるのでBeagleBone BlackにデプロイしたNode.jsのプログラムがPIN番号を変更するだけで動きます。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="http://arduino.cc/en/reference/firmata">Firmata</a>はホストマシンからUSBシリアル通信を経由してArduinoを操作できるプロトコルです。Cylon.jsの<a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-firmata">cylon-firmata</a>アダプタを使い、Node.jsから<a target="_blank" rel="noopener" href="http://arduino.cc/en/Main/arduinoBoardUno">Arduino Uno R3</a>を動かす環境を用意しようと思います。Cylon.jsのフレームワークが抽象化してくれるのでBeagleBone BlackにデプロイしたNode.jsのプログラムがPIN番号を変更するだけで動きます。</p>
+<span id="more"></span>
 
 <h2 id="Ubuntu-14-04のXfceホストマシン"><a href="#Ubuntu-14-04のXfceホストマシン" class="headerlink" title="Ubuntu 14.04のXfceホストマシン"></a>Ubuntu 14.04のXfceホストマシン</h2><p>BeagleBone Blackと違いArduino Uno R3にはNode.jsをインストールしていないのでFirmataの場合Node.jsはホストマシン側にあります。ホストマシンにはChromebookにcroutonでインストールしたUbuntu 14.04のXfceデスクトップ環境を使います。</p>
 <h3 id="Arduino-IDE"><a href="#Arduino-IDE" class="headerlink" title="Arduino IDE"></a>Arduino IDE</h3><p>ホストマシンのUbuntuにArduino IDEをインストールします。apt-getでインストールするバージョンは1.0.5と古いのですが、最新版の1.6.0のdebパッケージはARMv7環境にインストールが失敗してしまいました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get install arduino arduino-core</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get install arduino arduino-core  </span><br></pre></td></tr></table></figure>
 
 <p>ArduinoをUSBケーブルでChromebookと接続すると<code>ttyACM0</code>のデバイスファイルが作成されます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ls -al  /dev/ttyACM0 </span><br><span class="line">crw-rw---- 1 root serial 166, 0 Feb 23 13:34 /dev/ttyACM0</span><br></pre></td></tr></table></figure>
@@ -271,7 +238,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ groups</span><br><span class="line">mshimizu dialout video sudo plugdev audio</span><br></pre></td></tr></table></figure>
 
 <h2 id="Firmata"><a href="#Firmata" class="headerlink" title="Firmata"></a>Firmata</h2><p>FirmataファームウェアをホストマシンからArduinoにインストールする方法は、Gortを使う場合とArduino IDEからアップロードする場合と2種類あります。</p>
-<h3 id="Gortを使う場合"><a href="#Gortを使う場合" class="headerlink" title="Gortを使う場合"></a>Gortを使う場合</h3><p><a href="http://gort.io/" target="_blank" rel="noopener">Gort</a>はGoで書かれたロボティクスのためのコマンドラインツールです。Arduino Firmataと互換性があるSparkCoreやDigisparkも操作できるようです。今回はavrdudeをインストールしてFirmataをArduinoにアップロードします。まずホストマシンにGortをインストールします。</p>
+<h3 id="Gortを使う場合"><a href="#Gortを使う場合" class="headerlink" title="Gortを使う場合"></a>Gortを使う場合</h3><p><a target="_blank" rel="noopener" href="http://gort.io/">Gort</a>はGoで書かれたロボティクスのためのコマンドラインツールです。Arduino Firmataと互換性があるSparkCoreやDigisparkも操作できるようです。今回はavrdudeをインストールしてFirmataをArduinoにアップロードします。まずホストマシンにGortをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Downloads</span><br><span class="line">$ wget https://s3.amazonaws.com/gort-io/0.3.0/gort_0.3.0_linux_arm.tar.gz</span><br><span class="line">$ tar zxvf gort_0.3.0_linux_arm.tar.gz </span><br><span class="line">gort_0.3.0_linux_arm/gort</span><br><span class="line">gort_0.3.0_linux_arm/README.md</span><br><span class="line">gort_0.3.0_linux_arm/LICENSE</span><br><span class="line">$ sudo cp gort_0.3.0_linux_arm/gort /usr/<span class="built_in">local</span>/bin</span><br></pre></td></tr></table></figure>
 
 <p>Gortのバージョンを確認します。</p>
@@ -284,7 +251,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort arduino install</span><br><span class="line">Attempting to install avrdude with apt-get.</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree </span><br><span class="line">Reading state information... Done</span><br><span class="line">avrdude is already the newest version.</span><br><span class="line">avrdude <span class="built_in">set</span> to manually installed.</span><br><span class="line">0 upgraded, 0 newly installed, 0 to remove and 56 not upgraded.</span><br></pre></td></tr></table></figure>
 
 <p>FirmataファームウェアをArduinoにアップロードします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort arduino upload firmata /dev/ttyACM0</span><br><span class="line"> </span><br><span class="line">avrdude: AVR device initialized and ready to accept instructions</span><br><span class="line"></span><br><span class="line">Reading | <span class="comment">################################################## | 100% 0.01s</span></span><br><span class="line"></span><br><span class="line">avrdude: Device signature = 0x1e950f</span><br><span class="line">avrdude: reading input file <span class="string">"/tmp/555901447"</span></span><br><span class="line">avrdude: writing flash (11452 bytes):</span><br><span class="line"></span><br><span class="line">Writing | <span class="comment">################################################## | 100% 1.95s</span></span><br><span class="line"></span><br><span class="line">avrdude: 11452 bytes of flash written</span><br><span class="line">avrdude: verifying flash memory against /tmp/555901447:</span><br><span class="line">avrdude: load data flash data from input file /tmp/555901447:</span><br><span class="line">avrdude: input file /tmp/555901447 contains 11452 bytes</span><br><span class="line">avrdude: reading on-chip flash data:</span><br><span class="line"></span><br><span class="line">Reading | <span class="comment">################################################## | 100% 1.55s</span></span><br><span class="line"></span><br><span class="line">avrdude: verifying ...</span><br><span class="line">avrdude: 11452 bytes of flash verified</span><br><span class="line"></span><br><span class="line">avrdude <span class="keyword">done</span>. Thank you.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gort arduino upload firmata /dev/ttyACM0</span><br><span class="line"> </span><br><span class="line">avrdude: AVR device initialized and ready to accept instructions</span><br><span class="line"></span><br><span class="line">Reading | <span class="comment">################################################## | 100% 0.01s</span></span><br><span class="line"></span><br><span class="line">avrdude: Device signature = 0x1e950f</span><br><span class="line">avrdude: reading input file <span class="string">&quot;/tmp/555901447&quot;</span></span><br><span class="line">avrdude: writing flash (11452 bytes):</span><br><span class="line"></span><br><span class="line">Writing | <span class="comment">################################################## | 100% 1.95s</span></span><br><span class="line"></span><br><span class="line">avrdude: 11452 bytes of flash written</span><br><span class="line">avrdude: verifying flash memory against /tmp/555901447:</span><br><span class="line">avrdude: load data flash data from input file /tmp/555901447:</span><br><span class="line">avrdude: input file /tmp/555901447 contains 11452 bytes</span><br><span class="line">avrdude: reading on-chip flash data:</span><br><span class="line"></span><br><span class="line">Reading | <span class="comment">################################################## | 100% 1.55s</span></span><br><span class="line"></span><br><span class="line">avrdude: verifying ...</span><br><span class="line">avrdude: 11452 bytes of flash verified</span><br><span class="line"></span><br><span class="line">avrdude <span class="keyword">done</span>. Thank you.</span><br></pre></td></tr></table></figure>
 
 <h3 id="Arduino-IDEを使う場合"><a href="#Arduino-IDEを使う場合" class="headerlink" title="Arduino IDEを使う場合"></a>Arduino IDEを使う場合</h3><p>Arduino IDEを使ってFirmataをアップロードする場合は通常のsketchesのアップロードと同じです。まずメニューからサンプルからStandardFirmataのソースファイルを開きます。</p>
 <ul>
@@ -312,30 +279,30 @@
 <p>Node.jsのバージョン確認します。比較的新しいNode.jsがインストールされました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">v0.10.25</span><br><span class="line">$ npm -v</span><br><span class="line">1.3.10</span><br></pre></td></tr></table></figure>
 
-<h2 id="cylon-firmata"><a href="#cylon-firmata" class="headerlink" title="cylon-firmata"></a>cylon-firmata</h2><p>ホストマシンのUbuntuにCylon.jsのArduino Firmataアダプタである、<a href="https://github.com/hybridgroup/cylon-firmata" target="_blank" rel="noopener">cylon-firmata</a>をインストールします。package.jsonに必要なパッケージを定義します。MQTTでサンプルに使います。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"mqtt-led"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"cylon-firmata"</span>: <span class="string">"0.19.0"</span>,</span><br><span class="line">    <span class="attr">"cylon-mqtt"</span>: <span class="string">"0.4.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="cylon-firmata"><a href="#cylon-firmata" class="headerlink" title="cylon-firmata"></a>cylon-firmata</h2><p>ホストマシンのUbuntuにCylon.jsのArduino Firmataアダプタである、<a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-firmata">cylon-firmata</a>をインストールします。package.jsonに必要なパッケージを定義します。MQTTでサンプルに使います。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;mqtt-led&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;cylon-firmata&quot;</span>: <span class="string">&quot;0.19.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;cylon-mqtt&quot;</span>: <span class="string">&quot;0.4.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;<span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>npm install</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
 
 <h3 id="Lチカ"><a href="#Lチカ" class="headerlink" title="Lチカ"></a>Lチカ</h3><p>Lチカするサンプルアプリを用意しました。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">'firmata'</span>, <span class="attr">port</span>: <span class="string">'/dev/ttyACM0'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="number">13</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    every((<span class="number">1</span>).second(), my.led.toggle);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;firmata&#x27;</span>, <span class="attr">port</span>: <span class="string">&#x27;/dev/ttyACM0&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="number">13</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    every((<span class="number">1</span>).second(), my.led.toggle);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 
 <p><code>npm start</code>でプログラムを実行するとLチカが始まります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/mshimizu/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-23T06:39:20.913Z] INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-23T06:39:21.377Z] INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-23T06:39:21.384Z] INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-23T06:39:26.465Z] INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-23T06:39:26.466Z] INFO -- : Working.</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="MQTTとLチカ"><a href="#MQTTとLチカ" class="headerlink" title="MQTTとLチカ"></a>MQTTとLチカ</h2><h3 id="MQTTのpub-sub"><a href="#MQTTのpub-sub" class="headerlink" title="MQTTのpub/sub"></a>MQTTのpub/sub</h3><p>workの中でMQTTのpub/subをすることでメッセージを送受信します。メッセージを受信するとLチカします。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">'mqtt'</span>, <span class="attr">host</span>: <span class="string">'mqtt://xxx.xxx.xxx.xxx:1883'</span> &#125;,</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">'firmata'</span>, <span class="attr">port</span>: <span class="string">'/dev/ttyACM0'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    toggle: &#123; <span class="attr">driver</span>: <span class="string">'mqtt'</span>, <span class="attr">topic</span>: <span class="string">'toggle'</span>, <span class="attr">connection</span>: <span class="string">'mqtt'</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="string">'13'</span>, <span class="attr">connection</span>: <span class="string">'arduino'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.toggle.on(<span class="string">'message'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Message on 'toggle': "</span> + data);</span><br><span class="line">      my.led.toggle();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    every((<span class="number">1</span>).second(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Toggling LED."</span>);</span><br><span class="line">      my.toggle.publish(<span class="string">'toggle'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">host</span>: <span class="string">&#x27;mqtt://xxx.xxx.xxx.xxx:1883&#x27;</span> &#125;,</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;firmata&#x27;</span>, <span class="attr">port</span>: <span class="string">&#x27;/dev/ttyACM0&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    toggle: &#123; <span class="attr">driver</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">topic</span>: <span class="string">&#x27;toggle&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;mqtt&#x27;</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="string">&#x27;13&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;arduino&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.toggle.on(<span class="string">&#x27;message&#x27;</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Message on &#x27;toggle&#x27;: &quot;</span> + data);</span><br><span class="line">      my.led.toggle();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    every((<span class="number">1</span>).second(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Toggling LED.&quot;</span>);</span><br><span class="line">      my.toggle.publish(<span class="string">&#x27;toggle&#x27;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 
 <p><code>npm start</code>でプログラムを実行します。ArduinoからMQTTのpub/subを通してLチカが始まりました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"> npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/mshimizu/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-23T06:55:24.462Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-23T06:55:25.031Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-23T06:55:25.039Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-23T06:55:28.322Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-23T06:55:28.327Z]  INFO -- : Working.</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">'toggle'</span>: toggle</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"> npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/mshimizu/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-23T06:55:24.462Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-23T06:55:25.031Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-23T06:55:25.039Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-23T06:55:28.322Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-23T06:55:28.327Z]  INFO -- : Working.</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br><span class="line">Toggling LED.</span><br><span class="line">Message on <span class="string">&#x27;toggle&#x27;</span>: toggle</span><br></pre></td></tr></table></figure>
 
 <h3 id="IFTTTとMQTTとLチカ"><a href="#IFTTTとMQTTとLチカ" class="headerlink" title="IFTTTとMQTTとLチカ"></a>IFTTTとMQTTとLチカ</h3><p>BeagleBone BlackにデプロイしたIFTTTのDo Buttonを使ったサンプルを使ってみます。MQTTでメッセージを受信すると標準出力とLチカを3秒間行います。BeagleBone Blackのコードから変更したのは<code>connection</code>と<code>led</code>のPIN番号だけです。異なるコネクテッドデバイス間でもほぼ同じNode.jsのコードが実行できるのでCylon.jsは便利です。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">'cylon'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">'mqtt'</span>, <span class="attr">host</span>: <span class="string">'mqtt://xxx.xxx.xxx.xxx:1883'</span> &#125;,</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">'firmata'</span>, <span class="attr">port</span>: <span class="string">'/dev/ttyACM0'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    ifttt: &#123; <span class="attr">driver</span>: <span class="string">'mqtt'</span>, <span class="attr">topic</span>: <span class="string">'ifttt/bbb'</span>, <span class="attr">connection</span>: <span class="string">'mqtt'</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">'led'</span>, <span class="attr">pin</span>: <span class="string">'13'</span>, <span class="attr">connection</span>: <span class="string">'arduino'</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.ifttt.on(<span class="string">"message"</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">"Message on 'ifttt': "</span> + data);</span><br><span class="line">      <span class="keyword">var</span> timer = setInterval(my.led.toggle, <span class="number">200</span>);</span><br><span class="line">      setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; clearInterval(timer)&#125;,<span class="number">3000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Cylon = <span class="built_in">require</span>(<span class="string">&#x27;cylon&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Initialize the robot</span></span><br><span class="line">Cylon.robot(&#123;</span><br><span class="line">  connections: &#123;</span><br><span class="line">    mqtt: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">host</span>: <span class="string">&#x27;mqtt://xxx.xxx.xxx.xxx:1883&#x27;</span> &#125;,</span><br><span class="line">    arduino: &#123; <span class="attr">adaptor</span>: <span class="string">&#x27;firmata&#x27;</span>, <span class="attr">port</span>: <span class="string">&#x27;/dev/ttyACM0&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  devices: &#123;</span><br><span class="line">    ifttt: &#123; <span class="attr">driver</span>: <span class="string">&#x27;mqtt&#x27;</span>, <span class="attr">topic</span>: <span class="string">&#x27;ifttt/bbb&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;mqtt&#x27;</span> &#125;,</span><br><span class="line">    led: &#123; <span class="attr">driver</span>: <span class="string">&#x27;led&#x27;</span>, <span class="attr">pin</span>: <span class="string">&#x27;13&#x27;</span>, <span class="attr">connection</span>: <span class="string">&#x27;arduino&#x27;</span> &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  work: <span class="function"><span class="keyword">function</span>(<span class="params">my</span>) </span>&#123;</span><br><span class="line">    my.ifttt.on(<span class="string">&quot;message&quot;</span>,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">&quot;Message on &#x27;ifttt&#x27;: &quot;</span> + data);</span><br><span class="line">      <span class="keyword">var</span> timer = <span class="built_in">setInterval</span>(my.led.toggle, <span class="number">200</span>);</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="built_in">clearInterval</span>(timer)&#125;,<span class="number">3000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;).start();</span><br></pre></td></tr></table></figure>
 
 <p><code>npm start</code>でプログラムを実行します。AndroidのDo ButtonアプリからWordPressボタンをタップするとMQTTブローカーを経由して、位置情報から生成したGoogleマップのURLがArduinoに通知されました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/mshimizu/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-23T06:51:37.312Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-23T06:51:37.981Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-23T06:51:37.998Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-23T06:51:41.334Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-23T06:51:41.338Z]  INFO -- : Working.</span><br><span class="line">Message on <span class="string">'ifttt'</span>: &#123;<span class="string">"username"</span>:<span class="string">"username"</span>,<span class="string">"password"</span>:<span class="string">"password"</span>,<span class="string">"title"</span>:<span class="string">""</span>,<span class="string">"description"</span>:<span class="string">"&lt;div&gt;&lt;img src='http://maps.google.com/maps/api/staticmap?center=35.xxxxxxx,139.xxxxxxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxxxxxx,139.xxxxxxx' style='max-width:600px;' /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 23, 2015 at 03:51PM http://ift.tt/1zBK1rg&lt;/div&gt;&lt;/div&gt;"</span>,<span class="string">"tags"</span>:&#123;<span class="string">"string"</span>:<span class="string">"Do Button"</span>&#125;,<span class="string">"post_status"</span>:<span class="string">"publish"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; mqtt-led@0.0.1 start /home/mshimizu/node_apps</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">I, [2015-02-23T06:51:37.312Z]  INFO -- : Initializing connections.</span><br><span class="line">I, [2015-02-23T06:51:37.981Z]  INFO -- : Initializing devices.</span><br><span class="line">I, [2015-02-23T06:51:37.998Z]  INFO -- : Starting connections.</span><br><span class="line">I, [2015-02-23T06:51:41.334Z]  INFO -- : Starting devices.</span><br><span class="line">I, [2015-02-23T06:51:41.338Z]  INFO -- : Working.</span><br><span class="line">Message on <span class="string">&#x27;ifttt&#x27;</span>: &#123;<span class="string">&quot;username&quot;</span>:<span class="string">&quot;username&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;password&quot;</span>,<span class="string">&quot;title&quot;</span>:<span class="string">&quot;&quot;</span>,<span class="string">&quot;description&quot;</span>:<span class="string">&quot;&lt;div&gt;&lt;img src=&#x27;http://maps.google.com/maps/api/staticmap?center=35.xxxxxxx,139.xxxxxxx&amp;zoom=19&amp;size=640x440&amp;scale=1&amp;maptype=roadmap&amp;sensor=false&amp;markers=color:red%7C35.xxxxxxx,139.xxxxxxx&#x27; style=&#x27;max-width:600px;&#x27; /&gt;&lt;br/&gt;&lt;div&gt;Do Button pressed on February 23, 2015 at 03:51PM http://ift.tt/1zBK1rg&lt;/div&gt;&lt;/div&gt;&quot;</span>,<span class="string">&quot;tags&quot;</span>:&#123;<span class="string">&quot;string&quot;</span>:<span class="string">&quot;Do Button&quot;</span>&#125;,<span class="string">&quot;post_status&quot;</span>:<span class="string">&quot;publish&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -373,7 +340,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -424,7 +390,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-14-04のXfceホストマシン"><span class="nav-number">1.</span> <span class="nav-text">Ubuntu 14.04のXfceホストマシン</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Arduino-IDE"><span class="nav-number">1.1.</span> <span class="nav-text">Arduino IDE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Firmata"><span class="nav-number">2.</span> <span class="nav-text">Firmata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gortを使う場合"><span class="nav-number">2.1.</span> <span class="nav-text">Gortを使う場合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arduino-IDEを使う場合"><span class="nav-number">2.2.</span> <span class="nav-text">Arduino IDEを使う場合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js"><span class="nav-number">3.</span> <span class="nav-text">Node.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cylon-firmata"><span class="nav-number">4.</span> <span class="nav-text">cylon-firmata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lチカ"><span class="nav-number">4.1.</span> <span class="nav-text">Lチカ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTTとLチカ"><span class="nav-number">5.</span> <span class="nav-text">MQTTとLチカ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTTのpub-sub"><span class="nav-number">5.1.</span> <span class="nav-text">MQTTのpub&#x2F;sub</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IFTTTとMQTTとLチカ"><span class="nav-number">5.2.</span> <span class="nav-text">IFTTTとMQTTとLチカ</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ubuntu-14-04%E3%81%AEXfce%E3%83%9B%E3%82%B9%E3%83%88%E3%83%9E%E3%82%B7%E3%83%B3"><span class="nav-number">1.</span> <span class="nav-text">Ubuntu 14.04のXfceホストマシン</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Arduino-IDE"><span class="nav-number">1.1.</span> <span class="nav-text">Arduino IDE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Firmata"><span class="nav-number">2.</span> <span class="nav-text">Firmata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gort%E3%82%92%E4%BD%BF%E3%81%86%E5%A0%B4%E5%90%88"><span class="nav-number">2.1.</span> <span class="nav-text">Gortを使う場合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Arduino-IDE%E3%82%92%E4%BD%BF%E3%81%86%E5%A0%B4%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">Arduino IDEを使う場合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js"><span class="nav-number">3.</span> <span class="nav-text">Node.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cylon-firmata"><span class="nav-number">4.</span> <span class="nav-text">cylon-firmata</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#L%E3%83%81%E3%82%AB"><span class="nav-number">4.1.</span> <span class="nav-text">Lチカ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQTT%E3%81%A8L%E3%83%81%E3%82%AB"><span class="nav-number">5.</span> <span class="nav-text">MQTTとLチカ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT%E3%81%AEpub-sub"><span class="nav-number">5.1.</span> <span class="nav-text">MQTTのpub&#x2F;sub</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IFTTT%E3%81%A8MQTT%E3%81%A8L%E3%83%81%E3%82%AB"><span class="nav-number">5.2.</span> <span class="nav-text">IFTTTとMQTTとLチカ</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -456,10 +422,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -484,9 +453,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -526,13 +495,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

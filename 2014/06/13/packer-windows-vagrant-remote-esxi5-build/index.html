@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,29 +13,29 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Part5で構築した環境を使って、PackerからリモートのESXi5上でOVAをビルドします。一度WindowsのPackerからリモートビルドして失敗したので、Ubuntuの仮想マシンを作業環境にして再チャレンジです。どこかでVT-xを有効にしてくれているVPSがあると便利なのですが。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Packerを使いWindows上でOVAを作成する - Part6: Nested ESXi5 on VirtualBox リモートビルド">
 <meta property="og:url" content="https://masato.github.io/2014/06/13/packer-windows-vagrant-remote-esxi5-build/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Part5で構築した環境を使って、PackerからリモートのESXi5上でOVAをビルドします。一度WindowsのPackerからリモートビルドして失敗したので、Ubuntuの仮想マシンを作業環境にして再チャレンジです。どこかでVT-xを有効にしてくれているVPSがあると便利なのですが。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-06-12T15:43:47.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.822Z">
+<meta property="article:modified_time" content="2014-06-12T15:43:47.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Go">
 <meta property="article:tag" content="Packer">
 <meta property="article:tag" content="Windows">
 <meta property="article:tag" content="PackerOVA">
-<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="VirtualBox">
+<meta property="article:tag" content="NestedVirtualization">
 <meta property="article:tag" content="ESXi5">
 <meta name="twitter:card" content="summary">
 
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Packerを使いWindows上でOVAを作成する - Part6: Nested ESXi5 on VirtualBox リモートビルド | masato's blog</title>
+  <title>Packerを使いWindows上でOVAを作成する - Part6: Nested ESXi5 on VirtualBox リモートビルド | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 13 2014 00:43:47" itemprop="dateCreated datePublished" datetime="2014-06-13T00:43:47+09:00">Jun 13 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Part5で構築した環境を使って、PackerからリモートのESXi5上でOVAをビルドします。一度WindowsのPackerからリモートビルドして失敗したので、Ubuntuの仮想マシンを作業環境にして再チャレンジです。どこかでVT-xを有効にしてくれているVPSがあると便利なのですが。</div>
@@ -246,30 +213,30 @@
         <p><a href="http://masato.github.io/tags/PackerOVA/">PackerでOVA作成</a>シリーズです。<br><a href="/2014/06/12/packer-windows-vagrant-nested-esxi5/">Part5</a>で構築した環境を使って、PackerからリモートのESXi5上でOVAをビルドします。<br>一度WindowsのPackerからリモートビルドして失敗したので、Ubuntuの仮想マシンを作業環境にして再チャレンジです。</p>
 <p>どこかでVT-xを有効にしてくれているVPSがあると便利なのですが。</p>
 <h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p>Ubuntuからもリモートの<code>Nested ESXi5</code>にISOのアップロードに失敗してしまい、ビルドができません。なぜだろう。。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Vagrant"><a href="#Vagrant" class="headerlink" title="Vagrant"></a>Vagrant</h3><p>Ubuntuの仮想マシンにログインします。Vagrantの<a href="https://github.com/phusion/open-vagrant-boxes" target="_blank" rel="noopener">phusion/open-vagrant-boxes</a>から、”phusion-open-ubuntu-14.04-amd64を使います。</p>
+<h3 id="Vagrant"><a href="#Vagrant" class="headerlink" title="Vagrant"></a>Vagrant</h3><p>Ubuntuの仮想マシンにログインします。Vagrantの<a target="_blank" rel="noopener" href="https://github.com/phusion/open-vagrant-boxes">phusion/open-vagrant-boxes</a>から、”phusion-open-ubuntu-14.04-amd64を使います。</p>
 <p>Minttyから <code>vagrant up</code>をしたあと、SSHでUbuntuにログインします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vagrant up</span><br><span class="line">$ ssh trusty</span><br></pre></td></tr></table></figure>
 
 <h3 id="ESXi5"><a href="#ESXi5" class="headerlink" title="ESXi5"></a>ESXi5</h3><p>UbuntuからESXi5にログインします。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ ssh <span class="symbol">root@</span><span class="number">192.168</span><span class="number">.56</span><span class="number">.101</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh root<span class="variable">@192</span>.<span class="number">168.56</span>.<span class="number">101</span></span><br></pre></td></tr></table></figure>
 
 <p>packer buildでメッセージが表示されるので、GuestIPHackをします。</p>
 <figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">GuestIPHack <span class="keyword">is</span> required, enable <span class="keyword">by</span> <span class="built_in">running</span> this <span class="keyword">on</span> <span class="keyword">the</span> ESX machine:</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ esxcli system settings advanced <span class="built_in">set</span> -o /Net/GuestIPHack -i 1</span><br></pre></td></tr></table></figure>
 
-<p>vim-cmdを使い、ESXi5のデータストアを確認します。<code>name = &quot;datastore1&quot;</code>をtemplate.jsonで使います。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vim-cmd hostsvc/datastore/listsummary</span><br><span class="line">(vim.Datastore.Summary) [</span><br><span class="line">   (vim.Datastore.Summary) &#123;</span><br><span class="line">      dynamicType = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">      datastore = <span class="string">'vim.Datastore:539bdf84-f652f3f9-ee0a-080027796f03'</span>,</span><br><span class="line">      name = <span class="string">"datastore1"</span>,</span><br><span class="line">      url = <span class="string">"/vmfs/volumes/539bdf84-f652f3f9-ee0a-080027796f03"</span>,</span><br><span class="line">      capacity = 536870912,</span><br><span class="line">      freeSpace = 520093696,</span><br><span class="line">      uncommitted = 0,</span><br><span class="line">      accessible = <span class="literal">true</span>,</span><br><span class="line">      multipleHostAccess = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">      <span class="built_in">type</span> = <span class="string">"VMFS"</span>,</span><br><span class="line">      maintenanceMode = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">   &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>vim-cmdを使い、ESXi5のデータストアを確認します。<code> name = &quot;datastore1&quot;</code>をtemplate.jsonで使います。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ vim-cmd hostsvc/datastore/listsummary</span><br><span class="line">(vim.Datastore.Summary) [</span><br><span class="line">   (vim.Datastore.Summary) &#123;</span><br><span class="line">      dynamicType = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">      datastore = <span class="string">&#x27;vim.Datastore:539bdf84-f652f3f9-ee0a-080027796f03&#x27;</span>,</span><br><span class="line">      name = <span class="string">&quot;datastore1&quot;</span>,</span><br><span class="line">      url = <span class="string">&quot;/vmfs/volumes/539bdf84-f652f3f9-ee0a-080027796f03&quot;</span>,</span><br><span class="line">      capacity = 536870912,</span><br><span class="line">      freeSpace = 520093696,</span><br><span class="line">      uncommitted = 0,</span><br><span class="line">      accessible = <span class="literal">true</span>,</span><br><span class="line">      multipleHostAccess = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">      <span class="built_in">type</span> = <span class="string">&quot;VMFS&quot;</span>,</span><br><span class="line">      maintenanceMode = &lt;<span class="built_in">unset</span>&gt;,</span><br><span class="line">   &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
 <h3 id="UbuntuにPackerのインストール"><a href="#UbuntuにPackerのインストール" class="headerlink" title="UbuntuにPackerのインストール"></a>UbuntuにPackerのインストール</h3><p>/etc/apt/sources.listが、us.archiveになっているので、日本のミラーに変更します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list</span><br><span class="line">$ sudo apt-get update</span><br></pre></td></tr></table></figure>
 
 <p>必要なパッケージをインストールします。</p>
 <figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo apt-<span class="builtin-name">get</span> install unzip</span><br></pre></td></tr></table></figure>
 
-<p><a href="http://www.packer.io/downloads.html" target="_blank" rel="noopener">Packer</a>から、<a href="https://dl.bintray.com/mitchellh/packer/0.6.0_linux_amd64.zip" target="_blank" rel="noopener">Linux amd64</a>のzipファイルをダウンロードします。</p>
+<p><a target="_blank" rel="noopener" href="http://www.packer.io/downloads.html">Packer</a>から、<a target="_blank" rel="noopener" href="https://dl.bintray.com/mitchellh/packer/0.6.0_linux_amd64.zip">Linux amd64</a>のzipファイルをダウンロードします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget https://dl.bintray.com/mitchellh/packer/0.6.0_linux_amd64.zip</span><br></pre></td></tr></table></figure>
 
 <p>zipを解凍して、適当な場所に配置してPATHを通します。すごく簡単</p>
@@ -278,13 +245,13 @@
 <h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/packer_apps/ubuntu1404</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br><span class="line">$ mkdir http scripts</span><br></pre></td></tr></table></figure>
 
 <h3 id="template-json"><a href="#template-json" class="headerlink" title="template.json"></a>template.json</h3><p>template.jsonはPackerが実行する設定ファイルです。</p>
-<figure class="highlight json"><figcaption><span>~/packer_apps/ubuntu1404/template.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"builders"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"vmware-iso"</span>,</span><br><span class="line">      <span class="attr">"boot_command"</span>: [</span><br><span class="line">        <span class="string">"&lt;esc&gt;&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">"&lt;esc&gt;&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">"&lt;enter&gt;&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">"/install/vmlinuz&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" auto&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" console-setup/ask_detect=false&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" console-setup/layoutcode=us&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" console-setup/modelcode=pc105&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" debconf/frontend=noninteractive&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" debian-installer=en_US&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" fb=false&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" initrd=/install/initrd.gz&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" kbd-chooser/method=us&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" keyboard-configuration/layout=USA&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" keyboard-configuration/variant=USA&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" locale=en_US&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" netcfg/get_hostname=ubuntu-1404&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" netcfg/get_domain=vagrantup.com&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" noapic&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" preseed/url=http://&amp;#123;&amp;#123; .HTTPIP &amp;#125;&amp;#125;:&amp;#123;&amp;#123; .HTTPPort &amp;#125;&amp;#125;/preseed.cfg&lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">" -- &lt;wait&gt;"</span>,</span><br><span class="line">        <span class="string">"&lt;enter&gt;&lt;wait&gt;"</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">"boot_wait"</span>: <span class="string">"10s"</span>,</span><br><span class="line">      <span class="attr">"disk_size"</span>: <span class="number">4096</span>,</span><br><span class="line">      <span class="attr">"vmdk_name"</span>: <span class="string">"disk"</span>,</span><br><span class="line">      <span class="attr">"disk_type_id"</span>: <span class="string">"thin"</span>,</span><br><span class="line">      <span class="attr">"tools_upload_flavor"</span>: <span class="string">"linux"</span>,</span><br><span class="line">      <span class="attr">"guest_os_type"</span>: <span class="string">"ubuntu-64"</span>,</span><br><span class="line">      <span class="attr">"http_directory"</span>: <span class="string">"http"</span>,</span><br><span class="line">      <span class="attr">"iso_checksum"</span>: <span class="string">"01545fa976c8367b4f0d59169ac4866c"</span>,</span><br><span class="line">      <span class="attr">"iso_checksum_type"</span>: <span class="string">"md5"</span>,</span><br><span class="line">      <span class="attr">"iso_url"</span>: <span class="string">"http://releases.ubuntu.com/14.04/ubuntu-14.04-server-amd64.iso"</span>,</span><br><span class="line">      <span class="attr">"remote_host"</span>: <span class="string">"192.168.56.101"</span>,</span><br><span class="line">      <span class="attr">"remote_datastore"</span>: <span class="string">"datastore1"</span>,</span><br><span class="line">      <span class="attr">"remote_username"</span>: <span class="string">"root"</span>,</span><br><span class="line">      <span class="attr">"remote_password"</span>: <span class="string">"password"</span>,</span><br><span class="line">      <span class="attr">"remote_type"</span>: <span class="string">"esx5"</span>,</span><br><span class="line">      <span class="attr">"ssh_username"</span>: <span class="string">"packer"</span>,</span><br><span class="line">      <span class="attr">"ssh_password"</span>: <span class="string">"packer"</span>,</span><br><span class="line">      <span class="attr">"ssh_port"</span>: <span class="number">22</span>,</span><br><span class="line">      <span class="attr">"ssh_wait_timeout"</span>: <span class="string">"1000s"</span>,</span><br><span class="line">      <span class="attr">"shutdown_command"</span>: <span class="string">"echo 'packer'|sudo -S shutdown -P now"</span>,</span><br><span class="line">      <span class="attr">"headless"</span>: <span class="string">"true"</span>,</span><br><span class="line">      <span class="attr">"vmx_data"</span>: &#123;</span><br><span class="line">        <span class="attr">"memsize"</span>: <span class="string">"512"</span>,</span><br><span class="line">        <span class="attr">"numvcpus"</span>: <span class="string">"1"</span>,</span><br><span class="line">        <span class="attr">"cpuid.coresPerSocket"</span>: <span class="string">"1"</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"provisioners"</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">      <span class="attr">"execute_command"</span>: <span class="string">"echo 'packer' | &amp;#123;&amp;#123; .Vars &amp;#125;&amp;#125; sudo -E -S sh '&amp;#123;&amp;#123; .Path &amp;#125;&amp;#125;'"</span>,</span><br><span class="line">      <span class="attr">"override"</span>: &#123;</span><br><span class="line">        <span class="attr">"vmware-iso"</span>: &#123;</span><br><span class="line">          <span class="attr">"scripts"</span>: [</span><br><span class="line">            <span class="string">"scripts/base.sh"</span>,</span><br><span class="line">            <span class="string">"scripts/cleanup.sh"</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>~/packer_apps/ubuntu1404/template.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;builders&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;vmware-iso&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;boot_command&quot;</span>: [</span><br><span class="line">        <span class="string">&quot;&lt;esc&gt;&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;&lt;esc&gt;&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;&lt;enter&gt;&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;/install/vmlinuz&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; auto&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; console-setup/ask_detect=false&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; console-setup/layoutcode=us&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; console-setup/modelcode=pc105&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; debconf/frontend=noninteractive&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; debian-installer=en_US&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; fb=false&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; initrd=/install/initrd.gz&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; kbd-chooser/method=us&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; keyboard-configuration/layout=USA&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; keyboard-configuration/variant=USA&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; locale=en_US&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; netcfg/get_hostname=ubuntu-1404&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; netcfg/get_domain=vagrantup.com&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; noapic&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; preseed/url=http://&amp;#123;&amp;#123; .HTTPIP &amp;#125;&amp;#125;:&amp;#123;&amp;#123; .HTTPPort &amp;#125;&amp;#125;/preseed.cfg&lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot; -- &lt;wait&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;&lt;enter&gt;&lt;wait&gt;&quot;</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;boot_wait&quot;</span>: <span class="string">&quot;10s&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;disk_size&quot;</span>: <span class="number">4096</span>,</span><br><span class="line">      <span class="attr">&quot;vmdk_name&quot;</span>: <span class="string">&quot;disk&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;disk_type_id&quot;</span>: <span class="string">&quot;thin&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;tools_upload_flavor&quot;</span>: <span class="string">&quot;linux&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;guest_os_type&quot;</span>: <span class="string">&quot;ubuntu-64&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;http_directory&quot;</span>: <span class="string">&quot;http&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;iso_checksum&quot;</span>: <span class="string">&quot;01545fa976c8367b4f0d59169ac4866c&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;iso_checksum_type&quot;</span>: <span class="string">&quot;md5&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;iso_url&quot;</span>: <span class="string">&quot;http://releases.ubuntu.com/14.04/ubuntu-14.04-server-amd64.iso&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;remote_host&quot;</span>: <span class="string">&quot;192.168.56.101&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;remote_datastore&quot;</span>: <span class="string">&quot;datastore1&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;remote_username&quot;</span>: <span class="string">&quot;root&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;remote_password&quot;</span>: <span class="string">&quot;password&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;remote_type&quot;</span>: <span class="string">&quot;esx5&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;ssh_username&quot;</span>: <span class="string">&quot;packer&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;ssh_password&quot;</span>: <span class="string">&quot;packer&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;ssh_port&quot;</span>: <span class="number">22</span>,</span><br><span class="line">      <span class="attr">&quot;ssh_wait_timeout&quot;</span>: <span class="string">&quot;1000s&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;shutdown_command&quot;</span>: <span class="string">&quot;echo &#x27;packer&#x27;|sudo -S shutdown -P now&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;headless&quot;</span>: <span class="string">&quot;true&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;vmx_data&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;memsize&quot;</span>: <span class="string">&quot;512&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;numvcpus&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cpuid.coresPerSocket&quot;</span>: <span class="string">&quot;1&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">&quot;provisioners&quot;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;shell&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;execute_command&quot;</span>: <span class="string">&quot;echo &#x27;packer&#x27; | &amp;#123;&amp;#123; .Vars &amp;#125;&amp;#125; sudo -E -S sh &#x27;&amp;#123;&amp;#123; .Path &amp;#125;&amp;#125;&#x27;&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;override&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;vmware-iso&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;scripts&quot;</span>: [</span><br><span class="line">            <span class="string">&quot;scripts/base.sh&quot;</span>,</span><br><span class="line">            <span class="string">&quot;scripts/cleanup.sh&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>今回はUbuntuのOVAを作成するため、Preseedの設定ファイルを作成します。<br>template.jsonで、<code>http_directory</code>に指定したディレクトリからHTTPで設定ファイルを読み込んでくれます。</p>
 <figure class="highlight plain"><figcaption><span>~/packer_apps/ubuntu1404/http/preseed.cfg</span></figcaption><table><tr><td class="code"><pre><span class="line">choose-mirror-bin mirror&#x2F;http&#x2F;proxy string</span><br><span class="line">d-i base-installer&#x2F;kernel&#x2F;override-image string linux-server</span><br><span class="line">d-i clock-setup&#x2F;utc boolean true</span><br><span class="line">d-i clock-setup&#x2F;utc-auto boolean true</span><br><span class="line">d-i finish-install&#x2F;reboot_in_progress note</span><br><span class="line">d-i grub-installer&#x2F;only_debian boolean true</span><br><span class="line">d-i grub-installer&#x2F;with_other_os boolean true</span><br><span class="line">d-i partman-auto-lvm&#x2F;guided_size string max</span><br><span class="line">d-i partman-auto&#x2F;choose_recipe select atomic</span><br><span class="line">d-i partman-auto&#x2F;method string lvm</span><br><span class="line">d-i partman-lvm&#x2F;confirm boolean true</span><br><span class="line">d-i partman-lvm&#x2F;confirm boolean true</span><br><span class="line">d-i partman-lvm&#x2F;confirm_nooverwrite boolean true</span><br><span class="line">d-i partman-lvm&#x2F;device_remove_lvm boolean true</span><br><span class="line">d-i partman&#x2F;choose_partition select finish</span><br><span class="line">d-i partman&#x2F;confirm boolean true</span><br><span class="line">d-i partman&#x2F;confirm_nooverwrite boolean true</span><br><span class="line">d-i partman&#x2F;confirm_write_new_label boolean true</span><br><span class="line"></span><br><span class="line"># Default user</span><br><span class="line">d-i passwd&#x2F;user-fullname string packer</span><br><span class="line">d-i passwd&#x2F;username string packer</span><br><span class="line">d-i passwd&#x2F;user-password password packer</span><br><span class="line">d-i passwd&#x2F;user-password-again password packer</span><br><span class="line">d-i passwd&#x2F;username string packer</span><br><span class="line"></span><br><span class="line"># Minimum packages (see postinstall.sh)</span><br><span class="line">d-i pkgsel&#x2F;include string openssh-server</span><br><span class="line">d-i pkgsel&#x2F;install-language-support boolean false</span><br><span class="line">d-i pkgsel&#x2F;update-policy select none</span><br><span class="line">d-i pkgsel&#x2F;upgrade select none</span><br><span class="line"></span><br><span class="line">d-i time&#x2F;zone string UTC</span><br><span class="line">d-i user-setup&#x2F;allow-password-weak boolean true</span><br><span class="line">d-i user-setup&#x2F;encrypt-home boolean false</span><br><span class="line">tasksel tasksel&#x2F;first multiselect standard, ubuntu-server</span><br></pre></td></tr></table></figure>
 
 <p>provisionersはtemplate.jsonでshellを指定しているので、実行するシェルスクリプトを作成します。</p>
-<figure class="highlight bash"><figcaption><span>~/packer_apps/ubuntu1404/scripts/base.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">sudo sed -i~ -e <span class="string">'s;http://archive.ubuntu.com/ubuntu;http://ftp.jaist.ac.jp/pub/Linux/ubuntu;'</span> /etc/apt/sources.list</span><br><span class="line"></span><br><span class="line">sed -i -e <span class="string">'/Defaults\s\+env_reset/a Defaults\texempt_group=sudo'</span> /etc/sudoers</span><br><span class="line">sed -i -e <span class="string">'s/%sudo  ALL=(ALL:ALL) ALL/%sudo  ALL=NOPASSWD:ALL/g'</span> /etc/sudoers</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/packer_apps/ubuntu1404/scripts/base.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">sudo sed -i~ -e <span class="string">&#x27;s;http://archive.ubuntu.com/ubuntu;http://ftp.jaist.ac.jp/pub/Linux/ubuntu;&#x27;</span> /etc/apt/sources.list</span><br><span class="line"></span><br><span class="line">sed -i -e <span class="string">&#x27;/Defaults\s\+env_reset/a Defaults\texempt_group=sudo&#x27;</span> /etc/sudoers</span><br><span class="line">sed -i -e <span class="string">&#x27;s/%sudo  ALL=(ALL:ALL) ALL/%sudo  ALL=NOPASSWD:ALL/g&#x27;</span> /etc/sudoers</span><br></pre></td></tr></table></figure>
 
 <p>簡単な終了処理を実装します。</p>
 <figure class="highlight bash"><figcaption><span>~/packer_apps/ubuntu1404/scripts/cleanup.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">apt-get -y autoremove</span><br><span class="line">apt-get -y clean</span><br></pre></td></tr></table></figure>
@@ -294,10 +261,10 @@
 
 <p><code>packer build</code>します。初回はUbuntuのインストールISOをダウンロードするため時間がかかります。<br>ダウンロードしたISOは<code>packer_cache</code>ディレクトリにキャッシュされます。</p>
 <p>失敗してしまいました。。。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ packer build template.json</span><br><span class="line">...</span><br><span class="line">    vmware-iso: Download progress: 99%</span><br><span class="line">    vmware-iso: Download progress: 100%</span><br><span class="line">==&gt; vmware-iso: Uploading ISO to remote machine...</span><br><span class="line">==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">Build <span class="string">'vmware-iso'</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line"></span><br><span class="line">==&gt; Some builds didn<span class="string">'t complete successfully and had errors:</span></span><br><span class="line"><span class="string">--&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">==&gt; Builds finished but no artifacts were created.</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ packer build template.json</span><br><span class="line">...</span><br><span class="line">    vmware-iso: Download progress: 99%</span><br><span class="line">    vmware-iso: Download progress: 100%</span><br><span class="line">==&gt; vmware-iso: Uploading ISO to remote machine...</span><br><span class="line">==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">Build <span class="string">&#x27;vmware-iso&#x27;</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line"></span><br><span class="line">==&gt; Some builds didn<span class="string">&#x27;t complete successfully and had errors:</span></span><br><span class="line"><span class="string">--&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">==&gt; Builds finished but no artifacts were created.</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="packer-buildのデバッグ"><a href="#packer-buildのデバッグ" class="headerlink" title="packer buildのデバッグ"></a>packer buildのデバッグ</h3><p><code>PACKER_LOG=1</code>をprefixしてビルドを実行します。<br>ログを見ると、ISOファイルのアップロードに失敗しているようです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ PACKER_LOG=1 packer build template.json</span><br><span class="line">...</span><br><span class="line">2014/06/14 08:22:47 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:22:47 Beginning file upload...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 SCP session complete, closing stdin pipe.</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 Waiting <span class="keyword">for</span> SSH session to complete.</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 non-zero <span class="built_in">exit</span> status: 1</span><br><span class="line">==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui error: ==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui: ==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 opening new ssh session</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 starting remote <span class="built_in">command</span>: rm -rf /vmfs/volumes/datastore1/output-vmware-iso</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 remote <span class="built_in">command</span> exited with <span class="string">'0'</span>: rm -rf /vmfs/volumes/datastore1/output-vmware-iso</span><br><span class="line">2014/06/14 08:24:38 ui error: Build <span class="string">'vmware-iso'</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">Build <span class="string">'vmware-iso'</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-command-build: 2014/06/14 08:24:38 Builds completed. Waiting on interrupt barrier...</span><br><span class="line">2014/06/14 08:24:38 machine readable: error-count []string&#123;<span class="string">"1"</span>&#125;</span><br><span class="line"></span><br><span class="line">==&gt; Some builds didn<span class="string">'t complete successfully and had errors:</span></span><br><span class="line"><span class="string">2014/06/14 08:24:38 ui error:</span></span><br><span class="line"><span class="string">==&gt; Some builds didn'</span>t complete successfully and had errors:</span><br><span class="line">2014/06/14 08:24:38 machine readable: vmware-iso,error []string&#123;<span class="string">"Error uploading file: Process exited with: 1. Reason was:  ()"</span>&#125;</span><br><span class="line">2014/06/14 08:24:38 ui error: --&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">--&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui:</span><br><span class="line">==&gt; Builds finished but no artifacts were created.</span><br><span class="line"></span><br><span class="line">==&gt; Builds finished but no artifacts were created.</span><br><span class="line">2014/06/14 08:24:38 waiting <span class="keyword">for</span> all plugin processes to complete...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-command-build: plugin process exited</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: plugin process exited</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-provisioner-shell: plugin process exited</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ PACKER_LOG=1 packer build template.json</span><br><span class="line">...</span><br><span class="line">2014/06/14 08:22:47 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:22:47 Beginning file upload...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 SCP session complete, closing stdin pipe.</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 Waiting <span class="keyword">for</span> SSH session to complete.</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 non-zero <span class="built_in">exit</span> status: 1</span><br><span class="line">==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui error: ==&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui: ==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">==&gt; vmware-iso: Deleting output directory...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 opening new ssh session</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 starting remote <span class="built_in">command</span>: rm -rf /vmfs/volumes/datastore1/output-vmware-iso</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: 2014/06/14 08:24:38 remote <span class="built_in">command</span> exited with <span class="string">&#x27;0&#x27;</span>: rm -rf /vmfs/volumes/datastore1/output-vmware-iso</span><br><span class="line">2014/06/14 08:24:38 ui error: Build <span class="string">&#x27;vmware-iso&#x27;</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">Build <span class="string">&#x27;vmware-iso&#x27;</span> errored: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-command-build: 2014/06/14 08:24:38 Builds completed. Waiting on interrupt barrier...</span><br><span class="line">2014/06/14 08:24:38 machine readable: error-count []string&#123;<span class="string">&quot;1&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">==&gt; Some builds didn<span class="string">&#x27;t complete successfully and had errors:</span></span><br><span class="line"><span class="string">2014/06/14 08:24:38 ui error:</span></span><br><span class="line"><span class="string">==&gt; Some builds didn&#x27;</span>t complete successfully and had errors:</span><br><span class="line">2014/06/14 08:24:38 machine readable: vmware-iso,error []string&#123;<span class="string">&quot;Error uploading file: Process exited with: 1. Reason was:  ()&quot;</span>&#125;</span><br><span class="line">2014/06/14 08:24:38 ui error: --&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">--&gt; vmware-iso: Error uploading file: Process exited with: 1. Reason was:  ()</span><br><span class="line">2014/06/14 08:24:38 ui:</span><br><span class="line">==&gt; Builds finished but no artifacts were created.</span><br><span class="line"></span><br><span class="line">==&gt; Builds finished but no artifacts were created.</span><br><span class="line">2014/06/14 08:24:38 waiting <span class="keyword">for</span> all plugin processes to complete...</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-command-build: plugin process exited</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-builder-vmware-iso: plugin process exited</span><br><span class="line">2014/06/14 08:24:38 /home/vagrant/bin/packer-provisioner-shell: plugin process exited</span><br></pre></td></tr></table></figure>
 
 <p>ESXi5にSSHログインしてアップロードしたISOを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh root@192.168.56.101</span><br><span class="line">$ ls -al /vmfs/volumes/datastore1/packer_cache</span><br><span class="line">total 508936</span><br><span class="line">drwxr-xr-x    1 root     root           420 Jun 14 08:11 .</span><br><span class="line">drwxr-xr-t    1 root     root          1400 Jun 14 08:24 ..</span><br><span class="line">-rw-r--r--    1 root     root     522715136 Jun 14 08:24 616e30c4df43460f8b93c3b5a9efb08868eb9b4778c5f5014607a37095b91524.iso</span><br></pre></td></tr></table></figure>
@@ -319,8 +286,8 @@
               <a href="/tags/Packer/" rel="tag"># Packer</a>
               <a href="/tags/Windows/" rel="tag"># Windows</a>
               <a href="/tags/PackerOVA/" rel="tag"># PackerOVA</a>
-              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/VirtualBox/" rel="tag"># VirtualBox</a>
+              <a href="/tags/NestedVirtualization/" rel="tag"># NestedVirtualization</a>
               <a href="/tags/ESXi5/" rel="tag"># ESXi5</a>
           </div>
 
@@ -345,7 +312,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -396,7 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrant"><span class="nav-number">2.</span> <span class="nav-text">Vagrant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ESXi5"><span class="nav-number">3.</span> <span class="nav-text">ESXi5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UbuntuにPackerのインストール"><span class="nav-number">4.</span> <span class="nav-text">UbuntuにPackerのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">5.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#template-json"><span class="nav-number">6.</span> <span class="nav-text">template.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#packer-buildに失敗"><span class="nav-number">7.</span> <span class="nav-text">packer buildに失敗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#packer-buildのデバッグ"><span class="nav-number">8.</span> <span class="nav-text">packer buildのデバッグ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">9.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vagrant"><span class="nav-number">2.</span> <span class="nav-text">Vagrant</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ESXi5"><span class="nav-number">3.</span> <span class="nav-text">ESXi5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu%E3%81%ABPacker%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">4.</span> <span class="nav-text">UbuntuにPackerのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">5.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#template-json"><span class="nav-number">6.</span> <span class="nav-text">template.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#packer-build%E3%81%AB%E5%A4%B1%E6%95%97"><span class="nav-number">7.</span> <span class="nav-text">packer buildに失敗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#packer-build%E3%81%AE%E3%83%87%E3%83%90%E3%83%83%E3%82%B0"><span class="nav-number">8.</span> <span class="nav-text">packer buildのデバッグ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">9.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -428,10 +394,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -456,9 +425,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -498,13 +467,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

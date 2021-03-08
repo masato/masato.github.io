@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="CanonicalがSnappy Ubuntu CoreのIoTバージョンとして、BeagleBone Black用のイメージを公開しました。IoTとUbuntuとDockerとNinja SphereとBeagleBone Blackとワクワクがとまらないので、SDカードに焼いてBeagleBone Blackで動かしてみます。Smart things powered by snappy Ubu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Snappy Ubuntu Core on BeagleBone Black- Part1: インストール">
 <meta property="og:url" content="https://masato.github.io/2015/02/03/beagleboneblack-snappy-ubuntu-core/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="CanonicalがSnappy Ubuntu CoreのIoTバージョンとして、BeagleBone Black用のイメージを公開しました。IoTとUbuntuとDockerとNinja SphereとBeagleBone Blackとワクワクがとまらないので、SDカードに焼いてBeagleBone Blackで動かしてみます。Smart things powered by snappy Ubu">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/02/03/beagleboneblack-snappy-ubuntu-core/snappy-ubuntu-core.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/03/beagleboneblack-snappy-ubuntu-core/snappy-store.png">
 <meta property="article:published_time" content="2015-02-02T15:29:56.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.551Z">
+<meta property="article:modified_time" content="2015-02-02T15:29:56.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="Docker">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Snappy Ubuntu Core on BeagleBone Black- Part1: インストール | masato's blog</title>
+  <title>Snappy Ubuntu Core on BeagleBone Black- Part1: インストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 3 2015 00:29:56" itemprop="dateCreated datePublished" datetime="2015-02-03T00:29:56+09:00">Feb 3 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">CanonicalがSnappy Ubuntu CoreのIoTバージョンとして、BeagleBone Black用のイメージを公開しました。IoTとUbuntuとDockerとNinja SphereとBeagleBone Blackとワクワクがとまらないので、SDカードに焼いてBeagleBone Blackで動かしてみます。Smart things powered by snappy Ubuntu Core on ARM and x86 Ubuntu CoreのIoT用バージョンをCanonicalがローンチ</div>
@@ -244,17 +211,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>CanonicalがSnappy Ubuntu Coreの<a href="http://www.ubuntu.com/things" target="_blank" rel="noopener">IoTバージョン</a>として、BeagleBone Black用のイメージを<a href="https://developer.ubuntu.com/en/snappy/porting/" target="_blank" rel="noopener">公開</a>しました。IoTとUbuntuとDockerとNinja SphereとBeagleBone Blackとワクワクがとまらないので、SDカードに焼いてBeagleBone Blackで動かしてみます。</p>
+        <p>CanonicalがSnappy Ubuntu Coreの<a target="_blank" rel="noopener" href="http://www.ubuntu.com/things">IoTバージョン</a>として、BeagleBone Black用のイメージを<a target="_blank" rel="noopener" href="https://developer.ubuntu.com/en/snappy/porting/">公開</a>しました。IoTとUbuntuとDockerとNinja SphereとBeagleBone Blackとワクワクがとまらないので、SDカードに焼いてBeagleBone Blackで動かしてみます。</p>
 <ul>
-<li><a href="http://jp.techcrunch.com/2015/01/21/20150120ubuntu-of-things/" target="_blank" rel="noopener">Ubuntu CoreのIoT用バージョンをCanonicalがローンチ</a></li>
-<li><a href="http://www.markshuttleworth.com/archives/1445" target="_blank" rel="noopener">Smart things powered by snappy Ubuntu Core on ARM and x86</a></li>
+<li><a target="_blank" rel="noopener" href="http://jp.techcrunch.com/2015/01/21/20150120ubuntu-of-things/">Ubuntu CoreのIoT用バージョンをCanonicalがローンチ</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.markshuttleworth.com/archives/1445">Smart things powered by snappy Ubuntu Core on ARM and x86</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="Ninja-Sphere"><a href="#Ninja-Sphere" class="headerlink" title="Ninja Sphere"></a>Ninja Sphere</h2><p><a href="http://shop.ninjablocks.com/collections/ninja-blocks/products/ninja-shield-for-beaglebone-black" target="_blank" rel="noopener">Ninja Shield for BeagleBone Black</a>を買おうか悩んでいますが、<a href="https://ninjablocks.com/#home/" target="_blank" rel="noopener">Ninja Sphere</a>は、<a href="http://www.ubuntu.com/things" target="_blank" rel="noopener">Snappy Ubuntu Core</a>をベースにしているのでPRE-ORDERしてしまいそうです。Snappy appsを配布するアプリストアも用意しているようです。IoT用アプリの配布としてDockerイメージを使うのはおもしろいアイデアです。</p>
-<h2 id="イメージのビルド"><a href="#イメージのビルド" class="headerlink" title="イメージのビルド"></a>イメージのビルド</h2><p><a href="https://developer.ubuntu.com/en/snappy/porting/" target="_blank" rel="noopener">Snappy for Devices porting guide</a>の手順でセットアップしていきます。</p>
+<h2 id="Ninja-Sphere"><a href="#Ninja-Sphere" class="headerlink" title="Ninja Sphere"></a>Ninja Sphere</h2><p><a target="_blank" rel="noopener" href="http://shop.ninjablocks.com/collections/ninja-blocks/products/ninja-shield-for-beaglebone-black">Ninja Shield for BeagleBone Black</a>を買おうか悩んでいますが、<a target="_blank" rel="noopener" href="https://ninjablocks.com/#home/">Ninja Sphere</a>は、<a target="_blank" rel="noopener" href="http://www.ubuntu.com/things">Snappy Ubuntu Core</a>をベースにしているのでPRE-ORDERしてしまいそうです。Snappy appsを配布するアプリストアも用意しているようです。IoT用アプリの配布としてDockerイメージを使うのはおもしろいアイデアです。</p>
+<h2 id="イメージのビルド"><a href="#イメージのビルド" class="headerlink" title="イメージのビルド"></a>イメージのビルド</h2><p><a target="_blank" rel="noopener" href="https://developer.ubuntu.com/en/snappy/porting/">Snappy for Devices porting guide</a>の手順でセットアップしていきます。</p>
 <p>Beaglebone Black用のイメージをビルドするため、Linux Mint 17 MATEにログインします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=LinuxMint</span><br><span class="line">DISTRIB_RELEASE=17</span><br><span class="line">DISTRIB_CODENAME=qiana</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">"Linux Mint 17 Qiana"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=LinuxMint</span><br><span class="line">DISTRIB_RELEASE=17</span><br><span class="line">DISTRIB_CODENAME=qiana</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">&quot;Linux Mint 17 Qiana&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="ビルドの準備"><a href="#ビルドの準備" class="headerlink" title="ビルドの準備"></a>ビルドの準備</h3><p>Snappy用のPPAリポジトリの追加と必要なパッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo add-apt-repository ppa:snappy-dev/beta</span><br><span class="line">$ sudo apt-get update &amp;&amp; sudo apt-get upgrade</span><br><span class="line">$ sudo apt-get install snappy-tools bzr</span><br></pre></td></tr></table></figure>
@@ -262,13 +229,13 @@
 <p>Beaglebone Black向けに用意された、デバイス用のtarballをダウンロードします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Downloads</span><br><span class="line">$ wget -O ./device.tar.xz http://system-image.ubuntu.com/pool/device-bf0a49e75a3deb99855f186906f17d7668e2dcc3a0b38f5feade3e6f7c75e9b8.tar.xz</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://developer.ubuntu.com/en/start/ubuntu-for-devices/installing-ubuntu-for-devices/" target="_blank" rel="noopener">Installing Ubuntu for devices</a>を参考に、ubuntu-device-flashをインストールします。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.ubuntu.com/en/start/ubuntu-for-devices/installing-ubuntu-for-devices/">Installing Ubuntu for devices</a>を参考に、ubuntu-device-flashをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install ubuntu-device-flash</span><br></pre></td></tr></table></figure>
 
 <h3 id="イメージのビルド-1"><a href="#イメージのビルド-1" class="headerlink" title="イメージのビルド"></a>イメージのビルド</h3><p>Beaglebone Black用のイメージをビルドします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ubuntu-device-flash core \</span><br><span class="line">    -o my-snappy.img \</span><br><span class="line">    --size 4 \</span><br><span class="line">    --channel ubuntu-core/devel \</span><br><span class="line">    --device generic_armhf    \</span><br><span class="line">    --platform am335x-boneblack \</span><br><span class="line">    --<span class="built_in">enable</span>-ssh \</span><br><span class="line">    --device-part=./device.tar.xz</span><br><span class="line">Fetching information from server...</span><br><span class="line">Downloading and setting up...</span><br><span class="line">67.31 MB / 67.31 MB [=========================================================] 100.00 % 63.68 KB/s</span><br><span class="line">Running flashtool-asset commands</span><br><span class="line">dd <span class="keyword">if</span>=/tmp/device222703919/flashtool-assets/am335x-boneblack/MLO of=my-snappy.img count=1 seek=1 conv=notrunc bs=128k</span><br><span class="line">0+1 レコード入力</span><br><span class="line">0+1 レコード出力</span><br><span class="line">79348 バイト (79 kB) コピーされました、 0.000348669 秒、 228 MB/秒</span><br><span class="line"></span><br><span class="line">dd <span class="keyword">if</span>=/tmp/device222703919/flashtool-assets/am335x-boneblack/u-boot.img of=my-snappy.img count=2 seek=1 conv=notrunc bs=384k</span><br><span class="line">0+1 レコード入力</span><br><span class="line">0+1 レコード出力</span><br><span class="line">373048 バイト (373 kB) コピーされました、 0.000600729 秒、 621 MB/秒</span><br><span class="line"></span><br><span class="line">New image complete</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo ubuntu-device-flash core \</span><br><span class="line">    -o my-snappy.img \</span><br><span class="line">    --size 4 \</span><br><span class="line">    --channel ubuntu-core/devel \</span><br><span class="line">    --device generic_armhf    \</span><br><span class="line">    --platform am335x-boneblack \</span><br><span class="line">    --enable-ssh \</span><br><span class="line">    --device-part=./device.tar.xz</span><br><span class="line">Fetching information from server...</span><br><span class="line">Downloading and setting up...</span><br><span class="line">67.31 MB / 67.31 MB [=========================================================] 100.00 % 63.68 KB/s</span><br><span class="line">Running flashtool-asset commands</span><br><span class="line">dd <span class="keyword">if</span>=/tmp/device222703919/flashtool-assets/am335x-boneblack/MLO of=my-snappy.img count=1 seek=1 conv=notrunc bs=128k</span><br><span class="line">0+1 レコード入力</span><br><span class="line">0+1 レコード出力</span><br><span class="line">79348 バイト (79 kB) コピーされました、 0.000348669 秒、 228 MB/秒</span><br><span class="line"></span><br><span class="line">dd <span class="keyword">if</span>=/tmp/device222703919/flashtool-assets/am335x-boneblack/u-boot.img of=my-snappy.img count=2 seek=1 conv=notrunc bs=384k</span><br><span class="line">0+1 レコード入力</span><br><span class="line">0+1 レコード出力</span><br><span class="line">373048 バイト (373 kB) コピーされました、 0.000600729 秒、 621 MB/秒</span><br><span class="line"></span><br><span class="line">New image complete</span><br></pre></td></tr></table></figure>
 
-<h2 id="イメージをSDカードに焼く"><a href="#イメージをSDカードに焼く" class="headerlink" title="イメージをSDカードに焼く"></a>イメージをSDカードに焼く</h2><p>ビルドしたmy-snappy.imgをWindowsにSCP転送します。microSDカードは<a href="https://www.sdcard.org/jp/downloads/formatter_4/" target="_blank" rel="noopener">SD Formatter</a>を使い、論理サイズ調整をON、クイックフォーマットしておきます。</p>
+<h2 id="イメージをSDカードに焼く"><a href="#イメージをSDカードに焼く" class="headerlink" title="イメージをSDカードに焼く"></a>イメージをSDカードに焼く</h2><p>ビルドしたmy-snappy.imgをWindowsにSCP転送します。microSDカードは<a target="_blank" rel="noopener" href="https://www.sdcard.org/jp/downloads/formatter_4/">SD Formatter</a>を使い、論理サイズ調整をON、クイックフォーマットしておきます。</p>
 <p>Cygwin64 Terminalを管理者として起動してmicroSDカードに焼きます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dd <span class="keyword">if</span>=/cygdrive/c/Users/masato/Documents/my-snappy.img of=/dev/sdc bs=32M</span><br><span class="line">119+1 レコード入力</span><br><span class="line">119+1 レコード出力</span><br><span class="line">4000000000 バイト (4.0 GB) コピーされました、 351.876 秒、 11.4 MB/秒</span><br></pre></td></tr></table></figure>
 
@@ -279,7 +246,7 @@
 </ul>
 <p><img src="/2015/02/03/beagleboneblack-snappy-ubuntu-core/snappy-ubuntu-core.png" alt="snappy-ubuntu-core.png"></p>
 <h3 id="バージョン確認"><a href="#バージョン確認" class="headerlink" title="バージョン確認"></a>バージョン確認</h3><p>Ubuntuのバージョンを確認します。Ubuntu Vivid Vervet 15.04がインストールされています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=15.04</span><br><span class="line">DISTRIB_CODENAME=vivid</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">"Ubuntu Vivid Vervet (development branch)"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cat /etc/lsb-release</span><br><span class="line">DISTRIB_ID=Ubuntu</span><br><span class="line">DISTRIB_RELEASE=15.04</span><br><span class="line">DISTRIB_CODENAME=vivid</span><br><span class="line">DISTRIB_DESCRIPTION=<span class="string">&quot;Ubuntu Vivid Vervet (development branch)&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>Snappyは0.1です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy -v</span><br><span class="line">0.1</span><br></pre></td></tr></table></figure>
@@ -288,7 +255,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo snappy versions</span><br><span class="line">Part         Tag   Installed  Available  Fingerprint     Active</span><br><span class="line">ubuntu-core  edge  2          -          f442b1d8d6db3f  *</span><br></pre></td></tr></table></figure>
 
 <h2 id="ネットワーク設定"><a href="#ネットワーク設定" class="headerlink" title="ネットワーク設定"></a>ネットワーク設定</h2><p>Dockerパッケージを検索しようとすると、ホスト名の名前解決に失敗します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy search docker</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"/usr/bin/snappy"</span>, line 25, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    status = Main().__main__()</span><br><span class="line">  File <span class="string">"/usr/lib/python3/dist-packages/snappy/main.py"</span>, line 195, <span class="keyword">in</span> __main__</span><br><span class="line">    <span class="built_in">return</span> callback(args)</span><br><span class="line">  File <span class="string">"/usr/lib/python3/dist-packages/snappy/main.py"</span>, line 401, <span class="keyword">in</span> _do_search</span><br><span class="line">    results = ClickDataSource().search(args.args)</span><br><span class="line">  File <span class="string">"/usr/lib/python3/dist-packages/snappy/click.py"</span>, line 100, <span class="keyword">in</span> search</span><br><span class="line">    results = repo.search(<span class="string">","</span>.join(terms))</span><br><span class="line">  File <span class="string">"/usr/lib/python3/dist-packages/click/repository.py"</span>, line 141, <span class="keyword">in</span> search</span><br><span class="line">    resp, raw_content = http_request(url, headers=get_store_headers())</span><br><span class="line">  File <span class="string">"/usr/lib/python3/dist-packages/click/network.py"</span>, line 70, <span class="keyword">in</span> http_request</span><br><span class="line">    curl.perform()</span><br><span class="line">pycurl.error: (6, <span class="string">'Could not resolve host: search.apps.ubuntu.com'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ snappy search docker</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">&quot;/usr/bin/snappy&quot;</span>, line 25, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    status = Main().__main__()</span><br><span class="line">  File <span class="string">&quot;/usr/lib/python3/dist-packages/snappy/main.py&quot;</span>, line 195, <span class="keyword">in</span> __main__</span><br><span class="line">    <span class="built_in">return</span> callback(args)</span><br><span class="line">  File <span class="string">&quot;/usr/lib/python3/dist-packages/snappy/main.py&quot;</span>, line 401, <span class="keyword">in</span> _do_search</span><br><span class="line">    results = ClickDataSource().search(args.args)</span><br><span class="line">  File <span class="string">&quot;/usr/lib/python3/dist-packages/snappy/click.py&quot;</span>, line 100, <span class="keyword">in</span> search</span><br><span class="line">    results = repo.search(<span class="string">&quot;,&quot;</span>.join(terms))</span><br><span class="line">  File <span class="string">&quot;/usr/lib/python3/dist-packages/click/repository.py&quot;</span>, line 141, <span class="keyword">in</span> search</span><br><span class="line">    resp, raw_content = http_request(url, headers=get_store_headers())</span><br><span class="line">  File <span class="string">&quot;/usr/lib/python3/dist-packages/click/network.py&quot;</span>, line 70, <span class="keyword">in</span> http_request</span><br><span class="line">    curl.perform()</span><br><span class="line">pycurl.error: (6, <span class="string">&#x27;Could not resolve host: search.apps.ubuntu.com&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>Windows7とはBeagleBone BlackはUSBケーブルで接続していますが、usb0のネットワークはみつかりません。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ip a</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: eth0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000</span><br><span class="line">    link/ether 90:59:af:58:32:d1 brd ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure>
@@ -319,10 +286,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo netstat -tlnp</span><br><span class="line">Active Internet connections (only servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      624/sshd</span><br><span class="line">tcp6       0      0 :::4200                 :::*                    LISTEN      893/snappyd</span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      624/sshd</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザを起動してWebDMの画面を表示します。</p>
-<p><a href="http://webdm.local:4200/" target="_blank" rel="noopener">http://webdm.local:4200/</a></p>
+<p><a target="_blank" rel="noopener" href="http://webdm.local:4200/">http://webdm.local:4200/</a></p>
 <p><img src="/2015/02/03/beagleboneblack-snappy-ubuntu-core/snappy-store.png" alt="snappy-store.png"></p>
 <h3 id="Dockerが見つからない"><a href="#Dockerが見つからない" class="headerlink" title="Dockerが見つからない"></a>Dockerが見つからない</h3><p>Dockerをインストールしたかったのですが見つかりませんでした。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo snappy install docker</span><br><span class="line">No package <span class="string">'docker'</span> <span class="keyword">for</span> ubuntu-core/devel</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo snappy install docker</span><br><span class="line">No package <span class="string">&#x27;docker&#x27;</span> <span class="keyword">for</span> ubuntu-core/devel</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -360,7 +327,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -411,7 +377,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ninja-Sphere"><span class="nav-number">1.</span> <span class="nav-text">Ninja Sphere</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#イメージのビルド"><span class="nav-number">2.</span> <span class="nav-text">イメージのビルド</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ビルドの準備"><span class="nav-number">2.1.</span> <span class="nav-text">ビルドの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#イメージのビルド-1"><span class="nav-number">2.2.</span> <span class="nav-text">イメージのビルド</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#イメージをSDカードに焼く"><span class="nav-number">3.</span> <span class="nav-text">イメージをSDカードに焼く</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snappy-Ubuntu-Core-on-BeagleBone-Black"><span class="nav-number">4.</span> <span class="nav-text">Snappy Ubuntu Core on BeagleBone Black</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#バージョン確認"><span class="nav-number">4.1.</span> <span class="nav-text">バージョン確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ネットワーク設定"><span class="nav-number">5.</span> <span class="nav-text">ネットワーク設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ethernetケーブルをつなげる"><span class="nav-number">5.1.</span> <span class="nav-text">Ethernetケーブルをつなげる</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snappyアプリを使う"><span class="nav-number">6.</span> <span class="nav-text">Snappyアプリを使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebDMのインストール"><span class="nav-number">6.1.</span> <span class="nav-text">WebDMのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerが見つからない"><span class="nav-number">6.2.</span> <span class="nav-text">Dockerが見つからない</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ninja-Sphere"><span class="nav-number">1.</span> <span class="nav-text">Ninja Sphere</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89"><span class="nav-number">2.</span> <span class="nav-text">イメージのビルド</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%93%E3%83%AB%E3%83%89%E3%81%AE%E6%BA%96%E5%82%99"><span class="nav-number">2.1.</span> <span class="nav-text">ビルドの準備</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E3%83%93%E3%83%AB%E3%83%89-1"><span class="nav-number">2.2.</span> <span class="nav-text">イメージのビルド</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%82%92SD%E3%82%AB%E3%83%BC%E3%83%89%E3%81%AB%E7%84%BC%E3%81%8F"><span class="nav-number">3.</span> <span class="nav-text">イメージをSDカードに焼く</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snappy-Ubuntu-Core-on-BeagleBone-Black"><span class="nav-number">4.</span> <span class="nav-text">Snappy Ubuntu Core on BeagleBone Black</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E7%A2%BA%E8%AA%8D"><span class="nav-number">4.1.</span> <span class="nav-text">バージョン確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E8%A8%AD%E5%AE%9A"><span class="nav-number">5.</span> <span class="nav-text">ネットワーク設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ethernet%E3%82%B1%E3%83%BC%E3%83%96%E3%83%AB%E3%82%92%E3%81%A4%E3%81%AA%E3%81%92%E3%82%8B"><span class="nav-number">5.1.</span> <span class="nav-text">Ethernetケーブルをつなげる</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snappy%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">6.</span> <span class="nav-text">Snappyアプリを使う</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WebDM%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">6.1.</span> <span class="nav-text">WebDMのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%81%8C%E8%A6%8B%E3%81%A4%E3%81%8B%E3%82%89%E3%81%AA%E3%81%84"><span class="nav-number">6.2.</span> <span class="nav-text">Dockerが見つからない</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -443,10 +409,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -471,9 +440,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -513,13 +482,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

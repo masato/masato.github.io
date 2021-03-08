@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ReactをClojureScriptで書くため、Reagentの勉強をまずはratomを使わない簡単なコンポーネントを作るところからはじめようと思います。ClojureScriptとFigwheelのシンプルなテンプレートの[reagent-figwheel](https:&#x2F;&#x2F;github.com&#x2F;gadfly361&#x2F;reagent-figwheel)を使ったサンプルを探していると、[Stati">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reagent入門 - Part1: コンポーネントのモックを作る">
 <meta property="og:url" content="https://masato.github.io/2015/05/22/reagent-tutorials-static-mock/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="ReactをClojureScriptで書くため、Reagentの勉強をまずはratomを使わない簡単なコンポーネントを作るところからはじめようと思います。ClojureScriptとFigwheelのシンプルなテンプレートの[reagent-figwheel](https:&#x2F;&#x2F;github.com&#x2F;gadfly361&#x2F;reagent-figwheel)を使ったサンプルを探していると、[Stati">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/05/22/reagent-tutorials-static-mock/reagent-static.png">
 <meta property="article:published_time" content="2015-05-21T15:08:22.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.883Z">
+<meta property="article:modified_time" content="2015-05-21T15:08:22.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="React">
 <meta property="article:tag" content="ClojureScript">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>Reagent入門 - Part1: コンポーネントのモックを作る | masato's blog</title>
+  <title>Reagent入門 - Part1: コンポーネントのモックを作る | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,19 +190,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 22 2015 00:08:22" itemprop="dateCreated datePublished" datetime="2015-05-22T00:08:22+09:00">May 22 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">ReactをClojureScriptで書くため、Reagentの勉強をまずはratomを使わない簡単なコンポーネントを作るところからはじめようと思います。ClojureScriptとFigwheelのシンプルなテンプレートの[reagent-figwheel](https://github.com/gadfly361/reagent-figwheel)を使ったサンプルを探していると、[Static Mock Using Reagent](http://www.okaythree.com/articles/2015/04/21/static-mock-using-reagent/)のよい例が見つかりました。参考になるプログラムを読みながら実際に手を動かしながら勉強していくのが一番よいです。</div>
@@ -242,61 +209,61 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>ReactをClojureScriptで書くため、<a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>の勉強をまずはratomを使わない簡単なコンポーネントを作るところからはじめようと思います。ClojureScriptとFigwheelのシンプルなテンプレートの<a href="https://github.com/gadfly361/reagent-figwheel" target="_blank" rel="noopener">reagent-figwheel</a>を使ったサンプルを探していると、<a href="http://www.okaythree.com/articles/2015/04/21/static-mock-using-reagent/" target="_blank" rel="noopener">Static Mock Using Reagent</a>のよい例が見つかりました。参考になるプログラムを読みながら実際に手を動かしながら勉強していくのが一番よいです。</p>
-<a id="more"></a>
+        <p>ReactをClojureScriptで書くため、<a target="_blank" rel="noopener" href="https://github.com/reagent-project/reagent">Reagent</a>の勉強をまずはratomを使わない簡単なコンポーネントを作るところからはじめようと思います。ClojureScriptとFigwheelのシンプルなテンプレートの<a target="_blank" rel="noopener" href="https://github.com/gadfly361/reagent-figwheel">reagent-figwheel</a>を使ったサンプルを探していると、<a target="_blank" rel="noopener" href="http://www.okaythree.com/articles/2015/04/21/static-mock-using-reagent/">Static Mock Using Reagent</a>のよい例が見つかりました。参考になるプログラムを読みながら実際に手を動かしながら勉強していくのが一番よいです。</p>
+<span id="more"></span>
 
 <h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>Clojureの開発はDockerとDocker Composeを使って行います。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ tree -L 1</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">└── docker-compose.yml</span><br></pre></td></tr></table></figure>
 
-<p>オフィシャルのClojureの<a href="https://registry.hub.docker.com/_/clojure/" target="_blank" rel="noopener">ベースイメージ</a>を使います。</p>
-<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">'docker ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">"lein"</span>]</span><br></pre></td></tr></table></figure>
+<p>オフィシャルのClojureの<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/_/clojure/">ベースイメージ</a>を使います。</p>
+<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;docker ALL=(ALL) NOPASSWD:ALL&#x27;</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">&quot;lein&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 <p>ローカルにClojureのイメージをビルドします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose build</span><br></pre></td></tr></table></figure>
 
 <p>カレントディレクトリをマウントするため、docker-compose.ymlは<code>lein new</code>する前は<code>working_dir</code>をコメントアウトしておきます。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line"><span class="comment">#  working_dir: /usr/src/app/my-checklist</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3449:3449"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"10555:10555"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line"><span class="comment">#  working_dir: /usr/src/app/my-checklist</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3449:3449&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;10555:10555&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>Leiningenで<a href="https://github.com/gadfly361/reagent-figwheel" target="_blank" rel="noopener">reagent-figwheel</a>のテンプレートを使ったプロジェクトを作成します。</p>
+<p>Leiningenで<a target="_blank" rel="noopener" href="https://github.com/gadfly361/reagent-figwheel">reagent-figwheel</a>のテンプレートを使ったプロジェクトを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports lein new reagent-figwheel my-checklist</span><br></pre></td></tr></table></figure>
 
 <p>このテンプレートでは以下のようなシンプルな構成のファイルが生成されます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree -L 3</span><br><span class="line">.</span><br><span class="line">├── README.md</span><br><span class="line">├── dev</span><br><span class="line">│   ├── user.clj</span><br><span class="line">│   └── user.cljs</span><br><span class="line">├── project.clj</span><br><span class="line">├── resources</span><br><span class="line">│   └── index.html</span><br><span class="line">└── src</span><br><span class="line">    └── my_checklist</span><br><span class="line">        └── core.cljs</span><br></pre></td></tr></table></figure>
 
 <p>docker-compose.ymlの<code>working_dir</code>をアンコメントします。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/my-checklist</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3449:3449"</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"10555:10555"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/my-checklist</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3449:3449&quot;</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;10555:10555&quot;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="開発サーバーの起動"><a href="#開発サーバーの起動" class="headerlink" title="開発サーバーの起動"></a>開発サーバーの起動</h2><p>開発用のDockerホストはクラウド上にあるため、<a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a>はリモートからパブリックIPアドレスで接続できるようにします。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/dev/user.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> cljs.user</span><br><span class="line">  (<span class="symbol">:require</span> [my-checklist.core <span class="symbol">:as</span> core]</span><br><span class="line">            [figwheel.client <span class="symbol">:as</span> figwheel <span class="symbol">:include-macros</span> <span class="literal">true</span>]))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name">figwheel/watch-and-reload</span></span><br><span class="line">  <span class="symbol">:websocket-url</span> <span class="string">"ws://210.xxx.xxx.xxx:3449/figwheel-ws"</span></span><br><span class="line">  <span class="symbol">:jsload-callback</span> (<span class="name"><span class="builtin-name">fn</span></span> [] (<span class="name">core/main</span>)))</span><br><span class="line"></span><br><span class="line">(<span class="name">core/main</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="開発サーバーの起動"><a href="#開発サーバーの起動" class="headerlink" title="開発サーバーの起動"></a>開発サーバーの起動</h2><p>開発用のDockerホストはクラウド上にあるため、<a target="_blank" rel="noopener" href="https://github.com/bhauman/lein-figwheel">Figwheel</a>はリモートからパブリックIPアドレスで接続できるようにします。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/dev/user.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> cljs.user</span><br><span class="line">  (<span class="symbol">:require</span> [my-checklist.core <span class="symbol">:as</span> core]</span><br><span class="line">            [figwheel.client <span class="symbol">:as</span> figwheel <span class="symbol">:include-macros</span> <span class="literal">true</span>]))</span><br><span class="line"></span><br><span class="line">(<span class="name">enable-console-print!</span>)</span><br><span class="line"></span><br><span class="line">(<span class="name">figwheel/watch-and-reload</span></span><br><span class="line">  <span class="symbol">:websocket-url</span> <span class="string">&quot;ws://210.xxx.xxx.xxx:3449/figwheel-ws&quot;</span></span><br><span class="line">  <span class="symbol">:jsload-callback</span> (<span class="name"><span class="builtin-name">fn</span></span> [] (<span class="name">core/main</span>)))</span><br><span class="line"></span><br><span class="line">(<span class="name">core/main</span>)</span><br></pre></td></tr></table></figure>
 
 <p>REPLを起動します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports lein repl</span><br><span class="line">nREPL server started on port 51843 on host 127.0.0.1 - nrepl://127.0.0.1:51843</span><br><span class="line">REPL-y 0.3.5, nREPL 0.2.6</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_79-b14</span><br><span class="line">    Docs: (doc <span class="keyword">function</span>-name-here)</span><br><span class="line">          (find-doc <span class="string">"part-of-name-here"</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> <span class="keyword">function</span>-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports lein repl</span><br><span class="line">nREPL server started on port 51843 on host 127.0.0.1 - nrepl://127.0.0.1:51843</span><br><span class="line">REPL-y 0.3.5, nREPL 0.2.6</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_79-b14</span><br><span class="line">    Docs: (doc function-name-here)</span><br><span class="line">          (find-doc <span class="string">&quot;part-of-name-here&quot;</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> function-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt;</span><br></pre></td></tr></table></figure>
 
 <p>REPLで(run)を実行してアプリの起動</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user=&gt; (run)</span><br><span class="line">2015-05-21 14:56:17.542:INFO:oejs.Server:jetty-7.6.13.v20130916</span><br><span class="line">2015-05-21 14:56:17.582:INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:10555</span><br><span class="line">Starting web server on port 10555 .</span><br><span class="line"><span class="comment">#&lt;Server org.eclipse.jetty.server.Server@7ef1accd&gt;</span></span><br><span class="line">user=&gt;</span><br></pre></td></tr></table></figure>
 
 <p>次に(start-figwheel)を実行してFigwheelを起動します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user=&gt; (start-figwheel)</span><br><span class="line">Starting figwheel.</span><br><span class="line"><span class="comment">#&lt;core$future_call$reify__6320@17e02401: :pending&gt;</span></span><br><span class="line">user=&gt; Figwheel: focusing on build-id <span class="string">'app'</span></span><br><span class="line">Compiling ClojureScript.</span><br><span class="line">Figwheel: Starting server at http://localhost:3449</span><br><span class="line">Figwheel: Serving files from <span class="string">'(dev-resources|resources)/public'</span></span><br><span class="line">Compiling <span class="string">"resources/public/js/app.js"</span> from [<span class="string">"src"</span> <span class="string">"dev"</span>]...</span><br><span class="line">Successfully compiled <span class="string">"resources/public/js/app.js"</span> <span class="keyword">in</span> 23.719 seconds.</span><br><span class="line">notifying browser that file changed:  /js/app.js</span><br><span class="line">notifying browser that file changed:  /js/out/goog/deps.js</span><br><span class="line">notifying browser that file changed:  /js/out/my_checklist/core.js</span><br><span class="line">notifying browser that file changed:  /js/out/cljs/user.js</span><br><span class="line">Figwheel: client disconnected  :normal</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">user=&gt; (start-figwheel)</span><br><span class="line">Starting figwheel.</span><br><span class="line"><span class="comment">#&lt;core$future_call$reify__6320@17e02401: :pending&gt;</span></span><br><span class="line">user=&gt; Figwheel: focusing on build-id <span class="string">&#x27;app&#x27;</span></span><br><span class="line">Compiling ClojureScript.</span><br><span class="line">Figwheel: Starting server at http://localhost:3449</span><br><span class="line">Figwheel: Serving files from <span class="string">&#x27;(dev-resources|resources)/public&#x27;</span></span><br><span class="line">Compiling <span class="string">&quot;resources/public/js/app.js&quot;</span> from [<span class="string">&quot;src&quot;</span> <span class="string">&quot;dev&quot;</span>]...</span><br><span class="line">Successfully compiled <span class="string">&quot;resources/public/js/app.js&quot;</span> <span class="keyword">in</span> 23.719 seconds.</span><br><span class="line">notifying browser that file changed:  /js/app.js</span><br><span class="line">notifying browser that file changed:  /js/out/goog/deps.js</span><br><span class="line">notifying browser that file changed:  /js/out/my_checklist/core.js</span><br><span class="line">notifying browser that file changed:  /js/out/cljs/user.js</span><br><span class="line">Figwheel: client disconnected  :normal</span><br></pre></td></tr></table></figure>
 
 <p>Chromeブラウザを開きDockerホストのパブリックIPアドレスに接続します。</p>
-<p><a href="http://210.xxx.xxx.xxx:10555/" target="_blank" rel="noopener">http://210.xxx.xxx.xxx:10555/</a></p>
+<p><a target="_blank" rel="noopener" href="http://210.xxx.xxx.xxx:10555/">http://210.xxx.xxx.xxx:10555/</a></p>
 <p>画面には以下のようなコメントが表示されます。</p>
 <figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line">Hello, what <span class="keyword">is</span> your <span class="built_in">name</span>? FIXME</span><br></pre></td></tr></table></figure>
 
 <p>Chromeブラウザのデベロッパーツールを開くとFigwheelの起動が確認できます。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">Figwheel: trying <span class="keyword">to</span> open cljs reload socket</span><br><span class="line">utils.cljs:31 Figwheel: socket<span class="built_in"> connection </span>established</span><br></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">Figwhee<span class="variable">l:</span> trying <span class="keyword">to</span> <span class="keyword">open</span> cljs reload socket</span><br><span class="line">utils.clj<span class="variable">s:31</span> Figwhee<span class="variable">l:</span> socket connection established</span><br></pre></td></tr></table></figure>
 
 <h2 id="コンポーネントの作成"><a href="#コンポーネントの作成" class="headerlink" title="コンポーネントの作成"></a>コンポーネントの作成</h2><p>今回のメインテーマであるコンポーネントを作成していきます。project.cljのdependenciesディレクティブを確認するとパッケージの数は少なくシンプルな構成なのでわかりやすいです。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> my-checklist <span class="string">"0.1.0-SNAPSHOT"</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">"FIXME: write description"</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">"http://example.com/FIXME"</span></span><br><span class="line">  <span class="symbol">:license</span> &#123;<span class="symbol">:name</span> <span class="string">"Eclipse Public License"</span></span><br><span class="line">            <span class="symbol">:url</span> <span class="string">"http://www.eclipse.org/legal/epl-v10.html"</span>&#125;</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:source-paths</span> [<span class="string">"src"</span> <span class="string">"dev"</span>]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">"0.0-3058"</span> <span class="symbol">:scope</span> <span class="string">"provided"</span>]</span><br><span class="line">                 [org.clojure/core.async <span class="string">"0.1.346.0-17112a-alpha"</span>]</span><br><span class="line">                 [ring <span class="string">"1.3.1"</span>]</span><br><span class="line">                 [compojure <span class="string">"1.2.0"</span>]</span><br><span class="line">                 [figwheel <span class="string">"0.2.5"</span>]</span><br><span class="line">                 [environ <span class="string">"1.0.0"</span>]</span><br><span class="line">                 [leiningen <span class="string">"2.5.0"</span>]</span><br><span class="line">                 [reagent <span class="string">"0.5.0"</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">"2.5.0"</span></span><br><span class="line"></span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-cljsbuild <span class="string">"1.0.4"</span>]</span><br><span class="line">            [lein-environ <span class="string">"1.0.0"</span>]</span><br><span class="line">            [lein-figwheel <span class="string">"0.2.0-SNAPSHOT"</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:figwheel</span> &#123;<span class="symbol">:http-server-root</span> <span class="string">"public"</span></span><br><span class="line">             <span class="symbol">:port</span> <span class="number">3449</span>&#125;</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;<span class="symbol">:builds</span> &#123;<span class="symbol">:app</span> &#123;<span class="symbol">:source-paths</span> [<span class="string">"src"</span> <span class="string">"dev"</span>]</span><br><span class="line">                             <span class="symbol">:compiler</span> &#123;<span class="symbol">:output-to</span> <span class="string">"resources/public/js/app.js"</span></span><br><span class="line">                                        <span class="symbol">:output-dir</span> <span class="string">"resources/public/js/out"</span></span><br><span class="line">                                        <span class="symbol">:source-map</span>    <span class="string">"resources/public/js/out.js.map"</span></span><br><span class="line">                                        <span class="symbol">:optimizations</span> <span class="symbol">:none</span>&#125;&#125;&#125;&#125;</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> my-checklist <span class="string">&quot;0.1.0-SNAPSHOT&quot;</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">&quot;FIXME: write description&quot;</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">&quot;http://example.com/FIXME&quot;</span></span><br><span class="line">  <span class="symbol">:license</span> &#123;<span class="symbol">:name</span> <span class="string">&quot;Eclipse Public License&quot;</span></span><br><span class="line">            <span class="symbol">:url</span> <span class="string">&quot;http://www.eclipse.org/legal/epl-v10.html&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:source-paths</span> [<span class="string">&quot;src&quot;</span> <span class="string">&quot;dev&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">&quot;1.6.0&quot;</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">&quot;0.0-3058&quot;</span> <span class="symbol">:scope</span> <span class="string">&quot;provided&quot;</span>]</span><br><span class="line">                 [org.clojure/core.async <span class="string">&quot;0.1.346.0-17112a-alpha&quot;</span>]</span><br><span class="line">                 [ring <span class="string">&quot;1.3.1&quot;</span>]</span><br><span class="line">                 [compojure <span class="string">&quot;1.2.0&quot;</span>]</span><br><span class="line">                 [figwheel <span class="string">&quot;0.2.5&quot;</span>]</span><br><span class="line">                 [environ <span class="string">&quot;1.0.0&quot;</span>]</span><br><span class="line">                 [leiningen <span class="string">&quot;2.5.0&quot;</span>]</span><br><span class="line">                 [reagent <span class="string">&quot;0.5.0&quot;</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">&quot;2.5.0&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-cljsbuild <span class="string">&quot;1.0.4&quot;</span>]</span><br><span class="line">            [lein-environ <span class="string">&quot;1.0.0&quot;</span>]</span><br><span class="line">            [lein-figwheel <span class="string">&quot;0.2.0-SNAPSHOT&quot;</span>]]</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:figwheel</span> &#123;<span class="symbol">:http-server-root</span> <span class="string">&quot;public&quot;</span></span><br><span class="line">             <span class="symbol">:port</span> <span class="number">3449</span>&#125;</span><br><span class="line"></span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;<span class="symbol">:builds</span> &#123;<span class="symbol">:app</span> &#123;<span class="symbol">:source-paths</span> [<span class="string">&quot;src&quot;</span> <span class="string">&quot;dev&quot;</span>]</span><br><span class="line">                             <span class="symbol">:compiler</span> &#123;<span class="symbol">:output-to</span> <span class="string">&quot;resources/public/js/app.js&quot;</span></span><br><span class="line">                                        <span class="symbol">:output-dir</span> <span class="string">&quot;resources/public/js/out&quot;</span></span><br><span class="line">                                        <span class="symbol">:source-map</span>    <span class="string">&quot;resources/public/js/out.js.map&quot;</span></span><br><span class="line">                                        <span class="symbol">:optimizations</span> <span class="symbol">:none</span>&#125;&#125;&#125;&#125;</span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
 
-<p>core.cljsにコンポーネントを書いていきます。フォームとリストの簡単な構成です。<a href="http://www.okaythree.com/articles/2015/04/21/static-mock-using-reagent/" target="_blank" rel="noopener">Static Mock Using Reagent</a>を参考にしながら<code>li</code>のリスト項目を作成する共通関数を用意してみました。</p>
-<p>コンポーネントは一つ一つをベクターを使って書いていきます。HTMLの書き方は<a href="https://github.com/weavejester/hiccup" target="_blank" rel="noopener">Hiccup</a>のDSLのように直感的でわかりやすいです。リストを作成するところはベクターの中でforループがそのまま使えます。</p>
-<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/src/my_checklist/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> my-checklist.core</span><br><span class="line">  (<span class="symbol">:require</span> [reagent.core <span class="symbol">:as</span> reagent <span class="symbol">:refer</span> [atom]]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> checklist-title []</span><br><span class="line">  [<span class="symbol">:h1</span> <span class="string">"朝にやること"</span>])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> checkbox-input [item]</span><br><span class="line">  [<span class="symbol">:li</span></span><br><span class="line">   [<span class="symbol">:input</span> &#123;<span class="symbol">:type</span> <span class="string">"checkbox"</span>&#125; (<span class="symbol">:label</span> item)]])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> checklist-items []</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [items [&#123;<span class="symbol">:label</span> <span class="string">"水を入れる"</span>&#125;</span><br><span class="line">               &#123;<span class="symbol">:label</span> <span class="string">"キューリグをセット"</span>&#125;</span><br><span class="line">               &#123;<span class="symbol">:label</span> <span class="string">"コーヒーを入れる"</span>&#125;]]</span><br><span class="line">    [<span class="symbol">:ul</span></span><br><span class="line">     (<span class="name"><span class="builtin-name">for</span></span> [item items]</span><br><span class="line">       [checkbox-input item])]))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> add-form []</span><br><span class="line">  [<span class="symbol">:form</span></span><br><span class="line">   [<span class="symbol">:p</span></span><br><span class="line">    [<span class="symbol">:input</span> &#123;<span class="symbol">:text</span> <span class="string">"text"</span> <span class="symbol">:name</span> <span class="string">"task"</span>&#125;]]</span><br><span class="line">   [checklist-items]])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> reset-button []</span><br><span class="line">  [<span class="symbol">:button</span> &#123;<span class="symbol">:type</span> <span class="string">"button"</span>&#125; <span class="string">"リセットする"</span>])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> full-checklist []</span><br><span class="line">  [<span class="symbol">:div</span></span><br><span class="line">   [checklist-title]</span><br><span class="line">   [add-form]</span><br><span class="line">   [reset-button]])</span><br><span class="line">   </span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> page []</span><br><span class="line">  [<span class="symbol">:div</span></span><br><span class="line">   [full-checklist]])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> main []</span><br><span class="line">  (<span class="name">reagent/render-component</span> [page] (<span class="name">.getElementById</span> js/document <span class="string">"app"</span>)))</span><br></pre></td></tr></table></figure>
+<p>core.cljsにコンポーネントを書いていきます。フォームとリストの簡単な構成です。<a target="_blank" rel="noopener" href="http://www.okaythree.com/articles/2015/04/21/static-mock-using-reagent/">Static Mock Using Reagent</a>を参考にしながら<code>li</code>のリスト項目を作成する共通関数を用意してみました。</p>
+<p>コンポーネントは一つ一つをベクターを使って書いていきます。HTMLの書き方は<a target="_blank" rel="noopener" href="https://github.com/weavejester/hiccup">Hiccup</a>のDSLのように直感的でわかりやすいです。リストを作成するところはベクターの中でforループがそのまま使えます。</p>
+<figure class="highlight clj"><figcaption><span>~/clojure_apps/my-checklist/src/my_checklist/core.cljs</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">ns</span></span> my-checklist.core</span><br><span class="line">  (<span class="symbol">:require</span> [reagent.core <span class="symbol">:as</span> reagent <span class="symbol">:refer</span> [atom]]))</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">checklist-title</span> []</span><br><span class="line">  [<span class="symbol">:h1</span> <span class="string">&quot;朝にやること&quot;</span>])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">checkbox-input</span> [item]</span><br><span class="line">  [<span class="symbol">:li</span></span><br><span class="line">   [<span class="symbol">:input</span> &#123;<span class="symbol">:type</span> <span class="string">&quot;checkbox&quot;</span>&#125; (<span class="symbol">:label</span> item)]])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">checklist-items</span> []</span><br><span class="line">  (<span class="name"><span class="builtin-name">let</span></span> [items [&#123;<span class="symbol">:label</span> <span class="string">&quot;水を入れる&quot;</span>&#125;</span><br><span class="line">               &#123;<span class="symbol">:label</span> <span class="string">&quot;キューリグをセット&quot;</span>&#125;</span><br><span class="line">               &#123;<span class="symbol">:label</span> <span class="string">&quot;コーヒーを入れる&quot;</span>&#125;]]</span><br><span class="line">    [<span class="symbol">:ul</span></span><br><span class="line">     (<span class="name"><span class="builtin-name">for</span></span> [item items]</span><br><span class="line">       [checkbox-input item])]))</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">add-form</span> []</span><br><span class="line">  [<span class="symbol">:form</span></span><br><span class="line">   [<span class="symbol">:p</span></span><br><span class="line">    [<span class="symbol">:input</span> &#123;<span class="symbol">:text</span> <span class="string">&quot;text&quot;</span> <span class="symbol">:name</span> <span class="string">&quot;task&quot;</span>&#125;]]</span><br><span class="line">   [checklist-items]])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">reset-button</span> []</span><br><span class="line">  [<span class="symbol">:button</span> &#123;<span class="symbol">:type</span> <span class="string">&quot;button&quot;</span>&#125; <span class="string">&quot;リセットする&quot;</span>])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">full-checklist</span> []</span><br><span class="line">  [<span class="symbol">:div</span></span><br><span class="line">   [checklist-title]</span><br><span class="line">   [add-form]</span><br><span class="line">   [reset-button]])</span><br><span class="line">   </span><br><span class="line">(<span class="keyword">defn</span> <span class="title">page</span> []</span><br><span class="line">  [<span class="symbol">:div</span></span><br><span class="line">   [full-checklist]])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">main</span> []</span><br><span class="line">  (<span class="name">reagent/render-component</span> [page] (<span class="name">.getElementById</span> js/document <span class="string">&quot;app&quot;</span>)))</span><br></pre></td></tr></table></figure>
 
 <p>静的なコンポーネントなのでリセットボタンを押しても何も動きません。チェックボックスもrtomを使っていないのでチェックするだけの状態です。とりあえずHTMLがレンダリングできるところまで確認しました。</p>
 <p><img src="/2015/05/22/reagent-tutorials-static-mock/reagent-static.png" alt="reagent-static.png"></p>
-<h2 id="コンポーネントはデータとして扱う"><a href="#コンポーネントはデータとして扱う" class="headerlink" title="コンポーネントはデータとして扱う"></a>コンポーネントはデータとして扱う</h2><p><a href="http://yogthos.net/posts/2014-07-15-Building-Single-Page-Apps-with-Reagent.html" target="_blank" rel="noopener">BUILDING SINGLE PAGE APPS WITH REAGENT</a>によい例があります。text-inputコンポーネントにrowコンポーネントネストする例です。rowコンポーネントは関数として直接実行せずデータとして定義するとReagentが必要なときに評価して実行してくれます。</p>
-<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> row [label &amp; body]</span><br><span class="line">  [<span class="symbol">:div.row</span></span><br><span class="line">   [<span class="symbol">:div.col-md-2</span> [<span class="symbol">:span</span> label]]</span><br><span class="line">   [<span class="symbol">:div.col-md-3</span> body]])</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">defn</span></span> text-input [label]</span><br><span class="line">  [row label [<span class="symbol">:input</span> &#123;<span class="symbol">:type</span> <span class="string">"text"</span> <span class="symbol">:class</span> <span class="string">"form-control"</span>&#125;]])</span><br></pre></td></tr></table></figure>
+<h2 id="コンポーネントはデータとして扱う"><a href="#コンポーネントはデータとして扱う" class="headerlink" title="コンポーネントはデータとして扱う"></a>コンポーネントはデータとして扱う</h2><p><a target="_blank" rel="noopener" href="http://yogthos.net/posts/2014-07-15-Building-Single-Page-Apps-with-Reagent.html">BUILDING SINGLE PAGE APPS WITH REAGENT</a>によい例があります。text-inputコンポーネントにrowコンポーネントネストする例です。rowコンポーネントは関数として直接実行せずデータとして定義するとReagentが必要なときに評価して実行してくれます。</p>
+<figure class="highlight clj"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">defn</span> <span class="title">row</span> [label &amp; body]</span><br><span class="line">  [<span class="symbol">:div.row</span></span><br><span class="line">   [<span class="symbol">:div.col-md-2</span> [<span class="symbol">:span</span> label]]</span><br><span class="line">   [<span class="symbol">:div.col-md-3</span> body]])</span><br><span class="line"></span><br><span class="line">(<span class="keyword">defn</span> <span class="title">text-input</span> [label]</span><br><span class="line">  [row label [<span class="symbol">:input</span> &#123;<span class="symbol">:type</span> <span class="string">&quot;text&quot;</span> <span class="symbol">:class</span> <span class="string">&quot;form-control&quot;</span>&#125;]])</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -333,7 +300,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -384,7 +350,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#開発サーバーの起動"><span class="nav-number">2.</span> <span class="nav-text">開発サーバーの起動</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#コンポーネントの作成"><span class="nav-number">3.</span> <span class="nav-text">コンポーネントの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#コンポーネントはデータとして扱う"><span class="nav-number">4.</span> <span class="nav-text">コンポーネントはデータとして扱う</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E7%99%BA%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">2.</span> <span class="nav-text">開発サーバーの起動</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.</span> <span class="nav-text">コンポーネントの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%81%AF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%A8%E3%81%97%E3%81%A6%E6%89%B1%E3%81%86"><span class="nav-number">4.</span> <span class="nav-text">コンポーネントはデータとして扱う</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -416,10 +382,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -444,9 +413,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -486,13 +455,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

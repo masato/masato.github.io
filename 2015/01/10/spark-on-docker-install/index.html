@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="日経BPのITインフラテクノロジーAWARD 2015が発表されました。2015年にブレークすると予想されるクラウドやビッグデータの製品やサービスを選出しています。グランプリにDocker、準グランプリにApache Sparkが選ばれました。Sparkは2014年に入り盛り上がってきています。インメモリで高速に分散処理ができるため、機械学習のような繰り返し処理に向いています。MLibの機械学習ラ">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark on Dockerで分散型機械学習を始める - Part1: インストール">
 <meta property="og:url" content="https://masato.github.io/2015/01/10/spark-on-docker-install/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="日経BPのITインフラテクノロジーAWARD 2015が発表されました。2015年にブレークすると予想されるクラウドやビッグデータの製品やサービスを選出しています。グランプリにDocker、準グランプリにApache Sparkが選ばれました。Sparkは2014年に入り盛り上がってきています。インメモリで高速に分散処理ができるため、機械学習のような繰り返し処理に向いています。MLibの機械学習ラ">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-01-10T07:37:57.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.906Z">
+<meta property="article:modified_time" content="2015-01-10T07:37:57.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Scala">
 <meta property="article:tag" content="Docker">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Spark on Dockerで分散型機械学習を始める - Part1: インストール | masato's blog</title>
+  <title>Spark on Dockerで分散型機械学習を始める - Part1: インストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jan 10 2015 16:37:57" itemprop="dateCreated datePublished" datetime="2015-01-10T16:37:57+09:00">Jan 10 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">日経BPのITインフラテクノロジーAWARD 2015が発表されました。2015年にブレークすると予想されるクラウドやビッグデータの製品やサービスを選出しています。グランプリにDocker、準グランプリにApache Sparkが選ばれました。Sparkは2014年に入り盛り上がってきています。インメモリで高速に分散処理ができるため、機械学習のような繰り返し処理に向いています。MLibの機械学習ライブラリもあるので分散型機械学習フレームワークとして注目を集めています。そんなDockerとSparkを使い手軽に分散型機械学習の環境をつくり勉強していこうと思います。</div>
@@ -244,32 +211,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>日経BPの<a href="http://corporate.nikkeibp.co.jp/information/newsrelease/newsrelease20141224.shtml" target="_blank" rel="noopener">ITインフラテクノロジーAWARD 2015</a>が発表されました。2015年にブレークすると予想されるクラウドやビッグデータの製品やサービスを選出しています。グランプリにDocker、準グランプリにApache Sparkが選ばれました。Sparkは2014年に入り盛り上がってきています。インメモリで高速に分散処理ができるため、機械学習のような繰り返し処理に向いています。MLibの機械学習ライブラリもあるので分散型機械学習フレームワークとして注目を集めています。そんなDockerとSparkを使い手軽に分散型機械学習の環境をつくり勉強していこうと思います。</p>
-<a id="more"></a>
+        <p>日経BPの<a target="_blank" rel="noopener" href="http://corporate.nikkeibp.co.jp/information/newsrelease/newsrelease20141224.shtml">ITインフラテクノロジーAWARD 2015</a>が発表されました。2015年にブレークすると予想されるクラウドやビッグデータの製品やサービスを選出しています。グランプリにDocker、準グランプリにApache Sparkが選ばれました。Sparkは2014年に入り盛り上がってきています。インメモリで高速に分散処理ができるため、機械学習のような繰り返し処理に向いています。MLibの機械学習ライブラリもあるので分散型機械学習フレームワークとして注目を集めています。そんなDockerとSparkを使い手軽に分散型機械学習の環境をつくり勉強していこうと思います。</p>
+<span id="more"></span>
 
 
 <h3 id="Sparkの書籍"><a href="#Sparkの書籍" class="headerlink" title="Sparkの書籍"></a>Sparkの書籍</h3><p>新しい技術を学習する場合、最初は書籍から網羅的にはいったほうが概念をつかみやすいです。</p>
 <ul>
-<li><a href="http://shop.oreilly.com/product/0636920035091.do" target="_blank" rel="noopener">Advanced Analytics with Spark Patterns for Learning from Data at Scale</a></li>
-<li><a href="http://shop.oreilly.com/product/0636920028512.do" target="_blank" rel="noopener">Learning Spark Lightning-Fast Big Data Analytics</a></li>
-<li><a href="https://www.packtpub.com/big-data-and-business-intelligence/fast-data-processing-spark" target="_blank" rel="noopener">Fast Data Processing with Spark</a></li>
+<li><a target="_blank" rel="noopener" href="http://shop.oreilly.com/product/0636920035091.do">Advanced Analytics with Spark Patterns for Learning from Data at Scale</a></li>
+<li><a target="_blank" rel="noopener" href="http://shop.oreilly.com/product/0636920028512.do">Learning Spark Lightning-Fast Big Data Analytics</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.packtpub.com/big-data-and-business-intelligence/fast-data-processing-spark">Fast Data Processing with Spark</a></li>
 </ul>
-<p>Advanced Analytics with Spark Patterns for Learning from Data at Scaleは<a href="http://radar.oreilly.com/webops-perf" target="_blank" rel="noopener">O’Reilly Web Ops &amp; Performance Newsletter</a>からHappy Holidaysギフトでプレゼントしてもらいました。</p>
-<h3 id="SequenceIQのDockerイメージ"><a href="#SequenceIQのDockerイメージ" class="headerlink" title="SequenceIQのDockerイメージ"></a>SequenceIQのDockerイメージ</h3><p>Dockerイメージは<a href="http://sequenceiq.com/" target="_blank" rel="noopener">SequenceIQ</a>の<a href="https://registry.hub.docker.com/u/sequenceiq/spark/" target="_blank" rel="noopener">sequenceiq/spark</a>を使います。SequenceIQはHadoop-as-a-Service APIの<a href="https://github.com/sequenceiq/cloudbreak" target="_blank" rel="noopener">Cloudbreak</a>オープンソースで開発しています。CloudbreakはAmbariとDockerを使っているようです。</p>
-<h3 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h3><p><a href="https://registry.hub.docker.com/u/sequenceiq/spark/" target="_blank" rel="noopener">sequenceiq/spark</a>のDockerイメージをpullします。2014-12-18にリリースされたSpark 1.2.0を使います。</p>
+<p>Advanced Analytics with Spark Patterns for Learning from Data at Scaleは<a target="_blank" rel="noopener" href="http://radar.oreilly.com/webops-perf">O’Reilly Web Ops &amp; Performance Newsletter</a>からHappy Holidaysギフトでプレゼントしてもらいました。</p>
+<h3 id="SequenceIQのDockerイメージ"><a href="#SequenceIQのDockerイメージ" class="headerlink" title="SequenceIQのDockerイメージ"></a>SequenceIQのDockerイメージ</h3><p>Dockerイメージは<a target="_blank" rel="noopener" href="http://sequenceiq.com/">SequenceIQ</a>の<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/sequenceiq/spark/">sequenceiq/spark</a>を使います。SequenceIQはHadoop-as-a-Service APIの<a target="_blank" rel="noopener" href="https://github.com/sequenceiq/cloudbreak">Cloudbreak</a>オープンソースで開発しています。CloudbreakはAmbariとDockerを使っているようです。</p>
+<h3 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h3><p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/sequenceiq/spark/">sequenceiq/spark</a>のDockerイメージをpullします。2014-12-18にリリースされたSpark 1.2.0を使います。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker pull sequenceiq/spark:1.2.0</span><br></pre></td></tr></table></figure>
 
 <p>コンテナを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -i -t -h sandbox sequenceiq/spark:1.2.0 /etc/bootstrap.sh -bash</span><br><span class="line">/</span><br><span class="line">Starting sshd:                                             [  OK  ]</span><br><span class="line">Starting namenodes on [sandbox]</span><br><span class="line">sandbox: starting namenode, logging to /usr/<span class="built_in">local</span>/hadoop/logs/hadoop-root-namenode-sandbox.out</span><br><span class="line">localhost: starting datanode, logging to /usr/<span class="built_in">local</span>/hadoop/logs/hadoop-root-datanode-sandbox.out</span><br><span class="line">Starting secondary namenodes [0.0.0.0]</span><br><span class="line">0.0.0.0: starting secondarynamenode, logging to /usr/<span class="built_in">local</span>/hadoop/logs/hadoop-root-secondarynamenode-sandbox.out</span><br><span class="line">starting yarn daemons</span><br><span class="line">starting resourcemanager, logging to /usr/<span class="built_in">local</span>/hadoop/logs/yarn--resourcemanager-sandbox.out</span><br><span class="line">localhost: starting nodemanager, logging to /usr/<span class="built_in">local</span>/hadoop/logs/yarn-root-nodemanager-sandbox.out</span><br><span class="line">bash-4.1<span class="comment">#</span></span><br></pre></td></tr></table></figure>
 
-<p>最後の<code>-bash</code>は<a href="https://github.com/sequenceiq/hadoop-docker/blob/master/bootstrap.sh" target="_blank" rel="noopener">/etc/bootstrap.sh</a>を実行するときのフラグです。<code>/bin/bash</code>を起動します。</p>
-<figure class="highlight bash"><figcaption><span>bootstrap.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$1</span> == <span class="string">"-d"</span> ]]; <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span> sleep 1000; <span class="keyword">done</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$1</span> == <span class="string">"-bash"</span> ]]; <span class="keyword">then</span></span><br><span class="line">  /bin/bash</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<p>最後の<code>-bash</code>は<a target="_blank" rel="noopener" href="https://github.com/sequenceiq/hadoop-docker/blob/master/bootstrap.sh">/etc/bootstrap.sh</a>を実行するときのフラグです。<code>/bin/bash</code>を起動します。</p>
+<figure class="highlight bash"><figcaption><span>bootstrap.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$1</span> == <span class="string">&quot;-d&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">  <span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span> sleep 1000; <span class="keyword">done</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$1</span> == <span class="string">&quot;-bash&quot;</span> ]]; <span class="keyword">then</span></span><br><span class="line">  /bin/bash</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="インストールとバーションの確認"><a href="#インストールとバーションの確認" class="headerlink" title="インストールとバーションの確認"></a>インストールとバーションの確認</h3><p>Hadoopのバージョンは2.6.0です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hadoop version</span><br><span class="line">Hadoop 2.6.0</span><br><span class="line">Subversion https://git-wip-us.apache.org/repos/asf/hadoop.git -r e3496499ecb8d220fba99dc5ed4c99c8f9e33bb1</span><br><span class="line">Compiled by jenkins on 2014-11-13T21:10Z</span><br><span class="line">Compiled with protoc 2.5.0</span><br><span class="line">From <span class="built_in">source</span> with checksum 18e43357c8f927c0695f1e9522859d6a</span><br><span class="line">This <span class="built_in">command</span> was run using /usr/<span class="built_in">local</span>/hadoop-2.6.0/share/hadoop/common/hadoop-common-2.6.0.jar</span><br></pre></td></tr></table></figure>
 
 <p>Sparkのバージョンは1.2.0、Scalaのバージョンは2.10.4です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ spark-shell</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">'_/</span></span><br><span class="line"><span class="string">   /___/ .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">scala&gt; :quit</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ spark-shell</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">&#x27;_/</span></span><br><span class="line"><span class="string">   /___/ .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">scala&gt; :quit</span></span><br></pre></td></tr></table></figure>
 
 <p>Sparkのインストールディレクトリです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="variable">$SPARK_HOME</span></span><br><span class="line">$ /usr/<span class="built_in">local</span>/spark</span><br></pre></td></tr></table></figure>
@@ -280,12 +247,26 @@
 <p>spark-shellとpysparkコマンドは<code>$SPARK_HOME/bin</code>に配置されています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> spark-shell</span><br><span class="line">/usr/<span class="built_in">local</span>/spark/bin/spark-shell</span><br><span class="line">$ <span class="built_in">which</span> pyspark</span><br><span class="line">/usr/<span class="built_in">local</span>/spark/bin/pyspark</span><br></pre></td></tr></table></figure>
 
-<h3 id="Spark-Shell-ScalaとPython"><a href="#Spark-Shell-ScalaとPython" class="headerlink" title="Spark Shell (ScalaとPython)"></a>Spark Shell (ScalaとPython)</h3><p>SequenceIQのブログ<a href="http://blog.sequenceiq.com/blog/2015/01/09/spark-1-2-0-docker/" target="_blank" rel="noopener">Apache Spark 1.2.0 on Docker</a>を読みながら試してみます。<a href="https://spark.apache.org/docs/1.2.0/quick-start.html" target="_blank" rel="noopener">Quick Start</a>にもSpark Shellのサンプルがあります。</p>
+<h3 id="Spark-Shell-ScalaとPython"><a href="#Spark-Shell-ScalaとPython" class="headerlink" title="Spark Shell (ScalaとPython)"></a>Spark Shell (ScalaとPython)</h3><p>SequenceIQのブログ<a target="_blank" rel="noopener" href="http://blog.sequenceiq.com/blog/2015/01/09/spark-1-2-0-docker/">Apache Spark 1.2.0 on Docker</a>を読みながら試してみます。<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/1.2.0/quick-start.html">Quick Start</a>にもSpark Shellのサンプルがあります。</p>
 <p>インタラクティブ分析に使うSpark Shellには、Scalaのspark-shellとPythonのpysparkが用意されています。はじめにScala APIのspark-shellを起動してサンプルコードを実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ spark-shell</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">'_/</span></span><br><span class="line"><span class="string">   /___/ .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)</span></span><br><span class="line"><span class="string">Type in expressions to have them evaluated.</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">scala&gt; sc.parallelize(1 to 1000).count()</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">res0: Long = 1000</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ spark-shell</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">&#x27;_/</span></span><br><span class="line"><span class="string">   /___/ .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Scala version 2.10.4 (Java HotSpot(TM) 64-Bit Server VM, Java 1.7.0_51)</span></span><br><span class="line"><span class="string">Type in expressions to have them evaluated.</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">scala&gt; sc.parallelize(1 to 1000).count()</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">res0: Long = 1000</span></span><br></pre></td></tr></table></figure>
 
 <p>次にSparkのPython APIであるPySparkを使います。pysparkを起動して同様のサンプルコードを実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pyspark</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">'_/</span></span><br><span class="line"><span class="string">   /__ / .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Python version 2.6.6 (r266:84292, Jan 22 2014 09:42:36)</span></span><br><span class="line"><span class="string">SparkContext available as sc.</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; sc.parallelize(range(1000)).count()</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">1000</span></span><br><span class="line"><span class="string">``` </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">### 円周率計算のサンプル</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">spark-examples-1.2.0-hadoop2.4.0.jarから円周率計算のサンプルプログラムを実行します。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">YARN上で実行するSparkアプリは2つのモードがあります。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">* yarn-cluster mode</span></span><br><span class="line"><span class="string"> * SparkアプリはYARNクラスタで実行される</span></span><br><span class="line"><span class="string"> * 通常のバッチ処理で使う</span></span><br><span class="line"><span class="string">* yarn-client mode</span></span><br><span class="line"><span class="string"> * Sparkアプリはローカルホストで実行される</span></span><br><span class="line"><span class="string"> * デバッグなどインタラクティブ処理で使う</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">yarn-cluster modeで実行すると、処理結果は`$HADOOP_YARN_HOME/logs`に出力されます。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">``` bash</span></span><br><span class="line"><span class="string">$ spark-submit --class org.apache.spark.examples.SparkPi --master yarn-cluster --driver-memory 1g --executor-memory 1g --executor-cores 1 $SPARK_HOME/lib/spark-examples-1.2.0-hadoop2.4.0.jar</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">15/01/10 02:00:43 INFO yarn.Client:</span></span><br><span class="line"><span class="string">         client token: N/A</span></span><br><span class="line"><span class="string">         diagnostics: N/A</span></span><br><span class="line"><span class="string">         ApplicationMaster host: sandbox</span></span><br><span class="line"><span class="string">         ApplicationMaster RPC port: 0</span></span><br><span class="line"><span class="string">         queue: default</span></span><br><span class="line"><span class="string">         start time: 1420873225740</span></span><br><span class="line"><span class="string">         final status: SUCCEEDED</span></span><br><span class="line"><span class="string">         tracking URL: http://sandbox:8088/proxy/application_1420873088326_0001/A</span></span><br><span class="line"><span class="string">         user: root</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ pyspark</span><br><span class="line">...</span><br><span class="line">Welcome to</span><br><span class="line">      ____              __</span><br><span class="line">     / __/__  ___ _____/ /__</span><br><span class="line">    _\ \/ _ \/ _ `/ __/  <span class="string">&#x27;_/</span></span><br><span class="line"><span class="string">   /__ / .__/\_,_/_/ /_/\_\   version 1.2.0</span></span><br><span class="line"><span class="string">      /_/</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Using Python version 2.6.6 (r266:84292, Jan 22 2014 09:42:36)</span></span><br><span class="line"><span class="string">SparkContext available as sc.</span></span><br><span class="line"><span class="string">&gt;&gt;&gt; sc.parallelize(range(1000)).count()</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">1000</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="円周率計算のサンプル"><a href="#円周率計算のサンプル" class="headerlink" title="円周率計算のサンプル"></a>円周率計算のサンプル</h3><p>spark-examples-1.2.0-hadoop2.4.0.jarから円周率計算のサンプルプログラムを実行します。</p>
+<p>YARN上で実行するSparkアプリは2つのモードがあります。</p>
+<ul>
+<li>yarn-cluster mode</li>
+<li>SparkアプリはYARNクラスタで実行される</li>
+<li>通常のバッチ処理で使う</li>
+<li>yarn-client mode</li>
+<li>Sparkアプリはローカルホストで実行される</li>
+<li>デバッグなどインタラクティブ処理で使う</li>
+</ul>
+<p>yarn-cluster modeで実行すると、処理結果は<code>$HADOOP_YARN_HOME/logs</code>に出力されます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ spark-submit --class org.apache.spark.examples.SparkPi --master yarn-cluster --driver-memory 1g --executor-memory 1g --executor-cores 1 <span class="variable">$SPARK_HOME</span>/lib/spark-examples-1.2.0-hadoop2.4.0.jar</span><br><span class="line">...</span><br><span class="line">15/01/10 02:00:43 INFO yarn.Client:</span><br><span class="line">         client token: N/A</span><br><span class="line">         diagnostics: N/A</span><br><span class="line">         ApplicationMaster host: sandbox</span><br><span class="line">         ApplicationMaster RPC port: 0</span><br><span class="line">         queue: default</span><br><span class="line">         start time: 1420873225740</span><br><span class="line">         final status: SUCCEEDED</span><br><span class="line">         tracking URL: http://sandbox:8088/proxy/application_1420873088326_0001/A</span><br><span class="line">         user: root</span><br></pre></td></tr></table></figure>
 
 <p>ログを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /usr/<span class="built_in">local</span>/hadoop/logs/userlogs/application_1420873088326_0001/container_1420873088326_0001_01_000001/stdout</span><br><span class="line">Pi is roughly 3.1451</span><br></pre></td></tr></table></figure>
@@ -332,7 +313,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -383,7 +363,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sparkの書籍"><span class="nav-number">1.</span> <span class="nav-text">Sparkの書籍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SequenceIQのDockerイメージ"><span class="nav-number">2.</span> <span class="nav-text">SequenceIQのDockerイメージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール"><span class="nav-number">3.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#インストールとバーションの確認"><span class="nav-number">4.</span> <span class="nav-text">インストールとバーションの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Shell-ScalaとPython"><span class="nav-number">5.</span> <span class="nav-text">Spark Shell (ScalaとPython)</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark%E3%81%AE%E6%9B%B8%E7%B1%8D"><span class="nav-number">1.</span> <span class="nav-text">Sparkの書籍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SequenceIQ%E3%81%AEDocker%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8"><span class="nav-number">2.</span> <span class="nav-text">SequenceIQのDockerイメージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">インストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%A8%E3%83%90%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">4.</span> <span class="nav-text">インストールとバーションの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark-Shell-Scala%E3%81%A8Python"><span class="nav-number">5.</span> <span class="nav-text">Spark Shell (ScalaとPython)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%86%E5%91%A8%E7%8E%87%E8%A8%88%E7%AE%97%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB"><span class="nav-number">6.</span> <span class="nav-text">円周率計算のサンプル</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,10 +395,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -443,9 +426,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -485,13 +468,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Firmata互換のIOを使い、同じセンサーモジュールからRaspberry PiでもArduinoでもセンシングデータ取得コードの抽象化を試しています。取得したデータはMeshbluに送信してMongoDBにストアします。特に1-WireのDS18B20の場合はArduinoでもAdd arduino library to Firmata or Johnny-Five 285によるとConfig">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Raspberry PiからMeshbluにDS18B20のセンシングデータを送信する">
 <meta property="og:url" content="https://masato.github.io/2015/04/02/raspberrypi-meshblu-ds18b20/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Firmata互換のIOを使い、同じセンサーモジュールからRaspberry PiでもArduinoでもセンシングデータ取得コードの抽象化を試しています。取得したデータはMeshbluに送信してMongoDBにストアします。特に1-WireのDS18B20の場合はArduinoでもAdd arduino library to Firmata or Johnny-Five 285によるとConfig">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-04-02T06:47:29.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.850Z">
+<meta property="article:modified_time" content="2015-04-02T06:47:29.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="RaspberryPi">
 <meta property="article:tag" content="センサー">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Raspberry PiからMeshbluにDS18B20のセンシングデータを送信する | masato's blog</title>
+  <title>Raspberry PiからMeshbluにDS18B20のセンシングデータを送信する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,22 +191,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 2 2015 15:47:29" itemprop="dateCreated datePublished" datetime="2015-04-02T15:47:29+09:00">Apr 2 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -252,33 +219,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Firmata互換のIOを使い、同じセンサーモジュールからRaspberry PiでもArduinoでもセンシングデータ取得コードの抽象化を試しています。取得したデータはMeshbluに送信してMongoDBにストアします。特に1-WireのDS18B20の場合はArduinoでも<a href="https://github.com/rwaldron/johnny-five/issues/285#issuecomment-31485445" target="_blank" rel="noopener">Add arduino library to Firmata or Johnny-Five #285</a>によると<a href="https://github.com/firmata/arduino/tree/configurable" target="_blank" rel="noopener">Configurable Firmata</a>が必要になります。GPIOのアナログとデジタルの違いもあってJohnny-Fiveを使った抽象化は難しそうです。</p>
-<a id="more"></a>
+        <p>Firmata互換のIOを使い、同じセンサーモジュールからRaspberry PiでもArduinoでもセンシングデータ取得コードの抽象化を試しています。取得したデータはMeshbluに送信してMongoDBにストアします。特に1-WireのDS18B20の場合はArduinoでも<a target="_blank" rel="noopener" href="https://github.com/rwaldron/johnny-five/issues/285#issuecomment-31485445">Add arduino library to Firmata or Johnny-Five #285</a>によると<a target="_blank" rel="noopener" href="https://github.com/firmata/arduino/tree/configurable">Configurable Firmata</a>が必要になります。GPIOのアナログとデジタルの違いもあってJohnny-Fiveを使った抽象化は難しそうです。</p>
+<span id="more"></span>
 
-<h2 id="Raspi-ioの1-Wireは未実装"><a href="#Raspi-ioの1-Wireは未実装" class="headerlink" title="Raspi-ioの1-Wireは未実装"></a>Raspi-ioの1-Wireは未実装</h2><p>最初はJohnny-Fiveの<a href="https://github.com/bryan-m-hughes/raspi-io/" target="_blank" rel="noopener">Raspi-io</a>を試しました。<a href="https://github.com/rwaldron/johnny-five/blob/master/docs/temperature-ds18b20.md" target="_blank" rel="noopener">Temperature (DS18B20)</a>のサンプルのPIN番号をRaspberry Piにあわせて<code>GPIO4</code>に変更します。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/raspi-io-led/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> five = <span class="built_in">require</span>(<span class="string">"johnny-five"</span>);</span><br><span class="line"></span><br><span class="line">five.Board().on(<span class="string">"ready"</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// This requires OneWire support using the ConfigurableFirmata</span></span><br><span class="line">  <span class="keyword">var</span> temperature = <span class="keyword">new</span> five.Temperature(&#123;</span><br><span class="line">    controller: <span class="string">"DS18B20"</span>,</span><br><span class="line">    <span class="comment">//pin: 2</span></span><br><span class="line">    pin: <span class="string">"GPIO4"</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  temperature.on(<span class="string">"data"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data.celsius + <span class="string">"°C"</span>, data.fahrenheit + <span class="string">"°F"</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="Raspi-ioの1-Wireは未実装"><a href="#Raspi-ioの1-Wireは未実装" class="headerlink" title="Raspi-ioの1-Wireは未実装"></a>Raspi-ioの1-Wireは未実装</h2><p>最初はJohnny-Fiveの<a target="_blank" rel="noopener" href="https://github.com/bryan-m-hughes/raspi-io/">Raspi-io</a>を試しました。<a target="_blank" rel="noopener" href="https://github.com/rwaldron/johnny-five/blob/master/docs/temperature-ds18b20.md">Temperature (DS18B20)</a>のサンプルのPIN番号をRaspberry Piにあわせて<code>GPIO4</code>に変更します。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/raspi-io-led/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> five = <span class="built_in">require</span>(<span class="string">&quot;johnny-five&quot;</span>);</span><br><span class="line"></span><br><span class="line">five.Board().on(<span class="string">&quot;ready&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// This requires OneWire support using the ConfigurableFirmata</span></span><br><span class="line">  <span class="keyword">var</span> temperature = <span class="keyword">new</span> five.Temperature(&#123;</span><br><span class="line">    controller: <span class="string">&quot;DS18B20&quot;</span>,</span><br><span class="line">    <span class="comment">//pin: 2</span></span><br><span class="line">    pin: <span class="string">&quot;GPIO4&quot;</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  temperature.on(<span class="string">&quot;data&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data.celsius + <span class="string">&quot;°C&quot;</span>, data.fahrenheit + <span class="string">&quot;°F&quot;</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>残念ながら実行するとエラーになりました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start</span><br><span class="line"></span><br><span class="line">&gt; raspi-io-led@0.0.1 start /home/pi/node_apps/raspi-io-led</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">1428295981604 Device(s) undefined</span><br><span class="line">1428295981745 Connected RaspberryPi-IO</span><br><span class="line">1428295981825 Repl Initialized</span><br><span class="line">&gt;&gt;</span><br><span class="line">/home/pi/node_apps/raspi-io-led/node_modules/raspi-io/lib/index.js:720</span><br><span class="line">        throw <span class="string">"sendOneWireConfig is not yet implemented"</span>;</span><br><span class="line">        ^</span><br><span class="line">sendOneWireConfig is not yet implemented</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo npm start</span><br><span class="line"></span><br><span class="line">&gt; raspi-io-led@0.0.1 start /home/pi/node_apps/raspi-io-led</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">1428295981604 Device(s) undefined</span><br><span class="line">1428295981745 Connected RaspberryPi-IO</span><br><span class="line">1428295981825 Repl Initialized</span><br><span class="line">&gt;&gt;</span><br><span class="line">/home/pi/node_apps/raspi-io-led/node_modules/raspi-io/lib/index.js:720</span><br><span class="line">        throw <span class="string">&quot;sendOneWireConfig is not yet implemented&quot;</span>;</span><br><span class="line">        ^</span><br><span class="line">sendOneWireConfig is not yet implemented</span><br></pre></td></tr></table></figure>
 
-<p>Raspi-ioの<a href="https://github.com/bryan-m-hughes/raspi-io/blob/master/index.js" target="_blank" rel="noopener">index.js</a>見ると1-Wireは未実装のようです。</p>
-<figure class="highlight js"><figcaption><span>index.js</span></figcaption><table><tr><td class="code"><pre><span class="line">sendOneWireConfig() &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="string">'sendOneWireConfig is not yet implemented'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Raspi-ioの<a target="_blank" rel="noopener" href="https://github.com/bryan-m-hughes/raspi-io/blob/master/index.js">index.js</a>見ると1-Wireは未実装のようです。</p>
+<figure class="highlight js"><figcaption><span>index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">sendOneWireConfig</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="string">&#x27;sendOneWireConfig is not yet implemented&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="Node-jsでw1-slaveファイルを読む"><a href="#Node-jsでw1-slaveファイルを読む" class="headerlink" title="Node.jsでw1_slaveファイルを読む"></a>Node.jsでw1_slaveファイルを読む</h2><p><a href="/2015/04/01/raspberrypi-1-wire-ds18b20/">前回</a>はデバイスの<code>w1_slave</code>ファイルを読んでDS18B20から温度を読むことに成功しました。Node.jsでも直接<code>w1_slave</code>ファイルを読むことにします。<a href="http://jam.im/blog/2013/04/30/publishing-temperature-reading-from-a-ds18b20-1-wire-digital-temperature-sensor-using-a-raspberry-pi-and-node-dot-js/" target="_blank" rel="noopener">Publishing Temperature Reading From a DS18B20 1-Wire Digital Temperature Sensor Using a Raspberry Pi and node.js</a>を参考にします。</p>
+<h2 id="Node-jsでw1-slaveファイルを読む"><a href="#Node-jsでw1-slaveファイルを読む" class="headerlink" title="Node.jsでw1_slaveファイルを読む"></a>Node.jsでw1_slaveファイルを読む</h2><p><a href="/2015/04/01/raspberrypi-1-wire-ds18b20/">前回</a>はデバイスの<code>w1_slave</code>ファイルを読んでDS18B20から温度を読むことに成功しました。Node.jsでも直接<code>w1_slave</code>ファイルを読むことにします。<a target="_blank" rel="noopener" href="http://jam.im/blog/2013/04/30/publishing-temperature-reading-from-a-ds18b20-1-wire-digital-temperature-sensor-using-a-raspberry-pi-and-node-dot-js/">Publishing Temperature Reading From a DS18B20 1-Wire Digital Temperature Sensor Using a Raspberry Pi and node.js</a>を参考にします。</p>
 <p>Rasbperry Piにログインしてプロジェクトを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p ~/node_apps/meshblu-ds18B20</span><br><span class="line">$ <span class="built_in">cd</span> !$</span><br></pre></td></tr></table></figure>
 
-<p>package.jsonに<a href="https://github.com/octoblu/meshblu-npm" target="_blank" rel="noopener">meshblu-npm</a>のパッケージを追加します。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/meshblu-ds18B20/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"meshblu-ds18b20"</span>,</span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">    <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">        <span class="attr">"meshblu"</span>: <span class="string">"1.19.1"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>package.jsonに<a target="_blank" rel="noopener" href="https://github.com/octoblu/meshblu-npm">meshblu-npm</a>のパッケージを追加します。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/meshblu-ds18B20/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;meshblu-ds18b20&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;meshblu&quot;</span>: <span class="string">&quot;1.19.1&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;scripts&quot;</span>: &#123;<span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>環境変数に定義したMeshbluへの接続情報を確認します。Raspberry Piに用意してあった<code>mqtt-pub</code>デバイスを認証に使います。</p>
 <figure class="highlight bash"><figcaption><span>~/.bashrc</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> MESHBLU_BROKER=xxx.xxx.xxx.x</span><br><span class="line"><span class="built_in">export</span> MESHBLU_URL=https://<span class="variable">$MESHBLU_BROKER</span></span><br><span class="line"><span class="built_in">export</span> MQTT_PUB_UUID=mqtt-pub</span><br><span class="line"><span class="built_in">export</span> MQTT_PUB_TOKEN=123456</span><br></pre></td></tr></table></figure>
 
 <p>メインプログラムを書きます。DS18B20のデバイスIDはハードコードしました。Meshbluの認証が成功した後<code>w1_slave</code>ファイルを1分間隔で読みます。正規表現を使い温度の数字部分を抜き出します。摂氏にした温度はJSON形式にしてMeshbluへWebSocketで送信します。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/meshblu-ds18B20/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> meshblu = <span class="built_in">require</span>(<span class="string">'meshblu'</span>),</span><br><span class="line">      fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">60</span>*<span class="number">1000</span>;</span><br><span class="line"><span class="keyword">var</span> w1Slave = <span class="string">'/sys/bus/w1/devices/28-0314626a2cff/w1_slave'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> conn = meshblu.createConnection(&#123;</span><br><span class="line">    <span class="string">"uuid"</span>: process.env.MQTT_PUB_UUID,</span><br><span class="line">    <span class="string">"token"</span>: process.env.MQTT_PUB_TOKEN,</span><br><span class="line">    <span class="string">"protocol"</span>: <span class="string">"websocket"</span>,</span><br><span class="line">    <span class="string">"server"</span>: process.env.MESHBLU_URL</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">'notReady'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'UUID FAILED AUTHENTICATION!'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'UUID AUTHENTICATED!'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> readSensor = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;    </span><br><span class="line">        fs.readFile(w1Slave, <span class="string">'utf8'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">            <span class="keyword">var</span> matches = data.match(<span class="regexp">/t=(\d+)/</span>);</span><br><span class="line">            <span class="keyword">var</span> celsius = <span class="built_in">parseInt</span>(matches[<span class="number">1</span>]) / <span class="number">1000</span>;</span><br><span class="line">            <span class="keyword">var</span> output = &#123;<span class="string">"temperature"</span>: celsius&#125;;</span><br><span class="line">            <span class="built_in">console</span>.log(output);</span><br><span class="line">            conn.data(&#123;</span><br><span class="line">                <span class="string">"temperature"</span>: celsius</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    setInterval(readSensor, interval);    </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/meshblu-ds18B20/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> meshblu = <span class="built_in">require</span>(<span class="string">&#x27;meshblu&#x27;</span>),</span><br><span class="line">      fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">60</span>*<span class="number">1000</span>;</span><br><span class="line"><span class="keyword">var</span> w1Slave = <span class="string">&#x27;/sys/bus/w1/devices/28-0314626a2cff/w1_slave&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> conn = meshblu.createConnection(&#123;</span><br><span class="line">    <span class="string">&quot;uuid&quot;</span>: process.env.MQTT_PUB_UUID,</span><br><span class="line">    <span class="string">&quot;token&quot;</span>: process.env.MQTT_PUB_TOKEN,</span><br><span class="line">    <span class="string">&quot;protocol&quot;</span>: <span class="string">&quot;websocket&quot;</span>,</span><br><span class="line">    <span class="string">&quot;server&quot;</span>: process.env.MESHBLU_URL</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">&#x27;notReady&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;UUID FAILED AUTHENTICATION!&#x27;</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">conn.on(<span class="string">&#x27;ready&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;UUID AUTHENTICATED!&#x27;</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> readSensor = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;    </span><br><span class="line">        fs.readFile(w1Slave, <span class="string">&#x27;utf8&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">            <span class="keyword">var</span> matches = data.match(<span class="regexp">/t=(\d+)/</span>);</span><br><span class="line">            <span class="keyword">var</span> celsius = <span class="built_in">parseInt</span>(matches[<span class="number">1</span>]) / <span class="number">1000</span>;</span><br><span class="line">            <span class="keyword">var</span> output = &#123;<span class="string">&quot;temperature&quot;</span>: celsius&#125;;</span><br><span class="line">            <span class="built_in">console</span>.log(output);</span><br><span class="line">            conn.data(&#123;</span><br><span class="line">                <span class="string">&quot;temperature&quot;</span>: celsius</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">setInterval</span>(readSensor, interval);    </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>プログラムを実行します。1間隔で取得した温度が標準出力されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; meshblu-ds18b20@0.0.1 start /home/pi/node_apps/meshblu-ds18B20</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">UUID AUTHENTICATED!</span><br><span class="line">&#123; api: <span class="string">'connect'</span>,</span><br><span class="line">  status: 201,</span><br><span class="line">  socketid: <span class="string">'Q2mR6Ctg5UOpJJrRAAAD'</span>,</span><br><span class="line">  uuid: <span class="string">'mqtt-pub'</span>,</span><br><span class="line">  token: <span class="string">'889346'</span> &#125;</span><br><span class="line">...</span><br><span class="line">&#123; temperature: 27.375 &#125;</span><br><span class="line">&#123; temperature: 27.5 &#125;</span><br><span class="line">&#123; temperature: 27.625 &#125;</span><br><span class="line">&#123; temperature: 27.5 &#125;</span><br><span class="line">&#123; temperature: 27.625 &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm start</span><br><span class="line"></span><br><span class="line">&gt; meshblu-ds18b20@0.0.1 start /home/pi/node_apps/meshblu-ds18B20</span><br><span class="line">&gt; node app.js</span><br><span class="line"></span><br><span class="line">UUID AUTHENTICATED!</span><br><span class="line">&#123; api: <span class="string">&#x27;connect&#x27;</span>,</span><br><span class="line">  status: 201,</span><br><span class="line">  socketid: <span class="string">&#x27;Q2mR6Ctg5UOpJJrRAAAD&#x27;</span>,</span><br><span class="line">  uuid: <span class="string">&#x27;mqtt-pub&#x27;</span>,</span><br><span class="line">  token: <span class="string">&#x27;889346&#x27;</span> &#125;</span><br><span class="line">...</span><br><span class="line">&#123; temperature: 27.375 &#125;</span><br><span class="line">&#123; temperature: 27.5 &#125;</span><br><span class="line">&#123; temperature: 27.625 &#125;</span><br><span class="line">&#123; temperature: 27.5 &#125;</span><br><span class="line">&#123; temperature: 27.625 &#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="MeshbluコンテナのMongoDBの確認"><a href="#MeshbluコンテナのMongoDBの確認" class="headerlink" title="MeshbluコンテナのMongoDBの確認"></a>MeshbluコンテナのMongoDBの確認</h2><p>Meshbluコンテナのシェルを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker <span class="built_in">exec</span> -it  meshblu bash</span><br></pre></td></tr></table></figure>
@@ -287,7 +254,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mongo skynet</span><br><span class="line">MongoDB shell version: 2.4.13</span><br><span class="line">connecting to: skynet</span><br></pre></td></tr></table></figure>
 
 <p>直近の3件を表示します。1分間隔でセンシングデータが保存されています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(3)</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-04-06T08:52:37.899Z"</span>, <span class="string">"temperature"</span> : <span class="string">"27.625"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"55224955a545260b00c971b3"</span>) &#125;</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-04-06T08:51:37.863Z"</span>, <span class="string">"temperature"</span> : <span class="string">"27.5"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"55224919a545260b00c971b2"</span>) &#125;</span><br><span class="line">&#123; <span class="string">"timestamp"</span> : <span class="string">"2015-04-06T08:50:37.851Z"</span>, <span class="string">"temperature"</span> : <span class="string">"27.625"</span>, <span class="string">"_id"</span> : ObjectId(<span class="string">"552248dda545260b00c971b1"</span>) &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; db.data.find().sort(&#123; <span class="variable">$natural</span>: -1 &#125;).<span class="built_in">limit</span>(3)</span><br><span class="line">&#123; <span class="string">&quot;timestamp&quot;</span> : <span class="string">&quot;2015-04-06T08:52:37.899Z&quot;</span>, <span class="string">&quot;temperature&quot;</span> : <span class="string">&quot;27.625&quot;</span>, <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55224955a545260b00c971b3&quot;</span>) &#125;</span><br><span class="line">&#123; <span class="string">&quot;timestamp&quot;</span> : <span class="string">&quot;2015-04-06T08:51:37.863Z&quot;</span>, <span class="string">&quot;temperature&quot;</span> : <span class="string">&quot;27.5&quot;</span>, <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;55224919a545260b00c971b2&quot;</span>) &#125;</span><br><span class="line">&#123; <span class="string">&quot;timestamp&quot;</span> : <span class="string">&quot;2015-04-06T08:50:37.851Z&quot;</span>, <span class="string">&quot;temperature&quot;</span> : <span class="string">&quot;27.625&quot;</span>, <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;552248dda545260b00c971b1&quot;</span>) &#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -326,7 +293,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -377,7 +343,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspi-ioの1-Wireは未実装"><span class="nav-number">1.</span> <span class="nav-text">Raspi-ioの1-Wireは未実装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-jsでw1-slaveファイルを読む"><span class="nav-number">2.</span> <span class="nav-text">Node.jsでw1_slaveファイルを読む</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MeshbluコンテナのMongoDBの確認"><span class="nav-number">3.</span> <span class="nav-text">MeshbluコンテナのMongoDBの確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Raspi-io%E3%81%AE1-Wire%E3%81%AF%E6%9C%AA%E5%AE%9F%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">Raspi-ioの1-Wireは未実装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js%E3%81%A7w1-slave%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E8%AA%AD%E3%82%80"><span class="nav-number">2.</span> <span class="nav-text">Node.jsでw1_slaveファイルを読む</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Meshblu%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AEMongoDB%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">3.</span> <span class="nav-text">MeshbluコンテナのMongoDBの確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -409,10 +375,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -437,9 +406,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -479,13 +448,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

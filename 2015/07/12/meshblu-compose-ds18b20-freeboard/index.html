@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="BME280]の環境センサを使ってRaspberry Pi 2から環境データをMQTT publishしました。同様にBeagleBone BlackとDS18B20の組み合わせでも試してみます。MeshbluがMQTTとWebSocketをブリッジします。ブラウザ上のfreeboadがJavaScriptでWebSocketをsubscribeします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MeshbluでオープンソースのIoTをはじめよう - Part3: BeagleBone BlackからDS18B20の温度データをfreeboardに表示する">
 <meta property="og:url" content="https://masato.github.io/2015/07/12/meshblu-compose-ds18b20-freeboard/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="BME280]の環境センサを使ってRaspberry Pi 2から環境データをMQTT publishしました。同様にBeagleBone BlackとDS18B20の組み合わせでも試してみます。MeshbluがMQTTとWebSocketをブリッジします。ブラウザ上のfreeboadがJavaScriptでWebSocketをsubscribeします。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/12/meshblu-compose-ds18b20-freeboard/freeboard-ds18b20.png">
 <meta property="og:image" content="https://masato.github.io/2015/07/12/meshblu-compose-ds18b20-freeboard/freeboard-ds18b20-temperature.png">
 <meta property="article:published_time" content="2015-07-12T14:11:30.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.759Z">
+<meta property="article:modified_time" content="2015-07-12T14:11:30.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="freeboard">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>MeshbluでオープンソースのIoTをはじめよう - Part3: BeagleBone BlackからDS18B20の温度データをfreeboardに表示する | masato's blog</title>
+  <title>MeshbluでオープンソースのIoTをはじめよう - Part3: BeagleBone BlackからDS18B20の温度データをfreeboardに表示する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -95,7 +95,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -116,14 +116,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -132,51 +131,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -193,11 +168,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -210,7 +184,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -220,19 +194,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 12 2015 23:11:30" itemprop="dateCreated datePublished" datetime="2015-07-12T23:11:30+09:00">Jul 12 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">BME280]の環境センサを使ってRaspberry Pi 2から環境データをMQTT publishしました。同様にBeagleBone BlackとDS18B20の組み合わせでも試してみます。MeshbluがMQTTとWebSocketをブリッジします。ブラウザ上のfreeboadがJavaScriptでWebSocketをsubscribeします。</div>
@@ -246,17 +213,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="https://www.switch-science.com/catalog/2236/" target="_blank" rel="noopener">BME280</a>の環境センサを使って<a href="/2015/07/07/meshblu-compose-bme280-freeboard/">Raspberry Pi 2から環境データをMQTT publish</a>しました。同様にBeagleBone BlackとDS18B20の組み合わせでも試してみます。MeshbluがMQTTとWebSocketをブリッジします。ブラウザ上の<a href="https://github.com/Freeboard/freeboard" target="_blank" rel="noopener">freeboad</a>がJavaScriptでWebSocketをsubscribeします。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2236/">BME280</a>の環境センサを使って<a href="/2015/07/07/meshblu-compose-bme280-freeboard/">Raspberry Pi 2から環境データをMQTT publish</a>しました。同様にBeagleBone BlackとDS18B20の組み合わせでも試してみます。MeshbluがMQTTとWebSocketをブリッジします。ブラウザ上の<a target="_blank" rel="noopener" href="https://github.com/Freeboard/freeboard">freeboad</a>がJavaScriptでWebSocketをsubscribeします。</p>
+<span id="more"></span>
 
-<h2 id="DS18B20とBeagleBone-Black"><a href="#DS18B20とBeagleBone-Black" class="headerlink" title="DS18B20とBeagleBone Black"></a>DS18B20とBeagleBone Black</h2><p>BeagleBone Blackで1-wireのDS18B20を配線するのはかなり面倒です。センサーデータを取得するなら同じARM LinuxでもRaspberry Piの方が簡単です。ただBeagleBone Blackには<a href="https://github.com/jadonk/bonescript" target="_blank" rel="noopener">BoneScript</a>や<a href="https://github.com/theoctal/octalbonescript" target="_blank" rel="noopener">OctalBoneScrit</a>といったRaspberry Piにはない遊び方ができるのでとても気に入っています。</p>
-<h2 id="Meshbluのセットアップ"><a href="#Meshbluのセットアップ" class="headerlink" title="Meshbluのセットアップ"></a>Meshbluのセットアップ</h2><p>今回作成したリポジトリは<a href="https://github.com/IDCFChannel/glow-light-py" target="_blank" rel="noopener">こちら</a>です。MesubluのブローカーはDocker Composeで構成管理した<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">Mesublu Compose</a>を用意しました。予めDockerホストマシンにセットアップしておきます。</p>
+<h2 id="DS18B20とBeagleBone-Black"><a href="#DS18B20とBeagleBone-Black" class="headerlink" title="DS18B20とBeagleBone Black"></a>DS18B20とBeagleBone Black</h2><p>BeagleBone Blackで1-wireのDS18B20を配線するのはかなり面倒です。センサーデータを取得するなら同じARM LinuxでもRaspberry Piの方が簡単です。ただBeagleBone Blackには<a target="_blank" rel="noopener" href="https://github.com/jadonk/bonescript">BoneScript</a>や<a target="_blank" rel="noopener" href="https://github.com/theoctal/octalbonescript">OctalBoneScrit</a>といったRaspberry Piにはない遊び方ができるのでとても気に入っています。</p>
+<h2 id="Meshbluのセットアップ"><a href="#Meshbluのセットアップ" class="headerlink" title="Meshbluのセットアップ"></a>Meshbluのセットアップ</h2><p>今回作成したリポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/glow-light-py">こちら</a>です。MesubluのブローカーはDocker Composeで構成管理した<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose">Mesublu Compose</a>を用意しました。予めDockerホストマシンにセットアップしておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_util</span><br><span class="line">$ git <span class="built_in">clone</span> --recursive https://github.com/IDCFChannel/meshblu-compose</span><br><span class="line">$ <span class="built_in">cd</span> meshblu-compose</span><br><span class="line">$ ./bootstrap.sh</span><br></pre></td></tr></table></figure>
 <p>インストール後にregisterを実行してBeagleBone Blackとの紐付けに必要なuuid作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil register</span><br></pre></td></tr></table></figure>
 
 <p><code>list</code>コマンドを実行すると登録されたuuidとtokenがリストで表示されます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"list"</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 49f74df6 │ c1871f89-d82e-4d49-ac43-28acad2f927c │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-2 │ 46ad5b4a │ f3675ab9-de59-49c8-a6fe-8786089f3793 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-3 │ 1894bff4 │ c35d61c6-961a-436f-84e0-96e0586d8635 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-4 │ c4b5df58 │ 6f6b0b81-6986-47ce-a075-7008b2a4eba5 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-5 │ ae960cee │ 9a938e7b-2ceb-4780-b5e4-011b31a68582 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1  │ e26a7ab2 │ d4bac908-b43e-4037-8319-3306ce5dfd93 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2  │ e343202e │ ce2fe99b-9d78-4c61-9c23-32fafa8cbf53 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-3  │ 08829b68 │ 97eae960-416f-43c3-af09-209a89278526 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-4  │ cf5e448a │ c170244d-c591-4a13-8eb5-f53e04472168 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-5  │ 5eabd0bd │ b5be0002-8078-47e5-aebc-cabaf2f69c7a │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil list</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;list&quot;</span></span><br><span class="line"></span><br><span class="line">┌───────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword   │ token    │ uuid                                 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-1 │ 49f74df6 │ c1871f89-d82e-4d49-ac43-28acad2f927c │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-2 │ 46ad5b4a │ f3675ab9-de59-49c8-a6fe-8786089f3793 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-3 │ 1894bff4 │ c35d61c6-961a-436f-84e0-96e0586d8635 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-4 │ c4b5df58 │ 6f6b0b81-6986-47ce-a075-7008b2a4eba5 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ trigger-5 │ ae960cee │ 9a938e7b-2ceb-4780-b5e4-011b31a68582 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1  │ e26a7ab2 │ d4bac908-b43e-4037-8319-3306ce5dfd93 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2  │ e343202e │ ce2fe99b-9d78-4c61-9c23-32fafa8cbf53 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-3  │ 08829b68 │ 97eae960-416f-43c3-af09-209a89278526 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-4  │ cf5e448a │ c170244d-c591-4a13-8eb5-f53e04472168 │</span><br><span class="line">├───────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-5  │ 5eabd0bd │ b5be0002-8078-47e5-aebc-cabaf2f69c7a │</span><br><span class="line">└───────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <p>リストの中から今回使用するuuidは以下です。</p>
 <ul>
@@ -265,9 +232,9 @@
 <li>action-2 : freeboardでWebSocket subscribeをするuuid</li>
 </ul>
 <p><code>trigger-1</code>から<code>action-2</code>へメッセージ送信を許可します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil whiten -- -f trigger-1  -t action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"whiten"</span> <span class="string">"-f"</span> <span class="string">"trigger-1"</span> <span class="string">"-t"</span> <span class="string">"action-2"</span></span><br><span class="line"></span><br><span class="line">action-2 whitelists already contains trigger-1</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil whiten -- -f trigger-1  -t action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;whiten&quot;</span> <span class="string">&quot;-f&quot;</span> <span class="string">&quot;trigger-1&quot;</span> <span class="string">&quot;-t&quot;</span> <span class="string">&quot;action-2&quot;</span></span><br><span class="line"></span><br><span class="line">action-2 whitelists already contains trigger-1</span><br></pre></td></tr></table></figure>
 
-<h2 id="Pythonのプログラム"><a href="#Pythonのプログラム" class="headerlink" title="Pythonのプログラム"></a>Pythonのプログラム</h2><p>Pythonの<a href="https://github.com/IDCFChannel/glow-light-py" target="_blank" rel="noopener">サンプルプログラム</a>を<code>git clone</code>します。</p>
+<h2 id="Pythonのプログラム"><a href="#Pythonのプログラム" class="headerlink" title="Pythonのプログラム"></a>Pythonのプログラム</h2><p>Pythonの<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/glow-light-py">サンプルプログラム</a>を<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/python_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/IDCFChannel/glow-light-py</span><br><span class="line">$ <span class="built_in">cd</span> glow-light-py</span><br></pre></td></tr></table></figure>
 
 <p>config.py.defaultをリネームしてconfig.pyを作成します。環境にあわせて上記で確認したuuidを記述します。</p>
@@ -277,21 +244,21 @@
 <li>ACTION_UUID     : action-1</li>
 <li>FREEBOARD_UUID  : action-2</li>
 </ul>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">"IDCF_CHANNEL_URL"</span>: <span class="string">"210-140-160-194.jp-east.compute.idcfcloud.com"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_UUID"</span>: <span class="string">"c1871f89-d82e-4d49-ac43-28acad2f927c"</span>,</span><br><span class="line">     <span class="string">"TRIGGER_TOKEN"</span>: <span class="string">"49f74df6"</span>,</span><br><span class="line">     <span class="string">"ACTION_UUID"</span>: <span class="string">"d4bac908-b43e-4037-8319-3306ce5dfd93"</span>,</span><br><span class="line">     <span class="string">"ACTION_TOKEN"</span>: <span class="string">"e26a7ab2"</span>,</span><br><span class="line">     <span class="string">"FREEBOARD_UUID"</span>: <span class="string">"ce2fe99b-9d78-4c61-9c23-32fafa8cbf53"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">conf = &#123;</span><br><span class="line">     <span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>: <span class="string">&quot;210-140-160-194.jp-east.compute.idcfcloud.com&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_UUID&quot;</span>: <span class="string">&quot;c1871f89-d82e-4d49-ac43-28acad2f927c&quot;</span>,</span><br><span class="line">     <span class="string">&quot;TRIGGER_TOKEN&quot;</span>: <span class="string">&quot;49f74df6&quot;</span>,</span><br><span class="line">     <span class="string">&quot;ACTION_UUID&quot;</span>: <span class="string">&quot;d4bac908-b43e-4037-8319-3306ce5dfd93&quot;</span>,</span><br><span class="line">     <span class="string">&quot;ACTION_TOKEN&quot;</span>: <span class="string">&quot;e26a7ab2&quot;</span>,</span><br><span class="line">     <span class="string">&quot;FREEBOARD_UUID&quot;</span>: <span class="string">&quot;ce2fe99b-9d78-4c61-9c23-32fafa8cbf53&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>MQTTクライアントの<a href="https://pypi.python.org/pypi/paho-mqtt" target="_blank" rel="noopener">Paho</a>をインストールします。</p>
+<p>MQTTクライアントの<a target="_blank" rel="noopener" href="https://pypi.python.org/pypi/paho-mqtt">Paho</a>をインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install paho-mqtt</span><br></pre></td></tr></table></figure>
 
 <p><a href="/2015/07/07/meshblu-compose-bme280-freeboard/">BME280のプログラム</a>とほぼ同じです。<code>sensing()</code>関数で<code>w1_slave</code>の値を読みます。<code>28-*</code>は環境毎に値が異なるのでディレクトリを確認して指定します。</p>
-<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/ds18b20_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">w1=<span class="string">"/sys/bus/w1/devices/28-0414708c9eff/w1_slave"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span><span class="params">()</span>:</span></span><br><span class="line">    raw = open(w1, <span class="string">"r"</span>).read()</span><br><span class="line">    celsius = float(raw.split(<span class="string">"t="</span>)[<span class="number">-1</span>])/<span class="number">1000</span></span><br><span class="line">    retval = dict(temperature=<span class="string">"&#123;:.2f&#125;"</span>.format(celsius))</span><br><span class="line">    <span class="keyword">return</span> retval</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span><span class="params">(client, userdata, rc)</span>:</span></span><br><span class="line">    print(<span class="string">"Connected with result code &#123;&#125;"</span>.format(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span><span class="params">(client, userdata, mid)</span>:</span></span><br><span class="line">    print(<span class="string">"publish: &#123;&#125;"</span>.format(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">''</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">"TRIGGER_UUID"</span>], conf[<span class="string">"TRIGGER_TOKEN"</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">"IDCF_CHANNEL_URL"</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">"devices"</span>:</span><br><span class="line">                               conf[<span class="string">"FREEBOARD_UUID"</span>],</span><br><span class="line">                              <span class="string">"payload"</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">"message"</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/python_apps/glow-light-py/ds18b20_publish.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> paho.mqtt.client <span class="keyword">as</span> mqtt</span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> sleep</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> config <span class="keyword">import</span> conf</span><br><span class="line"></span><br><span class="line">w1=<span class="string">&quot;/sys/bus/w1/devices/28-0414708c9eff/w1_slave&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sensing</span>():</span></span><br><span class="line">    raw = <span class="built_in">open</span>(w1, <span class="string">&quot;r&quot;</span>).read()</span><br><span class="line">    celsius = <span class="built_in">float</span>(raw.split(<span class="string">&quot;t=&quot;</span>)[-<span class="number">1</span>])/<span class="number">1000</span></span><br><span class="line">    retval = <span class="built_in">dict</span>(temperature=<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(celsius))</span><br><span class="line">    <span class="keyword">return</span> retval</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_connect</span>(<span class="params">client, userdata, rc</span>):</span></span><br><span class="line">    print(<span class="string">&quot;Connected with result code &#123;&#125;&quot;</span>.<span class="built_in">format</span>(rc))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_publish</span>(<span class="params">client, userdata, mid</span>):</span></span><br><span class="line">    print(<span class="string">&quot;publish: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(mid))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    client = mqtt.Client(client_id=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">                         clean_session=<span class="literal">True</span>, protocol=mqtt.MQTTv311)</span><br><span class="line"></span><br><span class="line">    client.username_pw_set(conf[<span class="string">&quot;TRIGGER_UUID&quot;</span>], conf[<span class="string">&quot;TRIGGER_TOKEN&quot;</span>])</span><br><span class="line"></span><br><span class="line">    client.on_connect = on_connect</span><br><span class="line">    client.on_publish = on_publish</span><br><span class="line"></span><br><span class="line">    client.connect(conf[<span class="string">&quot;IDCF_CHANNEL_URL&quot;</span>], <span class="number">1883</span>, <span class="number">60</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        retval = sensing()</span><br><span class="line">        <span class="keyword">if</span> retval:</span><br><span class="line">             message = json.dumps(&#123;<span class="string">&quot;devices&quot;</span>:</span><br><span class="line">                               conf[<span class="string">&quot;FREEBOARD_UUID&quot;</span>],</span><br><span class="line">                              <span class="string">&quot;payload&quot;</span>: retval&#125;)</span><br><span class="line">             print(message)</span><br><span class="line">             client.publish(<span class="string">&quot;message&quot;</span>,message)</span><br><span class="line">        sleep(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
-<h2 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h2><p>作成したPythonスクリプトは<a href="http://supervisord.org/" target="_blank" rel="noopener">Supervisor</a>を使ってデモナイズします。BeagleBone BlackにSupervisorをインストールします。</p>
+<h2 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h2><p>作成したPythonスクリプトは<a target="_blank" rel="noopener" href="http://supervisord.org/">Supervisor</a>を使ってデモナイズします。BeagleBone BlackにSupervisorをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install supervisor</span><br></pre></td></tr></table></figure>
 
 <p>1-wireを有効にするためには起動時に毎回以下のコマンドを実行する必要があります。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">'echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">&#x27;echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots&#x27;</span></span><br></pre></td></tr></table></figure>
 <p>Supervisorで実行するコマンドをシェルスクリプトにします。w1_publish.pyの前に1-wireを有効化します。</p>
-<figure class="highlight bash"><figcaption><span>~/python_apps/glow-light-py/start_w1.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo sh -c <span class="string">'echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots'</span></span><br><span class="line">/home/debian/python_apps/glow-light-py/w1_publish.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/python_apps/glow-light-py/start_w1.sh</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">sudo sh -c <span class="string">&#x27;echo BB-W1:00A0 &gt; /sys/devices/bone_capemgr.9/slots&#x27;</span></span><br><span class="line">/home/debian/python_apps/glow-light-py/w1_publish.py</span><br></pre></td></tr></table></figure>
 
 <p>スクリプトに実行権限を付けます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod +x start_w1.sh</span><br></pre></td></tr></table></figure>
@@ -305,7 +272,7 @@
 <p>w1をsupervisorのサブプロセスに追加します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo supervisorctl add w1</span><br><span class="line">w1: added process group</span><br><span class="line">$ sudo supervisorctl status</span><br><span class="line">w1                               RUNNING    pid 3190, uptime 0:03:51</span><br></pre></td></tr></table></figure>
 
-<h2 id="freeboard"><a href="#freeboard" class="headerlink" title="freeboard"></a>freeboard</h2><p><a href="https://github.com/Freeboard/freeboard" target="_blank" rel="noopener">freeboad</a>のDockerコンテナを起動します。<code>git clone</code>してある<a href="https://github.com/IDCFChannel/meshblu-compose" target="_blank" rel="noopener">Mesublu Compose</a>のdocker-compose.ymlにサービスが定義してあります。</p>
+<h2 id="freeboard"><a href="#freeboard" class="headerlink" title="freeboard"></a>freeboard</h2><p><a target="_blank" rel="noopener" href="https://github.com/Freeboard/freeboard">freeboad</a>のDockerコンテナを起動します。<code>git clone</code>してある<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/meshblu-compose">Mesublu Compose</a>のdocker-compose.ymlにサービスが定義してあります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_util/meshblu-compose</span><br></pre></td></tr></table></figure>
 
 <p>以下が抜粋です。Dockerホストのportsは環境にあわせて変更します。</p>
@@ -315,11 +282,11 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up -d freeboard</span><br></pre></td></tr></table></figure>
 
 <p>最初にブラウザで自己署名のSSL通信を許可します。</p>
-<p><a href="https://210-140-160-194.jp-east.compute.idcfcloud.com" target="_blank" rel="noopener">https://210-140-160-194.jp-east.compute.idcfcloud.com</a></p>
+<p><a target="_blank" rel="noopener" href="https://210-140-160-194.jp-east.compute.idcfcloud.com/">https://210-140-160-194.jp-east.compute.idcfcloud.com</a></p>
 <p>freeboardのダッシュボードを同じ自己署名のSSL通信を許可したブラウザで開きます。</p>
-<p><a href="http://210-140-160-194.jp-east.compute.idcfcloud.com:8088/" target="_blank" rel="noopener">http://210-140-160-194.jp-east.compute.idcfcloud.com:8088/</a></p>
+<p><a target="_blank" rel="noopener" href="http://210-140-160-194.jp-east.compute.idcfcloud.com:8088/">http://210-140-160-194.jp-east.compute.idcfcloud.com:8088/</a></p>
 <p>freeboardがWebSocketでsubscribeするuuidは<code>action-2</code>です。MesubluのDockerホストでuuidとtokenを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"show"</span> <span class="string">"-k"</span> <span class="string">"action-2"</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2 │ e343202e │ ce2fe99b-9d78-4c61-9c23-32fafa8cbf53 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil show -- -k action-2</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;show&quot;</span> <span class="string">&quot;-k&quot;</span> <span class="string">&quot;action-2&quot;</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-2 │ e343202e │ ce2fe99b-9d78-4c61-9c23-32fafa8cbf53 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <p>DATASOURCESにあるADDのリンクを押してデータソースに<code>action-2</code>のuuidとtokenを追加します。TYPEは<code>Octoblu</code>を選択します。</p>
 <p><img src="/2015/07/12/meshblu-compose-ds18b20-freeboard/freeboard-ds18b20.png" alt="freeboard-ds18b20.png"></p>
@@ -364,7 +331,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -415,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DS18B20とBeagleBone-Black"><span class="nav-number">1.</span> <span class="nav-text">DS18B20とBeagleBone Black</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Meshbluのセットアップ"><span class="nav-number">2.</span> <span class="nav-text">Meshbluのセットアップ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pythonのプログラム"><span class="nav-number">3.</span> <span class="nav-text">Pythonのプログラム</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supervisor"><span class="nav-number">4.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboard"><span class="nav-number">5.</span> <span class="nav-text">freeboard</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DS18B20%E3%81%A8BeagleBone-Black"><span class="nav-number">1.</span> <span class="nav-text">DS18B20とBeagleBone Black</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Meshblu%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97"><span class="nav-number">2.</span> <span class="nav-text">Meshbluのセットアップ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python%E3%81%AE%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">3.</span> <span class="nav-text">Pythonのプログラム</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Supervisor"><span class="nav-number">4.</span> <span class="nav-text">Supervisor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboard"><span class="nav-number">5.</span> <span class="nav-text">freeboard</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -447,10 +413,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -475,9 +444,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -517,13 +486,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

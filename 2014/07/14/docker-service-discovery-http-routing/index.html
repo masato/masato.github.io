@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="tsuruを構築したときにDockerコンテナを外部に公開する場合は、Service DiscoveryのためにWildcard DNSとローカルのBIND、HipacheのHTTP Routingの仕組みが必要でした。これでもFlynnやDeis、Deimosに比べると小規模なのですが、もっとカジュアルにバックエンドのDockerコンテナを見つけて、動的にルーティングしてくれるシンプルなリバース">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DockerのHTTP Routing: Part1: Service Discovery">
 <meta property="og:url" content="https://masato.github.io/2014/07/14/docker-service-discovery-http-routing/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="tsuruを構築したときにDockerコンテナを外部に公開する場合は、Service DiscoveryのためにWildcard DNSとローカルのBIND、HipacheのHTTP Routingの仕組みが必要でした。これでもFlynnやDeis、Deimosに比べると小規模なのですが、もっとカジュアルにバックエンドのDockerコンテナを見つけて、動的にルーティングしてくれるシンプルなリバース">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-07-13T16:21:44.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.602Z">
+<meta property="article:modified_time" content="2014-07-13T16:21:44.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="HTTPRouting">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>DockerのHTTP Routing: Part1: Service Discovery | masato's blog</title>
+  <title>DockerのHTTP Routing: Part1: Service Discovery | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 14 2014 01:21:44" itemprop="dateCreated datePublished" datetime="2014-07-14T01:21:44+09:00">Jul 14 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">tsuruを構築したときにDockerコンテナを外部に公開する場合は、Service DiscoveryのためにWildcard DNSとローカルのBIND、HipacheのHTTP Routingの仕組みが必要でした。これでもFlynnやDeis、Deimosに比べると小規模なのですが、もっとカジュアルにバックエンドのDockerコンテナを見つけて、動的にルーティングしてくれるシンプルなリバースプロキシが欲しいです。Service Discoveryにはいろいろな仕組みがあります。まだ分類が難しいのですが、勉強のためまとめてみます。</div>
@@ -248,47 +215,47 @@
         <p>tsuruを構築したときにDockerコンテナを外部に公開する場合は、<code>Service Discovery</code>のために<code>Wildcard DNS</code>とローカルのBIND、Hipacheの<code>HTTP Routing</code>の仕組みが必要でした。</p>
 <p>これでもFlynnやDeis、Deimosに比べると小規模なのですが、もっとカジュアルにバックエンドのDockerコンテナを見つけて、動的にルーティングしてくれるシンプルなリバースプロキシが欲しいです。</p>
 <p><code>Service Discovery</code>にはいろいろな仕組みがあります。まだ分類が難しいのですが、勉強のためにまとめてみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="分散ノードへClient-Side-Load-Balancing"><a href="#分散ノードへClient-Side-Load-Balancing" class="headerlink" title="分散ノードへClient Side Load Balancing"></a>分散ノードへClient Side Load Balancing</h3><p><a href="http://www.slideshare.net/bobtfish/docker-confjune2014" target="_blank" rel="noopener">Building a smarter application stack - service discovery and wiring for Docker</a>に、SmartStackを使った<code>Client Side Load Balancing</code>の仕組みがわかりやすく説明されています。<br>以前使ったRiakやCouchbaseクラスタでもクライアント側でトポロジ情報を持っていました。</p>
+<h3 id="分散ノードへClient-Side-Load-Balancing"><a href="#分散ノードへClient-Side-Load-Balancing" class="headerlink" title="分散ノードへClient Side Load Balancing"></a>分散ノードへClient Side Load Balancing</h3><p><a target="_blank" rel="noopener" href="http://www.slideshare.net/bobtfish/docker-confjune2014">Building a smarter application stack - service discovery and wiring for Docker</a>に、SmartStackを使った<code>Client Side Load Balancing</code>の仕組みがわかりやすく説明されています。<br>以前使ったRiakやCouchbaseクラスタでもクライアント側でトポロジ情報を持っていました。</p>
 <ul>
-<li><a href="https://github.com/mesosphere/marathon" target="_blank" rel="noopener">Marathon</a></li>
-<li><a href="https://github.com/mailgun/vulcand" target="_blank" rel="noopener">Vulcand</a></li>
-<li><a href="http://nerds.airbnb.com/smartstack-service-discovery-cloud/" target="_blank" rel="noopener">SmartStack</a></li>
-<li><a href="https://github.com/Netflix/eureka" target="_blank" rel="noopener">Eureka</a></li>
-<li><a href="https://github.com/bitly/nsq" target="_blank" rel="noopener">NSQ</a></li>
-<li><a href="https://github.com/Wizcorp/frontrunner" target="_blank" rel="noopener">Frontrunner</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mesosphere/marathon">Marathon</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mailgun/vulcand">Vulcand</a></li>
+<li><a target="_blank" rel="noopener" href="http://nerds.airbnb.com/smartstack-service-discovery-cloud/">SmartStack</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/eureka">Eureka</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/bitly/nsq">NSQ</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Wizcorp/frontrunner">Frontrunner</a></li>
 </ul>
 <h3 id="Docker-PaaSのRouter"><a href="#Docker-PaaSのRouter" class="headerlink" title="Docker PaaSのRouter"></a>Docker PaaSのRouter</h3><p>オープンソースのPaaSではリバースプロキシを使って動的ルーティングを用意しています。<br>この前のtsuruは、HipacheとローカルのBINDで<code>HTTP Routing</code>の仕組みを作りました。</p>
 <ul>
-<li><a href="https://github.com/gilliam/router/tree/master/xrouter" target="_blank" rel="noopener">gilliam/xrouter</a></li>
-<li><a href="https://github.com/tsuru/tsuru/blob/master/router/router.go" target="_blank" rel="noopener">tsuru/router</a></li>
-<li><a href="https://github.com/flynn/strowger" target="_blank" rel="noopener">flynn/strowger</a></li>
-<li><a href="https://registry.hub.docker.com/u/deis/router/" target="_blank" rel="noopener">deis/router</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/gilliam/router/tree/master/xrouter">gilliam/xrouter</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/tsuru/tsuru/blob/master/router/router.go">tsuru/router</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/flynn/strowger">flynn/strowger</a></li>
+<li><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/deis/router/">deis/router</a></li>
 </ul>
-<p><a href="http://blog.elsdoerfer.name/2014/01/27/looking-for-a-12factor-app-reverse-proxy/" target="_blank" rel="noopener">Looking for a 12factor app reverse proxy</a>を読むと、SSLと認証の仕組みを持っているかどうかが気になります。</p>
+<p><a target="_blank" rel="noopener" href="http://blog.elsdoerfer.name/2014/01/27/looking-for-a-12factor-app-reverse-proxy/">Looking for a 12factor app reverse proxy</a>を読むと、SSLと認証の仕組みを持っているかどうかが気になります。</p>
 <h3 id="設定情報の分散データベースと通知"><a href="#設定情報の分散データベースと通知" class="headerlink" title="設定情報の分散データベースと通知"></a>設定情報の分散データベースと通知</h3><p><code>Zero Downtime</code>で動的に設定情報を変更して反映させるために、バックエンドに分散データベースが必要になります。</p>
 <p>特にConsulはDNSと統合できるので、<code>DNS Forwarding</code>を使うローカルのBINDやdnsmasqを建てると、<br>アプリ側に変更を加えずDNSのインタフェースで<code>Service Disovery</code>ができます。</p>
 <ul>
-<li><a href="https://github.com/hashicorp/consul" target="_blank" rel="noopener">Consul</a></li>
-<li><a href="https://github.com/coreos/etcd" target="_blank" rel="noopener">etcd</a></li>
-<li><a href="https://github.com/antirez/redis" target="_blank" rel="noopener">Redis</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/hashicorp/consul">Consul</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/coreos/etcd">etcd</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/antirez/redis">Redis</a></li>
 </ul>
 <p><code>Eventual consistency</code>の実装としてみると、あらためてDNSは実績のある分散データベースです。</p>
 <ul>
-<li><a href="https://github.com/crosbymichael/skydock" target="_blank" rel="noopener">SkyDNSとSkydock</a></li>
-<li><a href="http://www.publickey1.jp/blog/14/110jaws_day_2014_1.html" target="_blank" rel="noopener">クックパッドのPowerDNS</a></li>
-<li><a href="http://labs.spotify.com/tag/dns/" target="_blank" rel="noopener">SpotifyのBIND</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/crosbymichael/skydock">SkyDNSとSkydock</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.publickey1.jp/blog/14/110jaws_day_2014_1.html">クックパッドのPowerDNS</a></li>
+<li><a target="_blank" rel="noopener" href="http://labs.spotify.com/tag/dns/">SpotifyのBIND</a></li>
 </ul>
 <h3 id="カジュアルな動的HTTP-Routing"><a href="#カジュアルな動的HTTP-Routing" class="headerlink" title="カジュアルな動的HTTP Routing"></a>カジュアルな動的HTTP Routing</h3><p>もうちょっとカジュアルに、リバースプロキシとして動的な<code>HTTP Routing</code>だけを使いたい場合、<br>HAProxy, Nginx, Hipacheと、動的にバックエンドの設定情報を変更、通知できる仕組みを組み合わせます。</p>
 <ul>
-<li><a href="https://github.com/dotcloud/hipache" target="_blank" rel="noopener">Hipache + Redis</a></li>
-<li><a href="https://github.com/hashicorp/serf/tree/master/demo/web-load-balancer" target="_blank" rel="noopener">HAProxy + Serf</a></li>
-<li><a href="http://openresty.org/#DynamicRoutingBasedOnRedis" target="_blank" rel="noopener">Nginx(OpenResty) + Redis</a></li>
-<li><a href="http://brianketelsen.com/2014/02/25/" target="_blank" rel="noopener">Nginx + confd</a></li>
-<li><a href="https://registry.hub.docker.com/u/jwilder/nginx-proxy/" target="_blank" rel="noopener">Nginx + Docker Remote API</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/dotcloud/hipache">Hipache + Redis</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/hashicorp/serf/tree/master/demo/web-load-balancer">HAProxy + Serf</a></li>
+<li><a target="_blank" rel="noopener" href="http://openresty.org/#DynamicRoutingBasedOnRedis">Nginx(OpenResty) + Redis</a></li>
+<li><a target="_blank" rel="noopener" href="http://brianketelsen.com/2014/02/25/">Nginx + confd</a></li>
+<li><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/jwilder/nginx-proxy/">Nginx + Docker Remote API</a></li>
 </ul>
-<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>今回はシングルノードなので、ミニマルなNginx + <code>Docker Remote API</code>を使ってみようと思います。<br>APIの<a href="http://docs.docker.com/reference/api/docker_remote_api_v1.10/#inspect-a-container" target="_blank" rel="noopener">inspect</a>と、<a href="http://docs.docker.com/reference/api/docker_remote_api_v1.10/#monitor-dockers-events" target="_blank" rel="noopener">monitor events</a>機能を使い、動的にNginxのバーチャルホストの設定ファイルを作成してリロードします。</p>
+<h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>今回はシングルノードなので、ミニマルなNginx + <code>Docker Remote API</code>を使ってみようと思います。<br>APIの<a target="_blank" rel="noopener" href="http://docs.docker.com/reference/api/docker_remote_api_v1.10/#inspect-a-container">inspect</a>と、<a target="_blank" rel="noopener" href="http://docs.docker.com/reference/api/docker_remote_api_v1.10/#monitor-dockers-events">monitor events</a>機能を使い、動的にNginxのバーチャルホストの設定ファイルを作成してリロードします。</p>
 <p>それにしてもDockerエコシステムはいろいろなアプローチがあっておもしろいです。</p>
 
     </div>
@@ -331,7 +298,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -382,7 +348,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#分散ノードへClient-Side-Load-Balancing"><span class="nav-number">1.</span> <span class="nav-text">分散ノードへClient Side Load Balancing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-PaaSのRouter"><span class="nav-number">2.</span> <span class="nav-text">Docker PaaSのRouter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定情報の分散データベースと通知"><span class="nav-number">3.</span> <span class="nav-text">設定情報の分散データベースと通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#カジュアルな動的HTTP-Routing"><span class="nav-number">4.</span> <span class="nav-text">カジュアルな動的HTTP Routing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%95%A3%E3%83%8E%E3%83%BC%E3%83%89%E3%81%B8Client-Side-Load-Balancing"><span class="nav-number">1.</span> <span class="nav-text">分散ノードへClient Side Load Balancing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-PaaS%E3%81%AERouter"><span class="nav-number">2.</span> <span class="nav-text">Docker PaaSのRouter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E6%83%85%E5%A0%B1%E3%81%AE%E5%88%86%E6%95%A3%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%A8%E9%80%9A%E7%9F%A5"><span class="nav-number">3.</span> <span class="nav-text">設定情報の分散データベースと通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%AB%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AA%E5%8B%95%E7%9A%84HTTP-Routing"><span class="nav-number">4.</span> <span class="nav-text">カジュアルな動的HTTP Routing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">5.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -414,10 +380,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -442,9 +411,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -484,13 +453,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

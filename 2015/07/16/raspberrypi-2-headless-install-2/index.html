@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,18 +13,18 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Raspberry Piにはじめて興味を持った方でも、インターネットへの接続、Lチカと環境センサからデータを取得できるようになるまでの手順をまとめてみようと思います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="myThingsをはじめよう - Part1: はじめてのRaspberry Pi 2セットアップ">
 <meta property="og:url" content="https://masato.github.io/2015/07/16/raspberrypi-2-headless-install-2/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Raspberry Piにはじめて興味を持った方でも、インターネットへの接続、Lチカと環境センサからデータを取得できるようになるまでの手順をまとめてみようと思います。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/16/raspberrypi-2-headless-install-2/raspi-ftdi2.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://masato.github.io/2015/07/16/raspberrypi-2-headless-install-2/raspi-bme280.png">
 <meta property="og:image" content="https://masato.github.io/2015/07/16/raspberrypi-2-headless-install-2/raspi-bme280-led.png">
 <meta property="article:published_time" content="2015-07-16T02:36:31.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.838Z">
+<meta property="article:modified_time" content="2015-07-16T02:36:31.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Lチカ">
 <meta property="article:tag" content="I2C">
@@ -57,7 +57,7 @@
   };
 </script>
 
-  <title>myThingsをはじめよう - Part1: はじめてのRaspberry Pi 2セットアップ | masato's blog</title>
+  <title>myThingsをはじめよう - Part1: はじめてのRaspberry Pi 2セットアップ | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -97,7 +97,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -118,14 +118,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -134,51 +133,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -195,11 +170,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -212,7 +186,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -222,22 +196,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 16 2015 11:36:31" itemprop="dateCreated datePublished" datetime="2015-07-16T11:36:31+09:00">Jul 16 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -258,35 +225,35 @@
 
       
         <p>Raspberry Piにはじめて興味を持った方でも、インターネットへの接続、Lチカと環境センサからデータを取得できるようになるまでの手順をまとめてみようと思います。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="myThingsをはじめようキット"><a href="#myThingsをはじめようキット" class="headerlink" title="myThingsをはじめようキット"></a>myThingsをはじめようキット</h2><p>今回はスイッチサイエンスから発売された<a href="https://www.switch-science.com/catalog/2366/" target="_blank" rel="noopener">myThingsをはじめようキット</a>を使います。このスターターキットを使うと<a href="http://www.idcf.jp/cloud/iot/" target="_blank" rel="noopener">IDCFクラウド</a>を経由して、自作したIoT機器を<a href="http://mythings.yahoo.co.jp/" target="_blank" rel="noopener">myThings</a>と連係できるようになります。はじめてのRaspberry Piの入門キットとして必要な部品が集まっています。</p>
-<h3 id="用意するもの"><a href="#用意するもの" class="headerlink" title="用意するもの"></a>用意するもの</h3><p>Raspberry Piなどをすでに持っている場合は、個別に必要な部品を用意します。Lチカだけだと物足りないので、気温、湿度、気圧が計測できる環境センサの<a href="https://www.switch-science.com/catalog/2236/" target="_blank" rel="noopener">BME280</a>もあわせて使います。</p>
+<h2 id="myThingsをはじめようキット"><a href="#myThingsをはじめようキット" class="headerlink" title="myThingsをはじめようキット"></a>myThingsをはじめようキット</h2><p>今回はスイッチサイエンスから発売された<a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2366/">myThingsをはじめようキット</a>を使います。このスターターキットを使うと<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/iot/">IDCFクラウド</a>を経由して、自作したIoT機器を<a target="_blank" rel="noopener" href="http://mythings.yahoo.co.jp/">myThings</a>と連係できるようになります。はじめてのRaspberry Piの入門キットとして必要な部品が集まっています。</p>
+<h3 id="用意するもの"><a href="#用意するもの" class="headerlink" title="用意するもの"></a>用意するもの</h3><p>Raspberry Piなどをすでに持っている場合は、個別に必要な部品を用意します。Lチカだけだと物足りないので、気温、湿度、気圧が計測できる環境センサの<a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2236/">BME280</a>もあわせて使います。</p>
 <ul>
-<li><a href="https://www.switch-science.com/catalog/2127/" target="_blank" rel="noopener">Raspberry Pi 2 Model B（RSコンポーネンツ製）</a></li>
-<li><a href="https://www.switch-science.com/catalog/2252/" target="_blank" rel="noopener">Raspberry Pi用microSD 8GB（Raspbian OS 書き込み済）</a></li>
-<li><a href="https://www.switch-science.com/catalog/1032/" target="_blank" rel="noopener">FTDI USBシリアル変換アダプター(5V/3.3V切り替え機能付き)</a></li>
-<li><a href="https://www.switch-science.com/catalog/2115/" target="_blank" rel="noopener">PLANEX GW-USNANO2A 無線LAN USBアダプタ</a></li>
-<li><a href="https://www.switch-science.com/catalog/2250/" target="_blank" rel="noopener">ラズパイで作ろう！ゼロから学ぶロボット製作教室電子部品セット その１（連載第2回向け）</a></li>
-<li><a href="https://www.switch-science.com/catalog/314/" target="_blank" rel="noopener">固いジャンパワイヤ　(ブレッドボード用)</a></li>
-<li><a href="https://www.switch-science.com/catalog/2236/" target="_blank" rel="noopener">BME280搭載　温湿度・気圧センサモジュール</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2127/">Raspberry Pi 2 Model B（RSコンポーネンツ製）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2252/">Raspberry Pi用microSD 8GB（Raspbian OS 書き込み済）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/1032/">FTDI USBシリアル変換アダプター(5V/3.3V切り替え機能付き)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2115/">PLANEX GW-USNANO2A 無線LAN USBアダプタ</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2250/">ラズパイで作ろう！ゼロから学ぶロボット製作教室電子部品セット その１（連載第2回向け）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/314/">固いジャンパワイヤ　(ブレッドボード用)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2236/">BME280搭載　温湿度・気圧センサモジュール</a></li>
 </ul>
-<h2 id="USBシリアル変換アダプター"><a href="#USBシリアル変換アダプター" class="headerlink" title="USBシリアル変換アダプター"></a>USBシリアル変換アダプター</h2><p><a href="https://www.switch-science.com/catalog/1032/" target="_blank" rel="noopener">FTDI USBシリアル変換アダプター(5V/3.3V切り替え機能付き)</a>を使ってOSXとRaspberry Pi 2を接続します。<a href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable?view=all" target="_blank" rel="noopener">Software Installation (Mac)</a>を参考にしてGPIOピンにつなぎます。電圧切り換えジャンパは3.3V側にしてください。電源はUSB ACアダプタから供給するのでこのUSBシリアル変換アダプタから電源供給はしないでください。</p>
+<h2 id="USBシリアル変換アダプター"><a href="#USBシリアル変換アダプター" class="headerlink" title="USBシリアル変換アダプター"></a>USBシリアル変換アダプター</h2><p><a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/1032/">FTDI USBシリアル変換アダプター(5V/3.3V切り替え機能付き)</a>を使ってOSXとRaspberry Pi 2を接続します。<a target="_blank" rel="noopener" href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable?view=all">Software Installation (Mac)</a>を参考にしてGPIOピンにつなぎます。電圧切り換えジャンパは3.3V側にしてください。電源はUSB ACアダプタから供給するのでこのUSBシリアル変換アダプタから電源供給はしないでください。</p>
 <ul>
 <li>GND 黒 (USB-TTL)  -&gt;  GND P6  (Raspberry Pi)</li>
 <li>RXD 黄色 (USB-TTL)  -&gt;  TXD GPIO14 P8  (Raspberry Pi)</li>
 <li>TXD 緑 (USB-TTL)  -&gt;  RXD GPIO15 P10 (Raspberry Pi)</li>
 </ul>
 <p><img src="/2015/07/16/raspberrypi-2-headless-install-2/raspi-ftdi2.png" alt="raspi-ftdi2.png"></p>
-<p>FTDIのFT232RL用のドライバは<a href="http://www.ftdichip.com/Drivers/VCP.htm" target="_blank" rel="noopener">VCP Drivers</a>からダウンロードしてインストールします。今回のホストマシンはOSX Yosemite 10.10.4です。<code>Mac OS X 10.9 and above</code>の<a href="http://www.ftdichip.com/Drivers/VCP/MacOSX/FTDIUSBSerialDriver_v2_3.dmg" target="_blank" rel="noopener">FTDIUSBSerialDriver_v2_3.dmg</a>をインストールします。<code>Mac OS X 10.3 to 10.8</code>の場合は、<a href="http://www.ftdichip.com/Drivers/VCP/MacOSX/FTDIUSBSerialDriver_v2_2_18.dmg" target="_blank" rel="noopener">FTDIUSBSerialDriver_v2_2_18.dmg</a>を使います。</p>
+<p>FTDIのFT232RL用のドライバは<a target="_blank" rel="noopener" href="http://www.ftdichip.com/Drivers/VCP.htm">VCP Drivers</a>からダウンロードしてインストールします。今回のホストマシンはOSX Yosemite 10.10.4です。<code>Mac OS X 10.9 and above</code>の<a target="_blank" rel="noopener" href="http://www.ftdichip.com/Drivers/VCP/MacOSX/FTDIUSBSerialDriver_v2_3.dmg">FTDIUSBSerialDriver_v2_3.dmg</a>をインストールします。<code>Mac OS X 10.3 to 10.8</code>の場合は、<a target="_blank" rel="noopener" href="http://www.ftdichip.com/Drivers/VCP/MacOSX/FTDIUSBSerialDriver_v2_2_18.dmg">FTDIUSBSerialDriver_v2_2_18.dmg</a>を使います。</p>
 <p>OSXからScreenを使ってターミナル接続します。<code>Axxxx</code>の箇所は環境によって異なります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ screen /dev/tty.usbserial-Axxxx 115200</span><br></pre></td></tr></table></figure>
 
-<h2 id="無線LAN-USBアダプタ"><a href="#無線LAN-USBアダプタ" class="headerlink" title="無線LAN USBアダプタ"></a>無線LAN USBアダプタ</h2><p>無線LAN USBアダプタは<a href="https://www.switch-science.com/catalog/2115/" target="_blank" rel="noopener">PLANEX GW-USNANO2A</a>を使います。wpa_passphraseコマンドから無線LANの設定を入れます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">'wpa_passphrase &#123;ssid&#125; &#123;passphrase&#125; &gt;&gt; /etc/wpa_supplicant/wpa_supplicant.conf'</span></span><br></pre></td></tr></table></figure>
+<h2 id="無線LAN-USBアダプタ"><a href="#無線LAN-USBアダプタ" class="headerlink" title="無線LAN USBアダプタ"></a>無線LAN USBアダプタ</h2><p>無線LAN USBアダプタは<a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2115/">PLANEX GW-USNANO2A</a>を使います。wpa_passphraseコマンドから無線LANの設定を入れます。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo sh -c <span class="string">&#x27;wpa_passphrase &#123;ssid&#125; &#123;passphrase&#125; &gt;&gt; /etc/wpa_supplicant/wpa_supplicant.conf&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <p>今回の無線LAN環境はSSIDステルスモードなので<code>/etc/wpa_supplicant/wpa_supplicant.conf</code>を編集して<code>scan_ssid=1</code>を追加します。また複数のネットワーク設定を記述する場合は、<code>priority</code>を追加します。デフォルトは0で、値が大きい方が優先されます。</p>
-<figure class="highlight bash"><figcaption><span>/etc/wpa_supplicant/wpa_supplicant.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line">network=&#123;</span><br><span class="line">        priority=0</span><br><span class="line">        scan_ssid=1</span><br><span class="line">        ssid=<span class="string">"xxx"</span></span><br><span class="line">        proto=WPA2</span><br><span class="line">        key_mgmt=WPA-PSK</span><br><span class="line">        <span class="comment">#psk="xxx"</span></span><br><span class="line">        psk=xxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/wpa_supplicant/wpa_supplicant.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line">network=&#123;</span><br><span class="line">        priority=0</span><br><span class="line">        scan_ssid=1</span><br><span class="line">        ssid=<span class="string">&quot;xxx&quot;</span></span><br><span class="line">        proto=WPA2</span><br><span class="line">        key_mgmt=WPA-PSK</span><br><span class="line">        <span class="comment">#psk=&quot;xxx&quot;</span></span><br><span class="line">        psk=xxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>/etc/network/interfaces</code>を編集します。今回はIPアドレスはDHCPから取得するため、<code>iface wlan0 inet manual</code>を<code>iface wlan0 inet dhcp</code>また<code>wpa-conf</code>になっていることを確認します。今回は<code>wlan1</code>は使いませんがこちらもdhcpに変更しておきます。</p>
 <figure class="highlight bash"><figcaption><span>/etc/network/interfaces</span></figcaption><table><tr><td class="code"><pre><span class="line">auto lo</span><br><span class="line">iface lo inet loopback</span><br><span class="line"></span><br><span class="line">auto eth0</span><br><span class="line">allow-hotplug eth0</span><br><span class="line">iface eth0 inet manual</span><br><span class="line"></span><br><span class="line">auto wlan0</span><br><span class="line">allow-hotplug wlan0</span><br><span class="line"><span class="comment">#iface wlan0 inet manual</span></span><br><span class="line">iface wlan0 inet dhcp</span><br><span class="line">wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf</span><br><span class="line"></span><br><span class="line">auto wlan1</span><br><span class="line">allow-hotplug wlan1</span><br><span class="line"><span class="comment">#iface wlan1 inet manual</span></span><br><span class="line">iface wlan1 inet dhcp</span><br><span class="line">wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf</span><br></pre></td></tr></table></figure>
@@ -312,7 +279,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">rootfs          7.3G  2.4G  4.6G  35% /</span><br><span class="line">/dev/root       7.3G  2.4G  4.6G  35% /</span><br><span class="line">devtmpfs        460M     0  460M   0% /dev</span><br><span class="line">tmpfs            93M  240K   93M   1% /run</span><br><span class="line">tmpfs           5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs           186M     0  186M   0% /run/shm</span><br><span class="line">/dev/mmcblk0p1   56M   19M   37M  34% /boot</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="ファームウェアの更新"><a href="#ファームウェアの更新" class="headerlink" title="ファームウェアの更新"></a>ファームウェアの更新</h2><h3 id="初期状態の確認"><a href="#初期状態の確認" class="headerlink" title="初期状態の確認"></a>初期状態の確認</h3><p>今回利用している<a href="https://www.switch-science.com/catalog/2252/" target="_blank" rel="noopener">Raspberry Pi用microSD 8GB（Raspbian OS 書き込み済）</a>のバージョンを確認します。</p>
+<h2 id="ファームウェアの更新"><a href="#ファームウェアの更新" class="headerlink" title="ファームウェアの更新"></a>ファームウェアの更新</h2><h3 id="初期状態の確認"><a href="#初期状態の確認" class="headerlink" title="初期状態の確認"></a>初期状態の確認</h3><p>今回利用している<a target="_blank" rel="noopener" href="https://www.switch-science.com/catalog/2252/">Raspberry Pi用microSD 8GB（Raspbian OS 書き込み済）</a>のバージョンを確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ uname -a</span><br><span class="line">Linux raspberrypi 3.18.11-v7+ <span class="comment">#781 SMP PREEMPT Tue Apr 21 18:07:59 BST 2015 armv7l GNU/Linux</span></span><br><span class="line">$ cat /proc/version</span><br><span class="line">Linux version 3.18.11-v7+ (dc4@dc4-XPS13-9333) (gcc version 4.8.3 20140303 (prerelease) (crosstool-NG linaro-1.13.1+bzr2650 - Linaro GCC 2014.03) ) <span class="comment">#781 SMP PREEMPT Tue Apr 21 18:07:59 BST 2015</span></span><br></pre></td></tr></table></figure>
 
 <p>Raspbian OSは<code>3.18.11-v7+</code>が入っていました。つぎにpiユーザーのグループを確認すると、i2cグループに最初から入っています。piユーザーはsudoなしでi2cデバイスを操作できるようになっています。</p>
@@ -345,13 +312,13 @@
 <h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>Raspberry Pi 2でセンサーデータを取得する場合はPythonを使うことが多いです。Pythonの開発環境をインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install python-dev</span><br><span class="line">$ python -V</span><br><span class="line">Python 2.7.3</span><br><span class="line">$ curl https://bootstrap.pypa.io/get-pip.py -o - | sudo python</span><br><span class="line">$ pip -V</span><br><span class="line">pip 7.1.0 from /usr/<span class="built_in">local</span>/lib/python2.7/dist-packages (python 2.7)</span><br></pre></td></tr></table></figure>
 
-<h2 id="Lチカ"><a href="#Lチカ" class="headerlink" title="Lチカ"></a>Lチカ</h2><p><a href="http://www.element14.com/community/docs/DOC-73950/l/raspberry-pi-2-model-b-gpio-40-pin-block-pinout" target="_blank" rel="noopener">Raspberry Pi 2 Model B GPIO 40 Pin Block Pinout</a>を参考にブレッドボード配線をします。LEDのアノードは<code>GPIO 17</code>につなぎます。</p>
+<h2 id="Lチカ"><a href="#Lチカ" class="headerlink" title="Lチカ"></a>Lチカ</h2><p><a target="_blank" rel="noopener" href="http://www.element14.com/community/docs/DOC-73950/l/raspberry-pi-2-model-b-gpio-40-pin-block-pinout">Raspberry Pi 2 Model B GPIO 40 Pin Block Pinout</a>を参考にブレッドボード配線をします。LEDのアノードは<code>GPIO 17</code>につなぎます。</p>
 <ul>
 <li>アノード (LED)                       -&gt; GPIO17 P11 (Raspberry Pi)</li>
 <li>カソード (LED) -&gt; 抵抗器1K(茶黒赤金) -&gt; GND P14    (Raspberry Pi)</li>
 </ul>
 <p><img src="/2015/07/16/raspberrypi-2-headless-install-2/raspi-led2.png" alt="raspi-led2.png"></p>
-<p><a href="https://pypi.python.org/pypi/RPi.GPIO" target="_blank" rel="noopener">RPi.GPIO</a>はRaspberry Pi 2にインストール済になっています。</p>
+<p><a target="_blank" rel="noopener" href="https://pypi.python.org/pypi/RPi.GPIO">RPi.GPIO</a>はRaspberry Pi 2にインストール済になっています。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ apt-cache show python-rpi.gpio</span><br><span class="line">Package: python-rpi.gpio</span><br><span class="line">Source: rpi.gpio</span><br><span class="line">Version: 0.5.11-1</span><br><span class="line">Architecture: armhf</span><br><span class="line">Maintainer: Ben Croston &lt;ben@croston.org&gt;</span><br><span class="line">Installed-Size: 174</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>LチカをするPythonのプログラムを書きます。<code>GPIO17 P11</code>を使います。PINに11を指定します。</p>
@@ -361,7 +328,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ chmod +x led-blink.py</span><br><span class="line">$ sudo ./led-blink.py</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="I2Cをつかう"><a href="#I2Cをつかう" class="headerlink" title="I2Cをつかう"></a>I2Cをつかう</h2><p><a href="http://ja.wikipedia.org/wiki/I2C" target="_blank" rel="noopener">I2C</a>のバスを有効にします。最初に必要なパッケージをインストールします。</p>
+<h2 id="I2Cをつかう"><a href="#I2Cをつかう" class="headerlink" title="I2Cをつかう"></a>I2Cをつかう</h2><p><a target="_blank" rel="noopener" href="http://ja.wikipedia.org/wiki/I2C">I2C</a>のバスを有効にします。最初に必要なパッケージをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install python-smbus i2c-tools</span><br></pre></td></tr></table></figure>
 
 <p>raspi-configを実行してI2Cサポートを有効にします。</p>
@@ -386,7 +353,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsmod</span><br><span class="line">Module                  Size  Used by</span><br><span class="line">i2c_dev                 6047  0</span><br><span class="line">snd_bcm2835            19761  0</span><br><span class="line">snd_pcm                74433  1 snd_bcm2835</span><br><span class="line">snd_seq                53553  0</span><br><span class="line">snd_seq_device          6455  1 snd_seq</span><br><span class="line">snd_timer              18205  2 snd_pcm,snd_seq</span><br><span class="line">snd                    51646  5 snd_bcm2835,snd_timer,snd_pcm,snd_seq,snd_seq_device</span><br><span class="line">8192cu                528381  0</span><br><span class="line">i2c_bcm2708             5006  0</span><br><span class="line">uio_pdrv_genirq         2958  0</span><br><span class="line">uio                     8219  1 uio_pdrv_genirq</span><br></pre></td></tr></table></figure>
 
 <h3 id="BME280"><a href="#BME280" class="headerlink" title="BME280"></a>BME280</h3><p>Raspberry Pi 2にBME280を配線します。</p>
-<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">SDI      <span class="function"><span class="params">(BME280)</span>  -&gt;</span> GPIO2 P03 (Raspberry Pi SDA1)</span><br><span class="line">SCK      <span class="function"><span class="params">(BME280)</span>  -&gt;</span> GPIO3 P05 (Raspberry Pi SCL1)</span><br><span class="line">GND,SDO  <span class="function"><span class="params">(BME280)</span>  -&gt;</span> GND  P09 (Raspberry Pi)</span><br><span class="line">Vio,CSB  <span class="function"><span class="params">(BME280)</span>  -&gt;</span> <span class="number">3.3v</span> P01 (Raspberry Pi)</span><br></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">SDI</span>      (BME<span class="number">280</span>)  -&gt; GPIO<span class="number">2</span> P<span class="number">03</span> (Raspberry Pi SDA<span class="number">1</span>)</span><br><span class="line"><span class="attribute">SCK</span>      (BME<span class="number">280</span>)  -&gt; GPIO<span class="number">3</span> P<span class="number">05</span> (Raspberry Pi SCL<span class="number">1</span>)</span><br><span class="line"><span class="attribute">GND</span>,SDO  (BME<span class="number">280</span>)  -&gt; GND  P<span class="number">09</span> (Raspberry Pi)</span><br><span class="line"><span class="attribute">Vio</span>,CSB  (BME<span class="number">280</span>)  -&gt; <span class="number">3</span>.<span class="number">3</span>v P<span class="number">01</span> (Raspberry Pi)</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2015/07/16/raspberrypi-2-headless-install-2/raspi-bme280.png" alt="raspi-bme280.png"></p>
 <p>i2cdetectコマンドで正しく配線できたか確認します。0x76アドレスを使っています。</p>
@@ -440,7 +407,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -491,7 +457,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#myThingsをはじめようキット"><span class="nav-number">1.</span> <span class="nav-text">myThingsをはじめようキット</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用意するもの"><span class="nav-number">1.1.</span> <span class="nav-text">用意するもの</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USBシリアル変換アダプター"><span class="nav-number">2.</span> <span class="nav-text">USBシリアル変換アダプター</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#無線LAN-USBアダプタ"><span class="nav-number">3.</span> <span class="nav-text">無線LAN USBアダプタ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raspi-configの初期設定"><span class="nav-number">4.</span> <span class="nav-text">raspi-configの初期設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ファームウェアの更新"><span class="nav-number">5.</span> <span class="nav-text">ファームウェアの更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初期状態の確認"><span class="nav-number">5.1.</span> <span class="nav-text">初期状態の確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#その他設定"><span class="nav-number">6.</span> <span class="nav-text">その他設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim"><span class="nav-number">6.1.</span> <span class="nav-text">vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#時間合わせ"><span class="nav-number">6.2.</span> <span class="nav-text">時間合わせ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python"><span class="nav-number">7.</span> <span class="nav-text">Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lチカ"><span class="nav-number">8.</span> <span class="nav-text">Lチカ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I2Cをつかう"><span class="nav-number">9.</span> <span class="nav-text">I2Cをつかう</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BME280"><span class="nav-number">9.1.</span> <span class="nav-text">BME280</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#まとめ"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#myThings%E3%82%92%E3%81%AF%E3%81%98%E3%82%81%E3%82%88%E3%81%86%E3%82%AD%E3%83%83%E3%83%88"><span class="nav-number">1.</span> <span class="nav-text">myThingsをはじめようキット</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%84%8F%E3%81%99%E3%82%8B%E3%82%82%E3%81%AE"><span class="nav-number">1.1.</span> <span class="nav-text">用意するもの</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USB%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E5%A4%89%E6%8F%9B%E3%82%A2%E3%83%80%E3%83%97%E3%82%BF%E3%83%BC"><span class="nav-number">2.</span> <span class="nav-text">USBシリアル変換アダプター</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%84%A1%E7%B7%9ALAN-USB%E3%82%A2%E3%83%80%E3%83%97%E3%82%BF"><span class="nav-number">3.</span> <span class="nav-text">無線LAN USBアダプタ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raspi-config%E3%81%AE%E5%88%9D%E6%9C%9F%E8%A8%AD%E5%AE%9A"><span class="nav-number">4.</span> <span class="nav-text">raspi-configの初期設定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%95%E3%82%A1%E3%83%BC%E3%83%A0%E3%82%A6%E3%82%A7%E3%82%A2%E3%81%AE%E6%9B%B4%E6%96%B0"><span class="nav-number">5.</span> <span class="nav-text">ファームウェアの更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E6%9C%9F%E7%8A%B6%E6%85%8B%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">5.1.</span> <span class="nav-text">初期状態の確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%9D%E3%81%AE%E4%BB%96%E8%A8%AD%E5%AE%9A"><span class="nav-number">6.</span> <span class="nav-text">その他設定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#vim"><span class="nav-number">6.1.</span> <span class="nav-text">vim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%82%E9%96%93%E5%90%88%E3%82%8F%E3%81%9B"><span class="nav-number">6.2.</span> <span class="nav-text">時間合わせ</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python"><span class="nav-number">7.</span> <span class="nav-text">Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#L%E3%83%81%E3%82%AB"><span class="nav-number">8.</span> <span class="nav-text">Lチカ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I2C%E3%82%92%E3%81%A4%E3%81%8B%E3%81%86"><span class="nav-number">9.</span> <span class="nav-text">I2Cをつかう</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BME280"><span class="nav-number">9.1.</span> <span class="nav-text">BME280</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">10.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -523,10 +489,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -551,9 +520,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -593,13 +562,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

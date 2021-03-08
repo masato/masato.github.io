@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったの">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reagent入門 - Part3: クライアントとサーバーの通信パターン">
 <meta property="og:url" content="https://masato.github.io/2015/06/19/reagent-client-server-connection/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったの">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-06-19T14:41:16.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.878Z">
+<meta property="article:modified_time" content="2015-06-19T14:41:16.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="WebSocket">
 <meta property="article:tag" content="Clojure">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Reagent入門 - Part3: クライアントとサーバーの通信パターン | masato's blog</title>
+  <title>Reagent入門 - Part3: クライアントとサーバーの通信パターン | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 19 2015 23:41:16" itemprop="dateCreated datePublished" datetime="2015-06-19T23:41:16+09:00">Jun 19 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Reagentを使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったのでいくつか設計のパターンを調べました。Keeping Client State Up-To-Date In Reagent / Clojurescript Server push of data from Clojure to ClojureScrip</div>
@@ -241,100 +208,120 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>を使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったのでいくつか設計のパターンを調べました。</p>
+        <p><a target="_blank" rel="noopener" href="https://github.com/reagent-project/reagent">Reagent</a>を使うとクライアント側で独立したSPAは実装できますが、サーバーとのデータ通信や、Reactのstateとpropsを抽象化してくれるratomの状態をサーバーとどうやって同期をするのかが問題です。クライアントだけで完結するアプリなら良いですが、多くのアプリはデータを永続化するためのバックエンドに何らかのデータベースが必要になります。StackOverflowに興味深い議論があったのでいくつか設計のパターンを調べました。</p>
 <ul>
-<li><a href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript" target="_blank" rel="noopener">Keeping Client State Up-To-Date In Reagent / Clojurescript</a></li>
-<li><a href="http://stackoverflow.com/questions/21823002/server-push-of-data-from-clojure-to-clojurescript" target="_blank" rel="noopener">Server push of data from Clojure to ClojureScript</a></li>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript">Keeping Client State Up-To-Date In Reagent / Clojurescript</a></li>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/21823002/server-push-of-data-from-clojure-to-clojurescript">Server push of data from Clojure to ClojureScript</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="データベースの同期"><a href="#データベースの同期" class="headerlink" title="データベースの同期"></a>データベースの同期</h2><p>ClojureScriptには<a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>という<a href="http://www.datomic.com/" target="_blank" rel="noopener">Datomic</a>のクライアント版のようなインメモリのデータベースがあります。クライアント側にもデータベースを持つアーキテクチャには、<a href="https://github.com/couchbase/sync_gateway" target="_blank" rel="noopener">Couchbase Sync Gateway</a>の<a href="https://github.com/couchbase/couchbase-lite-ios" target="_blank" rel="noopener">Couchbase Lite</a>や<a href="https://www.meteor.com/" target="_blank" rel="noopener">Meteor</a>の<a href="https://www.meteor.com/mini-databases" target="_blank" rel="noopener">minimongo</a>があります。後者2つはクライアントのデータベースの状態はにautomagicallyな仕組みでサーバーと同期されますが、DataScriptの場合は同期の仕組みを作る必要がありそうです。</p>
+<h2 id="データベースの同期"><a href="#データベースの同期" class="headerlink" title="データベースの同期"></a>データベースの同期</h2><p>ClojureScriptには<a target="_blank" rel="noopener" href="https://github.com/tonsky/datascript">DataScript</a>という<a target="_blank" rel="noopener" href="http://www.datomic.com/">Datomic</a>のクライアント版のようなインメモリのデータベースがあります。クライアント側にもデータベースを持つアーキテクチャには、<a target="_blank" rel="noopener" href="https://github.com/couchbase/sync_gateway">Couchbase Sync Gateway</a>の<a target="_blank" rel="noopener" href="https://github.com/couchbase/couchbase-lite-ios">Couchbase Lite</a>や<a target="_blank" rel="noopener" href="https://www.meteor.com/">Meteor</a>の<a target="_blank" rel="noopener" href="https://www.meteor.com/mini-databases">minimongo</a>があります。後者2つはクライアントのデータベースの状態はにautomagicallyな仕組みでサーバーと同期されますが、DataScriptの場合は同期の仕組みを作る必要がありそうです。</p>
 <ul>
-<li><a href="http://tonsky.me/blog/datascript-chat/" target="_blank" rel="noopener">Chatting cats use DataScript for fun</a></li>
-<li><a href="http://tonsky.me/blog/acha-acha/" target="_blank" rel="noopener">Another powered-by-DataScript example</a></li>
+<li><a target="_blank" rel="noopener" href="http://tonsky.me/blog/datascript-chat/">Chatting cats use DataScript for fun</a></li>
+<li><a target="_blank" rel="noopener" href="http://tonsky.me/blog/acha-acha/">Another powered-by-DataScript example</a></li>
 </ul>
 <p>とても便利そうなのですが、ちょっと複雑になりそうで手がでません。</p>
-<h2 id="WebSocketとAjax-REST"><a href="#WebSocketとAjax-REST" class="headerlink" title="WebSocketとAjax (REST)"></a>WebSocketとAjax (REST)</h2><p>ちょうど<a href="http://hapijs.com/" target="_blank" rel="noopener">Hapi.js</a>や<a href="http://www.actionherojs.com/" target="_blank" rel="noopener">actionhero.js</a>でREST APIとWebSocketを一つのサーバーで提供する設計を試しています。どちらのプロトコルも用途にあわせて使い分けができるようにしたいです。</p>
+<h2 id="WebSocketとAjax-REST"><a href="#WebSocketとAjax-REST" class="headerlink" title="WebSocketとAjax (REST)"></a>WebSocketとAjax (REST)</h2><p>ちょうど<a target="_blank" rel="noopener" href="http://hapijs.com/">Hapi.js</a>や<a target="_blank" rel="noopener" href="http://www.actionherojs.com/">actionhero.js</a>でREST APIとWebSocketを一つのサーバーで提供する設計を試しています。どちらのプロトコルも用途にあわせて使い分けができるようにしたいです。</p>
 <p>WebSocket、Ajax、core.asyncのすべてに対応するライブラリが増えています。</p>
 <ul>
-<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a></li>
-<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a></li>
-<li><a href="https://github.com/james-henderson/chord" target="_blank" rel="noopener">Chord</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ptaoussanis/sente">Sente</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.http-kit.org/">http-kit</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/james-henderson/chord">Chord</a></li>
 </ul>
-<p><a href="http://www.luminusweb.net/" target="_blank" rel="noopener">Luminus</a>はClojureScriptを使う場合にReagentを<a href="http://www.luminusweb.net/docs/clojurescript.md#reagent" target="_blank" rel="noopener">推奨</a>しています。Reagentからサーバへ<a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a>を使ってAjax通信をします。おそらく多くのSPAの実装パターンがこれに該当すると思います。</p>
+<p><a target="_blank" rel="noopener" href="http://www.luminusweb.net/">Luminus</a>はClojureScriptを使う場合にReagentを<a target="_blank" rel="noopener" href="http://www.luminusweb.net/docs/clojurescript.md#reagent">推奨</a>しています。Reagentからサーバへ<a target="_blank" rel="noopener" href="https://github.com/JulianBirch/cljs-ajax">cljs-ajax</a>を使ってAjax通信をします。おそらく多くのSPAの実装パターンがこれに該当すると思います。</p>
 <ul>
-<li><a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/JulianBirch/cljs-ajax">cljs-ajax</a></li>
 </ul>
 <p>REST APIを提供するライブラリはLiberatorを採用することが多いです。</p>
 <ul>
-<li><a href="http://clojure-liberator.github.io/liberator/" target="_blank" rel="noopener">Liberator</a></li>
+<li><a target="_blank" rel="noopener" href="http://clojure-liberator.github.io/liberator/">Liberator</a></li>
 </ul>
-<h2 id="core-async"><a href="#core-async" class="headerlink" title="core.async"></a>core.async</h2><p>まだ<a href="https://github.com/clojure/core.async" target="_blank" rel="noopener">core.async</a>について理解できていないのですが、ClojurScriptとClojureの間をcore.asyncで通信できるようです。</p>
+<h2 id="core-async"><a href="#core-async" class="headerlink" title="core.async"></a>core.async</h2><p>まだ<a target="_blank" rel="noopener" href="https://github.com/clojure/core.async">core.async</a>について理解できていないのですが、ClojurScriptとClojureの間をcore.asyncで通信できるようです。</p>
 <ul>
-<li><a href="https://github.com/james-henderson/chord" target="_blank" rel="noopener">Chord</a></li>
-<li><a href="https://github.com/ztellman/aleph" target="_blank" rel="noopener">Aleph</a></li>
-<li><a href="https://github.com/lynaghk/jetty7-websockets-async" target="_blank" rel="noopener">jetty7-websockets-async</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/james-henderson/chord">Chord</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ztellman/aleph">Aleph</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/lynaghk/jetty7-websockets-async">jetty7-websockets-async</a></li>
 </ul>
-<h2 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h2><p><a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a>のサーバーサイドは<a href="https://github.com/tailrecursion/castra" target="_blank" rel="noopener">Castra</a>のRPCライブラリを使います。クライアント側から<code>mkremote</code>関数を使ってサーバー側<code>defrpc</code>関数を実行するようです。</p>
-<p><a href="http://hoplon.discoursehosting.net/t/comparing-reagent/393" target="_blank" rel="noopener">Comparing Reagent</a>にReagentとの比較があります。<a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a>はClojur/ClojureScriptを使いやすく統合するために<a href="https://github.com/boot-clj/boot" target="_blank" rel="noopener">Boot</a>を採用してビルドや開発環境が充実しています。</p>
+<h2 id="RPC"><a href="#RPC" class="headerlink" title="RPC"></a>RPC</h2><p><a target="_blank" rel="noopener" href="http://hoplon.io/">Hoplon</a>のサーバーサイドは<a target="_blank" rel="noopener" href="https://github.com/tailrecursion/castra">Castra</a>のRPCライブラリを使います。クライアント側から<code>mkremote</code>関数を使ってサーバー側<code>defrpc</code>関数を実行するようです。</p>
+<p><a target="_blank" rel="noopener" href="http://hoplon.discoursehosting.net/t/comparing-reagent/393">Comparing Reagent</a>にReagentとの比較があります。<a target="_blank" rel="noopener" href="http://hoplon.io/">Hoplon</a>はClojur/ClojureScriptを使いやすく統合するために<a target="_blank" rel="noopener" href="https://github.com/boot-clj/boot">Boot</a>を採用してビルドや開発環境が充実しています。</p>
 <h2 id="フルスタック"><a href="#フルスタック" class="headerlink" title="フルスタック"></a>フルスタック</h2><p>Clojure / ClojureScriptのフルスタックフレームワークを調べてみました。Reagentに対応していない場合もあります。</p>
 <ul>
-<li><p><a href="http://hoplon.io/" target="_blank" rel="noopener">Hoplon</a></p>
+<li><p><a target="_blank" rel="noopener" href="http://hoplon.io/">Hoplon</a></p>
 </li>
-<li><p><a href="http://www.luminusweb.net/" target="_blank" rel="noopener">Luminus</a></p>
+<li><p><a target="_blank" rel="noopener" href="http://www.luminusweb.net/">Luminus</a></p>
 </li>
-<li><p><a href="https://github.com/enterlab/rente" target="_blank" rel="noopener">Rente</a></p>
-<ul>
-<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a>: WebSocket / Ajax</li>
-<li><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>: React</li>
-<li><a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>: CSS</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/enterlab/rente">Rente</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ptaoussanis/sente">Sente</a>: WebSocket / Ajax</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/reagent-project/reagent">Reagent</a>: React</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://getbootstrap.com/">Bootstrap</a>: CSS</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/sveri/closp">closp</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.h2database.com/html/main.html">H2</a>: relational database</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.http-kit.org/">http-kit</a>: async http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/bhauman/lein-figwheel">Figwheel</a> : liver reload</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/reagent-project/reagent">Reagent</a>: React</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/tonsky/datascript">DataScript</a>: client side database</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://getbootstrap.com/">Bootstrap</a>: CSS</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/yogthos/Selmer">Selmer</a>: template engine</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/thegeez/clj-crud">clj-crud</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ring-clojure/ring">Ring</a>: http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/weavejester/compojure">Compojure</a>: routing</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://clojure-liberator.github.io/liberator/">Liberator</a>: request flow</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/cgrand/enlive">Enlive</a>: template</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/levand/quiescent">Quiescent</a>: React</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/JulianBirch/cljs-ajax">cljs-ajax</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/bhauman/lein-figwheel">Figwheel</a> : liver reload</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/tonsky/datascript">DataScript</a>: client side database</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/danielsz/system">system</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.h2database.com/html/main.html">H2</a>: relational database</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.http-kit.org/">http-kit</a>: async http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ztellman/aleph">Aleph</a>: async http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ptaoussanis/sente">Sente</a>: WebSocket / Ajax</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://clojuremongodb.info/">Monger</a>: MongoDB</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.datomic.com/">Datomic</a>: Immutable database</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/plexus/chestnut">Chestnut</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/bhauman/lein-figwheel">Figwheel</a> : liver reload</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/tomjakubowski/weasel">Weasel</a>: REPL</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/omcljs/om">Om</a>: React</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ring-clojure/ring">Ring</a>: http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://www.http-kit.org/">http-kit</a> : async http server</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/lynaghk/jetty7-websockets-async">jetty7-websockets-async</a>: async http server</p>
+</li>
 </ul>
-</li>
-<li><p><a href="https://github.com/sveri/closp" target="_blank" rel="noopener">closp</a></p>
-<ul>
-<li><a href="http://www.h2database.com/html/main.html" target="_blank" rel="noopener">H2</a>: relational database</li>
-<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a>: async http server</li>
-<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
-<li><a href="https://github.com/reagent-project/reagent" target="_blank" rel="noopener">Reagent</a>: React</li>
-<li><a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>: client side database</li>
-<li><a href="http://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>: CSS</li>
-<li><a href="https://github.com/yogthos/Selmer" target="_blank" rel="noopener">Selmer</a>: template engine</li>
-</ul>
-</li>
-<li><p><a href="https://github.com/thegeez/clj-crud" target="_blank" rel="noopener">clj-crud</a></p>
-<ul>
-<li><a href="https://github.com/ring-clojure/ring" target="_blank" rel="noopener">Ring</a>: http server</li>
-<li><a href="https://github.com/weavejester/compojure" target="_blank" rel="noopener">Compojure</a>: routing</li>
-<li><a href="http://clojure-liberator.github.io/liberator/" target="_blank" rel="noopener">Liberator</a>: request flow</li>
-<li><a href="https://github.com/cgrand/enlive" target="_blank" rel="noopener">Enlive</a>: template</li>
-<li><a href="https://github.com/levand/quiescent" target="_blank" rel="noopener">Quiescent</a>: React</li>
-<li><a href="https://github.com/JulianBirch/cljs-ajax" target="_blank" rel="noopener">cljs-ajax</a></li>
-<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
-<li><a href="https://github.com/tonsky/datascript" target="_blank" rel="noopener">DataScript</a>: client side database</li>
-</ul>
-</li>
-<li><p><a href="https://github.com/danielsz/system" target="_blank" rel="noopener">system</a></p>
-<ul>
-<li><a href="http://www.h2database.com/html/main.html" target="_blank" rel="noopener">H2</a>: relational database</li>
-<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a>: async http server</li>
-<li><a href="https://github.com/ztellman/aleph" target="_blank" rel="noopener">Aleph</a>: async http server</li>
-<li><a href="https://github.com/ptaoussanis/sente" target="_blank" rel="noopener">Sente</a>: WebSocket / Ajax</li>
-<li><a href="http://clojuremongodb.info/" target="_blank" rel="noopener">Monger</a>: MongoDB</li>
-<li><a href="http://www.datomic.com/" target="_blank" rel="noopener">Datomic</a>: Immutable database</li>
-</ul>
-</li>
-<li><p><a href="https://github.com/plexus/chestnut" target="_blank" rel="noopener">Chestnut</a></p>
-<ul>
-<li><a href="https://github.com/bhauman/lein-figwheel" target="_blank" rel="noopener">Figwheel</a> : liver reload</li>
-<li><a href="https://github.com/tomjakubowski/weasel" target="_blank" rel="noopener">Weasel</a>: REPL</li>
-<li><a href="https://github.com/omcljs/om" target="_blank" rel="noopener">Om</a>: React</li>
-<li><a href="https://github.com/ring-clojure/ring" target="_blank" rel="noopener">Ring</a>: http server</li>
-<li><a href="http://www.http-kit.org/" target="_blank" rel="noopener">http-kit</a> : async http server</li>
-<li><a href="https://github.com/lynaghk/jetty7-websockets-async" target="_blank" rel="noopener">jetty7-websockets-async</a>: async http server</li>
-</ul>
-</li>
-</ul>
-<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p><a href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript" target="_blank" rel="noopener">Keeping Client State Up-To-Date In Reagent / Clojurescript</a>の議論で気にいったパターンはSPAをデータベースのクライアントの1つとみなすデザインです。</p>
+<h2 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h2><p><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/27159921/keeping-client-state-up-to-date-in-reagent-clojurescript">Keeping Client State Up-To-Date In Reagent / Clojurescript</a>の議論で気にいったパターンはSPAをデータベースのクライアントの1つとみなすデザインです。</p>
 <p>処理に必要なデータはスナップショットとして最初にクライアントに取得します。SPA側でデータを加工したあとにサーバーにsubmitします。SPAが対象のデータをリモートで処理している間の一貫性は保証されますが、処理中に他のクライアントがサーバーのデータ更新をコミットしていればsubmitに失敗して操作をやり直します。</p>
 <p>これは昔からあるアーキテクチャでリッチクライアントと呼ばれていたFlexやGWT、ExtJSなどでよく実装していた手法です。業務系アプリだと意外とうまくいきます。同じレコードを並行して更新させないようにしたり、頻繁にデータを更新しないなど、仕様を工夫するのが現実的なようです。</p>
 
@@ -374,7 +361,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -425,7 +411,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#データベースの同期"><span class="nav-number">1.</span> <span class="nav-text">データベースの同期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocketとAjax-REST"><span class="nav-number">2.</span> <span class="nav-text">WebSocketとAjax (REST)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-async"><span class="nav-number">3.</span> <span class="nav-text">core.async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC"><span class="nav-number">4.</span> <span class="nav-text">RPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#フルスタック"><span class="nav-number">5.</span> <span class="nav-text">フルスタック</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#まとめ"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E5%90%8C%E6%9C%9F"><span class="nav-number">1.</span> <span class="nav-text">データベースの同期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebSocket%E3%81%A8Ajax-REST"><span class="nav-number">2.</span> <span class="nav-text">WebSocketとAjax (REST)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#core-async"><span class="nav-number">3.</span> <span class="nav-text">core.async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RPC"><span class="nav-number">4.</span> <span class="nav-text">RPC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%95%E3%83%AB%E3%82%B9%E3%82%BF%E3%83%83%E3%82%AF"><span class="nav-number">5.</span> <span class="nav-text">フルスタック</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">6.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -457,10 +443,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -485,9 +474,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -527,13 +516,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

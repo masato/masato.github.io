@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回に続いてBuild RESTful API Using Node and Hapiのチュートリアルを読みながらMongoDBを使ったCRUDの実装を勉強していきます。リポジトリはこちらにpushしています。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hapi.jsでHappy Coding - Part2: MongoDBとSwaggerのCRUD">
 <meta property="og:url" content="https://masato.github.io/2015/06/12/hapijs-mongodb/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回に続いてBuild RESTful API Using Node and Hapiのチュートリアルを読みながらMongoDBを使ったCRUDの実装を勉強していきます。リポジトリはこちらにpushしています。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/06/12/hapijs-mongodb/swagger-crud.png">
 <meta property="article:published_time" content="2015-06-12T11:27:01.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.663Z">
+<meta property="article:modified_time" content="2015-06-12T11:27:01.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="Hapijs">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>Hapi.jsでHappy Coding - Part2: MongoDBとSwaggerのCRUD | masato's blog</title>
+  <title>Hapi.jsでHappy Coding - Part2: MongoDBとSwaggerのCRUD | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 12 2015 20:27:01" itemprop="dateCreated datePublished" datetime="2015-06-12T20:27:01+09:00">Jun 12 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回に続いてBuild RESTful API Using Node and Hapiのチュートリアルを読みながらMongoDBを使ったCRUDの実装を勉強していきます。リポジトリはこちらにpushしています。</div>
@@ -245,8 +212,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="/2015/06/11/hapijs-swagger-plugin/">前回</a>に続いて<a href="http://www.tothenew.com/blog/build-restful-api-using-node-and-hapi/" target="_blank" rel="noopener">Build RESTful API Using Node and Hapi</a>のチュートリアルを読みながらMongoDBを使ったCRUDの実装を勉強していきます。リポジトリは<a href="https://github.com/masato/docker-swagger/tree/mongo" target="_blank" rel="noopener">こちら</a>にpushしています。</p>
-<a id="more"></a>
+        <p><a href="/2015/06/11/hapijs-swagger-plugin/">前回</a>に続いて<a target="_blank" rel="noopener" href="http://www.tothenew.com/blog/build-restful-api-using-node-and-hapi/">Build RESTful API Using Node and Hapi</a>のチュートリアルを読みながらMongoDBを使ったCRUDの実装を勉強していきます。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-swagger/tree/mongo">こちら</a>にpushしています。</p>
+<span id="more"></span>
 
 <h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>前回作成したプロジェクトにmodelを追加しました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── app.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── models</span><br><span class="line">│   └── job.js</span><br><span class="line">├── mongo</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
@@ -257,15 +224,15 @@
 <p>カレントディレクトリにrootユーザーが所有する<code>mongo</code>ディレクトリができるので、Dockerの管理外にします。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mongo</span><br></pre></td></tr></table></figure>
 
-<h3 id="Mongooseとjoi"><a href="#Mongooseとjoi" class="headerlink" title="Mongooseとjoi"></a>Mongooseとjoi</h3><p>MongoDBにアクセスするために<a href="http://mongoosejs.com/" target="_blank" rel="noopener">Mongoose</a>を使います。MongoDBはスキーマレスですがMongooseはスキーマを定義します。JSONにスキーマを持たせてある程度きっちりレコードを管理したい場合、フォームのバリデーションライブラリの<a href="https://github.com/hapijs/joi" target="_blank" rel="noopener">joi</a>と併せて使うと煩雑になりがちなコードが宣言型ですっきりします。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Hapi = <span class="built_in">require</span>(<span class="string">'hapi'</span>),</span><br><span class="line">    server = <span class="keyword">new</span> Hapi.Server(),</span><br><span class="line">    Joi = <span class="built_in">require</span>(<span class="string">'joi'</span>),</span><br><span class="line">    mongoose = <span class="built_in">require</span>(<span class="string">'mongoose'</span>);</span><br><span class="line"></span><br><span class="line">mongoose.connect(<span class="string">'mongodb://'</span>+process.env.MONGO_PORT_27017_TCP_ADDR+<span class="string">':'</span></span><br><span class="line">              +process.env.MONGO_PORT_27017_TCP_PORT+<span class="string">'/jobdb'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> JobModel = <span class="built_in">require</span>(<span class="string">'./models/job'</span>);</span><br><span class="line"></span><br><span class="line">server.connection(&#123;<span class="attr">port</span>: <span class="number">3000</span>&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Mongooseとjoi"><a href="#Mongooseとjoi" class="headerlink" title="Mongooseとjoi"></a>Mongooseとjoi</h3><p>MongoDBにアクセスするために<a target="_blank" rel="noopener" href="http://mongoosejs.com/">Mongoose</a>を使います。MongoDBはスキーマレスですがMongooseはスキーマを定義します。JSONにスキーマを持たせてある程度きっちりレコードを管理したい場合、フォームのバリデーションライブラリの<a target="_blank" rel="noopener" href="https://github.com/hapijs/joi">joi</a>と併せて使うと煩雑になりがちなコードが宣言型ですっきりします。</p>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> Hapi = <span class="built_in">require</span>(<span class="string">&#x27;hapi&#x27;</span>),</span><br><span class="line">    server = <span class="keyword">new</span> Hapi.Server(),</span><br><span class="line">    Joi = <span class="built_in">require</span>(<span class="string">&#x27;joi&#x27;</span>),</span><br><span class="line">    mongoose = <span class="built_in">require</span>(<span class="string">&#x27;mongoose&#x27;</span>);</span><br><span class="line"></span><br><span class="line">mongoose.connect(<span class="string">&#x27;mongodb://&#x27;</span>+process.env.MONGO_PORT_27017_TCP_ADDR+<span class="string">&#x27;:&#x27;</span></span><br><span class="line">              +process.env.MONGO_PORT_27017_TCP_PORT+<span class="string">&#x27;/jobdb&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> JobModel = <span class="built_in">require</span>(<span class="string">&#x27;./models/job&#x27;</span>);</span><br><span class="line"></span><br><span class="line">server.connection(&#123;<span class="attr">port</span>: <span class="number">3000</span>&#125;);</span><br></pre></td></tr></table></figure>
 
-<p>以下のようなモデルのスキーマを定義します。Hapi.jsは<a href="https://github.com/rschmukler/agenda" target="_blank" rel="noopener">agenda</a>のフロントに使う予定なのでジョブのモデルを作りました。</p>
-<figure class="highlight js"><figcaption><span>models/job.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> mongoose = <span class="built_in">require</span>(<span class="string">'mongoose'</span>);</span><br><span class="line"><span class="keyword">var</span> Schema = mongoose.Schema;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> JobSchema = <span class="keyword">new</span> Schema(&#123;</span><br><span class="line">    name: <span class="built_in">String</span>,</span><br><span class="line">    query: <span class="built_in">String</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = mongoose.model(<span class="string">'Job'</span>, JobSchema);</span><br></pre></td></tr></table></figure>
+<p>以下のようなモデルのスキーマを定義します。Hapi.jsは<a target="_blank" rel="noopener" href="https://github.com/rschmukler/agenda">agenda</a>のフロントに使う予定なのでジョブのモデルを作りました。</p>
+<figure class="highlight js"><figcaption><span>models/job.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> mongoose = <span class="built_in">require</span>(<span class="string">&#x27;mongoose&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> Schema = mongoose.Schema;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> JobSchema = <span class="keyword">new</span> Schema(&#123;</span><br><span class="line">    name: <span class="built_in">String</span>,</span><br><span class="line">    query: <span class="built_in">String</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = mongoose.model(<span class="string">&#x27;Job&#x27;</span>, JobSchema);</span><br></pre></td></tr></table></figure>
 
-<h2 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h2><p><a href="http://loopback.io/" target="_blank" rel="noopener">LoopBack</a>の場合ジェネレーターのおかげでコードを書かなくてもCRUDの操作が実装できます。今回のHapi.jsのサンプルはスカッフォールディングで十分なくらい単純ですが、Mongooseとjoiを使ったリクエストパラメーターの扱いを理解すればサクサク実装できそうな気がします。</p>
+<h2 id="CRUD"><a href="#CRUD" class="headerlink" title="CRUD"></a>CRUD</h2><p><a target="_blank" rel="noopener" href="http://loopback.io/">LoopBack</a>の場合ジェネレーターのおかげでコードを書かなくてもCRUDの操作が実装できます。今回のHapi.jsのサンプルはスカッフォールディングで十分なくらい単純ですが、Mongooseとjoiを使ったリクエストパラメーターの扱いを理解すればサクサク実装できそうな気がします。</p>
 <h3 id="POST-api-jobs"><a href="#POST-api-jobs" class="headerlink" title="POST /api/jobs"></a>POST /api/jobs</h3><p>POSTメソッドを例にします。<code>tags: [&#39;api&#39;]</code>はSwagger用に必須項目になります。モデル保存後のコールバックは冗長な感じです。<code>pyramid of doom</code>.</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line">server.route(&#123;</span><br><span class="line">    method: <span class="string">'POST'</span>,</span><br><span class="line">    path: <span class="string">'/api/jobs'</span>,</span><br><span class="line">    config: &#123;</span><br><span class="line">        tags: [<span class="string">'api'</span>],</span><br><span class="line">        description: <span class="string">'Save job data'</span>,</span><br><span class="line">        notes: <span class="string">'Save job data'</span>,</span><br><span class="line">        validate: &#123;</span><br><span class="line">            payload: &#123;</span><br><span class="line">                name: Joi.string().required(),</span><br><span class="line">                query: Joi.string().required()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    handler: <span class="function"><span class="keyword">function</span>(<span class="params">request, reply</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> job = <span class="keyword">new</span> JobModel(request.payload);</span><br><span class="line">        job.save(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(error) &#123;</span><br><span class="line">                reply(&#123;</span><br><span class="line">                    statusCode: <span class="number">503</span>,</span><br><span class="line">                    message: error</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                reply(&#123;</span><br><span class="line">                    statusCode: <span class="number">201</span>,</span><br><span class="line">                    message: <span class="string">'Job Saved Successfully'</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line">server.route(&#123;</span><br><span class="line">    method: <span class="string">&#x27;POST&#x27;</span>,</span><br><span class="line">    path: <span class="string">&#x27;/api/jobs&#x27;</span>,</span><br><span class="line">    config: &#123;</span><br><span class="line">        tags: [<span class="string">&#x27;api&#x27;</span>],</span><br><span class="line">        description: <span class="string">&#x27;Save job data&#x27;</span>,</span><br><span class="line">        notes: <span class="string">&#x27;Save job data&#x27;</span>,</span><br><span class="line">        validate: &#123;</span><br><span class="line">            payload: &#123;</span><br><span class="line">                name: Joi.string().required(),</span><br><span class="line">                query: Joi.string().required()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    handler: <span class="function"><span class="keyword">function</span>(<span class="params">request, reply</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> job = <span class="keyword">new</span> JobModel(request.payload);</span><br><span class="line">        job.save(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(error) &#123;</span><br><span class="line">                reply(&#123;</span><br><span class="line">                    statusCode: <span class="number">503</span>,</span><br><span class="line">                    message: error</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                reply(&#123;</span><br><span class="line">                    statusCode: <span class="number">201</span>,</span><br><span class="line">                    message: <span class="string">&#x27;Job Saved Successfully&#x27;</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="Swaggerの起動"><a href="#Swaggerの起動" class="headerlink" title="Swaggerの起動"></a>Swaggerの起動</h2><p>Docker Composeからhapiサービスをupします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up hapi</span><br><span class="line">Recreating dockerhapi_mongo_1...</span><br><span class="line">Recreating dockerhapi_hapi_1...</span><br><span class="line">Attaching to dockerhapi_hapi_1</span><br><span class="line">hapi_1 |</span><br><span class="line">hapi_1 | &gt; docker-hapi@0.0.1 start /app</span><br><span class="line">hapi_1 | &gt; node app.js</span><br><span class="line">hapi_1 |</span><br><span class="line">hapi_1 | Server running at: http://22fb2b92f597:3000</span><br></pre></td></tr></table></figure>
@@ -311,7 +278,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -362,7 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDBサービス"><span class="nav-number">1.1.</span> <span class="nav-text">MongoDBサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mongooseとjoi"><span class="nav-number">1.2.</span> <span class="nav-text">Mongooseとjoi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CRUD"><span class="nav-number">2.</span> <span class="nav-text">CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POST-api-jobs"><span class="nav-number">2.1.</span> <span class="nav-text">POST &#x2F;api&#x2F;jobs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swaggerの起動"><span class="nav-number">3.</span> <span class="nav-text">Swaggerの起動</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MongoDB%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">MongoDBサービス</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mongoose%E3%81%A8joi"><span class="nav-number">1.2.</span> <span class="nav-text">Mongooseとjoi</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CRUD"><span class="nav-number">2.</span> <span class="nav-text">CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POST-api-jobs"><span class="nav-number">2.1.</span> <span class="nav-text">POST &#x2F;api&#x2F;jobs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Swagger%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">3.</span> <span class="nav-text">Swaggerの起動</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -394,10 +360,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -422,9 +391,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -464,13 +433,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

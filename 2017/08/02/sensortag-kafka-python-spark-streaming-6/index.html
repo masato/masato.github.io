@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ようやくタイトルのコードを実行する準備ができました。SensorTagのデータをKafkaに送信してPySpark Streamingのウィンドウ集計をします。JupyterをPythonのインタラクティブな実行環境に使います。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 6: JupyterからPySpark Streamingのウィンドウ集計をする">
 <meta property="og:url" content="https://masato.github.io/2017/08/02/sensortag-kafka-python-spark-streaming-6/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="ようやくタイトルのコードを実行する準備ができました。SensorTagのデータをKafkaに送信してPySpark Streamingのウィンドウ集計をします。JupyterをPythonのインタラクティブな実行環境に使います。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-08-01T23:01:51.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.901Z">
+<meta property="article:modified_time" content="2017-08-01T23:01:51.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Kafka">
 <meta property="article:tag" content="Python">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 6: JupyterからPySpark Streamingのウィンドウ集計をする | masato's blog</title>
+  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 6: JupyterからPySpark Streamingのウィンドウ集計をする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,22 +188,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 2 2017 08:01:51" itemprop="dateCreated datePublished" datetime="2017-08-02T08:01:51+09:00">Aug 2 2017</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -250,23 +217,23 @@
 
       
         <p>　ようやくタイトルのコードを実行する準備ができました。SensorTagのデータをKafkaに送信してPySpark Streamingのウィンドウ集計します。JupyterをPythonのインタラクティブな実行環境に使います。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="準備"><a href="#準備" class="headerlink" title="準備"></a>準備</h2><p>　これまでに用意したPythonスクリプトとKafka、Sparkのクラスタを使います。</p>
 <ul>
-<li><a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">Part 2</a>で書いたRaspberry Pi 3からSensorTagのデータをJSONフォーマットでKafkaに送信するスクリプトと<a href="https://www.confluent.io/product/confluent-open-source/" target="_blank" rel="noopener">Confluent Open Source</a>クラスタ</li>
-<li><a href="https://masato.github.io/2017/08/01/sensortag-kafka-python-spark-streaming-5/">Part 5</a>で構築した<a href="https://spark.apache.org/docs/2.1.1/spark-standalone.html" target="_blank" rel="noopener">Spark Standalone Cluster</a>と<a href="http://jupyter.org/" target="_blank" rel="noopener">Jupyter</a></li>
+<li><a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">Part 2</a>で書いたRaspberry Pi 3からSensorTagのデータをJSONフォーマットでKafkaに送信するスクリプトと<a target="_blank" rel="noopener" href="https://www.confluent.io/product/confluent-open-source/">Confluent Open Source</a>クラスタ</li>
+<li><a href="https://masato.github.io/2017/08/01/sensortag-kafka-python-spark-streaming-5/">Part 5</a>で構築した<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/2.1.1/spark-standalone.html">Spark Standalone Cluster</a>と<a target="_blank" rel="noopener" href="http://jupyter.org/">Jupyter</a></li>
 </ul>
 <h2 id="Notebook"><a href="#Notebook" class="headerlink" title="Notebook"></a>Notebook</h2><p>　JupyterのNotebookにインタラクティブにコードを実行して確認していきます。以下のパラグラフはそれぞれセルに相当します。WebブラウザからJupyterを開き右上の<code>New</code>ボタンから<code>Python 3</code>を選択します。</p>
 <ul>
 <li>http://&lt;仮想マシンのパブリックIPアドレス&gt;:8888</li>
 </ul>
-<h3 id="PYSPARK-SUBMIT-ARGS"><a href="#PYSPARK-SUBMIT-ARGS" class="headerlink" title="PYSPARK_SUBMIT_ARGS"></a>PYSPARK_SUBMIT_ARGS</h3><p>　ScalaのJarファイルはバージョンの指定がかなり厳密です。<a href="https://spark.apache.org/docs/2.1.1/streaming-kafka-integration.html" target="_blank" rel="noopener">Spark Streaming + Kafka Integration Guide
-</a>によるとSpark StreamingからKafkaに接続するためのJarファイルは2つあります。Kafkaのバージョンが<code>0.8.2.1</code>以上の<a href="https://spark.apache.org/docs/2.1.1/streaming-kafka-0-8-integration.html" target="_blank" rel="noopener">spark-streaming-kafka-0-8</a>と、<code>0.10</code>以上の<a href="https://spark.apache.org/docs/2.1.1/streaming-kafka-0-10-integration.html" target="_blank" rel="noopener">spark-streaming-kafka-0-10</a>です。今回利用しているKafkaのバージョンは<code>0.10.2.1</code>ですがPythonをサポートしている<code>spark-streaming-kafka-0-8</code>を使います。</p>
+<h3 id="PYSPARK-SUBMIT-ARGS"><a href="#PYSPARK-SUBMIT-ARGS" class="headerlink" title="PYSPARK_SUBMIT_ARGS"></a>PYSPARK_SUBMIT_ARGS</h3><p>　ScalaのJarファイルはバージョンの指定がかなり厳密です。<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/2.1.1/streaming-kafka-integration.html">Spark Streaming + Kafka Integration Guide
+</a>によるとSpark StreamingからKafkaに接続するためのJarファイルは2つあります。Kafkaのバージョンが<code>0.8.2.1</code>以上の<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/2.1.1/streaming-kafka-0-8-integration.html">spark-streaming-kafka-0-8</a>と、<code>0.10</code>以上の<a target="_blank" rel="noopener" href="https://spark.apache.org/docs/2.1.1/streaming-kafka-0-10-integration.html">spark-streaming-kafka-0-10</a>です。今回利用しているKafkaのバージョンは<code>0.10.2.1</code>ですがPythonをサポートしている<code>spark-streaming-kafka-0-8</code>を使います。</p>
 <p>　パッケージ名はspark-streaming-kafka-<code>&lt;Kafkaのバージョン&gt;</code>_<code>&lt;Scalaのバージョン&gt;</code>:<code>&lt;Sparkのバージョン&gt;</code>のようにそれぞれのバージョンを表しています。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">'PYSPARK_SUBMIT_ARGS'</span>] = <span class="string">'--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 pyspark-shell'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.environ[<span class="string">&#x27;PYSPARK_SUBMIT_ARGS&#x27;</span>] = <span class="string">&#x27;--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 pyspark-shell&#x27;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="マジックコマンド"><a href="#マジックコマンド" class="headerlink" title="マジックコマンド"></a>マジックコマンド</h3><p>　<a href="https://github.com/dpkp/kafka-python" target="_blank" rel="noopener">kafka-python</a>パッケージをインストールします。Jupyterの<a href="http://ipython.readthedocs.io/en/stable/interactive/magics.html" target="_blank" rel="noopener">マジックコマンド</a>を使います。</p>
+<h3 id="マジックコマンド"><a href="#マジックコマンド" class="headerlink" title="マジックコマンド"></a>マジックコマンド</h3><p>　<a target="_blank" rel="noopener" href="https://github.com/dpkp/kafka-python">kafka-python</a>パッケージをインストールします。Jupyterの<a target="_blank" rel="noopener" href="http://ipython.readthedocs.io/en/stable/interactive/magics.html">マジックコマンド</a>を使います。</p>
 <figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">!pip <span class="keyword">install</span> kafka-python</span><br></pre></td></tr></table></figure>
 
 
@@ -277,21 +244,21 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">spark = (</span><br><span class="line">    SparkSession</span><br><span class="line">        .builder</span><br><span class="line">        .getOrCreate()</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">sc = spark.sparkContext</span><br><span class="line">ssc = StreamingContext(sc, <span class="number">60</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="Kafka-Producer"><a href="#Kafka-Producer" class="headerlink" title="Kafka Producer"></a>Kafka Producer</h3><p> Kafkaブローカーのリスト、入力と出力のトピック名を定義します。ウインドウ集計した結果はKafkaのトピックに出力するためproducerも作成します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">brokers = <span class="string">"&lt;Kafka BrokerのIPアドレス&gt;:9092"</span></span><br><span class="line">sourceTopic = <span class="string">"sensortag"</span></span><br><span class="line">sinkTopic = <span class="string">"sensortag-sink"</span></span><br><span class="line"></span><br><span class="line">producer = KafkaProducer(bootstrap_servers=brokers,</span><br><span class="line">                         value_serializer=<span class="keyword">lambda</span> v: json.dumps(v).encode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">brokers = <span class="string">&quot;&lt;Kafka BrokerのIPアドレス&gt;:9092&quot;</span></span><br><span class="line">sourceTopic = <span class="string">&quot;sensortag&quot;</span></span><br><span class="line">sinkTopic = <span class="string">&quot;sensortag-sink&quot;</span></span><br><span class="line"></span><br><span class="line">producer = KafkaProducer(bootstrap_servers=brokers,</span><br><span class="line">                         value_serializer=<span class="keyword">lambda</span> v: json.dumps(v).encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br></pre></td></tr></table></figure>
 
 <h3 id="ウィンドウ集計"><a href="#ウィンドウ集計" class="headerlink" title="ウィンドウ集計"></a>ウィンドウ集計</h3><p>　今回のスクリプトのメインの処理をする関数です。KafkaのJSONを変換したRDDにStructTypeのスキーマを適用してDataFrameを作成します。DataFrameのウインドウ集計関数を使い2分ウインドウで周囲温度(ambient)と湿度(rh)の平均値を計算します。</p>
 <p>　またDataFrameは処理の途中でタイムゾーンを削除しているためウィンドウ集計の結果がわかりやすいように<code>Asia/Tokyo</code>タイムゾーンをつけています。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">windowAverage</span><span class="params">(rdd)</span>:</span></span><br><span class="line">    schema = StructType([</span><br><span class="line">        StructField(<span class="string">'ambient'</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">'bid'</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">'humidity'</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">'objecttemp'</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">'rh'</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">'time'</span>, TimestampType(), <span class="literal">True</span>),</span><br><span class="line">    ])</span><br><span class="line">        </span><br><span class="line">    streamingInputDF = spark.createDataFrame(</span><br><span class="line">        rdd, schema=schema</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(<span class="string">'1分バッチのDataFrame'</span>)</span><br><span class="line">    streamingInputDF.show(truncate=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    averageDF = (</span><br><span class="line">        streamingInputDF</span><br><span class="line">            .groupBy(</span><br><span class="line">                streamingInputDF.bid,</span><br><span class="line">                window(<span class="string">"time"</span>, <span class="string">"2 minute"</span>))</span><br><span class="line">            .avg(<span class="string">"ambient"</span>,<span class="string">"rh"</span>)   </span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    sinkRDD = averageDF.rdd.map(<span class="keyword">lambda</span> x: &#123;<span class="string">'bid'</span>: x[<span class="number">0</span>], </span><br><span class="line">                                            <span class="string">'time'</span>: pytz.utc.localize(x[<span class="number">1</span>][<span class="string">'end'</span>]).astimezone(pytz.timezone(<span class="string">'Asia/Tokyo'</span>)).isoformat(), </span><br><span class="line">                                            <span class="string">'ambient'</span>: x[<span class="number">2</span>], </span><br><span class="line">                                            <span class="string">'rh'</span>: x[<span class="number">3</span>]&#125;)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sinkRDD.isEmpty():</span><br><span class="line">        print(<span class="string">'2分ウィンドウの平均値'</span>)</span><br><span class="line">        sinkList = sinkRDD.collect()</span><br><span class="line">        print(sinkList)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> sink <span class="keyword">in</span> sinkList:</span><br><span class="line">            producer.send(sinkTopic, sink)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">windowAverage</span>(<span class="params">rdd</span>):</span></span><br><span class="line">    schema = StructType([</span><br><span class="line">        StructField(<span class="string">&#x27;ambient&#x27;</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;bid&#x27;</span>, StringType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;humidity&#x27;</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;objecttemp&#x27;</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;rh&#x27;</span>, DoubleType(), <span class="literal">True</span>),</span><br><span class="line">        StructField(<span class="string">&#x27;time&#x27;</span>, TimestampType(), <span class="literal">True</span>),</span><br><span class="line">    ])</span><br><span class="line">        </span><br><span class="line">    streamingInputDF = spark.createDataFrame(</span><br><span class="line">        rdd, schema=schema</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&#x27;1分バッチのDataFrame&#x27;</span>)</span><br><span class="line">    streamingInputDF.show(truncate=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    averageDF = (</span><br><span class="line">        streamingInputDF</span><br><span class="line">            .groupBy(</span><br><span class="line">                streamingInputDF.bid,</span><br><span class="line">                window(<span class="string">&quot;time&quot;</span>, <span class="string">&quot;2 minute&quot;</span>))</span><br><span class="line">            .avg(<span class="string">&quot;ambient&quot;</span>,<span class="string">&quot;rh&quot;</span>)   </span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    sinkRDD = averageDF.rdd.<span class="built_in">map</span>(<span class="keyword">lambda</span> x: &#123;<span class="string">&#x27;bid&#x27;</span>: x[<span class="number">0</span>], </span><br><span class="line">                                            <span class="string">&#x27;time&#x27;</span>: pytz.utc.localize(x[<span class="number">1</span>][<span class="string">&#x27;end&#x27;</span>]).astimezone(pytz.timezone(<span class="string">&#x27;Asia/Tokyo&#x27;</span>)).isoformat(), </span><br><span class="line">                                            <span class="string">&#x27;ambient&#x27;</span>: x[<span class="number">2</span>], </span><br><span class="line">                                            <span class="string">&#x27;rh&#x27;</span>: x[<span class="number">3</span>]&#125;)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sinkRDD.isEmpty():</span><br><span class="line">        print(<span class="string">&#x27;2分ウィンドウの平均値&#x27;</span>)</span><br><span class="line">        sinkList = sinkRDD.collect()</span><br><span class="line">        print(sinkList)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> sink <span class="keyword">in</span> sinkList:</span><br><span class="line">            producer.send(sinkTopic, sink)</span><br></pre></td></tr></table></figure>
 
-<h3 id="Kafkaのストリーム作成"><a href="#Kafkaのストリーム作成" class="headerlink" title="Kafkaのストリーム作成"></a>Kafkaのストリーム作成</h3><p>　Kafka BrokerのIPアドレスとRaspberry Pi 3からSensorTagのJSON文字列を送信するトピックを指定します。JSON文字列を1行ずつデシリアライズして<a href="http://spark.apache.org/docs/2.1.1/api/python/pyspark.sql.html#pyspark.sql.Row" target="_blank" rel="noopener">pyspark.sql.Row</a>を作成します。<code>time</code>フィールドはUNIXタイムスタンプからPythonのdatetimeに変換しタイムゾーンを削除します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">kafkaStream = KafkaUtils.createDirectStream(</span><br><span class="line">    ssc, [sourceTopic], &#123;<span class="string">"metadata.broker.list"</span>:brokers&#125;)</span><br><span class="line"></span><br><span class="line">rowStream = (</span><br><span class="line">    kafkaStream</span><br><span class="line">        .map(<span class="keyword">lambda</span> line: json.loads(line[<span class="number">1</span>]))</span><br><span class="line">        .map(<span class="keyword">lambda</span> x: Row(</span><br><span class="line">            ambient=x[<span class="string">'ambient'</span>],</span><br><span class="line">            bid=x[<span class="string">'bid'</span>],</span><br><span class="line">            humidity=x[<span class="string">'humidity'</span>],</span><br><span class="line">            objecttemp=x[<span class="string">'objecttemp'</span>],</span><br><span class="line">            rh=x[<span class="string">'rh'</span>],</span><br><span class="line">            time=datetime.fromtimestamp(x[<span class="string">'time'</span>]).replace(tzinfo=<span class="literal">None</span>),</span><br><span class="line">        )</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">rowStream.foreachRDD(windowAverage)</span><br></pre></td></tr></table></figure>
+<h3 id="Kafkaのストリーム作成"><a href="#Kafkaのストリーム作成" class="headerlink" title="Kafkaのストリーム作成"></a>Kafkaのストリーム作成</h3><p>　Kafka BrokerのIPアドレスとRaspberry Pi 3からSensorTagのJSON文字列を送信するトピックを指定します。JSON文字列を1行ずつデシリアライズして<a target="_blank" rel="noopener" href="http://spark.apache.org/docs/2.1.1/api/python/pyspark.sql.html#pyspark.sql.Row">pyspark.sql.Row</a>を作成します。<code>time</code>フィールドはUNIXタイムスタンプからPythonのdatetimeに変換しタイムゾーンを削除します。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">kafkaStream = KafkaUtils.createDirectStream(</span><br><span class="line">    ssc, [sourceTopic], &#123;<span class="string">&quot;metadata.broker.list&quot;</span>:brokers&#125;)</span><br><span class="line"></span><br><span class="line">rowStream = (</span><br><span class="line">    kafkaStream</span><br><span class="line">        .<span class="built_in">map</span>(<span class="keyword">lambda</span> line: json.loads(line[<span class="number">1</span>]))</span><br><span class="line">        .<span class="built_in">map</span>(<span class="keyword">lambda</span> x: Row(</span><br><span class="line">            ambient=x[<span class="string">&#x27;ambient&#x27;</span>],</span><br><span class="line">            bid=x[<span class="string">&#x27;bid&#x27;</span>],</span><br><span class="line">            humidity=x[<span class="string">&#x27;humidity&#x27;</span>],</span><br><span class="line">            objecttemp=x[<span class="string">&#x27;objecttemp&#x27;</span>],</span><br><span class="line">            rh=x[<span class="string">&#x27;rh&#x27;</span>],</span><br><span class="line">            time=datetime.fromtimestamp(x[<span class="string">&#x27;time&#x27;</span>]).replace(tzinfo=<span class="literal">None</span>),</span><br><span class="line">        )</span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">rowStream.foreachRDD(windowAverage)</span><br></pre></td></tr></table></figure>
 
 <h3 id="StreamingContextの開始"><a href="#StreamingContextの開始" class="headerlink" title="StreamingContextの開始"></a>StreamingContextの開始</h3><p>　最後にStreamingContextを開始してプログラムが停止するまで待機します。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">ssc.start()</span><br><span class="line">ssc.awaitTermination()</span><br></pre></td></tr></table></figure>
 
 <h2 id="スクリプトの実行"><a href="#スクリプトの実行" class="headerlink" title="スクリプトの実行"></a>スクリプトの実行</h2><p> Raspberry Pi 3から<a href="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/">Part 2</a>で書いたPythonスクリプトを実行します。</p>
 <h3 id="出力結果"><a href="#出力結果" class="headerlink" title="出力結果"></a>出力結果</h3><p>　以下の様な出力が表示されます。DataFrameの出力ではタイムゾーンがないのに対し、ウィンドウ集計の結果にはタイムゾーンが付与されています。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1分バッチのDataFrame</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line">|ambient |bid              |humidity         |objecttemp|rh             |time                 |</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line">|28.78125|B0:B4:48:BD:DA:03|28.72314453125   |22.96875  |75.714111328125|2017-08-01 23:44:03.0|</span><br><span class="line">|28.78125|B0:B4:48:BD:DA:03|28.72314453125   |22.90625  |75.714111328125|2017-08-01 23:44:13.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.72314453125   |22.875    |75.616455078125|2017-08-01 23:44:23.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.69293212890625|23.15625  |75.616455078125|2017-08-01 23:44:34.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.7030029296875 |23.03125  |75.616455078125|2017-08-01 23:44:44.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.69293212890625|23.125    |75.616455078125|2017-08-01 23:44:55.0|</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line"></span><br><span class="line">2分ウィンドウの平均値</span><br><span class="line">[&#123;<span class="string">'bid'</span>: <span class="string">'B0:B4:48:BD:DA:03'</span>, <span class="string">'time'</span>: <span class="string">'2017-08-02T08:46:00+09:00'</span>, <span class="string">'ambient'</span>: 28.760416666666668, <span class="string">'rh'</span>: 75.64900716145833&#125;]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1分バッチのDataFrame</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line">|ambient |bid              |humidity         |objecttemp|rh             |time                 |</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line">|28.78125|B0:B4:48:BD:DA:03|28.72314453125   |22.96875  |75.714111328125|2017-08-01 23:44:03.0|</span><br><span class="line">|28.78125|B0:B4:48:BD:DA:03|28.72314453125   |22.90625  |75.714111328125|2017-08-01 23:44:13.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.72314453125   |22.875    |75.616455078125|2017-08-01 23:44:23.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.69293212890625|23.15625  |75.616455078125|2017-08-01 23:44:34.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.7030029296875 |23.03125  |75.616455078125|2017-08-01 23:44:44.0|</span><br><span class="line">|28.75   |B0:B4:48:BD:DA:03|28.69293212890625|23.125    |75.616455078125|2017-08-01 23:44:55.0|</span><br><span class="line">+--------+-----------------+-----------------+----------+---------------+---------------------+</span><br><span class="line"></span><br><span class="line">2分ウィンドウの平均値</span><br><span class="line">[&#123;<span class="string">&#x27;bid&#x27;</span>: <span class="string">&#x27;B0:B4:48:BD:DA:03&#x27;</span>, <span class="string">&#x27;time&#x27;</span>: <span class="string">&#x27;2017-08-02T08:46:00+09:00&#x27;</span>, <span class="string">&#x27;ambient&#x27;</span>: 28.760416666666668, <span class="string">&#x27;rh&#x27;</span>: 75.64900716145833&#125;]</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -327,7 +294,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -378,7 +344,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#準備"><span class="nav-number">1.</span> <span class="nav-text">準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Notebook"><span class="nav-number">2.</span> <span class="nav-text">Notebook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PYSPARK-SUBMIT-ARGS"><span class="nav-number">2.1.</span> <span class="nav-text">PYSPARK_SUBMIT_ARGS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#マジックコマンド"><span class="nav-number">2.2.</span> <span class="nav-text">マジックコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import"><span class="nav-number">2.3.</span> <span class="nav-text">import</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sparkのコンテキスト"><span class="nav-number">2.4.</span> <span class="nav-text">Sparkのコンテキスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Producer"><span class="nav-number">2.5.</span> <span class="nav-text">Kafka Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ウィンドウ集計"><span class="nav-number">2.6.</span> <span class="nav-text">ウィンドウ集計</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafkaのストリーム作成"><span class="nav-number">2.7.</span> <span class="nav-text">Kafkaのストリーム作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StreamingContextの開始"><span class="nav-number">2.8.</span> <span class="nav-text">StreamingContextの開始</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#スクリプトの実行"><span class="nav-number">3.</span> <span class="nav-text">スクリプトの実行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#出力結果"><span class="nav-number">3.1.</span> <span class="nav-text">出力結果</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%96%E5%82%99"><span class="nav-number">1.</span> <span class="nav-text">準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Notebook"><span class="nav-number">2.</span> <span class="nav-text">Notebook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PYSPARK-SUBMIT-ARGS"><span class="nav-number">2.1.</span> <span class="nav-text">PYSPARK_SUBMIT_ARGS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%9E%E3%82%B8%E3%83%83%E3%82%AF%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89"><span class="nav-number">2.2.</span> <span class="nav-text">マジックコマンド</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import"><span class="nav-number">2.3.</span> <span class="nav-text">import</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark%E3%81%AE%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88"><span class="nav-number">2.4.</span> <span class="nav-text">Sparkのコンテキスト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Producer"><span class="nav-number">2.5.</span> <span class="nav-text">Kafka Producer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A6%E3%82%A3%E3%83%B3%E3%83%89%E3%82%A6%E9%9B%86%E8%A8%88"><span class="nav-number">2.6.</span> <span class="nav-text">ウィンドウ集計</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka%E3%81%AE%E3%82%B9%E3%83%88%E3%83%AA%E3%83%BC%E3%83%A0%E4%BD%9C%E6%88%90"><span class="nav-number">2.7.</span> <span class="nav-text">Kafkaのストリーム作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StreamingContext%E3%81%AE%E9%96%8B%E5%A7%8B"><span class="nav-number">2.8.</span> <span class="nav-text">StreamingContextの開始</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AE%E5%AE%9F%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">スクリプトの実行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BA%E5%8A%9B%E7%B5%90%E6%9E%9C"><span class="nav-number">3.1.</span> <span class="nav-text">出力結果</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -410,10 +376,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -438,9 +407,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -480,13 +449,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

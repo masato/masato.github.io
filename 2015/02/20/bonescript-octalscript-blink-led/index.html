@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="BeagleBone ScriptのSDカードからブートしているUbuntu 14.04でBoneScriptを使いLチカを試してみようと思ったのですがエラーが発生して動作しません。kernelを3.8.13から3.14に上げているのが問題になっているようです。OctalBoneScriptを使うと3.14でもLチカできそうなので試してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OctalBoneScriptを使って3.14 kernelのBeagleBone BlackでLチカする">
 <meta property="og:url" content="https://masato.github.io/2015/02/20/bonescript-octalscript-blink-led/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="BeagleBone ScriptのSDカードからブートしているUbuntu 14.04でBoneScriptを使いLチカを試してみようと思ったのですがエラーが発生して動作しません。kernelを3.8.13から3.14に上げているのが問題になっているようです。OctalBoneScriptを使うと3.14でもLチカできそうなので試してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/02/20/bonescript-octalscript-blink-led/beaglebone_fritzing.png">
 <meta property="og:image" content="https://masato.github.io/2015/02/20/bonescript-octalscript-blink-led/cape-headers.png">
 <meta property="article:published_time" content="2015-02-20T02:04:54.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.556Z">
+<meta property="article:modified_time" content="2015-02-20T02:04:54.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="BeagleBoneBlack">
 <meta property="article:tag" content="Lチカ">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>OctalBoneScriptを使って3.14 kernelのBeagleBone BlackでLチカする | masato's blog</title>
+  <title>OctalBoneScriptを使って3.14 kernelのBeagleBone BlackでLチカする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 20 2015 11:04:54" itemprop="dateCreated datePublished" datetime="2015-02-20T11:04:54+09:00">Feb 20 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">BeagleBone ScriptのSDカードからブートしているUbuntu 14.04でBoneScriptを使いLチカを試してみようと思ったのですがエラーが発生して動作しません。kernelを3.8.13から3.14に上げているのが問題になっているようです。OctalBoneScriptを使うと3.14でもLチカできそうなので試してみます。</div>
@@ -243,39 +210,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>BeagleBone ScriptのSDカードからブートしているUbuntu 14.04で<a href="https://github.com/jadonk/bonescript" target="_blank" rel="noopener">BoneScript</a>を使いLチカを試してみようと思ったのですがエラーが発生して動作しません。kernelを3.8.13から3.14に上げているのが問題になっているようです。<a href="https://github.com/theoctal/octalbonescript" target="_blank" rel="noopener">OctalBoneScript</a>を使うと3.14でもLチカできそうなので試してみます。</p>
-<a id="more"></a>
+        <p>BeagleBone ScriptのSDカードからブートしているUbuntu 14.04で<a target="_blank" rel="noopener" href="https://github.com/jadonk/bonescript">BoneScript</a>を使いLチカを試してみようと思ったのですがエラーが発生して動作しません。kernelを3.8.13から3.14に上げているのが問題になっているようです。<a target="_blank" rel="noopener" href="https://github.com/theoctal/octalbonescript">OctalBoneScript</a>を使うと3.14でもLチカできそうなので試してみます。</p>
+<span id="more"></span>
 
-<h2 id="GPIOのワイヤリング"><a href="#GPIOのワイヤリング" class="headerlink" title="GPIOのワイヤリング"></a>GPIOのワイヤリング</h2><p>ブレッドボートとのGPIOのワイヤリングは、<a href="https://learn.adafruit.com/blinking-an-led-with-beaglebone-black?view=all" target="_blank" rel="noopener">Blinking an LED with BeagleBone Black</a>を参考にしました。</p>
+<h2 id="GPIOのワイヤリング"><a href="#GPIOのワイヤリング" class="headerlink" title="GPIOのワイヤリング"></a>GPIOのワイヤリング</h2><p>ブレッドボートとのGPIOのワイヤリングは、<a target="_blank" rel="noopener" href="https://learn.adafruit.com/blinking-an-led-with-beaglebone-black?view=all">Blinking an LED with BeagleBone Black</a>を参考にしました。</p>
 <p><img src="/2015/02/20/bonescript-octalscript-blink-led/beaglebone_fritzing.png" alt="beaglebone_fritzing.png"></p>
-<p>LEDや抵抗、ジャンパーワイヤーはAmazonで購入した<a href="http://www.amazon.co.jp/dp/B0025Y6C5G" target="_blank" rel="noopener">Arduinoをはじめようキット</a>の付属品を使います。</p>
-<p>GPIOの拡張コネクタレイアウトは<a href="http://beagleboard.org/support/bone101" target="_blank" rel="noopener">こちら</a>を見ながら作業します。P8とP9の位置は間違えないようにします。</p>
+<p>LEDや抵抗、ジャンパーワイヤーはAmazonで購入した<a target="_blank" rel="noopener" href="http://www.amazon.co.jp/dp/B0025Y6C5G">Arduinoをはじめようキット</a>の付属品を使います。</p>
+<p>GPIOの拡張コネクタレイアウトは<a target="_blank" rel="noopener" href="http://beagleboard.org/support/bone101">こちら</a>を見ながら作業します。P8とP9の位置は間違えないようにします。</p>
 <p><img src="/2015/02/20/bonescript-octalscript-blink-led/cape-headers.png" alt="cape-headers.png"></p>
-<h2 id="BoneScriptのサンプル"><a href="#BoneScriptのサンプル" class="headerlink" title="BoneScriptのサンプル"></a>BoneScriptのサンプル</h2><p><a href="http://beagleboard.org/Support/bone101" target="_blank" rel="noopener">BoneScript</a>はNode.jsでハードウェアをコントロールできるパッケージです。eMMCにインストールしたDebianのイメージでは最初から使える状態になっています。SDカードにインストールしたUbuntuにはBoneScriptはインストールされていないので、package.jsonに記述してnpmから<a href="https://github.com/jadonk/bonescript" target="_blank" rel="noopener">パッケージ</a>をインストールします。サンプルプログラムは<a href="http://inspire.logicsupply.com/p/workshop-materials.html" target="_blank" rel="noopener">INSPIRE: BEAGLEBONE BLACK RESOURCES</a>のワークショップを参考にコードを書きました。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'bonescript'</span>);  <span class="comment">// Read library</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> ledPin = <span class="string">"P8_10"</span>;  <span class="comment">// Select pin</span></span><br><span class="line"><span class="keyword">var</span> state = <span class="number">1</span>;  <span class="comment">// Set LED state</span></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">200</span>;  <span class="comment">// Set interval (in ms)</span></span><br><span class="line"> </span><br><span class="line">b.pinMode(ledPin, b.OUTPUT);  <span class="comment">// Set pin to output</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toggleLED</span>(<span class="params"></span>) </span>&#123;  <span class="comment">// Switch LED on or off</span></span><br><span class="line">   state = state ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">   b.digitalWrite(ledPin, state);</span><br><span class="line">&#125;</span><br><span class="line">setInterval(toggleLED, interval);  <span class="comment">// Call function at set interval</span></span><br></pre></td></tr></table></figure>
+<h2 id="BoneScriptのサンプル"><a href="#BoneScriptのサンプル" class="headerlink" title="BoneScriptのサンプル"></a>BoneScriptのサンプル</h2><p><a target="_blank" rel="noopener" href="http://beagleboard.org/Support/bone101">BoneScript</a>はNode.jsでハードウェアをコントロールできるパッケージです。eMMCにインストールしたDebianのイメージでは最初から使える状態になっています。SDカードにインストールしたUbuntuにはBoneScriptはインストールされていないので、package.jsonに記述してnpmから<a target="_blank" rel="noopener" href="https://github.com/jadonk/bonescript">パッケージ</a>をインストールします。サンプルプログラムは<a target="_blank" rel="noopener" href="http://inspire.logicsupply.com/p/workshop-materials.html">INSPIRE: BEAGLEBONE BLACK RESOURCES</a>のワークショップを参考にコードを書きました。</p>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">&#x27;bonescript&#x27;</span>);  <span class="comment">// Read library</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> ledPin = <span class="string">&quot;P8_10&quot;</span>;  <span class="comment">// Select pin</span></span><br><span class="line"><span class="keyword">var</span> state = <span class="number">1</span>;  <span class="comment">// Set LED state</span></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">200</span>;  <span class="comment">// Set interval (in ms)</span></span><br><span class="line"> </span><br><span class="line">b.pinMode(ledPin, b.OUTPUT);  <span class="comment">// Set pin to output</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toggleLED</span>(<span class="params"></span>) </span>&#123;  <span class="comment">// Switch LED on or off</span></span><br><span class="line">   state = state ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">   b.digitalWrite(ledPin, state);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">setInterval</span>(toggleLED, interval);  <span class="comment">// Call function at set interval</span></span><br></pre></td></tr></table></figure>
 
 <p>BoneScriptのバージョンは0.2.4です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm list bonesctipt</span><br><span class="line">cylon-test@0.0.1 /home/ubuntu/node_modules/orion/.workspace/led</span><br><span class="line">└── bonescript@0.2.4  extraneous</span><br></pre></td></tr></table></figure>
 
 <h3 id="pinModeのエラー"><a href="#pinModeのエラー" class="headerlink" title="pinModeのエラー"></a>pinModeのエラー</h3><p>プログラムを実行するとGPIOを操作するpinModeメソッドでエラーが発生してしまいます。どうもカーネルのバージョンが変わるとデバイス名に変更があるようです。BoneScriptは3.8.xのカーネルでないとpinModeのメソッドは動作しないようです。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo node app.js</span><br><span class="line">...</span><br><span class="line">/home/ubuntu/node_modules/orion/.workspace/led/node_modules/bonescript/index.js:161</span><br><span class="line">    <span class="keyword">if</span>(typeof resp.err != <span class="string">'undefined'</span>) &#123;</span><br><span class="line">                  ^</span><br><span class="line">TypeError: Cannot <span class="built_in">read</span> property <span class="string">'err'</span> of undefined</span><br><span class="line">    at Object.f.pinMode (/home/ubuntu/node_modules/orion/.workspace/led/node_modules/bonescript/index.js:161:19)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo node app.js</span><br><span class="line">...</span><br><span class="line">/home/ubuntu/node_modules/orion/.workspace/led/node_modules/bonescript/index.js:161</span><br><span class="line">    <span class="keyword">if</span>(typeof resp.err != <span class="string">&#x27;undefined&#x27;</span>) &#123;</span><br><span class="line">                  ^</span><br><span class="line">TypeError: Cannot <span class="built_in">read</span> property <span class="string">&#x27;err&#x27;</span> of undefined</span><br><span class="line">    at Object.f.pinMode (/home/ubuntu/node_modules/orion/.workspace/led/node_modules/bonescript/index.js:161:19)</span><br></pre></td></tr></table></figure>
 
 <p>SDカードのUbuntu14.04はカーネルを3.14に上げていました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ uname -a</span><br><span class="line">Linux arm 3.14.31-ti-r49 <span class="comment">#1 SMP PREEMPT Sat Jan 31 14:17:42 UTC 2015 armv7l armv7l armv7l GNU/Linux</span></span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/jadonk/bonescript/issues/93" target="_blank" rel="noopener">Problem with GPIO / pinMode #93</a>を読むと<a href="https://github.com/theoctal/octalbonescript" target="_blank" rel="noopener">OctalScript</a>を推奨しているのでこちらを試してみます。</p>
-<h3 id="3-8-x-kernelでないとCylon-jsもエラーになる"><a href="#3-8-x-kernelでないとCylon-jsもエラーになる" class="headerlink" title="3.8.x kernelでないとCylon.jsもエラーになる"></a>3.8.x kernelでないとCylon.jsもエラーになる</h3><p>だだしこの状態だとCylon.jsの<a href="https://github.com/hybridgroup/cylon-beaglebone" target="_blank" rel="noopener">cylon-beaglebone</a>もLEDのデバイスを操作できません。Cylon.jsを動かすことが目標なので不都合がでてきます。しばらくはCylon.jsを使う場合、kernelを3.8.13のままにしているeMMCのDebianをブートします。</p>
-<h2 id="OctalBoneScriptのサンプル"><a href="#OctalBoneScriptのサンプル" class="headerlink" title="OctalBoneScriptのサンプル"></a>OctalBoneScriptのサンプル</h2><p><a href="https://github.com/theoctal/octalbonescript" target="_blank" rel="noopener">OctalScript</a>はBoneScriptをより安定させ良くテストされたNode.jsのライブラリを提供することを目的としています。そのためBoneScriptで書いたコードはOctalBoneScriptと互換性があります。前回コードから<code>require</code>するモジュールをoctalbonescriptに変更します。また秒でLチカが終了するようにタイマーのクリアも追加しました。</p>
-<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'octalbonescript'</span>);  <span class="comment">// Read library</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> ledPin = <span class="string">"P8_10"</span>;  <span class="comment">// Select pin</span></span><br><span class="line"><span class="keyword">var</span> state = <span class="number">1</span>;  <span class="comment">// Set LED state</span></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">200</span>;  <span class="comment">// Set interval (in ms)</span></span><br><span class="line"> </span><br><span class="line">b.pinMode(ledPin, b.OUTPUT);  <span class="comment">// Set pin to output</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toggleLED</span>(<span class="params"></span>) </span>&#123;  <span class="comment">// Switch LED on or off</span></span><br><span class="line">   state = state ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">   b.digitalWrite(ledPin, state);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> timer = setInterval(toggleLED, interval);  <span class="comment">// Call function at set interval</span></span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; clearInterval(timer)&#125;,<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/jadonk/bonescript/issues/93">Problem with GPIO / pinMode #93</a>を読むと<a target="_blank" rel="noopener" href="https://github.com/theoctal/octalbonescript">OctalScript</a>を推奨しているのでこちらを試してみます。</p>
+<h3 id="3-8-x-kernelでないとCylon-jsもエラーになる"><a href="#3-8-x-kernelでないとCylon-jsもエラーになる" class="headerlink" title="3.8.x kernelでないとCylon.jsもエラーになる"></a>3.8.x kernelでないとCylon.jsもエラーになる</h3><p>だだしこの状態だとCylon.jsの<a target="_blank" rel="noopener" href="https://github.com/hybridgroup/cylon-beaglebone">cylon-beaglebone</a>もLEDのデバイスを操作できません。Cylon.jsを動かすことが目標なので不都合がでてきます。しばらくはCylon.jsを使う場合、kernelを3.8.13のままにしているeMMCのDebianをブートします。</p>
+<h2 id="OctalBoneScriptのサンプル"><a href="#OctalBoneScriptのサンプル" class="headerlink" title="OctalBoneScriptのサンプル"></a>OctalBoneScriptのサンプル</h2><p><a target="_blank" rel="noopener" href="https://github.com/theoctal/octalbonescript">OctalScript</a>はBoneScriptをより安定させ良くテストされたNode.jsのライブラリを提供することを目的としています。そのためBoneScriptで書いたコードはOctalBoneScriptと互換性があります。前回コードから<code>require</code>するモジュールをoctalbonescriptに変更します。また秒でLチカが終了するようにタイマーのクリアも追加しました。</p>
+<figure class="highlight js"><figcaption><span>app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">/*eslint-env node */</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">&#x27;octalbonescript&#x27;</span>);  <span class="comment">// Read library</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> ledPin = <span class="string">&quot;P8_10&quot;</span>;  <span class="comment">// Select pin</span></span><br><span class="line"><span class="keyword">var</span> state = <span class="number">1</span>;  <span class="comment">// Set LED state</span></span><br><span class="line"><span class="keyword">var</span> interval = <span class="number">200</span>;  <span class="comment">// Set interval (in ms)</span></span><br><span class="line"> </span><br><span class="line">b.pinMode(ledPin, b.OUTPUT);  <span class="comment">// Set pin to output</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">toggleLED</span>(<span class="params"></span>) </span>&#123;  <span class="comment">// Switch LED on or off</span></span><br><span class="line">   state = state ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">   b.digitalWrite(ledPin, state);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> timer = <span class="built_in">setInterval</span>(toggleLED, interval);  <span class="comment">// Call function at set interval</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="built_in">clearInterval</span>(timer)&#125;,<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
 
 
 <p>OctalBoneScriptのバージョンは0.4.12です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm list octalbonescript</span><br><span class="line">cylon-test@0.0.1 /home/ubuntu/node_modules/orion/.workspace/led</span><br><span class="line">└── octalbonescript@0.4.12</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm list octalbonescript</span><br><span class="line">cylon-test@0.0.1 /home/ubuntu/node_modules/orion/.workspace/led</span><br><span class="line">└── octalbonescript@0.4.12 </span><br></pre></td></tr></table></figure>
 
 <p><code>DEBUG=bone</code>を追加して起動するとデバッグモードで起動できます。ようやくLチカができるようになりました。</p>
-<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">$ sudo <span class="keyword">DEBUG</span>=bone node app.js </span><br><span class="line"><span class="keyword">debug</span>: is_ocp() = /sys/devices/ocp<span class="number">.3</span></span><br><span class="line"><span class="keyword">debug</span>: is_cape_universal() = /sys/devices/ocp<span class="number">.3</span>/cape-universal<span class="number">.61</span></span><br><span class="line"><span class="keyword">debug</span>: <span class="keyword">Using</span> Universal Cape interface</span><br><span class="line"><span class="keyword">debug</span>: Enabling analog inputs</span><br><span class="line"><span class="keyword">debug</span>: load_dt_sync(cape-bone-iio,,)</span><br><span class="line"><span class="keyword">debug</span>: onFindCapeMgr: <span class="type">path</span> = undefined</span><br><span class="line">error: CapeMgr <span class="keyword">not</span> <span class="built_in">found</span>: undefined</span><br><span class="line"><span class="keyword">debug</span>: load_dt resp: &#123;"err":"CapeMgr not found: undefined"&#125;</span><br><span class="line"><span class="keyword">debug</span>: load_dt <span class="keyword">return</span>: <span class="keyword">false</span></span><br><span class="line"><span class="keyword">debug</span>: <span class="keyword">index</span>.js loaded</span><br><span class="line"><span class="keyword">debug</span>: pinMode(P8_10,<span class="keyword">out</span>);</span><br><span class="line"><span class="keyword">debug</span>: hw.setPinMode(P8_10,gpio,&#123;"value":<span class="keyword">true</span>&#125;);</span><br><span class="line"><span class="keyword">debug</span>: returned <span class="keyword">from</span> setPinMode</span><br><span class="line"><span class="keyword">debug</span>: hw.exportGPIOControls(P8_10,<span class="keyword">out</span>,[<span class="keyword">object</span> <span class="keyword">Object</span>]);</span><br><span class="line"><span class="keyword">debug</span>: gpio: <span class="number">68</span> already exported.</span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">$ sudo <span class="keyword">DEBUG</span>=bone node app.js </span><br><span class="line"><span class="keyword">debug</span>: is_ocp() = /sys/devices/ocp<span class="number">.3</span></span><br><span class="line"><span class="keyword">debug</span>: is_cape_universal() = /sys/devices/ocp<span class="number">.3</span>/cape-universal<span class="number">.61</span></span><br><span class="line"><span class="keyword">debug</span>: <span class="keyword">Using</span> Universal Cape interface</span><br><span class="line"><span class="keyword">debug</span>: Enabling analog inputs</span><br><span class="line"><span class="keyword">debug</span>: load_dt_sync(cape-bone-iio,,)</span><br><span class="line"><span class="keyword">debug</span>: onFindCapeMgr: <span class="type">path</span> = undefined</span><br><span class="line">error: CapeMgr <span class="keyword">not</span> <span class="built_in">found</span>: undefined</span><br><span class="line"><span class="keyword">debug</span>: load_dt resp: &#123;&quot;err&quot;:&quot;CapeMgr not found: undefined&quot;&#125;</span><br><span class="line"><span class="keyword">debug</span>: load_dt <span class="keyword">return</span>: <span class="keyword">false</span></span><br><span class="line"><span class="keyword">debug</span>: <span class="keyword">index</span>.js loaded</span><br><span class="line"><span class="keyword">debug</span>: pinMode(P8_10,<span class="keyword">out</span>);</span><br><span class="line"><span class="keyword">debug</span>: hw.setPinMode(P8_10,gpio,&#123;&quot;value&quot;:<span class="keyword">true</span>&#125;);</span><br><span class="line"><span class="keyword">debug</span>: returned <span class="keyword">from</span> setPinMode</span><br><span class="line"><span class="keyword">debug</span>: hw.exportGPIOControls(P8_10,<span class="keyword">out</span>,[<span class="keyword">object</span> <span class="keyword">Object</span>]);</span><br><span class="line"><span class="keyword">debug</span>: gpio: <span class="number">68</span> already exported.</span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">1</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">debug</span>: gpioFile = /sys/<span class="keyword">class</span>/gpio/gpio68/<span class="keyword">value</span></span><br><span class="line"><span class="keyword">debug</span>: digitalWrite(P8_10,<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
 
-<h3 id="error-CapeMgr-not-found-undefined"><a href="#error-CapeMgr-not-found-undefined" class="headerlink" title="error: CapeMgr not found: undefined"></a>error: CapeMgr not found: undefined</h3><p>Lチカは成功しましたが<code>error: CapeMgr not found: undefined</code>のエラーメッセージが出ています。すでにリポジトリのIssuesに上がっていました。<a href="https://github.com/theoctal/octalbonescript/issues/11" target="_blank" rel="noopener">error: CapeMgr not found: undefined #11</a></p>
+<h3 id="error-CapeMgr-not-found-undefined"><a href="#error-CapeMgr-not-found-undefined" class="headerlink" title="error: CapeMgr not found: undefined"></a>error: CapeMgr not found: undefined</h3><p>Lチカは成功しましたが<code>error: CapeMgr not found: undefined</code>のエラーメッセージが出ています。すでにリポジトリのIssuesに上がっていました。<a target="_blank" rel="noopener" href="https://github.com/theoctal/octalbonescript/issues/11">error: CapeMgr not found: undefined #11</a></p>
 <p>kernel 3.14ではCapeの構成を動的に変更することができなくなっているようです。OctacBoneScriptではGPIOとしてPinを使うモード変更はサポートされていないためエラーが発生しますが、一応Lチカはできるみたいです。</p>
 
     </div>
@@ -313,7 +280,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -364,7 +330,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIOのワイヤリング"><span class="nav-number">1.</span> <span class="nav-text">GPIOのワイヤリング</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BoneScriptのサンプル"><span class="nav-number">2.</span> <span class="nav-text">BoneScriptのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pinModeのエラー"><span class="nav-number">2.1.</span> <span class="nav-text">pinModeのエラー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-x-kernelでないとCylon-jsもエラーになる"><span class="nav-number">2.2.</span> <span class="nav-text">3.8.x kernelでないとCylon.jsもエラーになる</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OctalBoneScriptのサンプル"><span class="nav-number">3.</span> <span class="nav-text">OctalBoneScriptのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#error-CapeMgr-not-found-undefined"><span class="nav-number">3.1.</span> <span class="nav-text">error: CapeMgr not found: undefined</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO%E3%81%AE%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AA%E3%83%B3%E3%82%B0"><span class="nav-number">1.</span> <span class="nav-text">GPIOのワイヤリング</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BoneScript%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">BoneScriptのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pinMode%E3%81%AE%E3%82%A8%E3%83%A9%E3%83%BC"><span class="nav-number">2.1.</span> <span class="nav-text">pinModeのエラー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-x-kernel%E3%81%A7%E3%81%AA%E3%81%84%E3%81%A8Cylon-js%E3%82%82%E3%82%A8%E3%83%A9%E3%83%BC%E3%81%AB%E3%81%AA%E3%82%8B"><span class="nav-number">2.2.</span> <span class="nav-text">3.8.x kernelでないとCylon.jsもエラーになる</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OctalBoneScript%E3%81%AE%E3%82%B5%E3%83%B3%E3%83%97%E3%83%AB"><span class="nav-number">3.</span> <span class="nav-text">OctalBoneScriptのサンプル</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#error-CapeMgr-not-found-undefined"><span class="nav-number">3.1.</span> <span class="nav-text">error: CapeMgr not found: undefined</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -396,10 +362,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -424,9 +393,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -466,13 +435,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

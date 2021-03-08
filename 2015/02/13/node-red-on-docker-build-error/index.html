@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="google&#x2F;nodejs-runtimeをbaseイメージにして作成したNode-REDのDockerイメージは、ログを見るとbuildでエラーが発生していました。node-icu-charset-detectorモジュールのnode-gyp rebuildに失敗しています。このままでも動作はしていますがエラーが出ないようにDockerイメージを作り直します。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Node-RED on Docker - Part3: docker buildエラー修正とnodesDirの設定">
 <meta property="og:url" content="https://masato.github.io/2015/02/13/node-red-on-docker-build-error/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="google&#x2F;nodejs-runtimeをbaseイメージにして作成したNode-REDのDockerイメージは、ログを見るとbuildでエラーが発生していました。node-icu-charset-detectorモジュールのnode-gyp rebuildに失敗しています。このままでも動作はしていますがエラーが出ないようにDockerイメージを作り直します。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-02-13T11:01:00.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.804Z">
+<meta property="article:modified_time" content="2015-02-13T11:01:00.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="Docker">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>Node-RED on Docker - Part3: docker buildエラー修正とnodesDirの設定 | masato's blog</title>
+  <title>Node-RED on Docker - Part3: docker buildエラー修正とnodesDirの設定 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -109,14 +109,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -125,51 +124,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -186,11 +161,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -203,7 +177,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -213,19 +187,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 13 2015 20:01:00" itemprop="dateCreated datePublished" datetime="2015-02-13T20:01:00+09:00">Feb 13 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">google/nodejs-runtimeをbaseイメージにして作成したNode-REDのDockerイメージは、ログを見るとbuildでエラーが発生していました。node-icu-charset-detectorモジュールのnode-gyp rebuildに失敗しています。このままでも動作はしていますがエラーが出ないようにDockerイメージを作り直します。</div>
@@ -239,11 +206,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="https://registry.hub.docker.com/u/google/nodejs-runtime/" target="_blank" rel="noopener">google/nodejs-runtime</a>をbaseイメージにして作成したNode-REDのDockerイメージは、ログを見るとbuildでエラーが発生していました。node-icu-charset-detectorモジュールの<code>node-gyp rebuild</code>に失敗しています。このままでも動作はしていますがエラーが出ないようにDockerイメージを作り直します。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/google/nodejs-runtime/">google/nodejs-runtime</a>をbaseイメージにして作成したNode-REDのDockerイメージは、ログを見るとbuildでエラーが発生していました。node-icu-charset-detectorモジュールの<code>node-gyp rebuild</code>に失敗しています。このままでも動作はしていますがエラーが出ないようにDockerイメージを作り直します。</p>
+<span id="more"></span>
 
 <h2 id="docker-buildのエラー"><a href="#docker-buildのエラー" class="headerlink" title="docker buildのエラー"></a>docker buildのエラー</h2><p>node-gypを使ったネイティブモジュールのビルドでエラーが出ていました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t node-red .</span><br><span class="line">...</span><br><span class="line">&gt; node-icu-charset-detector@0.0.7 install /app/node_modules/irc/node_modules/node-icu-charset-detector</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">make: Entering directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build<span class="string">'</span></span><br><span class="line"><span class="string">  CXX(target) Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o</span></span><br><span class="line"><span class="string">../node-icu-charset-detector.cpp:5:28: fatal error: unicode/ucsdet.h: No such file or directory</span></span><br><span class="line"><span class="string">compilation terminated.</span></span><br><span class="line"><span class="string">make: *** [Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o] Error 1</span></span><br><span class="line"><span class="string">make: Leaving directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build'</span></span><br><span class="line">gyp ERR! build error</span><br><span class="line">gyp ERR! stack Error: `make` failed with <span class="built_in">exit</span> code: 2</span><br><span class="line">gyp ERR! stack     at ChildProcess.onExit (/nodejs/lib/node_modules/npm/node_modules/node-gyp/lib/bu</span><br><span class="line">ild.js:267:23)</span><br><span class="line">gyp ERR! stack     at ChildProcess.emit (events.js:98:17)</span><br><span class="line">gyp ERR! stack     at Process.ChildProcess._handle.onexit (child_process.js:810:12)</span><br><span class="line">gyp ERR! System Linux 3.13.0-39-generic</span><br><span class="line">gyp ERR! <span class="built_in">command</span> <span class="string">"node"</span> <span class="string">"/nodejs/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js"</span> <span class="string">"rebuild"</span></span><br><span class="line">gyp ERR! cwd /app/node_modules/irc/node_modules/node-icu-charset-detector</span><br><span class="line">gyp ERR! node -v v0.10.33</span><br><span class="line">gyp ERR! node-gyp -v v1.0.1</span><br><span class="line">gyp ERR! not ok</span><br><span class="line">npm WARN optional dep failed, continuing node-icu-charset-detector@0.0.7</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t node-red .</span><br><span class="line">...</span><br><span class="line">&gt; node-icu-charset-detector@0.0.7 install /app/node_modules/irc/node_modules/node-icu-charset-detector</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">make: Entering directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build<span class="string">&#x27;</span></span><br><span class="line"><span class="string">  CXX(target) Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o</span></span><br><span class="line"><span class="string">../node-icu-charset-detector.cpp:5:28: fatal error: unicode/ucsdet.h: No such file or directory</span></span><br><span class="line"><span class="string">compilation terminated.</span></span><br><span class="line"><span class="string">make: *** [Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o] Error 1</span></span><br><span class="line"><span class="string">make: Leaving directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build&#x27;</span></span><br><span class="line">gyp ERR! build error</span><br><span class="line">gyp ERR! stack Error: `make` failed with <span class="built_in">exit</span> code: 2</span><br><span class="line">gyp ERR! stack     at ChildProcess.onExit (/nodejs/lib/node_modules/npm/node_modules/node-gyp/lib/bu</span><br><span class="line">ild.js:267:23)</span><br><span class="line">gyp ERR! stack     at ChildProcess.emit (events.js:98:17)</span><br><span class="line">gyp ERR! stack     at Process.ChildProcess._handle.onexit (child_process.js:810:12)</span><br><span class="line">gyp ERR! System Linux 3.13.0-39-generic</span><br><span class="line">gyp ERR! <span class="built_in">command</span> <span class="string">&quot;node&quot;</span> <span class="string">&quot;/nodejs/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js&quot;</span> <span class="string">&quot;rebuild&quot;</span></span><br><span class="line">gyp ERR! cwd /app/node_modules/irc/node_modules/node-icu-charset-detector</span><br><span class="line">gyp ERR! node -v v0.10.33</span><br><span class="line">gyp ERR! node-gyp -v v1.0.1</span><br><span class="line">gyp ERR! not ok</span><br><span class="line">npm WARN optional dep failed, continuing node-icu-charset-detector@0.0.7</span><br></pre></td></tr></table></figure>
 
 <p>node-icu-charset-detectorのビルドで<code>unicode/ucsdet.h</code>が見つからないようです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">../node-icu-charset-detector.cpp:5:28: fatal error: unicode/ucsdet.h: No such file or directory</span><br></pre></td></tr></table></figure>
@@ -251,36 +218,36 @@
 <h3 id="apt-fileを使ってパッケージを検索"><a href="#apt-fileを使ってパッケージを検索" class="headerlink" title="apt-fileを使ってパッケージを検索"></a>apt-fileを使ってパッケージを検索</h3><p>apt-fileコマンドでunicode/ucsdet.hを検索します。必要なヘッダは<code>libicu-dev</code>パッケージをインストールすると良いみたいです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install apt-file</span><br><span class="line">$ sudo apt-file update</span><br><span class="line">$ apt-file search unicode/ucsdet.h</span><br><span class="line">libicu-dev: /usr/include/x86_64-linux-gnu/unicode/ucsdet.h</span><br></pre></td></tr></table></figure>
 
-<h3 id="google-nodejs-runtime"><a href="#google-nodejs-runtime" class="headerlink" title="google/nodejs-runtime"></a>google/nodejs-runtime</h3><p>現在のDockerfileは<a href="https://registry.hub.docker.com/u/google/nodejs-runtime/" target="_blank" rel="noopener">google/nodejs-runtime</a>をbaseイメージに指定しているだけです。</p>
+<h3 id="google-nodejs-runtime"><a href="#google-nodejs-runtime" class="headerlink" title="google/nodejs-runtime"></a>google/nodejs-runtime</h3><p>現在のDockerfileは<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/google/nodejs-runtime/">google/nodejs-runtime</a>をbaseイメージに指定しているだけです。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> FROM google/nodejs-runtime &gt; Dockerfile</span><br></pre></td></tr></table></figure>
 
 <p><code>libicu-dev</code>をインストールしたいのですがONBUILDで<code>npm install</code>を実行しているので、派生させたDockerfileでは<code>npm install</code>の実行後になってしまい<code>node-gyp rebuild</code>に間に合いません。</p>
-<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line">ONBUILD ADD package.json /app/</span><br><span class="line">ONBUILD RUN npm install</span><br><span class="line">ONBUILD ADD . /app</span><br><span class="line"></span><br><span class="line">EXPOSE 8080</span><br><span class="line">CMD []</span><br><span class="line">ENTRYPOINT [<span class="string">"/nodejs/bin/npm"</span>, <span class="string">"start"</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line">ONBUILD ADD package.json /app/</span><br><span class="line">ONBUILD RUN npm install</span><br><span class="line">ONBUILD ADD . /app</span><br><span class="line"></span><br><span class="line">EXPOSE 8080</span><br><span class="line">CMD []</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;/nodejs/bin/npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://registry.hub.docker.com/u/google/nodejs/" target="_blank" rel="noopener">google/nodejs</a>をbaseイメージにしてDockerfileを作り直すことにします。</p>
+<p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/google/nodejs/">google/nodejs</a>をbaseイメージにしてDockerfileを作り直すことにします。</p>
 <h2 id="docker-buildのやり直し"><a href="#docker-buildのやり直し" class="headerlink" title="docker buildのやり直し"></a>docker buildのやり直し</h2><p>Node-REDをgit cloneしたディレクトリに移動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/nod-red</span><br></pre></td></tr></table></figure>
 
 <p>settings.jsを編集して、追加のnode用にjsとhtmlファイルを配置するディレクトリを指定します。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/nod-red/settings.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">nodesDir: <span class="string">'/data/nodes'</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/docker_apps/nod-red/settings.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">nodesDir: <span class="string">&#x27;/data/nodes&#x27;</span>,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>nodesDirに指定したディレクトリはコンテナの起動時にDockerホストの<code>/opt/nodes</code>にマップします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mkdir -p /opt/nodes</span><br></pre></td></tr></table></figure>
 
 <p>ビルドのテスト用にres.jsに-vフラグを追加してデバッグします。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/nod-red/package.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="string">"scripts"</span>      : &#123;</span><br><span class="line">        <span class="string">"start"</span>: <span class="string">"node red.js -v"</span>,</span><br><span class="line">        <span class="string">"test"</span>: <span class="string">"./node_modules/.bin/grunt"</span></span><br><span class="line">    &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/docker_apps/nod-red/package.js</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    <span class="string">&quot;scripts&quot;</span>      : &#123;</span><br><span class="line">        <span class="string">&quot;start&quot;</span>: <span class="string">&quot;node red.js -v&quot;</span>,</span><br><span class="line">        <span class="string">&quot;test&quot;</span>: <span class="string">&quot;./node_modules/.bin/grunt&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h3 id="google-nodejs"><a href="#google-nodejs" class="headerlink" title="google/nodejs"></a>google/nodejs</h3><p><a href="https://registry.hub.docker.com/u/google/nodejs/" target="_blank" rel="noopener">google/nodejs</a>をbaseイメージにしたDockerfileです。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/nod-red/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">  apt-get install -y libicu-dev</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line">ADD package.json /app/</span><br><span class="line">RUN npm install</span><br><span class="line">ADD . /app</span><br><span class="line"></span><br><span class="line">EXPOSE 1880</span><br><span class="line">CMD []</span><br><span class="line">ENTRYPOINT [<span class="string">"/nodejs/bin/npm"</span>, <span class="string">"start"</span>]</span><br><span class="line"></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<h3 id="google-nodejs"><a href="#google-nodejs" class="headerlink" title="google/nodejs"></a>google/nodejs</h3><p><a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/google/nodejs/">google/nodejs</a>をbaseイメージにしたDockerfileです。</p>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/nod-red/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM google/nodejs</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">  apt-get install -y libicu-dev</span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line">ADD package.json /app/</span><br><span class="line">RUN npm install</span><br><span class="line">ADD . /app</span><br><span class="line"></span><br><span class="line">EXPOSE 1880</span><br><span class="line">CMD []</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;/nodejs/bin/npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br><span class="line"></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
 <p>Dockerイメージをビルドします。今度はnode-icu-charset-detectorの<code>node-gyp rebuild</code>に成功しました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> docker_apps/nod-red</span><br><span class="line">$ docker build -t node-red .</span><br><span class="line">...</span><br><span class="line">&gt; node-icu-charset-detector@0.0.7 install /app/node_modules/irc/node_modules/node-icu-charset-detect</span><br><span class="line">or</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">make: Entering directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build<span class="string">'</span></span><br><span class="line"><span class="string">  CXX(target) Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o</span></span><br><span class="line"><span class="string">  SOLINK_MODULE(target) Release/obj.target/node-icu-charset-detector.node</span></span><br><span class="line"><span class="string">  SOLINK_MODULE(target) Release/obj.target/node-icu-charset-detector.node: Finished</span></span><br><span class="line"><span class="string">  COPY Release/node-icu-charset-detector.node</span></span><br><span class="line"><span class="string">make: Leaving directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build'</span></span><br><span class="line">...</span><br><span class="line">irc@0.3.9 node_modules/irc</span><br><span class="line">├── ansi-color@0.2.1</span><br><span class="line">├── irc-colors@1.1.0 (hashish@0.0.4)</span><br><span class="line">├── node-icu-charset-detector@0.0.7</span><br><span class="line">└── iconv@2.1.5 (nan@1.4.3)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> docker_apps/nod-red</span><br><span class="line">$ docker build -t node-red .</span><br><span class="line">...</span><br><span class="line">&gt; node-icu-charset-detector@0.0.7 install /app/node_modules/irc/node_modules/node-icu-charset-detect</span><br><span class="line">or</span><br><span class="line">&gt; node-gyp rebuild</span><br><span class="line"></span><br><span class="line">make: Entering directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build<span class="string">&#x27;</span></span><br><span class="line"><span class="string">  CXX(target) Release/obj.target/node-icu-charset-detector/node-icu-charset-detector.o</span></span><br><span class="line"><span class="string">  SOLINK_MODULE(target) Release/obj.target/node-icu-charset-detector.node</span></span><br><span class="line"><span class="string">  SOLINK_MODULE(target) Release/obj.target/node-icu-charset-detector.node: Finished</span></span><br><span class="line"><span class="string">  COPY Release/node-icu-charset-detector.node</span></span><br><span class="line"><span class="string">make: Leaving directory `/app/node_modules/irc/node_modules/node-icu-charset-detector/build&#x27;</span></span><br><span class="line">...</span><br><span class="line">irc@0.3.9 node_modules/irc</span><br><span class="line">├── ansi-color@0.2.1</span><br><span class="line">├── irc-colors@1.1.0 (hashish@0.0.4)</span><br><span class="line">├── node-icu-charset-detector@0.0.7</span><br><span class="line">└── iconv@2.1.5 (nan@1.4.3)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>テスト用に使い捨てのコンテナを起動してデバッグを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm \</span><br><span class="line">  --name node-red \</span><br><span class="line">  -p 1880:1880 \</span><br><span class="line">  -v /opt/nodes:/data/nodes \</span><br><span class="line">  node-red </span><br><span class="line">&gt; node-red@0.9.1 start /app</span><br><span class="line">&gt; node red.js -v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Welcome to Node-RED</span><br><span class="line">===================</span><br><span class="line"></span><br><span class="line">13 Feb 09:04:53 - [info] Version: 0.9.1.git</span><br><span class="line">13 Feb 09:04:53 - [info] Loading palette nodes</span><br><span class="line">13 Feb 09:04:54 - [warn] ------------------------------------------</span><br><span class="line">13 Feb 09:04:54 - [warn] [arduino] Error: Cannot find module <span class="string">'arduino-firmata'</span></span><br><span class="line">13 Feb 09:04:54 - [warn] [rpi-gpio] Info : Ignoring Raspberry Pi specific node.</span><br><span class="line">13 Feb 09:04:54 - [warn] [redisout] Error: Cannot find module <span class="string">'redis'</span></span><br><span class="line">13 Feb 09:04:54 - [warn] [mongodb] Error: Cannot find module <span class="string">'mongodb'</span></span><br><span class="line">13 Feb 09:04:54 - [warn] ------------------------------------------</span><br><span class="line">13 Feb 09:04:54 - [info] Server now running at http://127.0.0.1:1880/</span><br><span class="line">13 Feb 09:04:54 - [info] Flows file not found : flows_e816455bc0d9.json</span><br><span class="line">13 Feb 09:04:54 - [info] Starting flows</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm \</span><br><span class="line">  --name node-red \</span><br><span class="line">  -p 1880:1880 \</span><br><span class="line">  -v /opt/nodes:/data/nodes \</span><br><span class="line">  node-red </span><br><span class="line">&gt; node-red@0.9.1 start /app</span><br><span class="line">&gt; node red.js -v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Welcome to Node-RED</span><br><span class="line">===================</span><br><span class="line"></span><br><span class="line">13 Feb 09:04:53 - [info] Version: 0.9.1.git</span><br><span class="line">13 Feb 09:04:53 - [info] Loading palette nodes</span><br><span class="line">13 Feb 09:04:54 - [warn] ------------------------------------------</span><br><span class="line">13 Feb 09:04:54 - [warn] [arduino] Error: Cannot find module <span class="string">&#x27;arduino-firmata&#x27;</span></span><br><span class="line">13 Feb 09:04:54 - [warn] [rpi-gpio] Info : Ignoring Raspberry Pi specific node.</span><br><span class="line">13 Feb 09:04:54 - [warn] [redisout] Error: Cannot find module <span class="string">&#x27;redis&#x27;</span></span><br><span class="line">13 Feb 09:04:54 - [warn] [mongodb] Error: Cannot find module <span class="string">&#x27;mongodb&#x27;</span></span><br><span class="line">13 Feb 09:04:54 - [warn] ------------------------------------------</span><br><span class="line">13 Feb 09:04:54 - [info] Server now running at http://127.0.0.1:1880/</span><br><span class="line">13 Feb 09:04:54 - [info] Flows file not found : flows_e816455bc0d9.json</span><br><span class="line">13 Feb 09:04:54 - [info] Starting flows</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザで動作確認をします。</p>
-<p><a href="http://10.1.3.67:1880" target="_blank" rel="noopener">http://10.1.3.67:1880</a></p>
+<p><a target="_blank" rel="noopener" href="http://10.1.3.67:1880/">http://10.1.3.67:1880</a></p>
 
     </div>
 
@@ -316,7 +283,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -367,7 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-buildのエラー"><span class="nav-number">1.</span> <span class="nav-text">docker buildのエラー</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apt-fileを使ってパッケージを検索"><span class="nav-number">1.1.</span> <span class="nav-text">apt-fileを使ってパッケージを検索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#google-nodejs-runtime"><span class="nav-number">1.2.</span> <span class="nav-text">google&#x2F;nodejs-runtime</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-buildのやり直し"><span class="nav-number">2.</span> <span class="nav-text">docker buildのやり直し</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#google-nodejs"><span class="nav-number">2.1.</span> <span class="nav-text">google&#x2F;nodejs</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-build%E3%81%AE%E3%82%A8%E3%83%A9%E3%83%BC"><span class="nav-number">1.</span> <span class="nav-text">docker buildのエラー</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#apt-file%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%82%92%E6%A4%9C%E7%B4%A2"><span class="nav-number">1.1.</span> <span class="nav-text">apt-fileを使ってパッケージを検索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#google-nodejs-runtime"><span class="nav-number">1.2.</span> <span class="nav-text">google&#x2F;nodejs-runtime</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-build%E3%81%AE%E3%82%84%E3%82%8A%E7%9B%B4%E3%81%97"><span class="nav-number">2.</span> <span class="nav-text">docker buildのやり直し</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#google-nodejs"><span class="nav-number">2.1.</span> <span class="nav-text">google&#x2F;nodejs</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,10 +365,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -427,9 +396,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -469,13 +438,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

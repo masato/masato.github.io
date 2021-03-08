@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="PySpark StreamingでSensorTagのデータをJupyterを動作環境にしてウィンドウ集計を試しました。ストリーム処理のフレームワークは他にもいくつかありますが次はKafka Streamsを使ってみます。Sparkと違いこちらはクラスタではなくライブラリです。現在のところ開発言語は公式にはJavaのみサポートしています。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka StreamsでSensorTagをウィンドウ集計をする">
 <meta property="og:url" content="https://masato.github.io/2017/08/08/sensortag-kafka-streams/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="PySpark StreamingでSensorTagのデータをJupyterを動作環境にしてウィンドウ集計を試しました。ストリーム処理のフレームワークは他にもいくつかありますが次はKafka Streamsを使ってみます。Sparkと違いこちらはクラスタではなくライブラリです。現在のところ開発言語は公式にはJavaのみサポートしています。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2017-08-08T01:44:19.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.901Z">
+<meta property="article:modified_time" content="2017-08-08T01:44:19.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Kafka">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>Kafka StreamsでSensorTagをウィンドウ集計をする | masato's blog</title>
+  <title>Kafka StreamsでSensorTagをウィンドウ集計をする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -88,7 +88,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -109,14 +109,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -125,51 +124,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -186,11 +161,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -203,7 +177,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -213,22 +187,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 8 2017 10:44:19" itemprop="dateCreated datePublished" datetime="2017-08-08T10:44:19+09:00">Aug 8 2017</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -248,22 +215,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>　PySpark StreamingでSensorTagのデータをJupyterを動作環境にして<a href="https://masato.github.io/2017/08/02/sensortag-kafka-python-spark-streaming-6/">ウィンドウ集計を試しました</a>。ストリーム処理のフレームワークは他にもいくつかありますが次は<a href="http://docs.confluent.io/current/streams/index.html" target="_blank" rel="noopener">Kafka Streams</a>を使ってみます。Sparkと違いこちらはクラスタではなくライブラリです。現在のところ開発言語は公式にはJavaのみサポートしています。</p>
-<a id="more"></a>
+        <p>　PySpark StreamingでSensorTagのデータをJupyterを動作環境にして<a href="https://masato.github.io/2017/08/02/sensortag-kafka-python-spark-streaming-6/">ウィンドウ集計を試しました</a>。ストリーム処理のフレームワークは他にもいくつかありますが次は<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/streams/index.html">Kafka Streams</a>を使ってみます。Sparkと違いこちらはクラスタではなくライブラリです。現在のところ開発言語は公式にはJavaのみサポートしています。</p>
+<span id="more"></span>
 
 
 <h2 id="Java環境"><a href="#Java環境" class="headerlink" title="Java環境"></a>Java環境</h2><p>　Ubuntu 16.04に構築した<a href="https://masato.github.io/2017/08/04/emacs-eclim-java/">Eclim</a>をMavenでコードを書いていきます。</p>
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>　プロジェクトのディレクトリに以下のファイルを作成します。完全なコードはこちらの<a href="https://github.com/masato/streams-kafka-examples" target="_blank" rel="noopener">リポジトリ</a>にあります。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>　プロジェクトのディレクトリに以下のファイルを作成します。完全なコードはこちらの<a target="_blank" rel="noopener" href="https://github.com/masato/streams-kafka-examples">リポジトリ</a>にあります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$  tree</span><br><span class="line">.</span><br><span class="line">├── pom.xml</span><br><span class="line">└── src</span><br><span class="line">    └── main</span><br><span class="line">        ├── java</span><br><span class="line">        │   └── com</span><br><span class="line">        │       └── github</span><br><span class="line">        │           └── masato</span><br><span class="line">        │               └── streams</span><br><span class="line">        │                   └── kafka</span><br><span class="line">        │                       ├── App.java</span><br><span class="line">        │                       ├── SensorSumDeserializer.java</span><br><span class="line">        │                       ├── SensorSum.java</span><br><span class="line">        │                       └── SensorSumSerializer.java</span><br><span class="line">        └── resources</span><br><span class="line">            └── logback.xml</span><br><span class="line"></span><br><span class="line">9 directories, 7 files</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="App-java"><a href="#App-java" class="headerlink" title="App.java"></a>App.java</h2><p>　いくつかのパートにわけてコードの説明をします。</p>
 <h3 id="定数"><a href="#定数" class="headerlink" title="定数"></a>定数</h3><p>　トピック名などはpom.xmlに定義した環境変数から取得します。<code>WINDOWS_MINUTES</code>はウィンドウ集計をする間隔です。<code>COMMIT_MINUTES</code>は後述するようにKafkaがキャッシュを自動的にコミットする間隔です。ここでは分で指定します。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(App<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SOURCE_TOPIC = System.getenv(<span class="string">"SOURCE_TOPIC"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SINK_TOPIC = System.getenv(<span class="string">"SINK_TOPIC"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> WINDOWS_MINUTES = <span class="number">2L</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> COMMIT_MINUTES = <span class="number">3L</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOG = LoggerFactory.getLogger(App.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SOURCE_TOPIC = System.getenv(<span class="string">&quot;SOURCE_TOPIC&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SINK_TOPIC = System.getenv(<span class="string">&quot;SINK_TOPIC&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> WINDOWS_MINUTES = <span class="number">2L</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> COMMIT_MINUTES = <span class="number">3L</span>;</span><br></pre></td></tr></table></figure>
 
 <h3 id="シリアライゼーション"><a href="#シリアライゼーション" class="headerlink" title="シリアライゼーション"></a>シリアライゼーション</h3><p>　レコードのシリアライザとデシリアライザを作成します。Kafka Streamsアプリでは処理の中間結果をトピックに保存してフローを実装していきます。レコードをトピックから読むときのデシリアライザ、書くときのシリアライザの2つをまとめてSerDeを定義します。SerDeはトピックのキーと値の型ごとに必要です。</p>
 <ul>
-<li><p>jsonSerde<br>SensorTagのレコードはキーは文字列、値は<a href="http://wiki.fasterxml.com/JacksonHome" target="_blank" rel="noopener">Jackson</a>の<a href="https://fasterxml.github.io/jackson-databind/javadoc/2.8/com/fasterxml/jackson/databind/JsonNode.html" target="_blank" rel="noopener">JsonNode</a>オブジェクトです。</p>
+<li><p>jsonSerde<br>SensorTagのレコードはキーは文字列、値は<a target="_blank" rel="noopener" href="http://wiki.fasterxml.com/JacksonHome">Jackson</a>の<a target="_blank" rel="noopener" href="https://fasterxml.github.io/jackson-databind/javadoc/2.8/com/fasterxml/jackson/databind/JsonNode.html">JsonNode</a>オブジェクトです。</p>
 </li>
 <li><p>sensorSumSerde<br><code>SenroSum</code>はカスタムで作成した周囲温度 (ambient)とウィンドウ集計の状態を保持するクラスです。</p>
 </li>
@@ -274,49 +241,49 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Serializer&lt;JsonNode&gt; jsonSerializer = <span class="keyword">new</span> JsonSerializer();</span><br><span class="line">    <span class="keyword">final</span> Deserializer&lt;JsonNode&gt; jsonDeserializer = <span class="keyword">new</span> JsonDeserializer();</span><br><span class="line">    <span class="keyword">final</span> Serde&lt;JsonNode&gt; jsonSerde =</span><br><span class="line">        Serdes.serdeFrom(jsonSerializer, jsonDeserializer);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Serializer&lt;SensorSum&gt; sensorSumSerializer =</span><br><span class="line">        <span class="keyword">new</span> SensorSumSerializer();</span><br><span class="line">    <span class="keyword">final</span> Deserializer&lt;SensorSum&gt; sensorSumDeserializer =</span><br><span class="line">        <span class="keyword">new</span> SensorSumDeserializer();</span><br><span class="line">    <span class="keyword">final</span> Serde&lt;SensorSum&gt; sensorSumSerde =</span><br><span class="line">        Serdes.serdeFrom(sensorSumSerializer,</span><br><span class="line">                         sensorSumDeserializer);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Serde&lt;String&gt; stringSerde = Serdes.String();</span><br><span class="line">    <span class="keyword">final</span> Serde&lt;Double&gt; doubleSerde = Serdes.Double();</span><br></pre></td></tr></table></figure>
 
-<h3 id="KStreamの作成"><a href="#KStreamの作成" class="headerlink" title="KStreamの作成"></a>KStreamの作成</h3><p>　最初に<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KStreamBuilder.html" target="_blank" rel="noopener">KStreamBuilder</a>の<code>stream()</code>を呼び<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KStream.html" target="_blank" rel="noopener">KStream</a>を作成します。トピックのキーは文字列、値はJsonNodeのSerDeを指定します。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KStreamBuilder builder = <span class="keyword">new</span> KStreamBuilder();</span><br><span class="line"></span><br><span class="line">LOG.info(<span class="string">"Starting Sorting Job"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> KStream&lt;String, JsonNode&gt; source =</span><br><span class="line">    builder.stream(stringSerde, jsonSerde, SOURCE_TOPIC);</span><br></pre></td></tr></table></figure>
+<h3 id="KStreamの作成"><a href="#KStreamの作成" class="headerlink" title="KStreamの作成"></a>KStreamの作成</h3><p>　最初に<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KStreamBuilder.html">KStreamBuilder</a>の<code>stream()</code>を呼び<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KStream.html">KStream</a>を作成します。トピックのキーは文字列、値はJsonNodeのSerDeを指定します。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KStreamBuilder builder = <span class="keyword">new</span> KStreamBuilder();</span><br><span class="line"></span><br><span class="line">LOG.info(<span class="string">&quot;Starting Sorting Job&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">final</span> KStream&lt;String, JsonNode&gt; source =</span><br><span class="line">    builder.stream(stringSerde, jsonSerde, SOURCE_TOPIC);</span><br></pre></td></tr></table></figure>
 
 <h3 id="KGroupedStreamを作成"><a href="#KGroupedStreamを作成" class="headerlink" title="KGroupedStreamを作成"></a>KGroupedStreamを作成</h3><p>　SensorTagのメッセージはRaspberry Pi 3からJSON文字列でKafkaのトピックに届きます。</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;'bid': 'B0:B4:48:BE:5E:00', 'time': 1502152524, 'humidity': 27.26287841796875, 'objecttemp': 21.1875, 'ambient': 27.03125, 'rh': 75.311279296875&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;bid&#x27;: &#x27;B0:B4:48:BE:5E:00&#x27;, &#x27;time&#x27;: 1502152524, &#x27;humidity&#x27;: 27.26287841796875, &#x27;objecttemp&#x27;: 21.1875, &#x27;ambient&#x27;: 27.03125, &#x27;rh&#x27;: 75.311279296875&#125;</span><br></pre></td></tr></table></figure>
 
-<p>　KStreamのレコードはキーと値を持つ<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/KeyValue.html" target="_blank" rel="noopener">KeyValue</a>オブジェクトです。例では周囲温度 (ambient)の平均値だけウィンドウ集計するため<code>map()</code>を呼びキーと周囲温度のペアだけ持つ新しいKStreamを作成します。</p>
-<p>　次に<code>groupByKey()</code>を呼びキーでグループ化して<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KGroupedStream.html" target="_blank" rel="noopener">KGroupedStream</a>を作成します。レコードはキーは文字列、値は周囲温度の<code>double</code>になっているのでそれぞれのSerDeを指定します。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KGroupedStream&lt;String, Double&gt; sensors =</span><br><span class="line">    source</span><br><span class="line">    .map((k, v) -&gt; &#123;</span><br><span class="line">            <span class="keyword">double</span> ambient = v.get(<span class="string">"ambient"</span>).asDouble();</span><br><span class="line">            <span class="keyword">return</span> KeyValue.pair(k, ambient);</span><br><span class="line">        &#125;)</span><br><span class="line">    .groupByKey(stringSerde, doubleSerde);</span><br></pre></td></tr></table></figure>
+<p>　KStreamのレコードはキーと値を持つ<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/KeyValue.html">KeyValue</a>オブジェクトです。例では周囲温度 (ambient)の平均値だけウィンドウ集計するため<code>map()</code>を呼びキーと周囲温度のペアだけ持つ新しいKStreamを作成します。</p>
+<p>　次に<code>groupByKey()</code>を呼びキーでグループ化して<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KGroupedStream.html">KGroupedStream</a>を作成します。レコードはキーは文字列、値は周囲温度の<code>double</code>になっているのでそれぞれのSerDeを指定します。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KGroupedStream&lt;String, Double&gt; sensors =</span><br><span class="line">    source</span><br><span class="line">    .map((k, v) -&gt; &#123;</span><br><span class="line">            <span class="keyword">double</span> ambient = v.get(<span class="string">&quot;ambient&quot;</span>).asDouble();</span><br><span class="line">            <span class="keyword">return</span> KeyValue.pair(k, ambient);</span><br><span class="line">        &#125;)</span><br><span class="line">    .groupByKey(stringSerde, doubleSerde);</span><br></pre></td></tr></table></figure>
 
-<h3 id="KStramからKTableを作成"><a href="#KStramからKTableを作成" class="headerlink" title="KStramからKTableを作成"></a>KStramからKTableを作成</h3><p>　KGroupedStreamの<code>aggregate()</code>を呼び<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KTable.html" target="_blank" rel="noopener">KTable</a>を作成します。KTableはキーごとに指定されたウィンドウ間隔でレコードの合計値とレコード数の状態を保持します。</p>
-<p>　<code>aggregate()</code>の第1引数の<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/Initializer.html" target="_blank" rel="noopener">Initializer</a>ではストリームの集約で使うアグリゲータの初期化を行います。ここでウィンドウ集計の状態を保持する<code>SensorSum</code>の初期化を行います。第2引数でアグリゲータを実装します。現在のレコードのキーと値、1つ前のレコード処理で作成した<code>SensorSum</code>が渡されます。データの到着ごとに合計値とレコード数を加算して新しい<code>SensorSum</code>を返します。第３引数は2分ウィンドウの<a href="http://apache.mesi.com.ar/kafka/0.10.2.0/javadoc/org/apache/kafka/streams/kstream/TimeWindows.html" target="_blank" rel="noopener">TimeWindows</a>を定義します。第4引数は<code>SensorSum</code>のSerDe、第5引数は状態を保持するトピック名を渡します。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KTable&lt;Windowed&lt;String&gt;, SensorSum&gt; sensorAgg =</span><br><span class="line">    sensors</span><br><span class="line">    .aggregate(() -&gt; <span class="keyword">new</span> SensorSum(<span class="number">0</span>D, <span class="number">0</span>)</span><br><span class="line">               , (aggKey, value, agg) -&gt; <span class="keyword">new</span> SensorSum(agg.sum + value, agg.count + <span class="number">1</span>)</span><br><span class="line">               , TimeWindows.of(TimeUnit.MINUTES.toMillis(WINDOWS_MINUTES))</span><br><span class="line">               , sensorSumSerde,</span><br><span class="line">               <span class="string">"sensorSum"</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="KStramからKTableを作成"><a href="#KStramからKTableを作成" class="headerlink" title="KStramからKTableを作成"></a>KStramからKTableを作成</h3><p>　KGroupedStreamの<code>aggregate()</code>を呼び<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/KTable.html">KTable</a>を作成します。KTableはキーごとに指定されたウィンドウ間隔でレコードの合計値とレコード数の状態を保持します。</p>
+<p>　<code>aggregate()</code>の第1引数の<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/kstream/Initializer.html">Initializer</a>ではストリームの集約で使うアグリゲータの初期化を行います。ここでウィンドウ集計の状態を保持する<code>SensorSum</code>の初期化を行います。第2引数でアグリゲータを実装します。現在のレコードのキーと値、1つ前のレコード処理で作成した<code>SensorSum</code>が渡されます。データの到着ごとに合計値とレコード数を加算して新しい<code>SensorSum</code>を返します。第３引数は2分ウィンドウの<a target="_blank" rel="noopener" href="http://apache.mesi.com.ar/kafka/0.10.2.0/javadoc/org/apache/kafka/streams/kstream/TimeWindows.html">TimeWindows</a>を定義します。第4引数は<code>SensorSum</code>のSerDe、第5引数は状態を保持するトピック名を渡します。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> KTable&lt;Windowed&lt;String&gt;, SensorSum&gt; sensorAgg =</span><br><span class="line">    sensors</span><br><span class="line">    .aggregate(() -&gt; <span class="keyword">new</span> SensorSum(<span class="number">0D</span>, <span class="number">0</span>)</span><br><span class="line">               , (aggKey, value, agg) -&gt; <span class="keyword">new</span> SensorSum(agg.sum + value, agg.count + <span class="number">1</span>)</span><br><span class="line">               , TimeWindows.of(TimeUnit.MINUTES.toMillis(WINDOWS_MINUTES))</span><br><span class="line">               , sensorSumSerde,</span><br><span class="line">               <span class="string">&quot;sensorSum&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <h3 id="KTableからKStramを作成"><a href="#KTableからKStramを作成" class="headerlink" title="KTableからKStramを作成"></a>KTableからKStramを作成</h3><p>　KTableの<code>mapValues()</code>で平均値を計算します。合計値をレコード数で除算した平均値は<code>Double</code>レコードの新しいKTableです。ここから<code>toStream()</code>を呼びKStreamを作成します。レコードはタイムスタンプ、キー、平均値のJSON文字列にフォーマットしてストリームに出力します。タイムスタンプは異なるシステム間でデータ交換がしやすいようにISO 8601にしています。最後に指定したトピックへレコードを保存して終了です。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> DateTimeFormatter fmt =</span><br><span class="line">    DateTimeFormatter.ISO_OFFSET_DATE_TIME;</span><br><span class="line"></span><br><span class="line">sensorAgg</span><br><span class="line">    .&lt;Double&gt;mapValues((v) -&gt; ((<span class="keyword">double</span>) v.sum / v.count))</span><br><span class="line">    .toStream()</span><br><span class="line">    .map((key, avg) -&gt; &#123;</span><br><span class="line">            <span class="keyword">long</span> end = key.window().end();</span><br><span class="line">            ZonedDateTime zdt =</span><br><span class="line">                <span class="keyword">new</span> Date(end).toInstant()</span><br><span class="line">                .atZone(ZoneId.systemDefault());</span><br><span class="line">            String time = fmt.format(zdt);</span><br><span class="line">            String bid = key.key();</span><br><span class="line">            String retval =</span><br><span class="line">                String.format(<span class="string">"&#123;\"time\": \"%s\", \"bid\": \"%s\", \"ambient\": %f&#125;"</span>,</span><br><span class="line">                              time, bid, avg);</span><br><span class="line">            LOG.info(retval);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> KeyValue&lt;String,String&gt;(bid, retval);</span><br><span class="line">     &#125;)</span><br><span class="line">    .to(SINK_TOPIC);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> DateTimeFormatter fmt =</span><br><span class="line">    DateTimeFormatter.ISO_OFFSET_DATE_TIME;</span><br><span class="line"></span><br><span class="line">sensorAgg</span><br><span class="line">    .&lt;Double&gt;mapValues((v) -&gt; ((<span class="keyword">double</span>) v.sum / v.count))</span><br><span class="line">    .toStream()</span><br><span class="line">    .map((key, avg) -&gt; &#123;</span><br><span class="line">            <span class="keyword">long</span> end = key.window().end();</span><br><span class="line">            ZonedDateTime zdt =</span><br><span class="line">                <span class="keyword">new</span> Date(end).toInstant()</span><br><span class="line">                .atZone(ZoneId.systemDefault());</span><br><span class="line">            String time = fmt.format(zdt);</span><br><span class="line">            String bid = key.key();</span><br><span class="line">            String retval =</span><br><span class="line">                String.format(<span class="string">&quot;&#123;\&quot;time\&quot;: \&quot;%s\&quot;, \&quot;bid\&quot;: \&quot;%s\&quot;, \&quot;ambient\&quot;: %f&#125;&quot;</span>,</span><br><span class="line">                              time, bid, avg);</span><br><span class="line">            LOG.info(retval);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> KeyValue&lt;String,String&gt;(bid, retval);</span><br><span class="line">     &#125;)</span><br><span class="line">    .to(SINK_TOPIC);</span><br></pre></td></tr></table></figure>
 
-<h3 id="Kafka-Streamsの開始"><a href="#Kafka-Streamsの開始" class="headerlink" title="Kafka Streamsの開始"></a>Kafka Streamsの開始</h3><p>　<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/KafkaStreams.html" target="_blank" rel="noopener">KafkaStreams</a>を設定オブジェクトとビルダーから作成してKafka Streamsアプリを開始します。また<code>SIGTERM</code>でKafka Streamを停止するようにシャットダウンフックに登録しておきます。</p>
+<h3 id="Kafka-Streamsの開始"><a href="#Kafka-Streamsの開始" class="headerlink" title="Kafka Streamsの開始"></a>Kafka Streamsの開始</h3><p>　<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/KafkaStreams.html">KafkaStreams</a>を設定オブジェクトとビルダーから作成してKafka Streamsアプリを開始します。また<code>SIGTERM</code>でKafka Streamを停止するようにシャットダウンフックに登録しておきます。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">final</span> StreamsConfig config = <span class="keyword">new</span> StreamsConfig(getProperties());</span><br><span class="line"><span class="keyword">final</span> KafkaStreams streams = <span class="keyword">new</span> KafkaStreams(builder, config);</span><br><span class="line">streams.start();</span><br><span class="line"></span><br><span class="line">Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread(streams::close));</span><br></pre></td></tr></table></figure>
 
 <h3 id="Kafka-Streamsの設定とタイムアウトについて"><a href="#Kafka-Streamsの設定とタイムアウトについて" class="headerlink" title="Kafka Streamsの設定とタイムアウトについて"></a>Kafka Streamsの設定とタイムアウトについて</h3><p>　環境変数などからKafka Streamsの設定で使う<code>Properties</code>を作成します。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Properties <span class="title">getProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">    props.put(StreamsConfig.APPLICATION_ID_CONFIG,</span><br><span class="line">              System.getenv(<span class="string">"APPLICATION_ID_CONFIG"</span>));</span><br><span class="line">    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,</span><br><span class="line">              System.getenv(<span class="string">"BOOTSTRAP_SERVERS_CONFIG"</span>));</span><br><span class="line">    props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG,</span><br><span class="line">              Serdes.String().getClass().getName());</span><br><span class="line">    props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG,</span><br><span class="line">              Serdes.String().getClass().getName());</span><br><span class="line">    props.put(StreamsConfig.TIMESTAMP_EXTRACTOR_CLASS_CONFIG,</span><br><span class="line">              WallclockTimestampExtractor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br><span class="line">    props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,</span><br><span class="line">              TimeUnit.MINUTES.toMillis(COMMIT_MINUTES));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> props;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Properties <span class="title">getProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">    props.put(StreamsConfig.APPLICATION_ID_CONFIG,</span><br><span class="line">              System.getenv(<span class="string">&quot;APPLICATION_ID_CONFIG&quot;</span>));</span><br><span class="line">    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,</span><br><span class="line">              System.getenv(<span class="string">&quot;BOOTSTRAP_SERVERS_CONFIG&quot;</span>));</span><br><span class="line">    props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG,</span><br><span class="line">              Serdes.String().getClass().getName());</span><br><span class="line">    props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG,</span><br><span class="line">              Serdes.String().getClass().getName());</span><br><span class="line">    props.put(StreamsConfig.TIMESTAMP_EXTRACTOR_CLASS_CONFIG,</span><br><span class="line">              WallclockTimestampExtractor.class.getName());</span><br><span class="line">    props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG,</span><br><span class="line">              TimeUnit.MINUTES.toMillis(COMMIT_MINUTES));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> props;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="COMMIT-INTERVAL-MS-CONFIG"><a href="#COMMIT-INTERVAL-MS-CONFIG" class="headerlink" title="COMMIT_INTERVAL_MS_CONFIG"></a>COMMIT_INTERVAL_MS_CONFIG</h3><p>　最初は<a href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/StreamsConfig.html#COMMIT_INTERVAL_MS_CONFIG" target="_blank" rel="noopener">StreamsConfig.COMMIT_INTERVAL_MS_CONFIG</a>は変更していませんでした。レコードをトピック保存する前にKStreamのmap()でログを出力しています。2分ウィンドウ間隔の集計結果を最後に1回だけ出力をさせたかったのですが、4-5回不特定に重複する結果になりました。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.343750&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.385417&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.410156&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.440341&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.450521&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.562500&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.562500&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="COMMIT-INTERVAL-MS-CONFIG"><a href="#COMMIT-INTERVAL-MS-CONFIG" class="headerlink" title="COMMIT_INTERVAL_MS_CONFIG"></a>COMMIT_INTERVAL_MS_CONFIG</h3><p>　最初は<a target="_blank" rel="noopener" href="https://kafka.apache.org/0102/javadoc/org/apache/kafka/streams/StreamsConfig.html#COMMIT_INTERVAL_MS_CONFIG">StreamsConfig.COMMIT_INTERVAL_MS_CONFIG</a>は変更していませんでした。レコードをトピック保存する前にKStreamのmap()でログを出力しています。2分ウィンドウ間隔の集計結果を最後に1回だけ出力をさせたかったのですが、4-5回不特定に重複する結果になりました。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.343750&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.385417&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.410156&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.440341&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.450521&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.562500&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T10:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.562500&#125;</span><br></pre></td></tr></table></figure>
 
 <p>　以下の記事を参考にすると、これはKTableの変更履歴 (changelog stream)という特徴から期待される動作のようです。KTableにウィンドウ集計の最終結果という状態はなく、キャッシュに更新された値は一定の間隔でコミットされます。KStreamへ<code>toStream()</code>したあとに<code>transform()</code>や<code>process()</code>を使いレコードの重複を除去するコードを自分で実装する必要があるようです。</p>
-<p>　レコードの重複を完全に除去することはできませんが<code>StreamsConfig.COMMIT_INTERVAL_MS_CONFIG</code>の値を大きくすることでキャッシュがコミットされる回数を減らすことができます。<a href="http://docs.confluent.io/3.2.1/streams/developer-guide.html#optional-configuration-parameters" target="_blank" rel="noopener">デフォルト値</a>は30秒が指定されています。</p>
+<p>　レコードの重複を完全に除去することはできませんが<code>StreamsConfig.COMMIT_INTERVAL_MS_CONFIG</code>の値を大きくすることでキャッシュがコミットされる回数を減らすことができます。<a target="_blank" rel="noopener" href="http://docs.confluent.io/3.2.1/streams/developer-guide.html#optional-configuration-parameters">デフォルト値</a>は30秒が指定されています。</p>
 <ul>
-<li><a href="https://stackoverflow.com/questions/38935904/how-to-send-final-kafka-streams-aggregation-result-of-a-time-windowed-ktable" target="_blank" rel="noopener">How to send final kafka-streams aggregation result of a time windowed KTable?</a></li>
-<li><a href="http://users.kafka.apache.narkive.com/iFqyaD4p/immutable-record-with-kafka-stream" target="_blank" rel="noopener">Immutable Record with Kafka Stream</a></li>
-<li><a href="https://stackoverflow.com/questions/39232395/kafka-kstreams-processing-timeouts" target="_blank" rel="noopener">Kafka KStreams - processing timeouts</a></li>
-<li><a href="https://balamaci.ro/kafka-streams-for-stream-processing/" target="_blank" rel="noopener">Kafka Streams for Stream processing A few words about how Kafka works.</a></li>
-<li><a href="http://docs.confluent.io/3.1.2/streams/developer-guide.html#memory-management" target="_blank" rel="noopener">Memory management</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/38935904/how-to-send-final-kafka-streams-aggregation-result-of-a-time-windowed-ktable">How to send final kafka-streams aggregation result of a time windowed KTable?</a></li>
+<li><a target="_blank" rel="noopener" href="http://users.kafka.apache.narkive.com/iFqyaD4p/immutable-record-with-kafka-stream">Immutable Record with Kafka Stream</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/39232395/kafka-kstreams-processing-timeouts">Kafka KStreams - processing timeouts</a></li>
+<li><a target="_blank" rel="noopener" href="https://balamaci.ro/kafka-streams-for-stream-processing/">Kafka Streams for Stream processing A few words about how Kafka works.</a></li>
+<li><a target="_blank" rel="noopener" href="http://docs.confluent.io/3.1.2/streams/developer-guide.html#memory-management">Memory management</a></li>
 </ul>
 <h2 id="その他のクラス"><a href="#その他のクラス" class="headerlink" title="その他のクラス"></a>その他のクラス</h2><p>　モデル (SensorSum.java)、シリアライザ (SensorSumSerializer.java)、デシリアライザ (SensorSumDeserializer)のクラスを用意します。シリアライザは<code>serialize()</code>を実装して<code>SensorSum</code>のプロパティをバイト配列に変換します。byteバッファに周囲温度合計値の<code>Double</code>の8バイトと、レコード数の<code>Integer</code>の4バイト分を割り当て使います。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] serialize(String topic, SensorSum data) &#123;</span><br><span class="line">    ByteBuffer buffer = ByteBuffer.allocate(<span class="number">8</span> + <span class="number">4</span>);</span><br><span class="line">    buffer.putDouble(data.sum);</span><br><span class="line">    buffer.putInt(data.count);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> buffer.array();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h2><p>　<a href="http://www.mojohaus.org/exec-maven-plugin/" target="_blank" rel="noopener">Exec Maven Plugin</a>からKafka Streamsを実行します。</p>
+<h2 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h2><p>　<a target="_blank" rel="noopener" href="http://www.mojohaus.org/exec-maven-plugin/">Exec Maven Plugin</a>からKafka Streamsを実行します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mvn clean install <span class="built_in">exec</span>:<span class="built_in">exec</span>@json</span><br></pre></td></tr></table></figure>
 
 <p>　ウィンドウ間隔が2分、キャッシュのコミット間隔を3分に指定してみました。やはり何回か重複した出力はありますが重複した出力を減らすことができました。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:32:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.414773&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.414063&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.453125&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.476563&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:38:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.546875&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:32:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.414773&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:34:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.414063&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.453125&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:36:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.476563&#125;</span><br><span class="line">&#123;&quot;time&quot;: &quot;2017-08-08T11:38:00+09:00&quot;, &quot;bid&quot;: &quot;B0:B4:48:BE:5E:00&quot;, &quot;ambient&quot;: 27.546875&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -352,7 +319,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -403,7 +369,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java環境"><span class="nav-number">1.</span> <span class="nav-text">Java環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#App-java"><span class="nav-number">3.</span> <span class="nav-text">App.java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定数"><span class="nav-number">3.1.</span> <span class="nav-text">定数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#シリアライゼーション"><span class="nav-number">3.2.</span> <span class="nav-text">シリアライゼーション</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KStreamの作成"><span class="nav-number">3.3.</span> <span class="nav-text">KStreamの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KGroupedStreamを作成"><span class="nav-number">3.4.</span> <span class="nav-text">KGroupedStreamを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KStramからKTableを作成"><span class="nav-number">3.5.</span> <span class="nav-text">KStramからKTableを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KTableからKStramを作成"><span class="nav-number">3.6.</span> <span class="nav-text">KTableからKStramを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Streamsの開始"><span class="nav-number">3.7.</span> <span class="nav-text">Kafka Streamsの開始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Streamsの設定とタイムアウトについて"><span class="nav-number">3.8.</span> <span class="nav-text">Kafka Streamsの設定とタイムアウトについて</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COMMIT-INTERVAL-MS-CONFIG"><span class="nav-number">3.9.</span> <span class="nav-text">COMMIT_INTERVAL_MS_CONFIG</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#その他のクラス"><span class="nav-number">4.</span> <span class="nav-text">その他のクラス</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#実行"><span class="nav-number">5.</span> <span class="nav-text">実行</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E7%92%B0%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">Java環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#App-java"><span class="nav-number">3.</span> <span class="nav-text">App.java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">定数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%A9%E3%82%A4%E3%82%BC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"><span class="nav-number">3.2.</span> <span class="nav-text">シリアライゼーション</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KStream%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.3.</span> <span class="nav-text">KStreamの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KGroupedStream%E3%82%92%E4%BD%9C%E6%88%90"><span class="nav-number">3.4.</span> <span class="nav-text">KGroupedStreamを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KStram%E3%81%8B%E3%82%89KTable%E3%82%92%E4%BD%9C%E6%88%90"><span class="nav-number">3.5.</span> <span class="nav-text">KStramからKTableを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KTable%E3%81%8B%E3%82%89KStram%E3%82%92%E4%BD%9C%E6%88%90"><span class="nav-number">3.6.</span> <span class="nav-text">KTableからKStramを作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Streams%E3%81%AE%E9%96%8B%E5%A7%8B"><span class="nav-number">3.7.</span> <span class="nav-text">Kafka Streamsの開始</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Streams%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%81%A8%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%A2%E3%82%A6%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><span class="nav-number">3.8.</span> <span class="nav-text">Kafka Streamsの設定とタイムアウトについて</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COMMIT-INTERVAL-MS-CONFIG"><span class="nav-number">3.9.</span> <span class="nav-text">COMMIT_INTERVAL_MS_CONFIG</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%81%9D%E3%81%AE%E4%BB%96%E3%81%AE%E3%82%AF%E3%83%A9%E3%82%B9"><span class="nav-number">4.</span> <span class="nav-text">その他のクラス</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9F%E8%A1%8C"><span class="nav-number">5.</span> <span class="nav-text">実行</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -435,10 +401,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -463,9 +432,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -505,13 +474,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

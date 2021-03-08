@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,25 +13,25 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="PostgreSQLの管理ツールはPostgreSQL Studioを使います。データ分析のためSQLの学習環境を構築するのが目的なので、Webから便利にクエリが書けるを使います。PostgreSQL Studioの画面はいまだとちょっと懐かしいGWTで作られています。Scalaの開発環境は以前作ったのですが、まだDockerでTomcatの開発環境は作っていませんでした。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dockerでデータ分析環境 - Part4: Tomcat7とPostgreSQL Studio">
 <meta property="og:url" content="https://masato.github.io/2014/07/13/docker-analytic-sandbox-postgresql-studio/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="PostgreSQLの管理ツールはPostgreSQL Studioを使います。データ分析のためSQLの学習環境を構築するのが目的なので、Webから便利にクエリが書けるを使います。PostgreSQL Studioの画面はいまだとちょっと懐かしいGWTで作られています。Scalaの開発環境は以前作ったのですが、まだDockerでTomcatの開発環境は作っていませんでした。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/07/13/docker-analytic-sandbox-postgresql-studio/postgresql-studio-error.png">
 <meta property="og:image" content="https://masato.github.io/2014/07/13/docker-analytic-sandbox-postgresql-studio/postgresql-studio.png">
 <meta property="og:image" content="https://masato.github.io/2014/07/13/docker-analytic-sandbox-postgresql-studio/postgresql-studio-login.png">
 <meta property="article:published_time" content="2014-07-13T02:38:16.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.582Z">
+<meta property="article:modified_time" content="2014-07-13T02:38:16.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="AnalyticSandbox">
 <meta property="article:tag" content="Java">
@@ -55,7 +55,7 @@
   };
 </script>
 
-  <title>Dockerでデータ分析環境 - Part4: Tomcat7とPostgreSQL Studio | masato's blog</title>
+  <title>Dockerでデータ分析環境 - Part4: Tomcat7とPostgreSQL Studio | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -95,7 +95,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -116,14 +116,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -132,51 +131,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -193,11 +168,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -210,7 +184,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -220,19 +194,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 13 2014 11:38:16" itemprop="dateCreated datePublished" datetime="2014-07-13T11:38:16+09:00">Jul 13 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">PostgreSQLの管理ツールはPostgreSQL Studioを使います。データ分析のためSQLの学習環境を構築するのが目的なので、Webから便利にクエリが書けるを使います。PostgreSQL Studioの画面はいまだとちょっと懐かしいGWTで作られています。Scalaの開発環境は以前作ったのですが、まだDockerでTomcatの開発環境は作っていませんでした。</div>
@@ -249,23 +216,23 @@
         <ul>
 <li><code>Update 2014-10-04</code>: <a href="/2014/10/04/docker-devenv-emacs24-eclim-java/">Docker開発環境をつくる - Emacs24とEclimからEclipseに接続するJava開発環境</a></li>
 </ul>
-<p>PostgreSQLの管理ツールは<a href="http://www.postgresqlstudio.org/" target="_blank" rel="noopener">PostgreSQL Studio</a>を使います。<br>データ分析のためSQLの学習環境を構築するのが目的なので、Webから便利にクエリが書ける<a href="http://www.postgresqlstudio.org/about/features/#worksheet" target="_blank" rel="noopener">SQL WorkSheet</a>を使います。</p>
+<p>PostgreSQLの管理ツールは<a target="_blank" rel="noopener" href="http://www.postgresqlstudio.org/">PostgreSQL Studio</a>を使います。<br>データ分析のためSQLの学習環境を構築するのが目的なので、Webから便利にクエリが書ける<a target="_blank" rel="noopener" href="http://www.postgresqlstudio.org/about/features/#worksheet">SQL WorkSheet</a>を使います。</p>
 <p><code>PostgreSQL Studio</code>の画面はいまだとちょっと懐かしいGWTで作られています。</p>
 <p><a href="/2014/06/30/emacs-scala-typesafe-activator-ensime/">Scala</a>の開発環境は以前作ったのですが、まだDockerでTomcatの開発環境は作っていませんでした。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>いつもの<a href="https://registry.hub.docker.com/u/phusion/baseimage/" target="_blank" rel="noopener">phusion/baseimage</a>を使います。<br>disposableなDockerだとwarファイルのデプロイは初回だけで済むので、繰り返しデプロイすることを考えなければ、<br>warファイルはwebappsにコピーするだけでデプロイできます。</p>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>いつもの<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/phusion/baseimage/">phusion/baseimage</a>を使います。<br>disposableなDockerだとwarファイルのデプロイは初回だけで済むので、繰り返しデプロイすることを考えなければ、<br>warファイルはwebappsにコピーするだけでデプロイできます。</p>
 <p>昔はそれほど感じませんでしたが、warファイルのデプロイは便利です。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresql-studio/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.11</span><br><span class="line"></span><br><span class="line">ENV HOME /root</span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD google_compute_engine.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...put your own build instructions here...</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line"><span class="comment">## Development Environment</span></span><br><span class="line">ENV EDITOR vim</span><br><span class="line">RUN update-alternatives --<span class="built_in">set</span> editor /usr/bin/vim.basic</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y software-properties-common git wget curl unzip</span><br><span class="line"></span><br><span class="line"><span class="comment">## Java, Tomcat7</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:webupd8team/java \</span><br><span class="line">  &amp;&amp; apt-get -y update \</span><br><span class="line">  &amp;&amp; yes | apt-get install oracle-java8-installer</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tomcat7</span><br><span class="line">ENV JAVA_HOME /usr/lib/jvm/java-8-oracle</span><br><span class="line"></span><br><span class="line"><span class="comment">## PostgreSQL Studio</span></span><br><span class="line">RUN wget http://www.postgresqlstudio.org/?ddownload=47438 -O /root/pgstudio_1.2.zip \</span><br><span class="line">  &amp;&amp; unzip /root/pgstudio_1.2.zip -d /var/lib/tomcat7/webapps/</span><br><span class="line"></span><br><span class="line">ADD sv /etc/service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker's init system.</span></span><br><span class="line">CMD [<span class="string">"/sbin/my_init"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresql-studio/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM phusion/baseimage:0.9.11</span><br><span class="line"></span><br><span class="line">ENV HOME /root</span><br><span class="line">RUN /etc/my_init.d/00_regen_ssh_host_keys.sh</span><br><span class="line"></span><br><span class="line"><span class="comment">## Install an SSH of your choice.</span></span><br><span class="line">ADD google_compute_engine.pub /tmp/your_key</span><br><span class="line">RUN cat /tmp/your_key &gt;&gt; /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys \</span><br><span class="line">  &amp;&amp; chmod 600 /root/.ssh/authorized_keys &amp;&amp; rm -f /tmp/your_key</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...put your own build instructions here...</span></span><br><span class="line">RUN sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line"><span class="comment">## Development Environment</span></span><br><span class="line">ENV EDITOR vim</span><br><span class="line">RUN update-alternatives --<span class="built_in">set</span> editor /usr/bin/vim.basic</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y software-properties-common git wget curl unzip</span><br><span class="line"></span><br><span class="line"><span class="comment">## Java, Tomcat7</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:webupd8team/java \</span><br><span class="line">  &amp;&amp; apt-get -y update \</span><br><span class="line">  &amp;&amp; yes | apt-get install oracle-java8-installer</span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tomcat7</span><br><span class="line">ENV JAVA_HOME /usr/lib/jvm/java-8-oracle</span><br><span class="line"></span><br><span class="line"><span class="comment">## PostgreSQL Studio</span></span><br><span class="line">RUN wget http://www.postgresqlstudio.org/?ddownload=47438 -O /root/pgstudio_1.2.zip \</span><br><span class="line">  &amp;&amp; unzip /root/pgstudio_1.2.zip -d /var/lib/tomcat7/webapps/</span><br><span class="line"></span><br><span class="line">ADD sv /etc/service</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use baseimage-docker&#x27;s init system.</span></span><br><span class="line">CMD [<span class="string">&quot;/sbin/my_init&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean up APT when done.</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
 <h3 id="runitの設定ファイル"><a href="#runitの設定ファイル" class="headerlink" title="runitの設定ファイル"></a>runitの設定ファイル</h3><p>Tomcatの起動方法はすっかり忘れてしまっていました。実行時にいくつか環境変数を渡す必要があります。</p>
 <figure class="highlight bash"><figcaption><span>~/docker_apps/postgresql-studio/sv/tomcat7/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">export</span> CATALINA_HOME=/usr/share/tomcat7</span><br><span class="line"><span class="built_in">export</span> CATALINA_BASE=/var/lib/tomcat7</span><br><span class="line">mkdir -p <span class="variable">$CATALINA_BASE</span>/temp</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line"><span class="built_in">exec</span> /usr/share/tomcat7/bin/catalina.sh run</span><br></pre></td></tr></table></figure>
 
 <p>svlogdを使ったログの設定です。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresqlsv/tomcat7/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">"/var/log/<span class="variable">$&#123;service&#125;</span>"</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresqlsv/tomcat7/log/run</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">service=$(basename $(dirname $(<span class="built_in">pwd</span>)))</span><br><span class="line">logdir=<span class="string">&quot;/var/log/<span class="variable">$&#123;service&#125;</span>&quot;</span></span><br><span class="line">mkdir -p <span class="variable">$&#123;logdir&#125;</span></span><br><span class="line"><span class="built_in">exec</span> 2&gt;&amp;1</span><br><span class="line"><span class="built_in">exec</span> /usr/bin/svlogd -tt <span class="variable">$&#123;logdir&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="イメージの-build-と-run"><a href="#イメージの-build-と-run" class="headerlink" title="イメージの build と run"></a>イメージの build と run</h3><p>イメージをビルドします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/postgresql-studio</span><br><span class="line">$ docker build -t masato/postgresql-studio .</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/postgresql-studio</span><br><span class="line">$ docker build -t masato/postgresql-studio . </span><br></pre></td></tr></table></figure>
 
 <p>コンテナを起動します。Tomcatの8080ポートをエクスポーズします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -i -t -p 8080:8080 masato/postgresql-studio /sbin/my_init bash</span><br></pre></td></tr></table></figure>
@@ -276,10 +243,10 @@
 
 <p>本当は5432以外を指定したいのですが、なぜか5432に自動的に補正されてしまいます。<br>PostgreSQLコンテナはまだ起動していないので、接続エラーになります。<br>残念ながらエラーメッセージも文字化けしてしまいました。</p>
 <h3 id="Dockerコンテナにログインしてデバッグ"><a href="#Dockerコンテナにログインしてデバッグ" class="headerlink" title="Dockerコンテナにログインしてデバッグ"></a>Dockerコンテナにログインしてデバッグ</h3><p>トップページのJSPを見ると、pageディレクティブにcontentTypeの指定がありません。</p>
-<figure class="highlight jsp"><figcaption><span>/var/lib/tomcat7/webapps/pgstudio/PgStudio.jsp</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;!doctype html&gt;</span><br><span class="line">&lt;!-- The DOCTYPE declaration above will set the    --&gt;</span><br><span class="line">&lt;!-- browser<span class="string">'s rendering engine into               --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- "Standards Mode". Replacing this declaration  --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- with a "Quirks Mode" doctype may lead to some --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- differences in layout.                        --&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight jsp"><figcaption><span>/var/lib/tomcat7/webapps/pgstudio/PgStudio.jsp</span></figcaption><table><tr><td class="code"><pre><span class="line">&lt;!doctype html&gt;</span><br><span class="line">&lt;!-- The DOCTYPE declaration above will set the    --&gt;</span><br><span class="line">&lt;!-- browser<span class="string">&#x27;s rendering engine into               --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- &quot;Standards Mode&quot;. Replacing this declaration  --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- with a &quot;Quirks Mode&quot; doctype may lead to some --&gt;</span></span><br><span class="line"><span class="string">&lt;!-- differences in layout.                        --&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>とりあえずダウンロードしてきたwarファイルをunpackして、sedで編集後にpackすることにしました。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresql-studio/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">RUN <span class="built_in">cd</span> /root &amp;&amp; wget http://www.postgresqlstudio.org/?ddownload=47438 -O ./pgstudio_1.2.zip \</span><br><span class="line">  &amp;&amp; unzip ./pgstudio_1.2.zip  &amp;&amp; unzip pgstudio.war -d ./pgstudio \</span><br><span class="line">  &amp;&amp; sed -i <span class="string">'1s/^/&lt;%@ page language="java" contentType="text\/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;\n/'</span> ./pgstudio/PgStudio.jsp \</span><br><span class="line">  &amp;&amp; <span class="built_in">cd</span> ./pgstudio &amp;&amp; jar -cvf /var/lib/tomcat7/webapps/pgstudio.war .</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/postgresql-studio/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">RUN <span class="built_in">cd</span> /root &amp;&amp; wget http://www.postgresqlstudio.org/?ddownload=47438 -O ./pgstudio_1.2.zip \</span><br><span class="line">  &amp;&amp; unzip ./pgstudio_1.2.zip  &amp;&amp; unzip pgstudio.war -d ./pgstudio \</span><br><span class="line">  &amp;&amp; sed -i <span class="string">&#x27;1s/^/&lt;%@ page language=&quot;java&quot; contentType=&quot;text\/html; charset=UTF-8&quot; pageEncoding=&quot;UTF-8&quot; %&gt;\n/&#x27;</span> ./pgstudio/PgStudio.jsp \</span><br><span class="line">  &amp;&amp; <span class="built_in">cd</span> ./pgstudio &amp;&amp; jar -cvf /var/lib/tomcat7/webapps/pgstudio.war .</span><br></pre></td></tr></table></figure>
 
 <p>イメージをビルドし直して、コンテナを起動します。文字化けは解消されました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker build -t masato/postgresql-studio .</span><br><span class="line">$ docker run --rm -i -t -p 8080:8080 masato/postgresql-studio  /sbin/my_init bash</span><br></pre></td></tr></table></figure>
@@ -288,7 +255,7 @@
 <img src="/2014/07/13/docker-analytic-sandbox-postgresql-studio/postgresql-studio.png" class="center">
 
 <h3 id="PostgreSQLのコンテナへ接続"><a href="#PostgreSQLのコンテナへ接続" class="headerlink" title="PostgreSQLのコンテナへ接続"></a>PostgreSQLのコンテナへ接続</h3><p>PostgreSQLコンテナをバックグラウンドで起動します。</p>
-<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">$ docker run -d --name=<span class="string">"postgresql"</span> <span class="string">\</span></span><br><span class="line">             -p <span class="number">5432</span>:<span class="number">5432</span> <span class="string">\</span></span><br><span class="line">             -v /opt/docker_vols/postgresql:/data <span class="string">\</span></span><br><span class="line">             -e USER=<span class="string">"masato"</span> <span class="string">\</span></span><br><span class="line">             -e DB=<span class="string">"spike_db"</span> <span class="string">\</span></span><br><span class="line">             -e PASS=<span class="string">"password"</span> <span class="string">\</span></span><br><span class="line">             paintedfox/postgresql</span><br></pre></td></tr></table></figure>
+<figure class="highlight livescript"><table><tr><td class="code"><pre><span class="line">$ docker run -d --name=<span class="string">&quot;postgresql&quot;</span> <span class="string">\</span></span><br><span class="line">             -p <span class="number">5432</span>:<span class="number">5432</span> <span class="string">\</span></span><br><span class="line">             -v /opt/docker_vols/postgresql:/data <span class="string">\</span></span><br><span class="line">             -e USER=<span class="string">&quot;masato&quot;</span> <span class="string">\</span></span><br><span class="line">             -e DB=<span class="string">&quot;spike_db&quot;</span> <span class="string">\</span></span><br><span class="line">             -e PASS=<span class="string">&quot;password&quot;</span> <span class="string">\</span></span><br><span class="line">             paintedfox/postgresql</span><br></pre></td></tr></table></figure>
 
 <p><code>PostgreSQL Studio</code>からもこの接続情報でログインできるようになりました。</p>
 <img src="/2014/07/13/docker-analytic-sandbox-postgresql-studio/postgresql-studio-login.png" class="center">
@@ -335,7 +302,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -386,7 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runitの設定ファイル"><span class="nav-number">2.</span> <span class="nav-text">runitの設定ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#イメージの-build-と-run"><span class="nav-number">3.</span> <span class="nav-text">イメージの build と run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ブラウザで確認"><span class="nav-number">4.</span> <span class="nav-text">ブラウザで確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerコンテナにログインしてデバッグ"><span class="nav-number">5.</span> <span class="nav-text">Dockerコンテナにログインしてデバッグ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PostgreSQLのコンテナへ接続"><span class="nav-number">6.</span> <span class="nav-text">PostgreSQLのコンテナへ接続</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runit%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">runitの設定ファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE-build-%E3%81%A8-run"><span class="nav-number">3.</span> <span class="nav-text">イメージの build と run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%81%A7%E7%A2%BA%E8%AA%8D"><span class="nav-number">4.</span> <span class="nav-text">ブラウザで確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AB%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%97%E3%81%A6%E3%83%87%E3%83%90%E3%83%83%E3%82%B0"><span class="nav-number">5.</span> <span class="nav-text">Dockerコンテナにログインしてデバッグ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PostgreSQL%E3%81%AE%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%B8%E6%8E%A5%E7%B6%9A"><span class="nav-number">6.</span> <span class="nav-text">PostgreSQLのコンテナへ接続</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">7.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -418,10 +384,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -446,9 +415,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -488,13 +457,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,25 +13,25 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Landoopを使いKafkaクラスタをDocker Composeで構築します。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 2: KafkaとLandoop">
 <meta property="og:url" content="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Landoopを使いKafkaクラスタをDocker Composeで構築します。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/landoop-top.png">
 <meta property="og:image" content="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/landoop-topic.png">
 <meta property="og:image" content="https://masato.github.io/2017/07/28/sensortag-kafka-python-spark-streaming-2/landoop-sensortag.png">
 <meta property="article:published_time" content="2017-07-28T03:24:03.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.896Z">
+<meta property="article:modified_time" content="2017-07-28T03:24:03.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Kafka">
 <meta property="article:tag" content="SensorTag">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 2: KafkaとLandoop | masato's blog</title>
+  <title>PythonとSensorTag, Kafka, Spark Streamingのストリーム処理 - Part 2: KafkaとLandoop | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,22 +192,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 28 2017 12:24:03" itemprop="dateCreated datePublished" datetime="2017-07-28T12:24:03+09:00">Jul 28 2017</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -254,20 +221,20 @@
 
       
         <p>　<a href="https://masato.github.io/2017/07/27/sensortag-kafka-python-spark-streaming-1/">前回</a>はRaspberry Pi 3上でSensorTagから環境データを取得するPythonスクリプトを書きました。この環境データはKafkaを経由してストリーム処理する予定です。次にRaspberry Pi 3からメッセージを受け取るKafkaクラスタをクラウド上に構築していきます。</p>
-<p>　Kafkaクラスタは<a href="http://www.landoop.com" target="_blank" rel="noopener">Landoop</a>が開発している<a href="https://hub.docker.com/r/landoop/fast-data-dev/" target="_blank" rel="noopener">fast-data-dev</a>のDockerイメージを使います。
+<p>　Kafkaクラスタは<a target="_blank" rel="noopener" href="http://www.landoop.com/">Landoop</a>が開発している<a target="_blank" rel="noopener" href="https://hub.docker.com/r/landoop/fast-data-dev/">fast-data-dev</a>のDockerイメージを使います。
 　</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="LandoopでKafkaクラスタを構築する"><a href="#LandoopでKafkaクラスタを構築する" class="headerlink" title="LandoopでKafkaクラスタを構築する"></a>LandoopでKafkaクラスタを構築する</h2><p>　<a href="http://www.landoop.com/" target="_blank" rel="noopener">Landoop</a>はKafkaのソリューションを提供する会社です。特に<a href="http://docs.confluent.io/current/connect/index.html" target="_blank" rel="noopener">Kafka Connect</a>を中心にしたストリームのデータパイプラインの開発に強い印象です。</p>
-<h3 id="Landoop"><a href="#Landoop" class="headerlink" title="Landoop　"></a>Landoop　</h3><p>　<br>　Landoopでは<a href="http://kafka-topics-ui.landoop.com/#/" target="_blank" rel="noopener">Kafka Topics UI</a>や<a href="http://kafka-connect-ui.landoop.com/#/" target="_blank" rel="noopener">Kafka Connect UI</a>、<a href="https://hub.docker.com/r/landoop/kafka-topics-ui/" target="_blank" rel="noopener">Kafka Topics UI</a>などのWebツールを開発しています。<a href="https://fast-data-dev.demo.landoop.com/" target="_blank" rel="noopener">demo</a>サイトからどのようなツールなのかを確認できます。このdemoサイトと同じ環境は<a href="https://github.com/Landoop/fast-data-connect-cluster" target="_blank" rel="noopener">fast-data-connect-cluster</a>を使うと簡単に構築することができます。
+<h2 id="LandoopでKafkaクラスタを構築する"><a href="#LandoopでKafkaクラスタを構築する" class="headerlink" title="LandoopでKafkaクラスタを構築する"></a>LandoopでKafkaクラスタを構築する</h2><p>　<a target="_blank" rel="noopener" href="http://www.landoop.com/">Landoop</a>はKafkaのソリューションを提供する会社です。特に<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/connect/index.html">Kafka Connect</a>を中心にしたストリームのデータパイプラインの開発に強い印象です。</p>
+<h3 id="Landoop"><a href="#Landoop" class="headerlink" title="Landoop"></a>Landoop</h3><p>　<br>　Landoopでは<a target="_blank" rel="noopener" href="http://kafka-topics-ui.landoop.com/#/">Kafka Topics UI</a>や<a target="_blank" rel="noopener" href="http://kafka-connect-ui.landoop.com/#/">Kafka Connect UI</a>、<a target="_blank" rel="noopener" href="https://hub.docker.com/r/landoop/kafka-topics-ui/">Kafka Topics UI</a>などのWebツールを開発しています。<a target="_blank" rel="noopener" href="https://fast-data-dev.demo.landoop.com/">demo</a>サイトからどのようなツールなのかを確認できます。このdemoサイトと同じ環境は<a target="_blank" rel="noopener" href="https://github.com/Landoop/fast-data-connect-cluster">fast-data-connect-cluster</a>を使うと簡単に構築することができます。
 　</p>
 <p><img src="/2017/07/28/sensortag-kafka-python-spark-streaming-2/landoop-top.png" alt="landoop-top.png"></p>
 <h3 id="fast-data-connect-cluster"><a href="#fast-data-connect-cluster" class="headerlink" title="fast-data-connect-cluster"></a>fast-data-connect-cluster</h3><p>　fast-data-connect-clusterのリポジトリをcloneします。</p>
-<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">$ git <span class="keyword">clone</span> <span class="title">https</span>://github.com/Landoop/fast-data-connect-cluster</span><br></pre></td></tr></table></figure>
-<p>　<br>　リポジトリに含まれる<a href="https://github.com/Landoop/fast-data-connect-cluster/blob/master/docker-compose.yml" target="_blank" rel="noopener">docker-compose.yml</a>を少し変更してクラウド上で利用します。Debianの仮想マシンを用意してDockerとDocker Composeをインストールしました。利用するバージョンは以下です。</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/Landoop/</span>fast-data-connect-cluster</span><br></pre></td></tr></table></figure>
+<p>　<br>　リポジトリに含まれる<a target="_blank" rel="noopener" href="https://github.com/Landoop/fast-data-connect-cluster/blob/master/docker-compose.yml">docker-compose.yml</a>を少し変更してクラウド上で利用します。Debianの仮想マシンを用意してDockerとDocker Composeをインストールしました。利用するバージョンは以下です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker --version</span><br><span class="line">Docker version 17.06.0-ce, build 02c1d87</span><br><span class="line"></span><br><span class="line">$ docker-compose --version</span><br><span class="line">docker-compose version 1.14.0, build c7bdf9e</span><br></pre></td></tr></table></figure>
 
-<p>　このdocker-compose.ymlにはLandoopのWebツールに加えて<a href="https://www.confluent.io/product/confluent-open-source/" target="_blank" rel="noopener">Confluent Open Source</a>に含まれる<a href="https://kafka.apache.org/" target="_blank" rel="noopener">Kafka</a>、<a href="http://docs.confluent.io/current/schema-registry/docs/intro.html" target="_blank" rel="noopener">Schema Registry</a>、<a href="http://docs.confluent.io/current/kafka-rest/docs/index.html" target="_blank" rel="noopener">Kafka REST Proxy</a>、<a href="http://docs.confluent.io/current/connect/index.html" target="_blank" rel="noopener">Kafka Connect</a>、<a href="https://zookeeper.apache.org/" target="_blank" rel="noopener">Apache ZooKeeper</a>が含まれます。一通りKafkaを使った開発に必要なコンテナが揃うのでとても便利です。</p>
+<p>　このdocker-compose.ymlにはLandoopのWebツールに加えて<a target="_blank" rel="noopener" href="https://www.confluent.io/product/confluent-open-source/">Confluent Open Source</a>に含まれる<a target="_blank" rel="noopener" href="https://kafka.apache.org/">Kafka</a>、<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/schema-registry/docs/intro.html">Schema Registry</a>、<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/kafka-rest/docs/index.html">Kafka REST Proxy</a>、<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/connect/index.html">Kafka Connect</a>、<a target="_blank" rel="noopener" href="https://zookeeper.apache.org/">Apache ZooKeeper</a>が含まれます。一通りKafkaを使った開発に必要なコンテナが揃うのでとても便利です。</p>
 <p>　現在Confluent Open SourceとKafkaのバージョンは以下になっています。
 　</p>
 <ul>
@@ -279,11 +246,11 @@
 <li>ADV_HOST: Dockerが起動している仮想マシンのパブリックIPアドレスを指定します。</li>
 <li>ports: リモートから接続するためにZooKeeperやKafkaクラスタのポートを公開します。</li>
 </ul>
-<figure class="highlight yaml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka-stack:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FORWARDLOGS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">RUNTESTS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ADV_HOST=210.xxx.xxx.xxx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3030</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9092</span><span class="string">:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8081</span><span class="string">:8081</span></span><br><span class="line">  <span class="attr">connect-node-1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-node-2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-node-3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-ui:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/kafka-connect-ui:latest</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">connect-node-1</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CONNECT_URL=http://connect-node-1:8083</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8000</span><span class="string">:8000</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;2&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">kafka-stack:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">FORWARDLOGS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">RUNTESTS=0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ADV_HOST=210.xxx.xxx.xxx</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3030</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9092</span><span class="string">:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">2181</span><span class="string">:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8081</span><span class="string">:8081</span></span><br><span class="line">  <span class="attr">connect-node-1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-node-2:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-node-3:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/fast-data-dev-connect-cluster</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka-stack</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ID=01</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">BS=kafka-stack:9092</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZK=kafka-stack:2181</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">SR=http://kafka-stack:8081</span></span><br><span class="line">  <span class="attr">connect-ui:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">landoop/kafka-connect-ui:latest</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">connect-node-1</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CONNECT_URL=http://connect-node-1:8083</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8000</span><span class="string">:8000</span></span><br></pre></td></tr></table></figure>
 
 
 <p>　docker-compose.ymlのディレクトリに移動してコンテナを起動します。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> fast-data-connect-cluster</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker-compose up -d</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> <span class="built_in">cd</span> fast<span class="literal">-data</span><span class="literal">-connect</span><span class="literal">-cluster</span></span><br><span class="line"><span class="variable">$</span> docker<span class="literal">-compose</span> up <span class="literal">-d</span></span><br></pre></td></tr></table></figure>
 
 
 <h3 id="動作確認"><a href="#動作確認" class="headerlink" title="動作確認"></a>動作確認</h3><p>　Kafkaクライアントから簡単に動作確認をします。kafka-topicsコマンドでトピックを作成します。</p>
@@ -300,11 +267,11 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hello world</span><br></pre></td></tr></table></figure>
 
 <p>　Kafka Topics UIのページではトピックの一覧とメッセージの中身を確認することができます。<br>　<br><img src="/2017/07/28/sensortag-kafka-python-spark-streaming-2/landoop-topic.png" alt="landoop-topic.png"></p>
-<h2 id="SensorTagの環境データをKafkaに送信する"><a href="#SensorTagの環境データをKafkaに送信する" class="headerlink" title="SensorTagの環境データをKafkaに送信する"></a>SensorTagの環境データをKafkaに送信する</h2><h3 id="kafka-python"><a href="#kafka-python" class="headerlink" title="kafka-python"></a>kafka-python</h3><p>　PythonのKafkaクライアントには<a href="http://kafka-python.readthedocs.io/en/master/" target="_blank" rel="noopener">kafka-python</a>と<a href="http://docs.confluent.io/current/clients/confluent-kafka-python/" target="_blank" rel="noopener">confluent-kafka-python</a>があります。APIが微妙に違うので間違えないようにします。今回はkafka-pythonをインストールして使います。</p>
+<h2 id="SensorTagの環境データをKafkaに送信する"><a href="#SensorTagの環境データをKafkaに送信する" class="headerlink" title="SensorTagの環境データをKafkaに送信する"></a>SensorTagの環境データをKafkaに送信する</h2><h3 id="kafka-python"><a href="#kafka-python" class="headerlink" title="kafka-python"></a>kafka-python</h3><p>　PythonのKafkaクライアントには<a target="_blank" rel="noopener" href="http://kafka-python.readthedocs.io/en/master/">kafka-python</a>と<a target="_blank" rel="noopener" href="http://docs.confluent.io/current/clients/confluent-kafka-python/">confluent-kafka-python</a>があります。APIが微妙に違うので間違えないようにします。今回はkafka-pythonをインストールして使います。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo pip install kafka-python</span><br></pre></td></tr></table></figure>
 
 <p>　<a href="https://masato.github.io/2017/07/27/sensortag-kafka-python-spark-streaming-1/">前回</a>書いたSensorTagのデータを取得するPythonのコードにKafkaへメッセージを送信するproducerを追加します。</p>
-<figure class="highlight python"><figcaption><span>json_producer_sensortag_kafka.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bluepy.sensortag <span class="keyword">import</span> SensorTag</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> calendar</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    argvs = sys.argv</span><br><span class="line">    argc = len(argvs)</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>):</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'Usage: # python &#123;0&#125; bd_address'</span>.format(argvs[<span class="number">0</span>])</span><br><span class="line">        quit()</span><br><span class="line">    bid = argvs[<span class="number">1</span>]</span><br><span class="line">    print(<span class="string">'Connecting to '</span> + bid)</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">10.0</span></span><br><span class="line"></span><br><span class="line">    tag = SensorTag(bid)</span><br><span class="line">    tag.IRtemperature.enable()</span><br><span class="line">    tag.humidity.enable()</span><br><span class="line">    </span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">    producer = KafkaProducer(bootstrap_servers=<span class="string">'210.xxx.xxx.xxx:9092'</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        tAmb, tObj = tag.IRtemperature.read()</span><br><span class="line">        humidity, rh = tag.humidity.read()</span><br><span class="line"></span><br><span class="line">        value = &#123;</span><br><span class="line">            <span class="string">"bid"</span> : bid,</span><br><span class="line">            <span class="string">"time"</span> : calendar.timegm(time.gmtime()),</span><br><span class="line">            <span class="string">"ambient"</span>: tAmb,</span><br><span class="line">            <span class="string">"objecttemp"</span>: tObj,</span><br><span class="line">            <span class="string">"humidity"</span>: humidity,</span><br><span class="line">            <span class="string">"rh"</span>: rh</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        msg = json.dumps(value).encode(<span class="string">"utf-8"</span>)</span><br><span class="line">        producer.send(<span class="string">'sensortag'</span>, msg)</span><br><span class="line">        producer.flush()</span><br><span class="line">        print(msg)</span><br><span class="line"></span><br><span class="line">        time.sleep(timeout)</span><br><span class="line"></span><br><span class="line">    tag.disconnect()</span><br><span class="line">    <span class="keyword">del</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>json_producer_sensortag_kafka.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bluepy.sensortag <span class="keyword">import</span> SensorTag</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> calendar</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> kafka <span class="keyword">import</span> KafkaProducer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    argvs = sys.argv</span><br><span class="line">    argc = <span class="built_in">len</span>(argvs)</span><br><span class="line">    <span class="keyword">if</span> (argc != <span class="number">2</span>):</span><br><span class="line">        <span class="built_in">print</span> <span class="string">&#x27;Usage: # python &#123;0&#125; bd_address&#x27;</span>.<span class="built_in">format</span>(argvs[<span class="number">0</span>])</span><br><span class="line">        quit()</span><br><span class="line">    bid = argvs[<span class="number">1</span>]</span><br><span class="line">    print(<span class="string">&#x27;Connecting to &#x27;</span> + bid)</span><br><span class="line"></span><br><span class="line">    timeout = <span class="number">10.0</span></span><br><span class="line"></span><br><span class="line">    tag = SensorTag(bid)</span><br><span class="line">    tag.IRtemperature.enable()</span><br><span class="line">    tag.humidity.enable()</span><br><span class="line">    </span><br><span class="line">    time.sleep(<span class="number">1.0</span>)</span><br><span class="line"></span><br><span class="line">    producer = KafkaProducer(bootstrap_servers=<span class="string">&#x27;210.xxx.xxx.xxx:9092&#x27;</span>)</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        tAmb, tObj = tag.IRtemperature.read()</span><br><span class="line">        humidity, rh = tag.humidity.read()</span><br><span class="line"></span><br><span class="line">        value = &#123;</span><br><span class="line">            <span class="string">&quot;bid&quot;</span> : bid,</span><br><span class="line">            <span class="string">&quot;time&quot;</span> : calendar.timegm(time.gmtime()),</span><br><span class="line">            <span class="string">&quot;ambient&quot;</span>: tAmb,</span><br><span class="line">            <span class="string">&quot;objecttemp&quot;</span>: tObj,</span><br><span class="line">            <span class="string">&quot;humidity&quot;</span>: humidity,</span><br><span class="line">            <span class="string">&quot;rh&quot;</span>: rh</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        msg = json.dumps(value).encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line">        producer.send(<span class="string">&#x27;sensortag&#x27;</span>, msg)</span><br><span class="line">        producer.flush()</span><br><span class="line">        print(msg)</span><br><span class="line"></span><br><span class="line">        time.sleep(timeout)</span><br><span class="line"></span><br><span class="line">    tag.disconnect()</span><br><span class="line">    <span class="keyword">del</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 
 
 <p>　SensorTagのBDアドレスを引数にしてPythonスクリプトを実行します。</p>
@@ -312,7 +279,7 @@
 
 
 <p>　10秒間隔で取得した環境データをJSON文字列に整形してKafkaクラスタに送信します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Connecting to B0:B4:48:BE:5E:00</span><br><span class="line">&#123;<span class="string">"bid"</span>: <span class="string">"B0:B4:48:BE:5E:00"</span>, <span class="string">"time"</span>: 1501464133, <span class="string">"humidity"</span>: 26.8096923828125, <span class="string">"objecttemp"</span>: 22.0625, <span class="string">"ambient"</span>: 26.59375, <span class="string">"rh"</span>: 68.829345703125&#125;</span><br><span class="line">&#123;<span class="string">"bid"</span>: <span class="string">"B0:B4:48:BE:5E:00"</span>, <span class="string">"time"</span>: 1501464143, <span class="string">"humidity"</span>: 26.86004638671875, <span class="string">"objecttemp"</span>: 22.40625, <span class="string">"ambient"</span>: 26.65625, <span class="string">"rh"</span>: 68.927001953125&#125;</span><br><span class="line">&#123;<span class="string">"bid"</span>: <span class="string">"B0:B4:48:BE:5E:00"</span>, <span class="string">"time"</span>: 1501464153, <span class="string">"humidity"</span>: 26.92047119140625, <span class="string">"objecttemp"</span>: 22.71875, <span class="string">"ambient"</span>: 26.71875, <span class="string">"rh"</span>: 68.95751953125&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Connecting to B0:B4:48:BE:5E:00</span><br><span class="line">&#123;<span class="string">&quot;bid&quot;</span>: <span class="string">&quot;B0:B4:48:BE:5E:00&quot;</span>, <span class="string">&quot;time&quot;</span>: 1501464133, <span class="string">&quot;humidity&quot;</span>: 26.8096923828125, <span class="string">&quot;objecttemp&quot;</span>: 22.0625, <span class="string">&quot;ambient&quot;</span>: 26.59375, <span class="string">&quot;rh&quot;</span>: 68.829345703125&#125;</span><br><span class="line">&#123;<span class="string">&quot;bid&quot;</span>: <span class="string">&quot;B0:B4:48:BE:5E:00&quot;</span>, <span class="string">&quot;time&quot;</span>: 1501464143, <span class="string">&quot;humidity&quot;</span>: 26.86004638671875, <span class="string">&quot;objecttemp&quot;</span>: 22.40625, <span class="string">&quot;ambient&quot;</span>: 26.65625, <span class="string">&quot;rh&quot;</span>: 68.927001953125&#125;</span><br><span class="line">&#123;<span class="string">&quot;bid&quot;</span>: <span class="string">&quot;B0:B4:48:BE:5E:00&quot;</span>, <span class="string">&quot;time&quot;</span>: 1501464153, <span class="string">&quot;humidity&quot;</span>: 26.92047119140625, <span class="string">&quot;objecttemp&quot;</span>: 22.71875, <span class="string">&quot;ambient&quot;</span>: 26.71875, <span class="string">&quot;rh&quot;</span>: 68.95751953125&#125;</span><br></pre></td></tr></table></figure>
 
 
 <p>　Kafka Topics UIの画面にもSensorTagの環境データが表示されました。</p>
@@ -353,7 +320,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -404,7 +370,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LandoopでKafkaクラスタを構築する"><span class="nav-number">1.</span> <span class="nav-text">LandoopでKafkaクラスタを構築する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Landoop"><span class="nav-number">1.1.</span> <span class="nav-text">Landoop　</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-data-connect-cluster"><span class="nav-number">1.2.</span> <span class="nav-text">fast-data-connect-cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#動作確認"><span class="nav-number">1.3.</span> <span class="nav-text">動作確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SensorTagの環境データをKafkaに送信する"><span class="nav-number">2.</span> <span class="nav-text">SensorTagの環境データをKafkaに送信する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-python"><span class="nav-number">2.1.</span> <span class="nav-text">kafka-python</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Landoop%E3%81%A7Kafka%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B"><span class="nav-number">1.</span> <span class="nav-text">LandoopでKafkaクラスタを構築する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Landoop"><span class="nav-number">1.1.</span> <span class="nav-text">Landoop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-data-connect-cluster"><span class="nav-number">1.2.</span> <span class="nav-text">fast-data-connect-cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D"><span class="nav-number">1.3.</span> <span class="nav-text">動作確認</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SensorTag%E3%81%AE%E7%92%B0%E5%A2%83%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92Kafka%E3%81%AB%E9%80%81%E4%BF%A1%E3%81%99%E3%82%8B"><span class="nav-number">2.</span> <span class="nav-text">SensorTagの環境データをKafkaに送信する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-python"><span class="nav-number">2.1.</span> <span class="nav-text">kafka-python</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -436,10 +402,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -464,9 +433,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -506,13 +475,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

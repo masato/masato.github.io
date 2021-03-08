@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Manningの新刊が出たのでいつものにGrokking Functional Programmingを買ってしまいました。最近Scalaでコードを書いていないので、関数型プログラミングの学習で使ってみようと思います。Scalaの複雑性の原因はsbtにあると思うのですが、どのあたりがSimple Build Toolなのか意味がわかりません。Typesafeのactivatorがその解答だと思いま">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker開発環境 - Typesafe ActivatorでScalaをインストール">
 <meta property="og:url" content="https://masato.github.io/2014/06/29/docker-devenv-scala-typsafe-activator/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Manningの新刊が出たのでいつものにGrokking Functional Programmingを買ってしまいました。最近Scalaでコードを書いていないので、関数型プログラミングの学習で使ってみようと思います。Scalaの複雑性の原因はsbtにあると思うのですが、どのあたりがSimple Build Toolなのか意味がわかりません。Typesafeのactivatorがその解答だと思いま">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-06-28T15:33:28.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.595Z">
+<meta property="article:modified_time" content="2014-06-28T15:33:28.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Scala">
 <meta property="article:tag" content="DockerDevEnv">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Docker開発環境 - Typesafe ActivatorでScalaをインストール | masato's blog</title>
+  <title>Docker開発環境 - Typesafe ActivatorでScalaをインストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jun 29 2014 00:33:28" itemprop="dateCreated datePublished" datetime="2014-06-29T00:33:28+09:00">Jun 29 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Manningの新刊が出たのでいつものにGrokking Functional Programmingを買ってしまいました。最近Scalaでコードを書いていないので、関数型プログラミングの学習で使ってみようと思います。Scalaの複雑性の原因はsbtにあると思うのですが、どのあたりがSimple Build Toolなのか意味がわかりません。Typesafeのactivatorがその解答だと思います。今回はsbtを直接インストールしないで、Typesafe Activatorから使います。Typesafe ActivatorはWebIDEも付属していて便利ですが、単純にScalaのインストールにも使えます。</div>
@@ -243,13 +210,13 @@
         <ul>
 <li><code>Update 2014-06-30</code>: <a href="/2014/06/30/emacs-scala-typesafe-activator-ensime/">Emacs24.3とTypesafeActivatorとENSIMEでScala開発環境</a></li>
 </ul>
-<p>Manningの新刊が出たのでいつものように<a href="http://manning.com/khan/" target="_blank" rel="noopener">Grokking Functional Programming</a>を買ってしまいました。<br>最近Scalaでコードを書いていないので、関数型プログラミングの学習で使ってみようと思います。</p>
+<p>Manningの新刊が出たのでいつものように<a target="_blank" rel="noopener" href="http://manning.com/khan/">Grokking Functional Programming</a>を買ってしまいました。<br>最近Scalaでコードを書いていないので、関数型プログラミングの学習で使ってみようと思います。</p>
 <p>Scalaの複雑性の原因はsbtにあると思うのですが、<br>どのあたりが<code>Simple Build Tool</code>なのか意味がわかりません。Typesafeのactivatorがその解答だと思います。</p>
 <p>今回はsbtを直接インストールしないで、<code>Typesafe Activator</code>から使います。<br><code>Typesafe Activator</code>はWebIDEも付属していて便利ですが、単純にScalaのインストールにも使えます。</p>
 <h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><p>Dockerfileの抜粋です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">## Java</span></span><br><span class="line">RUN sudo add-apt-repository -y ppa:webupd8team/java \</span><br><span class="line">  &amp;&amp; sudo apt-get -y update \</span><br><span class="line">  &amp;&amp; yes | sudo apt-get install oracle-java8-installer</span><br><span class="line">ENV JAVA_HOME /usr/lib/jvm/java-8-oracle</span><br><span class="line"></span><br><span class="line"><span class="comment">## Scala</span></span><br><span class="line">RUN mkdir -p /home/docker/bin \</span><br><span class="line">  &amp;&amp; wget http://downloads.typesafe.com/typesafe-activator/1.2.2/typesafe-activator-1.2.2.zip -P /home/docker \</span><br><span class="line">  &amp;&amp; unzip /home/docker/typesafe-activator-1.2.2.zip -d /home/docker \</span><br><span class="line">  &amp;&amp; ln -s /home/docker/activator-1.2.2/activator /home/docker/bin/activator</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+<span id="more"></span>
 
 
 <h3 id="Dockerコンテナの起動"><a href="#Dockerコンテナの起動" class="headerlink" title="Dockerコンテナの起動"></a>Dockerコンテナの起動</h3><p>Dockerイメージをbuildします。</p>
@@ -257,7 +224,7 @@
 
 <h3 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h3><p>Dockerコンテナを起動します。<br>プロジェクトの作成</p>
 <p>non-rootのdockerユーザーにスイッチします。<br><code>activator new</code>を実行して、Scalaプロジェクトのテンプレートを作成します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># su - docker</span></span><br><span class="line">$ ~/bin/activator new</span><br><span class="line">Getting com.typesafe.activator activator-launcher 1.2.2 ...</span><br><span class="line">...</span><br><span class="line">Choose from these featured templates or enter a template name:</span><br><span class="line">  1) minimal-java</span><br><span class="line">  2) minimal-scala</span><br><span class="line">  3) play-java</span><br><span class="line">  4) play-scala</span><br><span class="line">(hit tab to see a list of all templates)</span><br><span class="line">&gt; 2</span><br><span class="line">Enter a name <span class="keyword">for</span> your application (just press enter <span class="keyword">for</span> <span class="string">'minimal-scala'</span>)</span><br><span class="line">&gt;</span><br><span class="line">OK, application <span class="string">"minimal-scala"</span> is being created using the <span class="string">"minimal-scala"</span> template.</span><br><span class="line"></span><br><span class="line">To run <span class="string">"minimal-scala"</span> from the <span class="built_in">command</span> line, <span class="string">"cd minimal-scala"</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator run</span><br><span class="line"></span><br><span class="line">To run the <span class="built_in">test</span> <span class="keyword">for</span> <span class="string">"minimal-scala"</span> from the <span class="built_in">command</span> line, <span class="string">"cd minimal-scala"</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator <span class="built_in">test</span></span><br><span class="line"></span><br><span class="line">To run the Activator UI <span class="keyword">for</span> <span class="string">"minimal-scala"</span> from the <span class="built_in">command</span> line, <span class="string">"cd minimal-scala"</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator ui</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># su - docker</span></span><br><span class="line">$ ~/bin/activator new</span><br><span class="line">Getting com.typesafe.activator activator-launcher 1.2.2 ...</span><br><span class="line">...</span><br><span class="line">Choose from these featured templates or enter a template name:</span><br><span class="line">  1) minimal-java</span><br><span class="line">  2) minimal-scala</span><br><span class="line">  3) play-java</span><br><span class="line">  4) play-scala</span><br><span class="line">(hit tab to see a list of all templates)</span><br><span class="line">&gt; 2</span><br><span class="line">Enter a name <span class="keyword">for</span> your application (just press enter <span class="keyword">for</span> <span class="string">&#x27;minimal-scala&#x27;</span>)</span><br><span class="line">&gt;</span><br><span class="line">OK, application <span class="string">&quot;minimal-scala&quot;</span> is being created using the <span class="string">&quot;minimal-scala&quot;</span> template.</span><br><span class="line"></span><br><span class="line">To run <span class="string">&quot;minimal-scala&quot;</span> from the <span class="built_in">command</span> line, <span class="string">&quot;cd minimal-scala&quot;</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator run</span><br><span class="line"></span><br><span class="line">To run the <span class="built_in">test</span> <span class="keyword">for</span> <span class="string">&quot;minimal-scala&quot;</span> from the <span class="built_in">command</span> line, <span class="string">&quot;cd minimal-scala&quot;</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator <span class="built_in">test</span></span><br><span class="line"></span><br><span class="line">To run the Activator UI <span class="keyword">for</span> <span class="string">&quot;minimal-scala&quot;</span> from the <span class="built_in">command</span> line, <span class="string">&quot;cd minimal-scala&quot;</span> <span class="keyword">then</span>:</span><br><span class="line">/home/docker/minimal-scala/activator ui</span><br></pre></td></tr></table></figure>
 
 <h3 id="minimal-scala"><a href="#minimal-scala" class="headerlink" title="minimal-scala"></a>minimal-scala</h3><p>作成した<code>minimal-scala</code>のプロジェクトをtreeで確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree minimal-scala/</span><br><span class="line">minimal-scala/</span><br><span class="line">├── LICENSE</span><br><span class="line">├── activator</span><br><span class="line">├── activator-launch-1.2.2.jar</span><br><span class="line">├── activator.bat</span><br><span class="line">├── build.sbt</span><br><span class="line">├── project</span><br><span class="line">│   └── build.properties</span><br><span class="line">└── src</span><br><span class="line">    ├── main</span><br><span class="line">    │   └── scala</span><br><span class="line">    │       └── com</span><br><span class="line">    │           └── example</span><br><span class="line">    │               └── Hello.scala</span><br><span class="line">    └── <span class="built_in">test</span></span><br><span class="line">        └── scala</span><br><span class="line">            └── HelloSpec.scala</span><br><span class="line"></span><br><span class="line">8 directories, 8 files</span><br></pre></td></tr></table></figure>
@@ -272,16 +239,16 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run --name scaladev -p 8888 -d -t masato/baseimage:1.9 /sbin/my_init</span><br><span class="line">2b8232daf65b876014c7896bcb6c7bc7bfcb8a08556fadbc3dc702e779820e19</span><br></pre></td></tr></table></figure>
 
 <p>IPアドレスを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 2b8232daf65b | jq -r <span class="string">'.[0] | .NetworkSettings | .IPAddress'</span></span><br><span class="line">172.17.0.2</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker inspect 2b8232daf65b | jq -r <span class="string">&#x27;.[0] | .NetworkSettings | .IPAddress&#x27;</span></span><br><span class="line">172.17.0.2</span><br></pre></td></tr></table></figure>
 
 <p>SSHで接続します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh root@172.17.0.2 -i ~/.ssh/my_key</span><br><span class="line">Warning: Permanently added <span class="string">'172.17.0.2'</span> (ECDSA) to the list of known hosts.</span><br><span class="line">root@2b8232daf65b:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh root@172.17.0.2 -i ~/.ssh/my_key</span><br><span class="line">Warning: Permanently added <span class="string">&#x27;172.17.0.2&#x27;</span> (ECDSA) to the list of known hosts.</span><br><span class="line">root@2b8232daf65b:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
 
 <p>un-rootユーザーにスイッチして、<code>activator ui</code>を起動します。<br>コンテナで起動しているサーバーに、Dockerホストから接続できるように、0.0.0.0にバインドします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># su - docker</span></span><br><span class="line">~/bin/activator ui -Dhttp.address=0.0.0.0</span><br></pre></td></tr></table></figure>
 
 <h3 id="ブラウザで確認"><a href="#ブラウザで確認" class="headerlink" title="ブラウザで確認"></a>ブラウザで確認</h3><p>DockerホストのLinuxMint17からブラウザを開き、Scalaを起動しているコンテナのURLを開きます。</p>
-<p><a href="http://172.17.0.2:8888" target="_blank" rel="noopener">http://172.17.0.2:8888</a></p>
+<p><a target="_blank" rel="noopener" href="http://172.17.0.2:8888/">http://172.17.0.2:8888</a></p>
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>モダンな<code>Typesafe Activator UI</code>は使っていて楽しく、チュートリアルもあって勉強になりますが、Scalaやsbtの複雑性を隠蔽できているかまだわかりません。</p>
 <p>やはり<code>activator</code>で開発環境をつくったあとはEmacsで開発したいので、scala-mode2やENSIMEでコーディングの準備をしたいと思います。</p>
 
@@ -320,7 +287,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -371,7 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerコンテナの起動"><span class="nav-number">2.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala"><span class="nav-number">3.</span> <span class="nav-text">Scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#minimal-scala"><span class="nav-number">4.</span> <span class="nav-text">minimal-scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala-REPL"><span class="nav-number">5.</span> <span class="nav-text">Scala REPL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Typesafe-Activator-UI"><span class="nav-number">6.</span> <span class="nav-text">Typesafe Activator UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ブラウザで確認"><span class="nav-number">7.</span> <span class="nav-text">ブラウザで確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TL-DR"><span class="nav-number">1.</span> <span class="nav-text">TL;DR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">2.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala"><span class="nav-number">3.</span> <span class="nav-text">Scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#minimal-scala"><span class="nav-number">4.</span> <span class="nav-text">minimal-scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Scala-REPL"><span class="nav-number">5.</span> <span class="nav-text">Scala REPL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Typesafe-Activator-UI"><span class="nav-number">6.</span> <span class="nav-text">Typesafe Activator UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%81%A7%E7%A2%BA%E8%AA%8D"><span class="nav-number">7.</span> <span class="nav-text">ブラウザで確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">8.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -403,10 +369,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -431,9 +400,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -473,13 +442,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

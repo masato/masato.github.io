@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="いままではinit-loader.elとpackage.elを使ってEmacs24のパッケージ管理を行っていました。最近はCaskとPalletを使うのが良いらしいので追加して使ってみます。package.elもそのまま使えてパッケージ管理がさらに楽になります。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker開発環境のEmacs24をinit-loader.elとCaskとPalletでパッケージ管理する">
 <meta property="og:url" content="https://masato.github.io/2014/09/19/docker-devenv-emacs24-init-loader-cask-pallet/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="いままではinit-loader.elとpackage.elを使ってEmacs24のパッケージ管理を行っていました。最近はCaskとPalletを使うのが良いらしいので追加して使ってみます。package.elもそのまま使えてパッケージ管理がさらに楽になります。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-09-18T15:02:35.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.590Z">
+<meta property="article:modified_time" content="2014-09-18T15:02:35.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="DockerDevEnv">
 <meta property="article:tag" content="Emacs">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Docker開発環境のEmacs24をinit-loader.elとCaskとPalletでパッケージ管理する | masato's blog</title>
+  <title>Docker開発環境のEmacs24をinit-loader.elとCaskとPalletでパッケージ管理する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 19 2014 00:02:35" itemprop="dateCreated datePublished" datetime="2014-09-19T00:02:35+09:00">Sep 19 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">いままではinit-loader.elとpackage.elを使ってEmacs24のパッケージ管理を行っていました。最近はCaskとPalletを使うのが良いらしいので追加して使ってみます。package.elもそのまま使えてパッケージ管理がさらに楽になります。</div>
@@ -246,8 +213,8 @@
 <li><code>Update 2014-09-24</code>: <a href="/2014/09/24/ac-nrepl-deprecated-using-ac-cider/">CIDERのcompleteionにac-nreplはdeprecatedなのでac-ciderを使う</a></li>
 <li><code>Update 2014-09-20</code>: <a href="/2014/09/20/docker-devenv-emacs24-clojure/">Docker開発環境をつくる - Emacs24とClojure</a></li>
 </ul>
-<p>いままでは<a href="/2014/04/27/emacs-init/">init-loader.elとpackage.elを使って</a>Emacs24のパッケージ管理を行っていました。<br>最近は<a href="https://github.com/cask/cask" target="_blank" rel="noopener">Cask</a>と<a href="https://github.com/rdallasgray/pallet" target="_blank" rel="noopener">Pallet</a>を使うのが良いらしいので追加して使ってみます。package.elもそのまま使えてパッケージ管理がさらに楽になります。</p>
-<a id="more"></a>
+<p>いままでは<a href="/2014/04/27/emacs-init/">init-loader.elとpackage.elを使って</a>Emacs24のパッケージ管理を行っていました。<br>最近は<a target="_blank" rel="noopener" href="https://github.com/cask/cask">Cask</a>と<a target="_blank" rel="noopener" href="https://github.com/rdallasgray/pallet">Pallet</a>を使うのが良いらしいので追加して使ってみます。package.elもそのまま使えてパッケージ管理がさらに楽になります。</p>
+<span id="more"></span>
 
 
 <h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p>プロジェクトを作成します。</p>
@@ -256,9 +223,9 @@
 <p>最初にプロジェクト全体のファイル構成です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">~/docker_apps/emacs</span><br><span class="line">├── .emacs.d</span><br><span class="line">│   ├── Cask</span><br><span class="line">│   ├── init.el</span><br><span class="line">│   └── inits</span><br><span class="line">│       ├── 00-keybinds.el</span><br><span class="line">│       └── 01-files.el</span><br><span class="line">└── Dockerfile</span><br></pre></td></tr></table></figure>
 
-<h3 id="CaskとPallet"><a href="#CaskとPallet" class="headerlink" title="CaskとPallet"></a>CaskとPallet</h3><p><a href="https://github.com/rdallasgray/pallet" target="_blank" rel="noopener">Pallet</a>のREADME.mdに従ってインストールします。<br>Palletの先にCaskをインストールしますが、<code>cask init</code>でCaskファイルは作成せずに、palletだけ定義したCaskファイルを用意して使います。</p>
+<h3 id="CaskとPallet"><a href="#CaskとPallet" class="headerlink" title="CaskとPallet"></a>CaskとPallet</h3><p><a target="_blank" rel="noopener" href="https://github.com/rdallasgray/pallet">Pallet</a>のREADME.mdに従ってインストールします。<br>Palletの先にCaskをインストールしますが、<code>cask init</code>でCaskファイルは作成せずに、palletだけ定義したCaskファイルを用意して使います。</p>
 <p>Caskファイルは、<code>~/.emacs.d/Cask</code>に配置します。<br><code>cask init</code>を実行するときは、<code>~/.emacs.d/</code>ディレクトリに移動してからコマンドを実行します。<br>init-loaderもインストールして、init.elを分割管理できるようにします。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/.emacs.d/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="built_in">source</span> gnu)</span><br><span class="line">(<span class="built_in">source</span> marmalade)</span><br><span class="line">(<span class="built_in">source</span> melpa)</span><br><span class="line"></span><br><span class="line">(depends-on <span class="string">"pallet"</span>)</span><br><span class="line">(depends-on <span class="string">"init-loader"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/.emacs.d/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="built_in">source</span> gnu)</span><br><span class="line">(<span class="built_in">source</span> marmalade)</span><br><span class="line">(<span class="built_in">source</span> melpa)</span><br><span class="line"></span><br><span class="line">(depends-on <span class="string">&quot;pallet&quot;</span>)</span><br><span class="line">(depends-on <span class="string">&quot;init-loader&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <p>init.elのADDは、PalletのREADME.mdにあるようにCaskをインストールしてから行います。</p>
 <figure class="highlight plain"><figcaption><span>~/docker_apps/emacs/.emacs.d/init.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(require &#39;cask &quot;~&#x2F;.cask&#x2F;cask.el&quot;)</span><br><span class="line">(cask-initialize)</span><br><span class="line">(require &#39;pallet)</span><br><span class="line"></span><br><span class="line">(require &#39;init-loader)</span><br><span class="line">(setq init-loader-show-log-after-init nil)</span><br><span class="line">(init-loader-load &quot;~&#x2F;.emacs.d&#x2F;inits&quot;)</span><br></pre></td></tr></table></figure>
@@ -270,16 +237,16 @@
 <figure class="highlight plain"><figcaption><span>~/docker_apps/emacs/.emacs.d/inits/01-files.el</span></figcaption><table><tr><td class="code"><pre><span class="line">(setq backup-inhibited t)</span><br><span class="line">(setq next-line-add-newlines nil)</span><br><span class="line">(setq-default tab-width 4 indent-tabs-mode nil)</span><br></pre></td></tr></table></figure>
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>Dockerfileは日本語化とよく使う開発用のパッケージをインストールしています。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">ENV HOME /root</span><br><span class="line"></span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">'s/archive.ubuntu.com/ftp.jaist.ac.jp/'</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree \</span><br><span class="line">                       python</span><br><span class="line"></span><br><span class="line">WORKDIR /root</span><br><span class="line"></span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">ADD .emacs.d /root/.emacs.d/</span><br><span class="line">RUN /bin/bash -c <span class="string">'echo export PATH="/root/.cask/bin:$PATH" &gt;&gt; /root/.profile'</span> &amp;&amp; \</span><br><span class="line">    /bin/bash -c <span class="string">'source /root/.profile &amp;&amp; cd /root/.emacs.d &amp;&amp; cask install'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">ENV HOME /root</span><br><span class="line"></span><br><span class="line"><span class="comment">## apt-get update</span></span><br><span class="line">RUN sed -i~ -e <span class="string">&#x27;s/archive.ubuntu.com/ftp.jaist.ac.jp/&#x27;</span> /etc/apt/sources.list \</span><br><span class="line"> &amp;&amp; apt-get update</span><br><span class="line"></span><br><span class="line"><span class="comment">## Japanese Environment</span></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive apt-get install -y language-pack-ja</span><br><span class="line">ENV LANG ja_JP.UTF-8</span><br><span class="line">RUN update-locale LANG=ja_JP.UTF-8</span><br><span class="line">RUN mv /etc/localtime /etc/localtime.org</span><br><span class="line">RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime</span><br><span class="line"></span><br><span class="line">RUN DEBIAN_FRONTEND=noninteractive \</span><br><span class="line">    apt-get install -y build-essential software-properties-common \</span><br><span class="line">                       zlib1g-dev libssl-dev libreadline-dev libyaml-dev \</span><br><span class="line">                       libxml2-dev libxslt-dev sqlite3 libsqlite3-dev \</span><br><span class="line">                       emacs24-nox emacs24-el git byobu wget curl unzip tree \</span><br><span class="line">                       python</span><br><span class="line"></span><br><span class="line">WORKDIR /root</span><br><span class="line"></span><br><span class="line"><span class="comment"># Cask</span></span><br><span class="line">RUN curl -fsSkL https://raw.github.com/cask/cask/master/go | python</span><br><span class="line">ADD .emacs.d /root/.emacs.d/</span><br><span class="line">RUN /bin/bash -c <span class="string">&#x27;echo export PATH=&quot;/root/.cask/bin:$PATH&quot; &gt;&gt; /root/.profile&#x27;</span> &amp;&amp; \</span><br><span class="line">    /bin/bash -c <span class="string">&#x27;source /root/.profile &amp;&amp; cd /root/.emacs.d &amp;&amp; cask install&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Clean</span></span><br><span class="line">RUN apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="build-amp-amp-run"><a href="#build-amp-amp-run" class="headerlink" title="build &amp;&amp; run"></a>build &amp;&amp; run</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/emacs</span><br><span class="line">$ docker build -t masato/emacs .</span><br><span class="line">$ docker run -it --rm masato/emacs bash</span><br></pre></td></tr></table></figure>
 
 <h3 id="いままで通りpackage-elが使える"><a href="#いままで通りpackage-elが使える" class="headerlink" title="いままで通りpackage.elが使える"></a>いままで通りpackage.elが使える</h3><p><code>M-x package-install</code>でパッケージをインストールしても、Caskファイルにインストールした内容を追加してくれます。<br>いままで通りpackage.elが使えるので便利です。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">M-x package-<span class="keyword">install</span> clojure-<span class="keyword">mode</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><span class="line">M-x <span class="class"><span class="keyword">package</span>-<span class="title">install</span> <span class="title">clojure</span>-<span class="title">mode</span></span></span><br></pre></td></tr></table></figure>
 
 <p>自動的にCaskファイルに追記されます。</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="built_in">source</span> melpa)</span><br><span class="line"></span><br><span class="line">(depends-on <span class="string">"clojure-mode"</span>)</span><br><span class="line">(depends-on <span class="string">"pallet"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/emacs/Cask</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="built_in">source</span> melpa)</span><br><span class="line"></span><br><span class="line">(depends-on <span class="string">&quot;clojure-mode&quot;</span>)</span><br><span class="line">(depends-on <span class="string">&quot;pallet&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -318,7 +285,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -369,7 +335,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CaskとPallet"><span class="nav-number">2.</span> <span class="nav-text">CaskとPallet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init-loader"><span class="nav-number">3.</span> <span class="nav-text">init-loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-amp-amp-run"><span class="nav-number">5.</span> <span class="nav-text">build &amp;&amp; run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#いままで通りpackage-elが使える"><span class="nav-number">6.</span> <span class="nav-text">いままで通りpackage.elが使える</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cask%E3%81%A8Pallet"><span class="nav-number">2.</span> <span class="nav-text">CaskとPallet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init-loader"><span class="nav-number">3.</span> <span class="nav-text">init-loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build-amp-amp-run"><span class="nav-number">5.</span> <span class="nav-text">build &amp;&amp; run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%84%E3%81%BE%E3%81%BE%E3%81%A7%E9%80%9A%E3%82%8Apackage-el%E3%81%8C%E4%BD%BF%E3%81%88%E3%82%8B"><span class="nav-number">6.</span> <span class="nav-text">いままで通りpackage.elが使える</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -401,10 +367,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -429,9 +398,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -471,13 +440,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

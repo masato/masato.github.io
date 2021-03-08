@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Chromebookにdev_installしてScreenでEdisonにシリアル接続する">
 <meta property="og:url" content="https://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/03/07/chromebook-dev-install-screen-edison/qemacs.png">
 <meta property="article:published_time" content="2015-03-07T10:02:04.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.559Z">
+<meta property="article:modified_time" content="2015-03-07T10:02:04.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Chromebook">
 <meta property="article:tag" content="IntelEdison">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>Chromebookにdev_installしてScreenでEdisonにシリアル接続する | masato's blog</title>
+  <title>Chromebookにdev_installしてScreenでEdisonにシリアル接続する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Mar 7 2015 19:02:04" itemprop="dateCreated datePublished" datetime="2015-03-07T19:02:04+09:00">Mar 7 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。</div>
@@ -244,25 +211,25 @@
 
       
         <p>Chromebookからは普通はscreenコマンドが使えないのでEdisonやRaspberry PiにUSBシリアル接続をするのが難しいです。ググっているとdev_installをするとscreenが使えるようです。GentooベースのChrome OSではパッケージ管理にPortageが採用されています。emergeコマンドを使ってパッケージをインストールすることができます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="dev-install"><a href="#dev-install" class="headerlink" title="dev_install"></a>dev_install</h2><p><code>cntl-alt-t</code>でcroshを起動してから、shellでrootになります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">crosh&gt; shell</span><br><span class="line">$ sudo -i</span><br></pre></td></tr></table></figure>
 
 <p><code>dev_install</code>コマンドを実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dev_install</span><br><span class="line">Starting installation of developer packages.</span><br><span class="line">First, we download the necessary files.</span><br><span class="line">Downloading https://commondatastorage.googleapis.com/chromeos-dev-installer/board/daisy_spring/canary-R40-6457.107.0/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100  252k  100  252k    0     0   274k      0 --:--:-- --:--:-- --:--:--  276k</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">...</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/net-misc/dhcp-4.2.2-r2.tbz2</span><br><span class="line">Files downloaded, configuring emerge.</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0</span><br><span class="line">curl: (22) The requested URL returned error: 404 Not Found</span><br><span class="line">Emerge installation complete. Installing additional optional packages.</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">"selected"</span>, <span class="string">"system"</span>, and <span class="string">"world"</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">'/usr/share/portage/config/sets/portage.conf'</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line"> * gmerge-0.0.1-r837.tbz2 MD5 SHA1 size ;-) ...                          [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting info</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_setup</span><br><span class="line"> *    sysroot_build_bin_dir ...                                                                                 [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting chromeos-base/gmerge-0.0.1-r837</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Installing (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos to /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_preinst</span><br><span class="line"> *    wrap_old_config_scripts ...                                                                               [ ok ]</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Recording chromeos-base/gmerge <span class="keyword">in</span> <span class="string">"world"</span> favorites file...</span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br><span class="line">Install virtual/target-os-dev package now? (y/N) </span><br><span class="line">Local copy of remote index is up-to-date and will be used.</span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">"selected"</span>, <span class="string">"system"</span>, and <span class="string">"world"</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">'/usr/share/portage/config/sets/portage.conf'</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 89) net-dialup/lrzsz-0.12.20-r3::portage-stable <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Fetching <span class="string">'/usr/local/portage/packages/net-</span></span><br><span class="line"><span class="string"> * dialup/lrzsz-0.12.20-r3.tbz2'</span> <span class="keyword">in</span> the background. To view fetch</span><br><span class="line"> * progress, run `tail -f /var/<span class="built_in">log</span>/emerge-fetch.log` <span class="keyword">in</span> another</span><br><span class="line"> * terminal.</span><br><span class="line"> * lrzsz-0.12.20-r3.tbz2 MD5 SHA1 size ;-) ...                           [ ok ]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ dev_install</span><br><span class="line">Starting installation of developer packages.</span><br><span class="line">First, we download the necessary files.</span><br><span class="line">Downloading https://commondatastorage.googleapis.com/chromeos-dev-installer/board/daisy_spring/canary-R40-6457.107.0/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">100  252k  100  252k    0     0   274k      0 --:--:-- --:--:-- --:--:--  276k</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/sys-apps/sandbox-2.6-r1.tbz2</span><br><span class="line">...</span><br><span class="line">Extracting /usr/<span class="built_in">local</span>/portage/packages/net-misc/dhcp-4.2.2-r2.tbz2</span><br><span class="line">Files downloaded, configuring emerge.</span><br><span class="line">  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current</span><br><span class="line">                                 Dload  Upload   Total   Spent    Left  Speed</span><br><span class="line">  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0</span><br><span class="line">curl: (22) The requested URL returned error: 404 Not Found</span><br><span class="line">Emerge installation complete. Installing additional optional packages.</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">&quot;selected&quot;</span>, <span class="string">&quot;system&quot;</span>, and <span class="string">&quot;world&quot;</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">&#x27;/usr/share/portage/config/sets/portage.conf&#x27;</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"><span class="comment">######################################################################## 100.0%</span></span><br><span class="line"> * gmerge-0.0.1-r837.tbz2 MD5 SHA1 size ;-) ...                          [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting info</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_setup</span><br><span class="line"> *    sysroot_build_bin_dir ...                                                                                 [ ok ]</span><br><span class="line">&gt;&gt;&gt; Extracting chromeos-base/gmerge-0.0.1-r837</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Installing (1 of 1) chromeos-base/gmerge-0.0.1-r837::chromiumos to /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Running stacked hooks <span class="keyword">for</span> pre_pkg_preinst</span><br><span class="line"> *    wrap_old_config_scripts ...                                                                               [ ok ]</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Recording chromeos-base/gmerge <span class="keyword">in</span> <span class="string">&quot;world&quot;</span> favorites file...</span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br><span class="line">Install virtual/target-os-dev package now? (y/N) </span><br><span class="line">Local copy of remote index is up-to-date and will be used.</span><br><span class="line">!!! PORTAGE_BINHOST <span class="built_in">unset</span>, but use is requested.</span><br><span class="line">emerge: incomplete <span class="built_in">set</span> configuration, missing <span class="built_in">set</span>(s): <span class="string">&quot;selected&quot;</span>, <span class="string">&quot;system&quot;</span>, and <span class="string">&quot;world&quot;</span></span><br><span class="line">        sets defined: x11-module-rebuild</span><br><span class="line">        This usually means that <span class="string">&#x27;/usr/share/portage/config/sets/portage.conf&#x27;</span></span><br><span class="line">        is missing or corrupt.</span><br><span class="line">        Falling back to default world and system <span class="built_in">set</span> configuration!!!</span><br><span class="line">!!! Problem with sandbox binary. Disabling...</span><br><span class="line"></span><br><span class="line">Calculating dependencies... <span class="keyword">done</span>!</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Emerging binary (1 of 89) net-dialup/lrzsz-0.12.20-r3::portage-stable <span class="keyword">for</span> /usr/<span class="built_in">local</span>/</span><br><span class="line"> * Fetching <span class="string">&#x27;/usr/local/portage/packages/net-</span></span><br><span class="line"><span class="string"> * dialup/lrzsz-0.12.20-r3.tbz2&#x27;</span> <span class="keyword">in</span> the background. To view fetch</span><br><span class="line"> * progress, run `tail -f /var/<span class="built_in">log</span>/emerge-fetch.log` <span class="keyword">in</span> another</span><br><span class="line"> * terminal.</span><br><span class="line"> * lrzsz-0.12.20-r3.tbz2 MD5 SHA1 size ;-) ...                           [ ok ]</span><br></pre></td></tr></table></figure>
 
-<p>たくさんエラーが出てインストールに失敗したように思いますが、<a href="https://code.google.com/p/chromium/issues/detail?id=410195" target="_blank" rel="noopener">dev_install doesn’t work on Samsung Arm Chromebook 2 (Peach Pi)</a>によると、以下の3つは重大なエラーではないそうです。解かりづらいですが。</p>
+<p>たくさんエラーが出てインストールに失敗したように思いますが、<a target="_blank" rel="noopener" href="https://code.google.com/p/chromium/issues/detail?id=410195">dev_install doesn’t work on Samsung Arm Chromebook 2 (Peach Pi)</a>によると、以下の3つは重大なエラーではないそうです。解かりづらいですが。</p>
 <ul>
 <li>!!! PORTAGE_BINHOST unset, but use is requested.</li>
 <li>emerge: incomplete set configuration, missing set(s): “selected”, “system”, and “world”</li>
 <li>!!! Problem with sandbox binary. Disabling…</li>
 </ul>
 <p>バージョンを確認しても警告がでます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge --version</span><br><span class="line">!!! No gcc found. You probably need to <span class="string">'source /etc/profile'</span></span><br><span class="line">!!! to update the environment of this terminal and possibly</span><br><span class="line">!!! other terminals also.</span><br><span class="line">Portage 2.2.12-r6 (python 2.7.3-final-0, unavailable, [unavailable], unavailable, 3.8.11 armv7l)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge --version</span><br><span class="line">!!! No gcc found. You probably need to <span class="string">&#x27;source /etc/profile&#x27;</span></span><br><span class="line">!!! to update the environment of this terminal and possibly</span><br><span class="line">!!! other terminals also.</span><br><span class="line">Portage 2.2.12-r6 (python 2.7.3-final-0, unavailable, [unavailable], unavailable, 3.8.11 armv7l)</span><br></pre></td></tr></table></figure>
 
 <h2 id="QEmacsをインストール"><a href="#QEmacsをインストール" class="headerlink" title="QEmacsをインストール"></a>QEmacsをインストール</h2><p>QEmacsをインストールします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge qemacs</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; Recording app-editors/qemacs <span class="keyword">in</span> <span class="string">"world"</span> favorites file...</span><br><span class="line"></span><br><span class="line"> * Messages <span class="keyword">for</span> package app-editors/qemacs-0.4.0_pre20090420 merged to /usr/<span class="built_in">local</span>/:</span><br><span class="line"></span><br><span class="line"> * One or more symlinks to directories have been preserved <span class="keyword">in</span> order to</span><br><span class="line"> * ensure that files installed via these symlinks remain accessible. This</span><br><span class="line"> * indicates that the mentioned symlink(s) may be obsolete remnants of an</span><br><span class="line"> * old install, and it may be appropriate to replace a given symlink with</span><br><span class="line"> * the directory that it points to.</span><br><span class="line"> * </span><br><span class="line"> *      /usr/<span class="built_in">local</span>/usr</span><br><span class="line"> * </span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ emerge qemacs</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; Recording app-editors/qemacs <span class="keyword">in</span> <span class="string">&quot;world&quot;</span> favorites file...</span><br><span class="line"></span><br><span class="line"> * Messages <span class="keyword">for</span> package app-editors/qemacs-0.4.0_pre20090420 merged to /usr/<span class="built_in">local</span>/:</span><br><span class="line"></span><br><span class="line"> * One or more symlinks to directories have been preserved <span class="keyword">in</span> order to</span><br><span class="line"> * ensure that files installed via these symlinks remain accessible. This</span><br><span class="line"> * indicates that the mentioned symlink(s) may be obsolete remnants of an</span><br><span class="line"> * old install, and it may be appropriate to replace a given symlink with</span><br><span class="line"> * the directory that it points to.</span><br><span class="line"> * </span><br><span class="line"> *      /usr/<span class="built_in">local</span>/usr</span><br><span class="line"> * </span><br><span class="line">&gt;&gt;&gt; Auto-cleaning packages...</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Using system located <span class="keyword">in</span> ROOT tree /usr/<span class="built_in">local</span>/</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; No outdated packages were found on your system.</span><br></pre></td></tr></table></figure>
 
 <p>バージョンを確認してみます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">which</span> qemacs</span><br><span class="line">/usr/<span class="built_in">local</span>/bin/qemacs</span><br><span class="line">$ qemacs --version</span><br><span class="line">QEmacs version 0.4.0dev</span><br><span class="line">Copyright (c) 2000-2003 Fabrice Bellard</span><br><span class="line">Copyright (c) 2000-2008 Charlie Gordon</span><br><span class="line"></span><br><span class="line">QEmacs comes with ABSOLUTELY NO WARRANTY.</span><br><span class="line">You may redistribute copies of QEmacs</span><br><span class="line">under the terms of the GNU Lesser General Public License.</span><br></pre></td></tr></table></figure>
@@ -279,7 +246,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
 
 <h2 id="EdisonとUSB-Serial接続"><a href="#EdisonとUSB-Serial接続" class="headerlink" title="EdisonとUSB-Serial接続"></a>EdisonとUSB-Serial接続</h2><p>EdisonのJ3コネクタとChromebookをUSB-Serial接続することができました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo screen /dev/ttyUSB0 115200</span><br><span class="line">Poky (Yocto Project Reference Distro) 1.6.1 edison ttyMFD2</span><br><span class="line"></span><br><span class="line">edison login: root</span><br><span class="line">Password: </span><br><span class="line">root@edison:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo screen /dev/ttyUSB0 115200</span><br><span class="line">Poky (Yocto Project Reference Distro) 1.6.1 edison ttyMFD2</span><br><span class="line"></span><br><span class="line">edison login: root</span><br><span class="line">Password: </span><br><span class="line">root@edison:~<span class="comment"># </span></span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -317,7 +284,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -368,7 +334,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dev-install"><span class="nav-number">1.</span> <span class="nav-text">dev_install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QEmacsをインストール"><span class="nav-number">2.</span> <span class="nav-text">QEmacsをインストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Screen"><span class="nav-number">3.</span> <span class="nav-text">Screen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EdisonとUSB-Serial接続"><span class="nav-number">4.</span> <span class="nav-text">EdisonとUSB-Serial接続</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dev-install"><span class="nav-number">1.</span> <span class="nav-text">dev_install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QEmacs%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">QEmacsをインストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Screen"><span class="nav-number">3.</span> <span class="nav-text">Screen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Edison%E3%81%A8USB-Serial%E6%8E%A5%E7%B6%9A"><span class="nav-number">4.</span> <span class="nav-text">EdisonとUSB-Serial接続</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -400,10 +366,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -428,9 +397,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -470,13 +439,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

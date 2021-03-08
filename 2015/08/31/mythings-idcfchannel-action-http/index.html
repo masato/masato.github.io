@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,18 +13,18 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="「IDCF」チャンネルは主に自作デバイスをmyThingsと接続するためのチャンネルですが、HTTPクライアントが動作する環境ならどこでも使うことができます。例としてOSXのターミナル上でcurlコマンドを「IDCF」チャンネルのアクションとして使います。「天気・災害」チャンネルをトリガーにして、「IDCF」チャンネルのアクションを実行する組み合わせを書いてみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="myThingsをはじめよう - Part5: 「天気・災害」のトリガーを「IDCF」のアクションがHTTPで受信する">
 <meta property="og:url" content="https://masato.github.io/2015/08/31/mythings-idcfchannel-action-http/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="「IDCF」チャンネルは主に自作デバイスをmyThingsと接続するためのチャンネルですが、HTTPクライアントが動作する環境ならどこでも使うことができます。例としてOSXのターミナル上でcurlコマンドを「IDCF」チャンネルのアクションとして使います。「天気・災害」チャンネルをトリガーにして、「IDCF」チャンネルのアクションを実行する組み合わせを書いてみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/08/31/mythings-idcfchannel-action-http/weather-channel.png">
@@ -42,7 +42,7 @@
 <meta property="og:image" content="https://masato.github.io/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-recipe-detail.png">
 <meta property="og:image" content="https://masato.github.io/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-recipe-executed.png">
 <meta property="article:published_time" content="2015-08-31T02:52:59.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.766Z">
+<meta property="article:modified_time" content="2015-08-31T02:52:59.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IoT">
 <meta property="article:tag" content="Meshblu">
@@ -64,7 +64,7 @@
   };
 </script>
 
-  <title>myThingsをはじめよう - Part5: 「天気・災害」のトリガーを「IDCF」のアクションがHTTPで受信する | masato's blog</title>
+  <title>myThingsをはじめよう - Part5: 「天気・災害」のトリガーを「IDCF」のアクションがHTTPで受信する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -104,7 +104,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -125,14 +125,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -141,51 +140,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -202,11 +177,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -219,7 +193,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -229,22 +203,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 31 2015 11:52:59" itemprop="dateCreated datePublished" datetime="2015-08-31T11:52:59+09:00">Aug 31 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -264,8 +231,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://www.idcf.jp/cloud/iot/" target="_blank" rel="noopener">「IDCF」チャンネル</a>は主に自作デバイスを<a href="http://mythings.yahoo.co.jp/" target="_blank" rel="noopener">myThings</a>と接続するためのチャンネルですが、HTTPクライアントが動作する環境ならどこでも使うことができます。例としてOSXのターミナル上でcurlコマンドを「IDCF」チャンネルのアクションとして使います。「天気・災害」チャンネルをトリガーにして、「IDCF」チャンネルのアクションを実行する組み合わせを書いてみます。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/iot/">「IDCF」チャンネル</a>は主に自作デバイスを<a target="_blank" rel="noopener" href="http://mythings.yahoo.co.jp/">myThings</a>と接続するためのチャンネルですが、HTTPクライアントが動作する環境ならどこでも使うことができます。例としてOSXのターミナル上でcurlコマンドを「IDCF」チャンネルのアクションとして使います。「天気・災害」チャンネルをトリガーにして、「IDCF」チャンネルのアクションを実行する組み合わせを書いてみます。</p>
+<span id="more"></span>
 
 
 <h2 id="myThingsアプリ"><a href="#myThingsアプリ" class="headerlink" title="myThingsアプリ"></a>myThingsアプリ</h2><h3 id="「天気・災害」チャンネルの承認"><a href="#「天気・災害」チャンネルの承認" class="headerlink" title="「天気・災害」チャンネルの承認"></a>「天気・災害」チャンネルの承認</h3><p>トリガーに「天気・災害」チャンネルを使います。myThingsアプリを開きチャンネル一覧から選択して認証します。</p>
@@ -284,7 +251,7 @@
 <p>「アクションを選択する」のリストボックスから、<code>action-1</code>を選択します。</p>
 <p><img src="/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-action-1.png" alt="idcf-channel-action-1.png"></p>
 <p>「メッセージ」のテキストエリアをタップすると、予めセットされた「候補」を選ぶことができます。ここから以下のようにカンマ区切りでいくつか選択します。中括弧のプレイスホルダは実際の天気情報に置換されて、アクションがメッセージとして受信することができます。</p>
-<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;地点名&#125;&#125;</span>,<span class="template-variable">&#123;&#123;天候の状態&#125;&#125;</span>,<span class="template-variable">&#123;&#123;最高気温&#125;&#125;</span>,<span class="template-variable">&#123;&#123;天候状態の画像のURL&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight handlebars"><table><tr><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;<span class="name">地点名</span>&#125;&#125;</span><span class="xml">,</span><span class="template-variable">&#123;&#123;<span class="name">天候の状態</span>&#125;&#125;</span><span class="xml">,</span><span class="template-variable">&#123;&#123;<span class="name">最高気温</span>&#125;&#125;</span><span class="xml">,</span><span class="template-variable">&#123;&#123;<span class="name">天候状態の画像のURL</span>&#125;&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-message.png" alt="idcf-channel-message.png"></p>
 <p>アクションの詳細設定が終わったらOKボタンをタップすると、組み合わせの作成画面に戻ります。</p>
@@ -294,7 +261,7 @@
 <p>組み合わせの作成が完了して一覧画面に戻ります。</p>
 <p><img src="/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-action-created.png" alt="idcf-channel-action-created.png"></p>
 <h2 id="「IDCF」チャンネルサーバー"><a href="#「IDCF」チャンネルサーバー" class="headerlink" title="「IDCF」チャンネルサーバー"></a>「IDCF」チャンネルサーバー</h2><h3 id="action-1デバイスの確認"><a href="#action-1デバイスの確認" class="headerlink" title="action-1デバイスの確認"></a>action-1デバイスの確認</h3><p>最初に「IDCF」チャンネルサーバーをインストールしたIDCFクラウドの仮想マシンにログインします。myThingsアプリのアクションに選択した<code>action-1</code>のuuidとtokenを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker-compose run --rm iotutil show -- -k action-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"show"</span> <span class="string">"-k"</span> <span class="string">"action-1"</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1 │ 8a781e76 │ 3a78814a-6879-4543-bacf-9a206cd951a6 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/iot_apps/meshblu-compose</span><br><span class="line">$ docker-compose run --rm iotutil show -- -k action-1</span><br><span class="line"></span><br><span class="line">&gt; iotutil@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;show&quot;</span> <span class="string">&quot;-k&quot;</span> <span class="string">&quot;action-1&quot;</span></span><br><span class="line"></span><br><span class="line">┌──────────┬──────────┬──────────────────────────────────────┐</span><br><span class="line">│ keyword  │ token    │ uuid                                 │</span><br><span class="line">├──────────┼──────────┼──────────────────────────────────────┤</span><br><span class="line">│ action-1 │ 8a781e76 │ 3a78814a-6879-4543-bacf-9a206cd951a6 │</span><br><span class="line">└──────────┴──────────┴──────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 
 <h3 id="curlコマンドのアクション"><a href="#curlコマンドのアクション" class="headerlink" title="curlコマンドのアクション"></a>curlコマンドのアクション</h3><p>確認したデバイス情報を使ってcurlコマンドを実行します。HTTPヘッダの認証情報にmyThingsアプリのアクションに指定した<code>action-1</code>のuuidとtokenを指定することで、myThingsのトリガーからのメッセージを<code>subscribe</code>します。Meshbluサーバーはセッションを閉じないのでcurlコマンドは待ち受け状態になります。</p>
 <ul>
@@ -302,7 +269,7 @@
 <li>meshblu_auth_uuid: action-1のuuid</li>
 <li>meshblu_auth_token: action-1のtoken</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET \</span><br><span class="line">  <span class="string">"http://210.140.162.58/subscribe"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_uuid: 3a78814a-6879-4543-bacf-9a206cd951a6"</span> \</span><br><span class="line">  --header <span class="string">"meshblu_auth_token: 8a781e76"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET \</span><br><span class="line">  <span class="string">&quot;http://210.140.162.58/subscribe&quot;</span> \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_uuid: 3a78814a-6879-4543-bacf-9a206cd951a6&quot;</span> \</span><br><span class="line">  --header <span class="string">&quot;meshblu_auth_token: 8a781e76&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>このcurlコマンドはしばらくするとタイムアウトします。タイムアウトする前にmyThingsアプリから「手動実行」でテストします。</p>
 <h2 id="手動実行でテスト"><a href="#手動実行でテスト" class="headerlink" title="手動実行でテスト"></a>手動実行でテスト</h2><p>myThingsアプリから組み合わせ一覧を開きます。</p>
@@ -312,7 +279,7 @@
 <p>「手動実行」ボタンをタップすると、デフォルトで15分間隔の実行タイミングを待たなくても、すぐに組み合わせを実行することができます。</p>
 <p><img src="/2015/08/31/mythings-idcfchannel-action-http/idcf-channel-recipe-executed.png" alt="idcf-channel-recipe-executed.png"></p>
 <h3 id="curlコマンドのアクション結果"><a href="#curlコマンドのアクション結果" class="headerlink" title="curlコマンドのアクション結果"></a>curlコマンドのアクション結果</h3><p>curlコマンドで<code>action-1</code>をsubscribeしているシェルに戻ります。「IDCF」チャンネルのアクションの結果として以下のようなJSONメッセージを「天気・災害」チャンネルのトリガーから受信することができました。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"devices"</span>:[<span class="string">"3a78814a-6879-4543-bacf-9a206cd951a6"</span>],<span class="attr">"payload"</span>:<span class="string">"東京（東京）,曇り,24,http://i.yimg.jp/images/weather/general/forecast/clouds.gif"</span>,<span class="attr">"fromUuid"</span>:<span class="string">"12a95246-f31e-4f0c-9678-2ae755e57b98"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;devices&quot;</span>:[<span class="string">&quot;3a78814a-6879-4543-bacf-9a206cd951a6&quot;</span>],<span class="attr">&quot;payload&quot;</span>:<span class="string">&quot;東京（東京）,曇り,24,http://i.yimg.jp/images/weather/general/forecast/clouds.gif&quot;</span>,<span class="attr">&quot;fromUuid&quot;</span>:<span class="string">&quot;12a95246-f31e-4f0c-9678-2ae755e57b98&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -349,7 +316,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -400,7 +366,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#myThingsアプリ"><span class="nav-number">1.</span> <span class="nav-text">myThingsアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#「天気・災害」チャンネルの承認"><span class="nav-number">1.1.</span> <span class="nav-text">「天気・災害」チャンネルの承認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#組み合わせの作成"><span class="nav-number">1.2.</span> <span class="nav-text">組み合わせの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#「天気・災害」トリガー"><span class="nav-number">1.3.</span> <span class="nav-text">「天気・災害」トリガー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#「IDCF」アクション"><span class="nav-number">1.4.</span> <span class="nav-text">「IDCF」アクション</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#「IDCF」チャンネルサーバー"><span class="nav-number">2.</span> <span class="nav-text">「IDCF」チャンネルサーバー</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#action-1デバイスの確認"><span class="nav-number">2.1.</span> <span class="nav-text">action-1デバイスの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curlコマンドのアクション"><span class="nav-number">2.2.</span> <span class="nav-text">curlコマンドのアクション</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手動実行でテスト"><span class="nav-number">3.</span> <span class="nav-text">手動実行でテスト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curlコマンドのアクション結果"><span class="nav-number">3.1.</span> <span class="nav-text">curlコマンドのアクション結果</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#myThings%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">1.</span> <span class="nav-text">myThingsアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%8C%E5%A4%A9%E6%B0%97%E3%83%BB%E7%81%BD%E5%AE%B3%E3%80%8D%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%81%AE%E6%89%BF%E8%AA%8D"><span class="nav-number">1.1.</span> <span class="nav-text">「天気・災害」チャンネルの承認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B5%84%E3%81%BF%E5%90%88%E3%82%8F%E3%81%9B%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.2.</span> <span class="nav-text">組み合わせの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%8C%E5%A4%A9%E6%B0%97%E3%83%BB%E7%81%BD%E5%AE%B3%E3%80%8D%E3%83%88%E3%83%AA%E3%82%AC%E3%83%BC"><span class="nav-number">1.3.</span> <span class="nav-text">「天気・災害」トリガー</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%8CIDCF%E3%80%8D%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3"><span class="nav-number">1.4.</span> <span class="nav-text">「IDCF」アクション</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%8CIDCF%E3%80%8D%E3%83%81%E3%83%A3%E3%83%B3%E3%83%8D%E3%83%AB%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC"><span class="nav-number">2.</span> <span class="nav-text">「IDCF」チャンネルサーバー</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#action-1%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">2.1.</span> <span class="nav-text">action-1デバイスの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#curl%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3"><span class="nav-number">2.2.</span> <span class="nav-text">curlコマンドのアクション</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8B%95%E5%AE%9F%E8%A1%8C%E3%81%A7%E3%83%86%E3%82%B9%E3%83%88"><span class="nav-number">3.</span> <span class="nav-text">手動実行でテスト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#curl%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%AE%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E7%B5%90%E6%9E%9C"><span class="nav-number">3.1.</span> <span class="nav-text">curlコマンドのアクション結果</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -432,10 +398,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -460,9 +429,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -502,13 +471,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

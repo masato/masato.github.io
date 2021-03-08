@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Salt Masterの設定ファイルを変更してSalt Statesの配置ディレクトリを変更しました。これまで何回かSaltを使ってDockerをインストールしていますが、あらためて整理してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Salt on IDCF クラウド - Part6: Dockerインストール">
 <meta property="og:url" content="https://masato.github.io/2014/11/22/salt-on-idcf-cloud-docker/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Salt Masterの設定ファイルを変更してSalt Statesの配置ディレクトリを変更しました。これまで何回かSaltを使ってDockerをインストールしていますが、あらためて整理してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-11-22T10:58:47.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.894Z">
+<meta property="article:modified_time" content="2014-11-22T10:58:47.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IDCFCloud">
 <meta property="article:tag" content="Salt">
@@ -51,7 +51,7 @@
   };
 </script>
 
-  <title>Salt on IDCF クラウド - Part6: Dockerインストール | masato's blog</title>
+  <title>Salt on IDCF クラウド - Part6: Dockerインストール | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -91,7 +91,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -112,14 +112,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -128,51 +127,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -189,11 +164,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -206,7 +180,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -216,19 +190,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Nov 22 2014 19:58:47" itemprop="dateCreated datePublished" datetime="2014-11-22T19:58:47+09:00">Nov 22 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Salt Masterの設定ファイルを変更してSalt Statesの配置ディレクトリを変更しました。これまで何回かSaltを使ってDockerをインストールしていますが、あらためて整理してみます。</div>
@@ -243,19 +210,19 @@
 
       
         <p>Salt Masterの設定ファイルを変更してSalt Statesの配置ディレクトリを変更しました。これまで<a href="/2014/09/06/salt-idcf-docker-states/">何回か</a>Saltを使ってDockerをインストールしていますが、あらためて整理してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="Saltのバージョンの確認"><a href="#Saltのバージョンの確認" class="headerlink" title="Saltのバージョンの確認"></a>Saltのバージョンの確認</h3><p>masterのバージョンを確認します。</p>
 <figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">$ salt-<span class="keyword">master</span> <span class="title">--version</span></span><br><span class="line">salt-<span class="keyword">master</span> <span class="title">2014</span>.<span class="number">7.0</span> (Helium)</span><br></pre></td></tr></table></figure>
 
 <p>minionのバージョンを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'minion*'</span> cmd.run <span class="string">'salt-minion --version'</span></span><br><span class="line">minion2.cs74idcfcloud.internal:</span><br><span class="line">    salt-minion 2014.7.0 (Helium)</span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    salt-minion 2014.7.0 (Helium)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;minion*&#x27;</span> cmd.run <span class="string">&#x27;salt-minion --version&#x27;</span></span><br><span class="line">minion2.cs74idcfcloud.internal:</span><br><span class="line">    salt-minion 2014.7.0 (Helium)</span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    salt-minion 2014.7.0 (Helium)</span><br></pre></td></tr></table></figure>
 
 <h3 id="master-conf"><a href="#master-conf" class="headerlink" title="master.conf"></a>master.conf</h3><p>master.confを編集して、masterの設定ファイルのルートディレクトリを変更します。<code>users-formula</code>は<a href="/2014/11/21/salt-on-idcf-cloud-users-formula/">前回</a>と同じように、<code>git clone</code>します。</p>
 <figure class="highlight bash"><figcaption><span>/etc/salt/master.d/master.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">pillar_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/pillar</span><br><span class="line"></span><br><span class="line">file_roots:</span><br><span class="line">  base:</span><br><span class="line">    - /srv/salt/config/salt</span><br><span class="line">    - /srv/salt/config/formulas/users-formula</span><br></pre></td></tr></table></figure>
 
 <h3 id="Statesの設定ファイルを変更"><a href="#Statesの設定ファイルを変更" class="headerlink" title="Statesの設定ファイルを変更"></a>Statesの設定ファイルを変更</h3><p>top.slsにdockerのFormulaを追加します。</p>
-<figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">'*'</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">users</span></span><br><span class="line">  <span class="attr">'roles:salt-master':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">  <span class="attr">'roles:dev':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">&#x27;*&#x27;</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">users</span></span><br><span class="line">  <span class="attr">&#x27;roles:salt-master&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">  <span class="attr">&#x27;roles:dev&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">s3cmd</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">docker</span></span><br></pre></td></tr></table></figure>
 
 <p>common.slsには、vimへのalternativesを設定します。どうもnanoは使いづらいです。</p>
 <figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/common.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">ja_JP.UTF-8:</span></span><br><span class="line">  <span class="string">locale.system</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Asia/Tokyo:</span></span><br><span class="line">  <span class="string">timezone.system</span></span><br><span class="line"></span><br><span class="line"><span class="attr">editor:</span></span><br><span class="line">  <span class="attr">alternatives.set:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/usr/bin/vim.basic</span></span><br></pre></td></tr></table></figure>
@@ -267,12 +234,12 @@
 <figure class="highlight yml"><figcaption><span>/srv/salt/config/salt/docker/init.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">include:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">common</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker-py:</span></span><br><span class="line">  <span class="attr">pip.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">pkg-core</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker-repo:</span></span><br><span class="line">  <span class="attr">pkgrepo.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">humanname:</span> <span class="string">Docker</span> <span class="string">Repo</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">deb</span> <span class="string">https://get.docker.io/ubuntu</span> <span class="string">docker</span> <span class="string">main</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">key_url:</span> <span class="string">https://get.docker.io/gpg</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">pkg-core</span></span><br><span class="line"></span><br><span class="line"><span class="attr">apt-transport-https:</span></span><br><span class="line">  <span class="string">pkg.installed</span></span><br><span class="line"></span><br><span class="line"><span class="attr">lxc-docker:</span></span><br><span class="line">  <span class="attr">pkg.latest:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">require:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkgrepo:</span> <span class="string">docker-repo</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">apt-transport-https</span></span><br><span class="line"></span><br><span class="line"><span class="attr">docker:</span></span><br><span class="line">  <span class="attr">service:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">running</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">watch:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">pkg:</span> <span class="string">lxc-docker</span></span><br><span class="line"></span><br><span class="line"><span class="attr">jpetazzo/nsenter:</span></span><br><span class="line">  <span class="string">docker.pulled</span></span><br><span class="line"></span><br><span class="line"><span class="attr">nsenter:</span></span><br><span class="line">  <span class="attr">docker.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">jpetazzo/nsenter</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/usr/local/bin:</span> <span class="string">/target</span></span><br><span class="line"></span><br><span class="line"><span class="string">/usr/local/bin/nse:</span></span><br><span class="line">  <span class="attr">file.managed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">source:</span> <span class="string">salt://docker/nse</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">mode:</span> <span class="number">775</span></span><br></pre></td></tr></table></figure>
 
 <p>Docker1.3になるとあまり出番がありませんが、nsenterのラッパースクリプトを用意します。</p>
-<figure class="highlight bash"><figcaption><span>/srv/salt/config/salt/docker/nse</span></figcaption><table><tr><td class="code"><pre><span class="line">[ -n <span class="string">"<span class="variable">$1</span>"</span> ] &amp;&amp; sudo nsenter --pid --uts --mount --ipc --net --target $(docker inspect --format=<span class="string">"&amp;#123;&amp;#123; .State.Pid &#125;&#125;"</span> <span class="variable">$1</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/srv/salt/config/salt/docker/nse</span></figcaption><table><tr><td class="code"><pre><span class="line">[ -n <span class="string">&quot;<span class="variable">$1</span>&quot;</span> ] &amp;&amp; sudo nsenter --pid --uts --mount --ipc --net --target $(docker inspect --format=<span class="string">&quot;&amp;#123;&amp;#123; .State.Pid &#125;&#125;&quot;</span> <span class="variable">$1</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="higistate"><a href="#higistate" class="headerlink" title="higistate"></a>higistate</h3><p>state.highstateを実行して、<code>roles:dev</code>のminionに対してDockerをインストールします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;*&#x27;</span> state.highstate</span><br></pre></td></tr></table></figure>
 
 <h3 id="確認"><a href="#確認" class="headerlink" title="確認"></a>確認</h3><p>cmdモジュールを使い、Grainsに定義した<code>roles:dev</code>のminionにインストールしたdockerのバージョンを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt -G <span class="string">'roles:dev'</span> cmd.run <span class="string">'docker version'</span></span><br><span class="line">minion2.cs74idcfcloud.internal:</span><br><span class="line">    Client version: 1.3.1</span><br><span class="line">    Client API version: 1.15</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 4e9bbfa</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.3.1</span><br><span class="line">    Server API version: 1.15</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 4e9bbfa</span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    Client version: 1.3.1</span><br><span class="line">    Client API version: 1.15</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 4e9bbfa</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.3.1</span><br><span class="line">    Server API version: 1.15</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 4e9bbfa</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt -G <span class="string">&#x27;roles:dev&#x27;</span> cmd.run <span class="string">&#x27;docker version&#x27;</span></span><br><span class="line">minion2.cs74idcfcloud.internal:</span><br><span class="line">    Client version: 1.3.1</span><br><span class="line">    Client API version: 1.15</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 4e9bbfa</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.3.1</span><br><span class="line">    Server API version: 1.15</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 4e9bbfa</span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    Client version: 1.3.1</span><br><span class="line">    Client API version: 1.15</span><br><span class="line">    Go version (client): go1.3.3</span><br><span class="line">    Git commit (client): 4e9bbfa</span><br><span class="line">    OS/Arch (client): linux/amd64</span><br><span class="line">    Server version: 1.3.1</span><br><span class="line">    Server API version: 1.15</span><br><span class="line">    Go version (server): go1.3.3</span><br><span class="line">    Git commit (server): 4e9bbfa</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -311,7 +278,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -362,7 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Saltのバージョンの確認"><span class="nav-number">1.</span> <span class="nav-text">Saltのバージョンの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#master-conf"><span class="nav-number">2.</span> <span class="nav-text">master.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Statesの設定ファイルを変更"><span class="nav-number">3.</span> <span class="nav-text">Statesの設定ファイルを変更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">4.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#higistate"><span class="nav-number">5.</span> <span class="nav-text">higistate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#確認"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Salt%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">1.</span> <span class="nav-text">Saltのバージョンの確認</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#master-conf"><span class="nav-number">2.</span> <span class="nav-text">master.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#States%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E5%A4%89%E6%9B%B4"><span class="nav-number">3.</span> <span class="nav-text">Statesの設定ファイルを変更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">4.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#higistate"><span class="nav-number">5.</span> <span class="nav-text">higistate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A2%BA%E8%AA%8D"><span class="nav-number">6.</span> <span class="nav-text">確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -394,10 +360,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -422,9 +391,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -464,13 +433,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

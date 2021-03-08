@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Gulpプラグインを使い開発用サーバ-の起動とライブリロードの設定をします。開発用サーバーはExpressサーバーとは独立して起動するのでフロントサイドのSPAの開発が行うことができます。リポジトリはこちらです。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Framework7でHTML5モバイルアプリをつくる - Part3: gulp-webserverとgulp-watchでLiveReloadする">
 <meta property="og:url" content="https://masato.github.io/2015/09/11/framework7-gulp-webserver/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Gulpプラグインを使い開発用サーバ-の起動とライブリロードの設定をします。開発用サーバーはExpressサーバーとは独立して起動するのでフロントサイドのSPAの開発が行うことができます。リポジトリはこちらです。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-09-11T01:22:46.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.661Z">
+<meta property="article:modified_time" content="2015-09-11T01:22:46.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Framework7">
 <meta property="article:tag" content="HTML5モバイルアプリ">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Framework7でHTML5モバイルアプリをつくる - Part3: gulp-webserverとgulp-watchでLiveReloadする | masato's blog</title>
+  <title>Framework7でHTML5モバイルアプリをつくる - Part3: gulp-webserverとgulp-watchでLiveReloadする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 11 2015 10:22:46" itemprop="dateCreated datePublished" datetime="2015-09-11T10:22:46+09:00">Sep 11 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Gulpプラグインを使い開発用サーバ-の起動とライブリロードの設定をします。開発用サーバーはExpressサーバーとは独立して起動するのでフロントサイドのSPAの開発が行うことができます。リポジトリはこちらです。</div>
@@ -240,17 +207,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Gulpプラグインを使い開発用サーバ-の起動とライブリロードの設定をします。開発用サーバーはExpressサーバーとは独立して起動するのでフロントサイドのSPAの開発が行うことができます。リポジトリは<a href="https://github.com/masato/docker-framework7/tree/watch" target="_blank" rel="noopener">こちら</a>です。</p>
-<a id="more"></a>
+        <p>Gulpプラグインを使い開発用サーバ-の起動とライブリロードの設定をします。開発用サーバーはExpressサーバーとは独立して起動するのでフロントサイドのSPAの開発が行うことができます。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/tree/watch">こちら</a>です。</p>
+<span id="more"></span>
 
-<h2 id="パッケージの追加"><a href="#パッケージの追加" class="headerlink" title="パッケージの追加"></a>パッケージの追加</h2><p><a href="https://github.com/masato/docker-framework7/blob/watch/package.json" target="_blank" rel="noopener">package.json</a>のdevDependenciesに今回の作業で追加するパッケージを定義します。</p>
+<h2 id="パッケージの追加"><a href="#パッケージの追加" class="headerlink" title="パッケージの追加"></a>パッケージの追加</h2><p><a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/watch/package.json">package.json</a>のdevDependenciesに今回の作業で追加するパッケージを定義します。</p>
 <ul>
-<li><a href="https://www.npmjs.com/package/gulp-watch" target="_blank" rel="noopener">gulp-watch</a></li>
-<li><a href="https://www.npmjs.com/package/gulp-webserver" target="_blank" rel="noopener">gulp-webserver</a></li>
-<li><a href="https://www.npmjs.com/package/del" target="_blank" rel="noopener">del</a></li>
-<li><a href="https://www.npmjs.com/package/run-sequence" target="_blank" rel="noopener">run-sequence</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-watch">gulp-watch</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-webserver">gulp-webserver</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/del">del</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/run-sequence">run-sequence</a></li>
 </ul>
-<figure class="highlight"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    "devDependencies": &#123;</span><br><span class="line">...</span><br><span class="line">        "gulp-watch": "~4.3.5",</span><br><span class="line">        "gulp-webserver": "~0.9.1",</span><br><span class="line">        "del": "~2.0.2",</span><br><span class="line">        "run-sequence": "~1.1.2"</span><br><span class="line">    &#125;,</span><br><span class="line">    "scripts": &#123;</span><br><span class="line">        "start": "node src/server/app.js",</span><br><span class="line">        "postinstall": "bower install",</span><br><span class="line">        "clean": "gulp clean",</span><br><span class="line">        "bower": "gulp bower",</span><br><span class="line">        "build": "gulp build",</span><br><span class="line">        "dev-server": "gulp"</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><figcaption><span>package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">    &quot;devDependencies&quot;: &#123;</span><br><span class="line">...</span><br><span class="line">        &quot;gulp-watch&quot;: &quot;~4.3.5&quot;,</span><br><span class="line">        &quot;gulp-webserver&quot;: &quot;~0.9.1&quot;,</span><br><span class="line">        &quot;del&quot;: &quot;~2.0.2&quot;,</span><br><span class="line">        &quot;run-sequence&quot;: &quot;~1.1.2&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;scripts&quot;: &#123;</span><br><span class="line">        &quot;start&quot;: &quot;node src/server/app.js&quot;,</span><br><span class="line">        &quot;postinstall&quot;: &quot;bower install&quot;,</span><br><span class="line">        &quot;clean&quot;: &quot;gulp clean&quot;,</span><br><span class="line">        &quot;bower&quot;: &quot;gulp bower&quot;,</span><br><span class="line">        &quot;build&quot;: &quot;gulp build&quot;,</span><br><span class="line">        &quot;dev-server&quot;: &quot;gulp&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="インストール"><a href="#インストール" class="headerlink" title="インストール"></a>インストール</h3><p>Dockerイメージのビルド課程で<code>RUN npm install</code>が実行されます。</p>
 <figure class="highlight bash"><figcaption><span>Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">COPY package.json /app/</span><br><span class="line">COPY bower.json /app/</span><br><span class="line"></span><br><span class="line">RUN  npm install</span><br></pre></td></tr></table></figure>
@@ -258,42 +225,42 @@
 <p>package.jsonのscriptsセクションに定義してあるpost install`セクションからBowerパッケージもDockerイメージにインストールされます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm f7 npm run build</span><br></pre></td></tr></table></figure>
 
-<h2 id="config-js"><a href="#config-js" class="headerlink" title="config.js"></a>config.js</h2><p>Gulpのビルドタスクでディレクトリ名やファイル名はまとめて<a href="https://github.com/masato/docker-framework7/blob/watch/config.js" target="_blank" rel="noopener">config.js</a>に定義しておきます。相対パスの辺りの記述は現在ではふつうに連結して使えました。</p>
-<figure class="highlight js"><figcaption><span>config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> filter = &#123;</span><br><span class="line">        html: <span class="string">'**/*.html'</span>,</span><br><span class="line">        js: <span class="string">'**/*.js'</span>,</span><br><span class="line">        css: <span class="string">'**/*.css'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    srcDir = <span class="string">'./src'</span>,</span><br><span class="line">    <span class="comment">/*relativeSrcPath = path.relative('.', srcDir),*/</span></span><br><span class="line">    relativeSrcPath = srcDir,</span><br><span class="line">    src = &#123;</span><br><span class="line">        server: relativeSrcPath + <span class="string">'/server/'</span>,</span><br><span class="line">        client: relativeSrcPath + <span class="string">'/client/'</span>,</span><br><span class="line">        scripts: relativeSrcPath + <span class="string">'/client/js/'</span> + filter.js,</span><br><span class="line">        views: <span class="string">'./views/'</span> + filter.html</span><br><span class="line">    &#125;,</span><br><span class="line">    distDir = <span class="string">'./dist'</span>,</span><br><span class="line">    dist = &#123;</span><br><span class="line">        base: distDir,</span><br><span class="line">        js: distDir + <span class="string">'/js/'</span>,</span><br><span class="line">        css: distDir + <span class="string">'/css/'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    output = &#123;</span><br><span class="line">        buildJs: <span class="string">'bundle.js'</span>,</span><br><span class="line">        buildCss: <span class="string">'bundle.css'</span>,</span><br><span class="line">        bowerJs: <span class="string">'vendor.js'</span>,</span><br><span class="line">        bowerCss: <span class="string">'vendor.css'</span>,</span><br><span class="line">        minJs: <span class="string">'.min.js'</span>,</span><br><span class="line">        minCss: <span class="string">'.min.css'</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    src: src,</span><br><span class="line">    dist: dist,</span><br><span class="line">    filter: filter,</span><br><span class="line">    output: output</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="config-js"><a href="#config-js" class="headerlink" title="config.js"></a>config.js</h2><p>Gulpのビルドタスクでディレクトリ名やファイル名はまとめて<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/watch/config.js">config.js</a>に定義しておきます。相対パスの辺りの記述は現在ではふつうに連結して使えました。</p>
+<figure class="highlight js"><figcaption><span>config.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> filter = &#123;</span><br><span class="line">        html: <span class="string">&#x27;**/*.html&#x27;</span>,</span><br><span class="line">        js: <span class="string">&#x27;**/*.js&#x27;</span>,</span><br><span class="line">        css: <span class="string">&#x27;**/*.css&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    srcDir = <span class="string">&#x27;./src&#x27;</span>,</span><br><span class="line">    <span class="comment">/*relativeSrcPath = path.relative(&#x27;.&#x27;, srcDir),*/</span></span><br><span class="line">    relativeSrcPath = srcDir,</span><br><span class="line">    src = &#123;</span><br><span class="line">        server: relativeSrcPath + <span class="string">&#x27;/server/&#x27;</span>,</span><br><span class="line">        client: relativeSrcPath + <span class="string">&#x27;/client/&#x27;</span>,</span><br><span class="line">        scripts: relativeSrcPath + <span class="string">&#x27;/client/js/&#x27;</span> + filter.js,</span><br><span class="line">        views: <span class="string">&#x27;./views/&#x27;</span> + filter.html</span><br><span class="line">    &#125;,</span><br><span class="line">    distDir = <span class="string">&#x27;./dist&#x27;</span>,</span><br><span class="line">    dist = &#123;</span><br><span class="line">        base: distDir,</span><br><span class="line">        js: distDir + <span class="string">&#x27;/js/&#x27;</span>,</span><br><span class="line">        css: distDir + <span class="string">&#x27;/css/&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    output = &#123;</span><br><span class="line">        buildJs: <span class="string">&#x27;bundle.js&#x27;</span>,</span><br><span class="line">        buildCss: <span class="string">&#x27;bundle.css&#x27;</span>,</span><br><span class="line">        bowerJs: <span class="string">&#x27;vendor.js&#x27;</span>,</span><br><span class="line">        bowerCss: <span class="string">&#x27;vendor.css&#x27;</span>,</span><br><span class="line">        minJs: <span class="string">&#x27;.min.js&#x27;</span>,</span><br><span class="line">        minCss: <span class="string">&#x27;.min.css&#x27;</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    src: src,</span><br><span class="line">    dist: dist,</span><br><span class="line">    filter: filter,</span><br><span class="line">    output: output</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="Gulpビルドタスク-del-run-sequence"><a href="#Gulpビルドタスク-del-run-sequence" class="headerlink" title="Gulpビルドタスク (del, run-sequence)"></a>Gulpビルドタスク (del, run-sequence)</h2><p>以下のサイトを参考にビルドタスクを書いていきます。</p>
 <ul>
-<li><a href="http://qiita.com/naoiwata/items/4c82140a5fb5d7bdb3f8" target="_blank" rel="noopener">Gulp でタスクを並列/直列処理する</a></li>
+<li><a target="_blank" rel="noopener" href="http://qiita.com/naoiwata/items/4c82140a5fb5d7bdb3f8">Gulp でタスクを並列/直列処理する</a></li>
 </ul>
-<h3 id="gulpfile-js"><a href="#gulpfile-js" class="headerlink" title="gulpfile.js"></a>gulpfile.js</h3><p>最初に作成した<a href="https://github.com/masato/docker-framework7/blob/watch/gulpfile.js" target="_blank" rel="noopener">gulpfile.js</a>の全文です。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>),</span><br><span class="line">    gutil = <span class="built_in">require</span>(<span class="string">'gulp-util'</span>),</span><br><span class="line">    concat = <span class="built_in">require</span>(<span class="string">'gulp-concat'</span>),</span><br><span class="line">    rename = <span class="built_in">require</span>(<span class="string">'gulp-rename'</span>),</span><br><span class="line">    uglify = <span class="built_in">require</span>(<span class="string">'gulp-uglify'</span>),</span><br><span class="line">    minifyCss = <span class="built_in">require</span>(<span class="string">'gulp-minify-css'</span>),</span><br><span class="line">    gulpFilter = <span class="built_in">require</span>(<span class="string">'gulp-filter'</span>),</span><br><span class="line">    bower = <span class="built_in">require</span>(<span class="string">'main-bower-files'</span>),</span><br><span class="line">    webserver = <span class="built_in">require</span>(<span class="string">'gulp-webserver'</span>),</span><br><span class="line">    watch = <span class="built_in">require</span>(<span class="string">'gulp-watch'</span>),</span><br><span class="line">    del = <span class="built_in">require</span>(<span class="string">'del'</span>),</span><br><span class="line">    runSequence = <span class="built_in">require</span>(<span class="string">'run-sequence'</span>),</span><br><span class="line">    config = <span class="built_in">require</span>(<span class="string">'./config'</span>);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'clean'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> del(config.dist.base, cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'copy'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.src.views)</span><br><span class="line">               .pipe(gulp.dest(config.dist.base));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'scripts'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.src.scripts)</span><br><span class="line">        .pipe(concat(config.output.buildJs))</span><br><span class="line">        .pipe(gulp.dest(config.dist.js))</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(rename(&#123;</span><br><span class="line">            extname: config.output.minJs</span><br><span class="line">        &#125;))</span><br><span class="line">        .pipe(gulp.dest(config.dist.js));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'bowerJs'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> jsFilter = gulpFilter(config.filter.js);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(bower())</span><br><span class="line">           .pipe(jsFilter)</span><br><span class="line">           .pipe(concat(config.output.bowerJs))</span><br><span class="line">           .pipe(gulp.dest(config.dist.js))</span><br><span class="line">           .pipe(uglify())</span><br><span class="line">           .pipe(rename(&#123;</span><br><span class="line">               extname: config.output.minJs</span><br><span class="line">            &#125;))</span><br><span class="line">           .pipe(gulp.dest(config.dist.js));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'bowerCss'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> cssFilter = gulpFilter(config.filter.css);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(bower())</span><br><span class="line">           .pipe(cssFilter)</span><br><span class="line">           .pipe(concat(config.output.bowerCss))</span><br><span class="line">           .pipe(gulp.dest(config.dist.css))</span><br><span class="line">           .pipe(minifyCss())</span><br><span class="line">           .pipe(rename(&#123;</span><br><span class="line">               extname: config.output.minCss</span><br><span class="line">            &#125;))</span><br><span class="line">           .pipe(gulp.dest(config.dist.css));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    watch(config.src.scripts, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">'scripts'</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    watch(config.src.views, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">'copy'</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(config.dist.base);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.dist.base)</span><br><span class="line">        .pipe(webserver(&#123;</span><br><span class="line">            host: process.env.DEV_HOST || <span class="string">'localhost'</span>,</span><br><span class="line">            port: process.env.DEV_PORT || <span class="number">8080</span>,</span><br><span class="line">            livereload: <span class="literal">true</span></span><br><span class="line">        &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'bower'</span>, [<span class="string">'bowerJs'</span>, <span class="string">'bowerCss'</span>]);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'build'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">'clean'</span>, [<span class="string">'bower'</span>, <span class="string">'scripts'</span>, <span class="string">'copy'</span>], cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'default'</span>, [<span class="string">'webserver'</span>,<span class="string">'watch'</span>]);</span><br></pre></td></tr></table></figure>
+<h3 id="gulpfile-js"><a href="#gulpfile-js" class="headerlink" title="gulpfile.js"></a>gulpfile.js</h3><p>最初に作成した<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/watch/gulpfile.js">gulpfile.js</a>の全文です。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">&#x27;gulp&#x27;</span>),</span><br><span class="line">    gutil = <span class="built_in">require</span>(<span class="string">&#x27;gulp-util&#x27;</span>),</span><br><span class="line">    concat = <span class="built_in">require</span>(<span class="string">&#x27;gulp-concat&#x27;</span>),</span><br><span class="line">    rename = <span class="built_in">require</span>(<span class="string">&#x27;gulp-rename&#x27;</span>),</span><br><span class="line">    uglify = <span class="built_in">require</span>(<span class="string">&#x27;gulp-uglify&#x27;</span>),</span><br><span class="line">    minifyCss = <span class="built_in">require</span>(<span class="string">&#x27;gulp-minify-css&#x27;</span>),</span><br><span class="line">    gulpFilter = <span class="built_in">require</span>(<span class="string">&#x27;gulp-filter&#x27;</span>),</span><br><span class="line">    bower = <span class="built_in">require</span>(<span class="string">&#x27;main-bower-files&#x27;</span>),</span><br><span class="line">    webserver = <span class="built_in">require</span>(<span class="string">&#x27;gulp-webserver&#x27;</span>),</span><br><span class="line">    watch = <span class="built_in">require</span>(<span class="string">&#x27;gulp-watch&#x27;</span>),</span><br><span class="line">    del = <span class="built_in">require</span>(<span class="string">&#x27;del&#x27;</span>),</span><br><span class="line">    runSequence = <span class="built_in">require</span>(<span class="string">&#x27;run-sequence&#x27;</span>),</span><br><span class="line">    config = <span class="built_in">require</span>(<span class="string">&#x27;./config&#x27;</span>);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;clean&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> del(config.dist.base, cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;copy&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.src.views)</span><br><span class="line">               .pipe(gulp.dest(config.dist.base));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;scripts&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.src.scripts)</span><br><span class="line">        .pipe(concat(config.output.buildJs))</span><br><span class="line">        .pipe(gulp.dest(config.dist.js))</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(rename(&#123;</span><br><span class="line">            extname: config.output.minJs</span><br><span class="line">        &#125;))</span><br><span class="line">        .pipe(gulp.dest(config.dist.js));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;bowerJs&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> jsFilter = gulpFilter(config.filter.js);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(bower())</span><br><span class="line">           .pipe(jsFilter)</span><br><span class="line">           .pipe(concat(config.output.bowerJs))</span><br><span class="line">           .pipe(gulp.dest(config.dist.js))</span><br><span class="line">           .pipe(uglify())</span><br><span class="line">           .pipe(rename(&#123;</span><br><span class="line">               extname: config.output.minJs</span><br><span class="line">            &#125;))</span><br><span class="line">           .pipe(gulp.dest(config.dist.js));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;bowerCss&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> cssFilter = gulpFilter(config.filter.css);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(bower())</span><br><span class="line">           .pipe(cssFilter)</span><br><span class="line">           .pipe(concat(config.output.bowerCss))</span><br><span class="line">           .pipe(gulp.dest(config.dist.css))</span><br><span class="line">           .pipe(minifyCss())</span><br><span class="line">           .pipe(rename(&#123;</span><br><span class="line">               extname: config.output.minCss</span><br><span class="line">            &#125;))</span><br><span class="line">           .pipe(gulp.dest(config.dist.css));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;watch&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    watch(config.src.scripts, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">&#x27;scripts&#x27;</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    watch(config.src.views, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">&#x27;copy&#x27;</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;webserver&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(config.dist.base);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.dist.base)</span><br><span class="line">        .pipe(webserver(&#123;</span><br><span class="line">            host: process.env.DEV_HOST || <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">            port: process.env.DEV_PORT || <span class="number">8080</span>,</span><br><span class="line">            livereload: <span class="literal">true</span></span><br><span class="line">        &#125;));</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;bower&#x27;</span>, [<span class="string">&#x27;bowerJs&#x27;</span>, <span class="string">&#x27;bowerCss&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;build&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">&#x27;clean&#x27;</span>, [<span class="string">&#x27;bower&#x27;</span>, <span class="string">&#x27;scripts&#x27;</span>, <span class="string">&#x27;copy&#x27;</span>], cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;default&#x27;</span>, [<span class="string">&#x27;webserver&#x27;</span>,<span class="string">&#x27;watch&#x27;</span>]);</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="buildタスク"><a href="#buildタスク" class="headerlink" title="buildタスク"></a>buildタスク</h3><p>buildタスクでは<a href="https://www.npmjs.com/package/run-sequence" target="_blank" rel="noopener">run-sequence</a>パッケージを使いタスクの直列処理と並列処理を制御します。<code>clean</code>タスクが終了後に配列で定義したタスクを並列で実行します。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">'build'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">'clean'</span>, [<span class="string">'bower'</span>, <span class="string">'scripts'</span>, <span class="string">'copy'</span>], cb);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="buildタスク"><a href="#buildタスク" class="headerlink" title="buildタスク"></a>buildタスク</h3><p>buildタスクでは<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/run-sequence">run-sequence</a>パッケージを使いタスクの直列処理と並列処理を制御します。<code>clean</code>タスクが終了後に配列で定義したタスクを並列で実行します。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">&#x27;build&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">&#x27;clean&#x27;</span>, [<span class="string">&#x27;bower&#x27;</span>, <span class="string">&#x27;scripts&#x27;</span>, <span class="string">&#x27;copy&#x27;</span>], cb);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="開発用サーバーとライブリロード-gulp-watch-gulp-webserver"><a href="#開発用サーバーとライブリロード-gulp-watch-gulp-webserver" class="headerlink" title="開発用サーバーとライブリロード (gulp-watch, gulp-webserver)"></a>開発用サーバーとライブリロード (gulp-watch, gulp-webserver)</h2><p>以下のサイトを参考に開発サーバーのタスクを書いていきます。</p>
 <ul>
-<li><a href="http://blog.flup.jp/2015/02/17/gulp_webpack_stylus/" target="_blank" rel="noopener">gulp.js+webpack+stylusでフロントエンド開発環境をつくる</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.flup.jp/2015/02/17/gulp_webpack_stylus/">gulp.js+webpack+stylusでフロントエンド開発環境をつくる</a></li>
 </ul>
-<h3 id="watchタスク"><a href="#watchタスク" class="headerlink" title="watchタスク"></a>watchタスク</h3><p><a href="https://www.npmjs.com/package/gulp-watch" target="_blank" rel="noopener">gulp-watch</a>を使った<code>watch</code>タスクを用意して開発しているJavaScriptとHTMLファイルのディレクトリの更新を監視します。JavaScriptとHTMLファイルに編集があった場合にそれぞれ<code>scripts</code>タスクと<code>copy</code>タスクが実行されます。公開用の<code>dist</code>ディレクトリに変換されたファイルがコピーされます。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">'watch'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    watch(config.src.scripts, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">'scripts'</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    watch(config.src.views, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">'copy'</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="watchタスク"><a href="#watchタスク" class="headerlink" title="watchタスク"></a>watchタスク</h3><p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-watch">gulp-watch</a>を使った<code>watch</code>タスクを用意して開発しているJavaScriptとHTMLファイルのディレクトリの更新を監視します。JavaScriptとHTMLファイルに編集があった場合にそれぞれ<code>scripts</code>タスクと<code>copy</code>タスクが実行されます。公開用の<code>dist</code>ディレクトリに変換されたファイルがコピーされます。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">&#x27;watch&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    watch(config.src.scripts, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">&#x27;scripts&#x27;</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    watch(config.src.views, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        gulp.start([<span class="string">&#x27;copy&#x27;</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<h3 id="webserverタスク"><a href="#webserverタスク" class="headerlink" title="webserverタスク"></a>webserverタスク</h3><p><a href="https://www.npmjs.com/package/gulp-webserver" target="_blank" rel="noopener">gulp-webserver</a>を使い開発用のWebサーバーを起動するタスクです。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">'webserver'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(config.dist.base);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.dist.base)</span><br><span class="line">        .pipe(webserver(&#123;</span><br><span class="line">            host: process.env.DEV_HOST || <span class="string">'localhost'</span>,</span><br><span class="line">            port: process.env.DEV_PORT || <span class="number">8080</span>,</span><br><span class="line">            livereload: <span class="literal">true</span></span><br><span class="line">        &#125;));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="webserverタスク"><a href="#webserverタスク" class="headerlink" title="webserverタスク"></a>webserverタスク</h3><p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/gulp-webserver">gulp-webserver</a>を使い開発用のWebサーバーを起動するタスクです。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">&#x27;webserver&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(config.dist.base);</span><br><span class="line">    <span class="keyword">return</span> gulp.src(config.dist.base)</span><br><span class="line">        .pipe(webserver(&#123;</span><br><span class="line">            host: process.env.DEV_HOST || <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">            port: process.env.DEV_PORT || <span class="number">8080</span>,</span><br><span class="line">            livereload: <span class="literal">true</span></span><br><span class="line">        &#125;));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>開発をクラウド上で行っているので、 docker-compose.ymlにバインドするホスト名を<code>environment</code>セクションの環境変数として<code>0.0.0.0</code>にバインドします。また<code>ports</code>セクションにDockerホストにマップして公開するポートを定義します。</p>
 <figure class="highlight yaml"><figcaption><span>docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">environment:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">DEV_HOST=0.0.0.0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">DEV_PORT=8080</span></span><br><span class="line"><span class="attr">ports:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3000</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">8090</span><span class="string">:8080</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">35729</span><span class="string">:35729</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="buildタスク-1"><a href="#buildタスク-1" class="headerlink" title="buildタスク"></a>buildタスク</h3><p><a href="https://www.npmjs.com/package/run-sequence" target="_blank" rel="noopener">run-sequence</a>プラグインを使いタスク処理の順番を直列と並列に制御します。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">'build'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">'clean'</span>, [<span class="string">'bower'</span>, <span class="string">'scripts'</span>, <span class="string">'copy'</span>], cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'default'</span>, [<span class="string">'webserver'</span>,<span class="string">'watch'</span>]);</span><br></pre></td></tr></table></figure>
+<h3 id="buildタスク-1"><a href="#buildタスク-1" class="headerlink" title="buildタスク"></a>buildタスク</h3><p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/run-sequence">run-sequence</a>プラグインを使いタスク処理の順番を直列と並列に制御します。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">&#x27;build&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">  runSequence(<span class="string">&#x27;clean&#x27;</span>, [<span class="string">&#x27;bower&#x27;</span>, <span class="string">&#x27;scripts&#x27;</span>, <span class="string">&#x27;copy&#x27;</span>], cb);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">&#x27;default&#x27;</span>, [<span class="string">&#x27;webserver&#x27;</span>,<span class="string">&#x27;watch&#x27;</span>]);</span><br></pre></td></tr></table></figure>
 
-<h3 id="cleanタスク"><a href="#cleanタスク" class="headerlink" title="cleanタスク"></a>cleanタスク</h3><p><a href="https://www.npmjs.com/package/del" target="_blank" rel="noopener">del</a>パッケージは、プロジェクトをビルドする前の<code>clean</code>タスクで公開用ディレクトリをクリアする目的で使います。<code>return</code>しないとタスクが途中で止まってしまうので注意が必要です。</p>
-<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">'clean'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> del(config.dist.base, cb);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="cleanタスク"><a href="#cleanタスク" class="headerlink" title="cleanタスク"></a>cleanタスク</h3><p><a target="_blank" rel="noopener" href="https://www.npmjs.com/package/del">del</a>パッケージは、プロジェクトをビルドする前の<code>clean</code>タスクで公開用ディレクトリをクリアする目的で使います。<code>return</code>しないとタスクが途中で止まってしまうので注意が必要です。</p>
+<figure class="highlight js"><figcaption><span>gulpfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">gulp.task(<span class="string">&#x27;clean&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> del(config.dist.base, cb);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="ビルドと実行"><a href="#ビルドと実行" class="headerlink" title="ビルドと実行"></a>ビルドと実行</h2><p>同様にbuildコマンドと、</p>
-<p><a href="https://docs.npmjs.com/cli/run-script" target="_blank" rel="noopener">Run arbitrary package scripts</a>にrun-scriptの使い方が書いてあります。package.jsonの<code>scripts</code>セクションに定義した<code>dev-server</code>コマンドを<code>npm run dev-server</code>から実行します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm f7 npm run build</span><br><span class="line">$ docker-compose run --rm --service-ports f7 npm run dev-server</span><br><span class="line">npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">npm info using npm@2.13.3</span><br><span class="line">npm info using node@v3.2.0</span><br><span class="line">npm info predev-server framework7-docker@0.0.1</span><br><span class="line">npm info dev-server framework7-docker@0.0.1</span><br><span class="line"></span><br><span class="line">&gt; framework7-docker@0.0.1 dev-server /app</span><br><span class="line">&gt; gulp</span><br><span class="line"></span><br><span class="line">[21:02:03] Using gulpfile /app/gulpfile.js</span><br><span class="line">[21:02:03] Starting <span class="string">'webserver'</span>...</span><br><span class="line">./dist</span><br><span class="line">[21:02:03] Webserver started at http://0.0.0.0:8080</span><br><span class="line">[21:02:03] Starting <span class="string">'watch'</span>...</span><br><span class="line">[21:02:03] Finished <span class="string">'watch'</span> after 12 ms</span><br><span class="line">[21:02:03] Finished <span class="string">'webserver'</span> after 62 ms</span><br><span class="line">[21:02:03] Starting <span class="string">'default'</span>...</span><br><span class="line">[21:02:03] Finished <span class="string">'default'</span> after 11 μs</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://docs.npmjs.com/cli/run-script">Run arbitrary package scripts</a>にrun-scriptの使い方が書いてあります。package.jsonの<code>scripts</code>セクションに定義した<code>dev-server</code>コマンドを<code>npm run dev-server</code>から実行します。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm f7 npm run build</span><br><span class="line">$ docker-compose run --rm --service-ports f7 npm run dev-server</span><br><span class="line">npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">npm info using npm@2.13.3</span><br><span class="line">npm info using node@v3.2.0</span><br><span class="line">npm info predev-server framework7-docker@0.0.1</span><br><span class="line">npm info dev-server framework7-docker@0.0.1</span><br><span class="line"></span><br><span class="line">&gt; framework7-docker@0.0.1 dev-server /app</span><br><span class="line">&gt; gulp</span><br><span class="line"></span><br><span class="line">[21:02:03] Using gulpfile /app/gulpfile.js</span><br><span class="line">[21:02:03] Starting <span class="string">&#x27;webserver&#x27;</span>...</span><br><span class="line">./dist</span><br><span class="line">[21:02:03] Webserver started at http://0.0.0.0:8080</span><br><span class="line">[21:02:03] Starting <span class="string">&#x27;watch&#x27;</span>...</span><br><span class="line">[21:02:03] Finished <span class="string">&#x27;watch&#x27;</span> after 12 ms</span><br><span class="line">[21:02:03] Finished <span class="string">&#x27;webserver&#x27;</span> after 62 ms</span><br><span class="line">[21:02:03] Starting <span class="string">&#x27;default&#x27;</span>...</span><br><span class="line">[21:02:03] Finished <span class="string">&#x27;default&#x27;</span> after 11 μs</span><br></pre></td></tr></table></figure>
 
 <p>開発用サーバーは<code>src/client/js/</code>と<code>views</code>ディレクトリを監視します。ファイルに変更があると、公開用の<code>dist</code>ディレクトリにファイルの結合と圧縮を行いコピーします。</p>
 
@@ -332,7 +299,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -383,7 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#パッケージの追加"><span class="nav-number">1.</span> <span class="nav-text">パッケージの追加</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#インストール"><span class="nav-number">1.1.</span> <span class="nav-text">インストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#config-js"><span class="nav-number">2.</span> <span class="nav-text">config.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gulpビルドタスク-del-run-sequence"><span class="nav-number">3.</span> <span class="nav-text">Gulpビルドタスク (del, run-sequence)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gulpfile-js"><span class="nav-number">3.1.</span> <span class="nav-text">gulpfile.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buildタスク"><span class="nav-number">3.2.</span> <span class="nav-text">buildタスク</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#開発用サーバーとライブリロード-gulp-watch-gulp-webserver"><span class="nav-number">4.</span> <span class="nav-text">開発用サーバーとライブリロード (gulp-watch, gulp-webserver)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#watchタスク"><span class="nav-number">4.1.</span> <span class="nav-text">watchタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webserverタスク"><span class="nav-number">4.2.</span> <span class="nav-text">webserverタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#buildタスク-1"><span class="nav-number">4.3.</span> <span class="nav-text">buildタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cleanタスク"><span class="nav-number">4.4.</span> <span class="nav-text">cleanタスク</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ビルドと実行"><span class="nav-number">5.</span> <span class="nav-text">ビルドと実行</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E8%BF%BD%E5%8A%A0"><span class="nav-number">1.</span> <span class="nav-text">パッケージの追加</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.1.</span> <span class="nav-text">インストール</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#config-js"><span class="nav-number">2.</span> <span class="nav-text">config.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gulp%E3%83%93%E3%83%AB%E3%83%89%E3%82%BF%E3%82%B9%E3%82%AF-del-run-sequence"><span class="nav-number">3.</span> <span class="nav-text">Gulpビルドタスク (del, run-sequence)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gulpfile-js"><span class="nav-number">3.1.</span> <span class="nav-text">gulpfile.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build%E3%82%BF%E3%82%B9%E3%82%AF"><span class="nav-number">3.2.</span> <span class="nav-text">buildタスク</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E7%99%BA%E7%94%A8%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%83%A9%E3%82%A4%E3%83%96%E3%83%AA%E3%83%AD%E3%83%BC%E3%83%89-gulp-watch-gulp-webserver"><span class="nav-number">4.</span> <span class="nav-text">開発用サーバーとライブリロード (gulp-watch, gulp-webserver)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#watch%E3%82%BF%E3%82%B9%E3%82%AF"><span class="nav-number">4.1.</span> <span class="nav-text">watchタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webserver%E3%82%BF%E3%82%B9%E3%82%AF"><span class="nav-number">4.2.</span> <span class="nav-text">webserverタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#build%E3%82%BF%E3%82%B9%E3%82%AF-1"><span class="nav-number">4.3.</span> <span class="nav-text">buildタスク</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clean%E3%82%BF%E3%82%B9%E3%82%AF"><span class="nav-number">4.4.</span> <span class="nav-text">cleanタスク</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%93%E3%83%AB%E3%83%89%E3%81%A8%E5%AE%9F%E8%A1%8C"><span class="nav-number">5.</span> <span class="nav-text">ビルドと実行</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -415,10 +381,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -443,9 +412,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -485,13 +454,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

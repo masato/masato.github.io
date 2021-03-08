@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,18 +13,18 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="水耕栽培しているアボカドの植物育成LEDライトの点灯や消灯をHubotを使って実装しています。リモートからライトを制御できるのですが、様子が見えないので本当にライトが点いたどうか分かりません。Raspberry PiにWebcamをつけてアボカドをライブ配信しながらライトの制御を確認してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Raspberry Piをngrokで公開する - Part5: Webcamでアボカドをライブ配信する">
 <meta property="og:url" content="https://masato.github.io/2015/08/08/raspberrypi-ngrok-motion/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="水耕栽培しているアボカドの植物育成LEDライトの点灯や消灯をHubotを使って実装しています。リモートからライトを制御できるのですが、様子が見えないので本当にライトが点いたどうか分かりません。Raspberry PiにWebcamをつけてアボカドをライブ配信しながらライトの制御を確認してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/08/08/raspberrypi-ngrok-motion/avocado-webcam.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://masato.github.io/2015/08/08/raspberrypi-ngrok-motion/avocado-edit-widget.png">
 <meta property="og:image" content="https://masato.github.io/2015/08/08/raspberrypi-ngrok-motion/avocado-live.png">
 <meta property="article:published_time" content="2015-08-08T07:23:06.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.857Z">
+<meta property="article:modified_time" content="2015-08-08T07:23:06.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="RaspberryPi">
 <meta property="article:tag" content="アボカド">
@@ -59,7 +59,7 @@
   };
 </script>
 
-  <title>Raspberry Piをngrokで公開する - Part5: Webcamでアボカドをライブ配信する | masato's blog</title>
+  <title>Raspberry Piをngrokで公開する - Part5: Webcamでアボカドをライブ配信する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -99,7 +99,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -120,14 +120,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -136,51 +135,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -197,11 +172,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -214,7 +188,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -224,22 +198,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 8 2015 16:23:06" itemprop="dateCreated datePublished" datetime="2015-08-08T16:23:06+09:00">Aug 8 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -259,36 +226,36 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>水耕栽培しているアボカドの<a href="/2015/07/15/iot-avocado-growth-monitoring-mqtt-raspi-bbb/">植物育成LEDライトの点灯や消灯</a>を<a href="https://hubot.github.com/" target="_blank" rel="noopener">Hubot</a>を使って実装しています。リモートからライトを制御できるのですが、様子が見えないので本当にライトが点いたどうか分かりません。Raspberry PiにWebcamをつけてアボカドをライブ配信しながらライトの制御を確認してみます。</p>
-<a id="more"></a>
+        <p>水耕栽培しているアボカドの<a href="/2015/07/15/iot-avocado-growth-monitoring-mqtt-raspi-bbb/">植物育成LEDライトの点灯や消灯</a>を<a target="_blank" rel="noopener" href="https://hubot.github.com/">Hubot</a>を使って実装しています。リモートからライトを制御できるのですが、様子が見えないので本当にライトが点いたどうか分かりません。Raspberry PiにWebcamをつけてアボカドをライブ配信しながらライトの制御を確認してみます。</p>
+<span id="more"></span>
 
-<h2 id="Logicool-C270"><a href="#Logicool-C270" class="headerlink" title="Logicool C270"></a>Logicool C270</h2><p>Webcamは安価な<a href="http://www.logicool.co.jp/ja-jp/product/hd-webcam-c270?crid=34" target="_blank" rel="noopener">Logicool C270</a>を2,000円くらいで購入しました。国内外でRaspberry Piと一緒に使う例がたくさん見つかるので安心です。</p>
+<h2 id="Logicool-C270"><a href="#Logicool-C270" class="headerlink" title="Logicool C270"></a>Logicool C270</h2><p>Webcamは安価な<a target="_blank" rel="noopener" href="http://www.logicool.co.jp/ja-jp/product/hd-webcam-c270?crid=34">Logicool C270</a>を2,000円くらいで購入しました。国内外でRaspberry Piと一緒に使う例がたくさん見つかるので安心です。</p>
 <ul>
-<li><a href="http://denshikousaku.net/logicool-c270-raspberry-pi" target="_blank" rel="noopener">Raspberry PiのWebカメラをLogicool C270にグレードアップする</a></li>
-<li><a href="https://medium.com/@Cvrsor/how-to-make-a-diy-home-alarm-system-with-a-raspberry-pi-and-a-webcam-2d5a2d61da3d" target="_blank" rel="noopener">How to make a DIY home alarm system with a raspberry pi and a webcam</a></li>
+<li><a target="_blank" rel="noopener" href="http://denshikousaku.net/logicool-c270-raspberry-pi">Raspberry PiのWebカメラをLogicool C270にグレードアップする</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@Cvrsor/how-to-make-a-diy-home-alarm-system-with-a-raspberry-pi-and-a-webcam-2d5a2d61da3d">How to make a DIY home alarm system with a raspberry pi and a webcam</a></li>
 </ul>
 <h2 id="Motion"><a href="#Motion" class="headerlink" title="Motion"></a>Motion</h2><h3 id="Raspberry-Piの動画配信ツール"><a href="#Raspberry-Piの動画配信ツール" class="headerlink" title="Raspberry Piの動画配信ツール"></a>Raspberry Piの動画配信ツール</h3><p>Raspberry PiにWebcamをUSBで接続して動画配信をするツールを調べるといくつか見つかりました。</p>
 <ul>
-<li><a href="http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome" target="_blank" rel="noopener">Motion</a></li>
-<li><a href="http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&artid=14" target="_blank" rel="noopener">UV4L</a></li>
-<li><a href="http://sourceforge.net/projects/mjpg-streamer/" target="_blank" rel="noopener">MJPG-streamer</a></li>
-<li><a href="http://yosuke-furukawa.hatenablog.com/entry/2014/06/25/111615" target="_blank" rel="noopener">Socket.IO binary support</a></li>
-<li><a href="http://ami-gs.hatenablog.com/entry/2014/04/09/230224" target="_blank" rel="noopener">WebSocket</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome">Motion</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.linux-projects.org/modules/sections/index.php?op=viewarticle&artid=14">UV4L</a></li>
+<li><a target="_blank" rel="noopener" href="http://sourceforge.net/projects/mjpg-streamer/">MJPG-streamer</a></li>
+<li><a target="_blank" rel="noopener" href="http://yosuke-furukawa.hatenablog.com/entry/2014/06/25/111615">Socket.IO binary support</a></li>
+<li><a target="_blank" rel="noopener" href="http://ami-gs.hatenablog.com/entry/2014/04/09/230224">WebSocket</a></li>
 </ul>
-<p>今回はdebパッケージでインストールできて、設定が簡単な<a href="http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome" target="_blank" rel="noopener">Motion</a>を使ってみます。</p>
+<p>今回はdebパッケージでインストールできて、設定が簡単な<a target="_blank" rel="noopener" href="http://www.lavrsen.dk/foswiki/bin/view/Motion/WebHome">Motion</a>を使ってみます。</p>
 <h3 id="Motionのインストール"><a href="#Motionのインストール" class="headerlink" title="Motionのインストール"></a>Motionのインストール</h3><p>Raspberry PiにWebcamをUSB接続します。lsusbコマンドを実行してカメラが認識されているか確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsusb</span><br><span class="line">...</span><br><span class="line">Bus 001 Device 005: ID 046d:0825 Logitech, Inc. Webcam C270</span><br></pre></td></tr></table></figure>
 
 <p>Motionをapt-get installします。<code>motion</code>ユーザーと<code>video</code>グループも同時に作成されました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install motion</span><br><span class="line">...</span><br><span class="line">Setting up motion (3.2.12-3.4) ...</span><br><span class="line">Adding group `motion<span class="string">' (GID 111) ...</span></span><br><span class="line"><span class="string">Done.</span></span><br><span class="line"><span class="string">Adding system user `motion'</span> (UID 108) ...</span><br><span class="line">Adding new user `motion<span class="string">' (UID 108) with group `motion'</span> ...</span><br><span class="line">Not creating home directory `/home/motion<span class="string">'.</span></span><br><span class="line"><span class="string">Adding user `motion'</span> to group `video<span class="string">' ...</span></span><br><span class="line"><span class="string">Adding user motion to group video</span></span><br><span class="line"><span class="string">Done.</span></span><br><span class="line"><span class="string">Not starting motion daemon, disabled via /etc/default/motion ... (warning).</span></span><br><span class="line"><span class="string">Setting up ffmpeg (6:0.8.17-1+rpi1) ...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install motion</span><br><span class="line">...</span><br><span class="line">Setting up motion (3.2.12-3.4) ...</span><br><span class="line">Adding group `motion<span class="string">&#x27; (GID 111) ...</span></span><br><span class="line"><span class="string">Done.</span></span><br><span class="line"><span class="string">Adding system user `motion&#x27;</span> (UID 108) ...</span><br><span class="line">Adding new user `motion<span class="string">&#x27; (UID 108) with group `motion&#x27;</span> ...</span><br><span class="line">Not creating home directory `/home/motion<span class="string">&#x27;.</span></span><br><span class="line"><span class="string">Adding user `motion&#x27;</span> to group `video<span class="string">&#x27; ...</span></span><br><span class="line"><span class="string">Adding user motion to group video</span></span><br><span class="line"><span class="string">Done.</span></span><br><span class="line"><span class="string">Not starting motion daemon, disabled via /etc/default/motion ... (warning).</span></span><br><span class="line"><span class="string">Setting up ffmpeg (6:0.8.17-1+rpi1) ...</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="設定ファイル"><a href="#設定ファイル" class="headerlink" title="設定ファイル"></a>設定ファイル</h3><p>最初に設定ファイルのバックアップをとります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo cp /etc/motion/motion.conf&#123;,.orig&#125;</span><br></pre></td></tr></table></figure>
 
 <p>motion.confを以下のように修正します。設定は以下のサイトを参考にさせていただきました。</p>
 <ul>
-<li><a href="http://blog.hello-world.jp.net/raspberrypi/1949/" target="_blank" rel="noopener">motionでお手軽監視カメラをつくる</a></li>
-<li><a href="http://debianj.com/ubuntu/webcam/motion" target="_blank" rel="noopener">Motion でライブカメラ+動体検知サーバー構築</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.hello-world.jp.net/raspberrypi/1949/">motionでお手軽監視カメラをつくる</a></li>
+<li><a target="_blank" rel="noopener" href="http://debianj.com/ubuntu/webcam/motion">Motion でライブカメラ+動体検知サーバー構築</a></li>
 </ul>
 <figure class="highlight bash"><figcaption><span>/etc/motion/motion.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">width 640             <span class="comment"># 幅</span></span><br><span class="line">height 480            <span class="comment"># 高さ</span></span><br><span class="line">framerate 30          <span class="comment"># フレームレート、1秒間に撮影する枚数</span></span><br><span class="line">output_normal off     <span class="comment"># 画像ファイルを保存しない</span></span><br><span class="line">webcam_localhost off  <span class="comment"># ローカルホスト以外もライブ映像を配信</span></span><br></pre></td></tr></table></figure>
 
@@ -296,7 +263,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo motion -n</span><br></pre></td></tr></table></figure>
 
 <p>Raspberry Piはローカルネットワーク上にあります。</p>
-<p><a href="http://192.168.128.203:8081/" target="_blank" rel="noopener">http://192.168.128.203:8081/</a></p>
+<p><a target="_blank" rel="noopener" href="http://192.168.128.203:8081/">http://192.168.128.203:8081/</a></p>
 <p>同じLANにOSXを接続してブラウザを開きます。Chromeは直接URLから開けませんでした。</p>
 <ul>
 <li>Chrome: x</li>
@@ -304,7 +271,7 @@
 <li>Firefox: ○</li>
 </ul>
 <h3 id="デーモン起動"><a href="#デーモン起動" class="headerlink" title="デーモン起動"></a>デーモン起動</h3><p>Motionをデモナイズする場合、設定ファイルは2つ修正が必要です。<code>/etc/default/motion</code>の<code>start_motion_daemon</code>をyesにします。</p>
-<figure class="highlight bash"><figcaption><span>/etc/default/motion</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># set to 'yes' to enable the motion daemon</span></span><br><span class="line"><span class="comment">#start_motion_daemon=no</span></span><br><span class="line">start_motion_daemon=yes</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>/etc/default/motion</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># set to &#x27;yes&#x27; to enable the motion daemon</span></span><br><span class="line"><span class="comment">#start_motion_daemon=no</span></span><br><span class="line">start_motion_daemon=yes</span><br></pre></td></tr></table></figure>
 
 <p><code>/etc/motion/motion.conf</code>の<code>daemon</code>をonにします。</p>
 <figure class="highlight bash"><figcaption><span>/etc/motion/motion.conf</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># Start in daemon (background) mode and release terminal (default: off)</span></span><br><span class="line"><span class="comment">#daemon off</span></span><br><span class="line">daemon on</span><br></pre></td></tr></table></figure>
@@ -316,9 +283,9 @@
 <h2 id="設定ファイルのdiff"><a href="#設定ファイルのdiff" class="headerlink" title="設定ファイルのdiff"></a>設定ファイルのdiff</h2><p>設定ファイルの変更箇所をdiffで確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo diff -u motion.conf.orig motion.conf &gt; /tmp/motion.diff</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><figcaption><span>/tmp/motion.diff</span></figcaption><table><tr><td class="code"><pre><span class="line">--- motion.conf.orig    2015-08-04 15:32:52.354807944 +0900</span><br><span class="line">+++ motion.conf 2015-08-05 12:56:32.980973204 +0900</span><br><span class="line">@@ -8,7 +8,8 @@</span><br><span class="line"> ############################################################</span><br><span class="line"></span><br><span class="line"> # Start in daemon (background) mode and release terminal (default: off)</span><br><span class="line">-daemon off</span><br><span class="line">+#daemon off</span><br><span class="line">+daemon on</span><br><span class="line"></span><br><span class="line"> # File to store the process ID, also called pid file. (default: not defined)</span><br><span class="line"> process_id_file &#x2F;var&#x2F;run&#x2F;motion&#x2F;motion.pid</span><br><span class="line">@@ -67,14 +68,17 @@</span><br><span class="line"> rotate 0</span><br><span class="line"></span><br><span class="line"> # Image width (pixels). Valid range: Camera dependent, default: 352</span><br><span class="line">-width 320</span><br><span class="line">+#width 320</span><br><span class="line">+width 640</span><br><span class="line"></span><br><span class="line"> # Image height (pixels). Valid range: Camera dependent, default: 288</span><br><span class="line">-height 240</span><br><span class="line">+#height 240</span><br><span class="line">+height 480</span><br><span class="line"></span><br><span class="line"> # Maximum number of frames to be captured per second.</span><br><span class="line"> # Valid range: 2-100. Default: 100 (almost no limit).</span><br><span class="line">-framerate 2</span><br><span class="line">+#framerate 2</span><br><span class="line">+framerate 30</span><br><span class="line"></span><br><span class="line"> # Minimum time in seconds between capturing picture frames from the camera.</span><br><span class="line"> # Default: 0 &#x3D; disabled - the capture rate is given by the camera framerate.</span><br><span class="line">@@ -224,7 +228,8 @@</span><br><span class="line"> # Picture with most motion of an event is saved when set to &#39;best&#39;.</span><br><span class="line"> # Picture with motion nearest center of picture is saved when set to &#39;center&#39;.</span><br><span class="line"> # Can be used as preview shot for the corresponding movie.</span><br><span class="line">-output_normal on</span><br><span class="line">+#output_normal on</span><br><span class="line">+output_normal off</span><br><span class="line"></span><br><span class="line"> # Output pictures with only the pixels moving object (ghost images) (default: off)</span><br><span class="line"> output_motion off</span><br><span class="line">@@ -410,7 +415,8 @@</span><br><span class="line"> webcam_maxrate 1</span><br><span class="line"></span><br><span class="line"> # Restrict webcam connections to localhost only (default: on)</span><br><span class="line">-webcam_localhost on</span><br><span class="line">+#webcam_localhost on</span><br><span class="line">+webcam_localhost off</span><br><span class="line"></span><br><span class="line"> # Limits the number of images per connection (default: 0 &#x3D; unlimited)</span><br><span class="line"> # Number can be defined by multiplying actual webcam rate by desired number of seconds</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><figcaption><span>/tmp/motion.diff</span></figcaption><table><tr><td class="code"><pre><span class="line">--- motion.conf.orig    2015-08-04 15:32:52.354807944 +0900</span><br><span class="line">+++ motion.conf 2015-08-05 12:56:32.980973204 +0900</span><br><span class="line">@@ -8,7 +8,8 @@</span><br><span class="line"> ############################################################</span><br><span class="line"></span><br><span class="line"> # Start in daemon (background) mode and release terminal (default: off)</span><br><span class="line">-daemon off</span><br><span class="line">+#daemon off</span><br><span class="line">+daemon on</span><br><span class="line"></span><br><span class="line"> # File to store the process ID, also called pid file. (default: not defined)</span><br><span class="line"> process_id_file /var/run/motion/motion.pid</span><br><span class="line">@@ -67,14 +68,17 @@</span><br><span class="line"> rotate 0</span><br><span class="line"></span><br><span class="line"> # Image width (pixels). Valid range: Camera dependent, default: 352</span><br><span class="line">-width 320</span><br><span class="line">+#width 320</span><br><span class="line">+width 640</span><br><span class="line"></span><br><span class="line"> # Image height (pixels). Valid range: Camera dependent, default: 288</span><br><span class="line">-height 240</span><br><span class="line">+#height 240</span><br><span class="line">+height 480</span><br><span class="line"></span><br><span class="line"> # Maximum number of frames to be captured per second.</span><br><span class="line"> # Valid range: 2-100. Default: 100 (almost no limit).</span><br><span class="line">-framerate 2</span><br><span class="line">+#framerate 2</span><br><span class="line">+framerate 30</span><br><span class="line"></span><br><span class="line"> # Minimum time in seconds between capturing picture frames from the camera.</span><br><span class="line"> # Default: 0 = disabled - the capture rate is given by the camera framerate.</span><br><span class="line">@@ -224,7 +228,8 @@</span><br><span class="line"> # Picture with most motion of an event is saved when set to &#x27;best&#x27;.</span><br><span class="line"> # Picture with motion nearest center of picture is saved when set to &#x27;center&#x27;.</span><br><span class="line"> # Can be used as preview shot for the corresponding movie.</span><br><span class="line">-output_normal on</span><br><span class="line">+#output_normal on</span><br><span class="line">+output_normal off</span><br><span class="line"></span><br><span class="line"> # Output pictures with only the pixels moving object (ghost images) (default: off)</span><br><span class="line"> output_motion off</span><br><span class="line">@@ -410,7 +415,8 @@</span><br><span class="line"> webcam_maxrate 1</span><br><span class="line"></span><br><span class="line"> # Restrict webcam connections to localhost only (default: on)</span><br><span class="line">-webcam_localhost on</span><br><span class="line">+#webcam_localhost on</span><br><span class="line">+webcam_localhost off</span><br><span class="line"></span><br><span class="line"> # Limits the number of images per connection (default: 0 = unlimited)</span><br><span class="line"> # Number can be defined by multiplying actual webcam rate by desired number of seconds</span><br></pre></td></tr></table></figure>
 
-<h2 id="ngrok"><a href="#ngrok" class="headerlink" title="ngrok"></a>ngrok</h2><p>ngrokの<a href="https://ngrok.com/download" target="_blank" rel="noopener">ダウンロード</a>ページからLinux/ARMのバイナリをRaspberry Piにインストールします。</p>
+<h2 id="ngrok"><a href="#ngrok" class="headerlink" title="ngrok"></a>ngrok</h2><p>ngrokの<a target="_blank" rel="noopener" href="https://ngrok.com/download">ダウンロード</a>ページからLinux/ARMのバイナリをRaspberry Piにインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget https://dl.ngrok.com/ngrok_2.0.19_linux_arm.zip</span><br><span class="line">$ sudo unzip ngrok_2.0.19_linux_arm.zip -d /usr/<span class="built_in">local</span>/bin</span><br><span class="line">Archive:  ngrok_2.0.19_linux_arm.zip</span><br><span class="line">  inflating: /usr/<span class="built_in">local</span>/bin/ngrok</span><br><span class="line">$ ngrok version</span><br><span class="line">ngrok version 2.0.19</span><br></pre></td></tr></table></figure>
 
 <p>最初にngrokをフォアグラウンドで起動してテストします。MotionのHTTP<br>の8081ポートをngrokを使ってトンネルします。</p>
@@ -326,19 +293,19 @@
 
 <p>SafariかFirefoxで開いてWebcamの動画が表示されていることを確認します。</p>
 <p><img src="/2015/08/08/raspberrypi-ngrok-motion/avocado-webcam.png" alt="avocado-webcam.png"></p>
-<h3 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h3><p><a href="http://supervisord.org/" target="_blank" rel="noopener">Supervisor</a>を使いngrokのトンネルのプロセスを管理します。設定ファイルの<code>command</code>行にngrokコマンドを記述します。<code>--authtoken</code>フラグと<code>-subdomain</code>フラグを追加します。<code>-subdomain</code>フラグで指定するサブドメイン名は<a href="https://dashboard.ngrok.com/reserved" target="_blank" rel="noopener">Reserved Tunnels</a>画面のReserved Domainセクションから登録しておきます。</p>
+<h3 id="Supervisor"><a href="#Supervisor" class="headerlink" title="Supervisor"></a>Supervisor</h3><p><a target="_blank" rel="noopener" href="http://supervisord.org/">Supervisor</a>を使いngrokのトンネルのプロセスを管理します。設定ファイルの<code>command</code>行にngrokコマンドを記述します。<code>--authtoken</code>フラグと<code>-subdomain</code>フラグを追加します。<code>-subdomain</code>フラグで指定するサブドメイン名は<a target="_blank" rel="noopener" href="https://dashboard.ngrok.com/reserved">Reserved Tunnels</a>画面のReserved Domainセクションから登録しておきます。</p>
 <figure class="highlight bash"><figcaption><span>/etc/supervisor/conf.d/ngrok-webcam.conf</span></figcaption><table><tr><td class="code"><pre><span class="line">[program:ngrok-webcam]</span><br><span class="line"><span class="built_in">command</span>=/usr/<span class="built_in">local</span>/bin/ngrok http --authtoken xxx -subdomain=xxx 8081</span><br><span class="line">numprocs=1</span><br><span class="line">redirect_stderr=<span class="literal">true</span></span><br><span class="line">stdout_logfile=/var/<span class="built_in">log</span>/ngrok-webcam.log</span><br><span class="line">autorestart=<span class="literal">true</span></span><br><span class="line">user=pi</span><br></pre></td></tr></table></figure>
 
 <p>rereadして作成した設定ファイルをSupervisorに読み込ませます。</p>
 <figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line">$ sudo supervisorctl reread</span><br><span class="line">ngrok-webcam: <span class="built_in">available</span></span><br></pre></td></tr></table></figure>
 
 <p>addでSupervisorのサブプロセスにngrokを追加します。</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">$ sudo supervisorctl <span class="builtin-name">add</span> ngrok-webcam</span><br><span class="line">ngrok-webcam: added process group</span><br><span class="line">$ sudo supervisorctl status ngrok-webcam</span><br><span class="line">ngrok-webcam                       RUNNING    pid 30319, uptime 0:00:44</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> sudo supervisorctl add ngrok<span class="literal">-webcam</span></span><br><span class="line">ngrok<span class="literal">-webcam</span>: added <span class="keyword">process</span> <span class="built_in">group</span></span><br><span class="line"><span class="variable">$</span> sudo supervisorctl status ngrok<span class="literal">-webcam</span></span><br><span class="line">ngrok<span class="literal">-webcam</span>                       RUNNING    pid <span class="number">30319</span>, uptime <span class="number">0</span>:<span class="number">00</span>:<span class="number">44</span></span><br></pre></td></tr></table></figure>
 
-<p>ngrokの<a href="https://dashboard.ngrok.com/" target="_blank" rel="noopener">ダッシュボード</a>のTunnels OnlineセクションにトンネルしているURLとクライアントのIPアドレスが表示されました。</p>
+<p>ngrokの<a target="_blank" rel="noopener" href="https://dashboard.ngrok.com/">ダッシュボード</a>のTunnels OnlineセクションにトンネルしているURLとクライアントのIPアドレスが表示されました。</p>
 <p><img src="/2015/08/08/raspberrypi-ngrok-motion/ngrok-webcam.png" alt="ngrok-webcam.png"></p>
 <p>SafariからこのURLにアクセスするとMotionが配信している動画を見ることができます。</p>
-<h2 id="freeboardに統合する"><a href="#freeboardに統合する" class="headerlink" title="freeboardに統合する"></a>freeboardに統合する</h2><p><a href="https://github.com/Freeboard/freeboard" target="_blank" rel="noopener">freeboard</a>のダッシュボードにMotionの動画を埋め込むと、Chromeでも表示できるようになります。</p>
+<h2 id="freeboardに統合する"><a href="#freeboardに統合する" class="headerlink" title="freeboardに統合する"></a>freeboardに統合する</h2><p><a target="_blank" rel="noopener" href="https://github.com/Freeboard/freeboard">freeboard</a>のダッシュボードにMotionの動画を埋め込むと、Chromeでも表示できるようになります。</p>
 <h3 id="Paneの追加"><a href="#Paneの追加" class="headerlink" title="Paneの追加"></a>Paneの追加</h3><p>ADD PANEをクリックしてPaneを追加します。</p>
 <p><img src="/2015/08/08/raspberrypi-ngrok-motion/avocado-add-pane.png" alt="avocado-add-pane.png"></p>
 <p>Paneの工具アイコンをクリックしてPaneの設定を行います。名前は「アボカドライブ」とつけました。</p>
@@ -392,7 +359,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -443,7 +409,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Logicool-C270"><span class="nav-number">1.</span> <span class="nav-text">Logicool C270</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion"><span class="nav-number">2.</span> <span class="nav-text">Motion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Piの動画配信ツール"><span class="nav-number">2.1.</span> <span class="nav-text">Raspberry Piの動画配信ツール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Motionのインストール"><span class="nav-number">2.2.</span> <span class="nav-text">Motionのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#設定ファイル"><span class="nav-number">2.3.</span> <span class="nav-text">設定ファイル</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motionの起動"><span class="nav-number">3.</span> <span class="nav-text">Motionの起動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ノンデーモン起動"><span class="nav-number">3.1.</span> <span class="nav-text">ノンデーモン起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#デーモン起動"><span class="nav-number">3.2.</span> <span class="nav-text">デーモン起動</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#設定ファイルのdiff"><span class="nav-number">4.</span> <span class="nav-text">設定ファイルのdiff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngrok"><span class="nav-number">5.</span> <span class="nav-text">ngrok</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor"><span class="nav-number">5.1.</span> <span class="nav-text">Supervisor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboardに統合する"><span class="nav-number">6.</span> <span class="nav-text">freeboardに統合する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Paneの追加"><span class="nav-number">6.1.</span> <span class="nav-text">Paneの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Widgetの追加"><span class="nav-number">6.2.</span> <span class="nav-text">Widgetの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完成"><span class="nav-number">6.3.</span> <span class="nav-text">完成</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Logicool-C270"><span class="nav-number">1.</span> <span class="nav-text">Logicool C270</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion"><span class="nav-number">2.</span> <span class="nav-text">Motion</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Raspberry-Pi%E3%81%AE%E5%8B%95%E7%94%BB%E9%85%8D%E4%BF%A1%E3%83%84%E3%83%BC%E3%83%AB"><span class="nav-number">2.1.</span> <span class="nav-text">Raspberry Piの動画配信ツール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Motion%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.2.</span> <span class="nav-text">Motionのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">2.3.</span> <span class="nav-text">設定ファイル</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">3.</span> <span class="nav-text">Motionの起動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%8E%E3%83%B3%E3%83%87%E3%83%BC%E3%83%A2%E3%83%B3%E8%B5%B7%E5%8B%95"><span class="nav-number">3.1.</span> <span class="nav-text">ノンデーモン起動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%83%A2%E3%83%B3%E8%B5%B7%E5%8B%95"><span class="nav-number">3.2.</span> <span class="nav-text">デーモン起動</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AEdiff"><span class="nav-number">4.</span> <span class="nav-text">設定ファイルのdiff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngrok"><span class="nav-number">5.</span> <span class="nav-text">ngrok</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Supervisor"><span class="nav-number">5.1.</span> <span class="nav-text">Supervisor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#freeboard%E3%81%AB%E7%B5%B1%E5%90%88%E3%81%99%E3%82%8B"><span class="nav-number">6.</span> <span class="nav-text">freeboardに統合する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pane%E3%81%AE%E8%BF%BD%E5%8A%A0"><span class="nav-number">6.1.</span> <span class="nav-text">Paneの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Widget%E3%81%AE%E8%BF%BD%E5%8A%A0"><span class="nav-number">6.2.</span> <span class="nav-text">Widgetの追加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%88%90"><span class="nav-number">6.3.</span> <span class="nav-text">完成</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -475,10 +441,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -503,9 +472,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -545,13 +514,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

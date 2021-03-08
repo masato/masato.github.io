@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="開発中のRESTクライアントはcurlコマンドを使っていましたが、他の人に使ってもらうためにコマンドラインツールが必要になります。サーバーと同じ開発言語のNode.jsで実装します。サーバーやデータベースのコンテナとセットにしてDocker Composeで配布する予定ですが、動作確認のためとりあえず単体で動くサンプルを作成しました。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RESTクライアントのCLIをNode.jsのCommander.jsを使って作成する">
 <meta property="og:url" content="https://masato.github.io/2015/05/15/docker-compose-nodejs-cli/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="開発中のRESTクライアントはcurlコマンドを使っていましたが、他の人に使ってもらうためにコマンドラインツールが必要になります。サーバーと同じ開発言語のNode.jsで実装します。サーバーやデータベースのコンテナとセットにしてDocker Composeで配布する予定ですが、動作確認のためとりあえず単体で動くサンプルを作成しました。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-05-15T06:59:55.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.588Z">
+<meta property="article:modified_time" content="2015-05-15T06:59:55.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="DockerCompose">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>RESTクライアントのCLIをNode.jsのCommander.jsを使って作成する | masato's blog</title>
+  <title>RESTクライアントのCLIをNode.jsのCommander.jsを使って作成する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 15 2015 15:59:55" itemprop="dateCreated datePublished" datetime="2015-05-15T15:59:55+09:00">May 15 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">開発中のRESTクライアントはcurlコマンドを使っていましたが、他の人に使ってもらうためにコマンドラインツールが必要になります。サーバーと同じ開発言語のNode.jsで実装します。サーバーやデータベースのコンテナとセットにしてDocker Composeで配布する予定ですが、動作確認のためとりあえず単体で動くサンプルを作成しました。</div>
@@ -242,7 +209,7 @@
 
       
         <p>開発中のRESTクライアントはcurlコマンドを使っていましたが、他の人に使ってもらうためにコマンドラインツールが必要になります。サーバーと同じ開発言語のNode.jsで実装します。サーバーやデータベースのコンテナとセットにしてDocker Composeで配布する予定ですが、動作確認のためとりあえず単体で動くサンプルを作成しました。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>プロジェクトのディレクトリを作成して以下のようなファイルを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/iot-util</span><br><span class="line">$ tree .</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── app.js</span><br><span class="line">├── commands</span><br><span class="line">│   └── status.js</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── node_modules -&gt; /dist/node_modules</span><br><span class="line">└── package.json</span><br></pre></td></tr></table></figure>
@@ -250,35 +217,35 @@
 <p>Dockerホストのプロジェクトのディレクトリに<code>/dist/node_modules</code>へのシムリンクを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/iot-util</span><br><span class="line">$ ln -s /dist/node_modules .</span><br></pre></td></tr></table></figure>
 
-<p>Node.jsの実行はDockerコンテナで行いますが、イメージ再作成とnode_modulesの再ビルドを回避するためnode_modulesはDockerホストのボリュームにマウントして使います。ベースイメージはオフィシャルの<a href="https://github.com/joyent/docker-node/blob/530696ff3003a169521a61a0e04bbf980b7228d5/0.12/Dockerfile" target="_blank" rel="noopener">node:0.12</a>を使います。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/iot-util/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">  npm install</span><br><span class="line">COPY . /app</span><br><span class="line">ENTRYPOINT [<span class="string">"npm"</span>, <span class="string">"start"</span>]</span><br></pre></td></tr></table></figure>
+<p>Node.jsの実行はDockerコンテナで行いますが、イメージ再作成とnode_modulesの再ビルドを回避するためnode_modulesはDockerホストのボリュームにマウントして使います。ベースイメージはオフィシャルの<a target="_blank" rel="noopener" href="https://github.com/joyent/docker-node/blob/530696ff3003a169521a61a0e04bbf980b7228d5/0.12/Dockerfile">node:0.12</a>を使います。</p>
+<figure class="highlight bash"><figcaption><span>~/node_apps/iot-util/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">  npm install</span><br><span class="line">COPY . /app</span><br><span class="line">ENTRYPOINT [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 <p>Docker Composeを使ってビルドとCLIの実行をします。環境変数の<code>MESHBLU_URL</code>は後でdocker-compose.ymlのlinksから取得します。</p>
 <figure class="highlight yml"><figcaption><span>~/node_apps/iot-util/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">iotutil:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">MESHBLU_URL=https://10.3.0.165/</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="Commander-jsを使う"><a href="#Commander-jsを使う" class="headerlink" title="Commander.jsを使う"></a>Commander.jsを使う</h2><p>Node.jsにはCLIを作るためのパッケージがいくつかありますが、よく使われている<a href="https://github.com/tj/commander.js" target="_blank" rel="noopener">Commander.js</a>で実装していきます。</p>
-<figure class="highlight json"><figcaption><span>~/node_apps/iot-util/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"iot-util"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"IoT Toolkit"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"commander"</span>: <span class="string">"^2.8.1"</span>,</span><br><span class="line">    <span class="attr">"request"</span>: <span class="string">"^2.55.0"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Commander-jsを使う"><a href="#Commander-jsを使う" class="headerlink" title="Commander.jsを使う"></a>Commander.jsを使う</h2><p>Node.jsにはCLIを作るためのパッケージがいくつかありますが、よく使われている<a target="_blank" rel="noopener" href="https://github.com/tj/commander.js">Commander.js</a>で実装していきます。</p>
+<figure class="highlight json"><figcaption><span>~/node_apps/iot-util/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;iot-util&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;IoT Toolkit&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;commander&quot;</span>: <span class="string">&quot;^2.8.1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;^2.55.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;<span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>以下のサイトを参考にしてエントリーポイントのapp.jsに必要なコードを書きます。</p>
 <ul>
-<li><a href="http://slides.com/timsanteford/conquering-commander-js#/" target="_blank" rel="noopener">Conquering Commander.js</a></li>
-<li><a href="http://cruft.io/posts/node-command-line-utilities/" target="_blank" rel="noopener">Command-line utilities with Node.js</a></li>
-<li><a href="http://javascriptplayground.com/blog/2015/03/node-command-line-tool/" target="_blank" rel="noopener">Writing a Command Line Node Tool</a></li>
+<li><a target="_blank" rel="noopener" href="http://slides.com/timsanteford/conquering-commander-js#/">Conquering Commander.js</a></li>
+<li><a target="_blank" rel="noopener" href="http://cruft.io/posts/node-command-line-utilities/">Command-line utilities with Node.js</a></li>
+<li><a target="_blank" rel="noopener" href="http://javascriptplayground.com/blog/2015/03/node-command-line-tool/">Writing a Command Line Node Tool</a></li>
 </ul>
-<figure class="highlight js"><figcaption><span>~/node_apps/iot-util/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> program = <span class="built_in">require</span>(<span class="string">'commander'</span>)</span><br><span class="line">  , status = <span class="built_in">require</span>(<span class="string">'./commands/status.js'</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .version(<span class="string">'0.0.1'</span>)</span><br><span class="line">    .usage(<span class="string">'&lt;command&gt;'</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .command(<span class="string">'status'</span>)</span><br><span class="line">    .description(<span class="string">'show status'</span>)</span><br><span class="line">    .action(status.commandStatus);</span><br><span class="line"></span><br><span class="line">program.parse(process.argv);</span><br><span class="line"><span class="keyword">if</span> (process.argv.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'You must specify a command'</span>.red);</span><br><span class="line">    program.help();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exports.program = program;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/iot-util/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> program = <span class="built_in">require</span>(<span class="string">&#x27;commander&#x27;</span>)</span><br><span class="line">  , status = <span class="built_in">require</span>(<span class="string">&#x27;./commands/status.js&#x27;</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .version(<span class="string">&#x27;0.0.1&#x27;</span>)</span><br><span class="line">    .usage(<span class="string">&#x27;&lt;command&gt;&#x27;</span>);</span><br><span class="line"></span><br><span class="line">program</span><br><span class="line">    .command(<span class="string">&#x27;status&#x27;</span>)</span><br><span class="line">    .description(<span class="string">&#x27;show status&#x27;</span>)</span><br><span class="line">    .action(status.commandStatus);</span><br><span class="line"></span><br><span class="line">program.parse(process.argv);</span><br><span class="line"><span class="keyword">if</span> (process.argv.length &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;You must specify a command&#x27;</span>.red);</span><br><span class="line">    program.help();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">exports</span>.program = program;</span><br></pre></td></tr></table></figure>
 
-<p>個別のコマンドはファイル名にコマンド名をつけて、<code>commands</code>ディレクトリに配置します。今回はサンプルにstatus.jsを作成しました。サーバーは自己署名の証明書を使っています。Node.jsの<a href="https://github.com/request/request" target="_blank" rel="noopener">request</a>パッケージの場合は<code>curl --insecure</code>に相当する<code>rejectUnauthorized: false</code>のオプションを付けます。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/iot-util/commands/status.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> request = <span class="built_in">require</span>(<span class="string">'request'</span>)</span><br><span class="line">  , path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line">  </span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    commandStatus: <span class="function"><span class="keyword">function</span>(<span class="params">symbol, command</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> filename = path.basename(__filename),</span><br><span class="line">            cmd = filename.substr(<span class="number">0</span>, filename.lastIndexOf(<span class="string">'.'</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> options = &#123;</span><br><span class="line">            url: process.env.MESHBLU_URL + cmd ,</span><br><span class="line">            agentOptions: &#123;</span><br><span class="line">                rejectUnauthorized: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        request.get(options,<span class="function"><span class="keyword">function</span>(<span class="params">error, response, body</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!error &amp;&amp; response.statusCode == <span class="number">200</span>)&#123;</span><br><span class="line">                <span class="keyword">var</span> body = <span class="built_in">JSON</span>.parse(body);</span><br><span class="line">                <span class="built_in">console</span>.log(body);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'Error: '</span> + error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>個別のコマンドはファイル名にコマンド名をつけて、<code>commands</code>ディレクトリに配置します。今回はサンプルにstatus.jsを作成しました。サーバーは自己署名の証明書を使っています。Node.jsの<a target="_blank" rel="noopener" href="https://github.com/request/request">request</a>パッケージの場合は<code>curl --insecure</code>に相当する<code>rejectUnauthorized: false</code>のオプションを付けます。</p>
+<figure class="highlight js"><figcaption><span>~/node_apps/iot-util/commands/status.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> request = <span class="built_in">require</span>(<span class="string">&#x27;request&#x27;</span>)</span><br><span class="line">  , path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line">  </span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    commandStatus: <span class="function"><span class="keyword">function</span>(<span class="params">symbol, command</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> filename = path.basename(__filename),</span><br><span class="line">            cmd = filename.substr(<span class="number">0</span>, filename.lastIndexOf(<span class="string">&#x27;.&#x27;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> options = &#123;</span><br><span class="line">            url: process.env.MESHBLU_URL + cmd ,</span><br><span class="line">            agentOptions: &#123;</span><br><span class="line">                rejectUnauthorized: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        request.get(options,<span class="function"><span class="keyword">function</span>(<span class="params">error, response, body</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!error &amp;&amp; response.statusCode == <span class="number">200</span>)&#123;</span><br><span class="line">                <span class="keyword">var</span> body = <span class="built_in">JSON</span>.parse(body);</span><br><span class="line">                <span class="built_in">console</span>.log(body);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (error) &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">&#x27;Error: &#x27;</span> + error);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 <h2 id="CLIの実行"><a href="#CLIの実行" class="headerlink" title="CLIの実行"></a>CLIの実行</h2><p>Dockerイメージのビルドをします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/iot-util</span><br><span class="line">$ docker-compose build</span><br></pre></td></tr></table></figure>
 
 <p>コマンドファイルと同じ名前の引数を渡してMeshbluのstatusを取得してみます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil status</span><br><span class="line"></span><br><span class="line">&gt; iot-util@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"status"</span></span><br><span class="line"></span><br><span class="line">&#123; meshblu: <span class="string">'online'</span> &#125;</span><br><span class="line">Removing iotutil_iotutil_run_1...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil status</span><br><span class="line"></span><br><span class="line">&gt; iot-util@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;status&quot;</span></span><br><span class="line"></span><br><span class="line">&#123; meshblu: <span class="string">&#x27;online&#x27;</span> &#125;</span><br><span class="line">Removing iotutil_iotutil_run_1...</span><br></pre></td></tr></table></figure>
 
 <p>ヘルプを実行する場合は、<code>--</code>に続けて<code>--help</code>フラグを標準入力から取得します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil -- --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">&gt; iot-util@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">"--help"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Usage: app &lt;<span class="built_in">command</span>&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Commands:</span><br><span class="line"></span><br><span class="line">    status   show status</span><br><span class="line"></span><br><span class="line">  Options:</span><br><span class="line"></span><br><span class="line">    -h, --<span class="built_in">help</span>     output usage information</span><br><span class="line">    -V, --version  output the version number</span><br><span class="line"></span><br><span class="line">Removing iotutil_iotutil_run_1...</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm iotutil -- --<span class="built_in">help</span></span><br><span class="line"></span><br><span class="line">&gt; iot-util@0.0.1 start /app</span><br><span class="line">&gt; node app.js <span class="string">&quot;--help&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Usage: app &lt;<span class="built_in">command</span>&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Commands:</span><br><span class="line"></span><br><span class="line">    status   show status</span><br><span class="line"></span><br><span class="line">  Options:</span><br><span class="line"></span><br><span class="line">    -h, --<span class="built_in">help</span>     output usage information</span><br><span class="line">    -V, --version  output the version number</span><br><span class="line"></span><br><span class="line">Removing iotutil_iotutil_run_1...</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -315,7 +282,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -366,7 +332,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Commander-jsを使う"><span class="nav-number">2.</span> <span class="nav-text">Commander.jsを使う</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLIの実行"><span class="nav-number">3.</span> <span class="nav-text">CLIの実行</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Commander-js%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">2.</span> <span class="nav-text">Commander.jsを使う</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLI%E3%81%AE%E5%AE%9F%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">CLIの実行</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -398,10 +364,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -426,9 +395,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -468,13 +437,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

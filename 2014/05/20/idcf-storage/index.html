@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,26 +13,26 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="IDCフロンティアのオブジェクトストレージサービスはBashoのRiakCSを採用しています。Riak CS Storage APIは、Amazon S3 APIとの互換性が高くできているので、s3cmdやbotoが使えます。Pythonで書かれたブログラムだとdocker-registryなど、内部でbotoを使うことが多いのでさっそく確認してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IDCFオブジェクトストレージをs3cmdやbotoで使う">
 <meta property="og:url" content="https://masato.github.io/2014/05/20/idcf-storage/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="IDCフロンティアのオブジェクトストレージサービスはBashoのRiakCSを採用しています。Riak CS Storage APIは、Amazon S3 APIとの互換性が高くできているので、s3cmdやbotoが使えます。Pythonで書かれたブログラムだとdocker-registryなど、内部でbotoを使うことが多いのでさっそく確認してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-05-20T14:52:57.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.698Z">
+<meta property="article:modified_time" content="2014-05-20T14:52:57.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="docker-registry">
-<meta property="article:tag" content="IDCFオブジェクトストレージ">
 <meta property="article:tag" content="s3cmd">
+<meta property="article:tag" content="IDCFオブジェクトストレージ">
 <meta property="article:tag" content="boto">
 <meta property="article:tag" content="RiakCS">
 <meta name="twitter:card" content="summary">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>IDCFオブジェクトストレージをs3cmdやbotoで使う | masato's blog</title>
+  <title>IDCFオブジェクトストレージをs3cmdやbotoで使う | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 20 2014 23:52:57" itemprop="dateCreated datePublished" datetime="2014-05-20T23:52:57+09:00">May 20 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">IDCフロンティアのオブジェクトストレージサービスはBashoのRiakCSを採用しています。Riak CS Storage APIは、Amazon S3 APIとの互換性が高くできているので、s3cmdやbotoが使えます。Pythonで書かれたブログラムだとdocker-registryなど、内部でbotoを使うことが多いのでさっそく確認してみます。</div>
@@ -241,15 +208,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>IDCフロンティアの<a href="http://www.idcf.jp/cloud/storage/" target="_blank" rel="noopener">オブジェクトストレージサービス</a>は<a href="http://basho.com/" target="_blank" rel="noopener">Basho</a>の<a href="https://github.com/basho/riak_cs" target="_blank" rel="noopener">RiakCS</a>を採用しています。<br><a href="http://docs.basho.com/riakcs/latest/references/apis/storage/" target="_blank" rel="noopener">Riak CS Storage API</a>は、<code>Amazon S3 API</code>との互換性が高くできているので、<a href="https://github.com/s3tools/s3cmd" target="_blank" rel="noopener">s3cmd</a>や<a href="https://github.com/boto/boto" target="_blank" rel="noopener">boto</a>が使えます。<br>Pythonで書かれたブログラムだと<a href="https://github.com/dotcloud/docker-registry" target="_blank" rel="noopener">docker-registry</a>など、内部でbotoを使うことが多いのでさっそく確認してみます。</p>
-<a id="more"></a>
+        <p>IDCフロンティアの<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/storage/">オブジェクトストレージサービス</a>は<a target="_blank" rel="noopener" href="http://basho.com/">Basho</a>の<a target="_blank" rel="noopener" href="https://github.com/basho/riak_cs">RiakCS</a>を採用しています。<br><a target="_blank" rel="noopener" href="http://docs.basho.com/riakcs/latest/references/apis/storage/">Riak CS Storage API</a>は、<code>Amazon S3 API</code>との互換性が高くできているので、<a target="_blank" rel="noopener" href="https://github.com/s3tools/s3cmd">s3cmd</a>や<a target="_blank" rel="noopener" href="https://github.com/boto/boto">boto</a>が使えます。<br>Pythonで書かれたブログラムだと<a target="_blank" rel="noopener" href="https://github.com/dotcloud/docker-registry">docker-registry</a>など、内部でbotoを使うことが多いのでさっそく確認してみます。</p>
+<span id="more"></span>
 
 <h3 id="s3cmdのインストール"><a href="#s3cmdのインストール" class="headerlink" title="s3cmdのインストール"></a>s3cmdのインストール</h3><p>s3cmdをインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install s3cmd</span><br></pre></td></tr></table></figure>
 
 <p><code>s3cmd --configure</code>で設定ファイルを作成しますが、エンドポイントがAWSと異なるので<code>Access Key</code>と<code>Secret Key</code>を入力した後は、とりあえず.s3cfgを保存します。</p>
 <figure class="highlight ada"><table><tr><td class="code"><pre><span class="line">$ s3cmd <span class="comment">--configure</span></span><br></pre></td></tr></table></figure>
-<p>.s3cfgのエンドポイントを修正します。<a href="http://www.idcf.jp/cloud/storage/faq/sst_001.html" target="_blank" rel="noopener">エンドポイントの確認</a>はコントロールパネルから確認できます。<br><code>curly brace</code>は説明マーカーなので、実際に入力するときは含まれないです。</p>
+<p>.s3cfgのエンドポイントを修正します。<a target="_blank" rel="noopener" href="http://www.idcf.jp/cloud/storage/faq/sst_001.html">エンドポイントの確認</a>はコントロールパネルから確認できます。<br><code>curly brace</code>は説明マーカーなので、実際に入力するときは含まれないです。</p>
 <figure class="highlight python"><figcaption><span>~/.s3cfg</span></figcaption><table><tr><td class="code"><pre><span class="line">access_key = &#123;確認したAccess Key&#125;</span><br><span class="line">host_base = &#123;確認したエンドポイント&#125;</span><br><span class="line">host_bucket = %(bucket)s.&#123;確認したエンドポイント&#125;</span><br><span class="line">secret_key = &#123;確認したSecret Key&#125;</span><br></pre></td></tr></table></figure>
 
 <p>設定が終われば、普通のs3cmdとして使えます。</p>
@@ -263,12 +230,12 @@
 <figure class="highlight python"><figcaption><span>~/.boto</span></figcaption><table><tr><td class="code"><pre><span class="line">[Credentials]</span><br><span class="line">aws_access_key_id = &#123;確認したAccess Key&#125;</span><br><span class="line">aws_secret_access_key = &#123;確認したSecret Key&#125;</span><br><span class="line"></span><br><span class="line">[s3]</span><br><span class="line">host = &#123;確認したエンドポイント&#125;</span><br></pre></td></tr></table></figure>
 
 <p>pythonのインタラクティブシェルでテストします。<br><code>my-bucket</code>のところは、グローバルに一意である必要があるので、使われていないバケット名を指定します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># python</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> boto</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>boto.set_stream_logger(<span class="string">'idcf'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn = boto.connect_s3(debug=<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.create_bucket(<span class="string">'my-bucket'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.get_all_buckets()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># python</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> boto</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>boto.set_stream_logger(<span class="string">&#x27;idcf&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn = boto.connect_s3(debug=<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.create_bucket(<span class="string">&#x27;my-bucket&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.get_all_buckets()</span><br></pre></td></tr></table></figure>
 
 <p>デバッグ情報を含めて、確認できたと思います。<br>ライブラリによっては、<code>boto.connect_s3</code>でなく、<code>boto.s3.connection.S3Connection</code>を使っています。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> boto.s3.connection</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>boto.set_stream_logger(<span class="string">'idcf'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn = boto.s3.connection.S3Connection(debug=<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.get_all_buckets()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> boto.s3.connection</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>boto.set_stream_logger(<span class="string">&#x27;idcf&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn = boto.s3.connection.S3Connection(debug=<span class="number">2</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>conn.get_all_buckets()</span><br></pre></td></tr></table></figure>
 <p><code>boto.s3.connect_to_region</code>というのもありますが、まだ動かせていません。<br>次は、.botoを使わなず、引数に渡してみます。</p>
-<figure class="highlight python"><figcaption><span>~/idcf_storage.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> boto</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(argv)</span>:</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> len(argv) &lt; <span class="number">2</span>:</span><br><span class="line">    print(<span class="string">"Usage: %s &lt;bucket&gt;"</span> % (argv[<span class="number">0</span>],))</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  accesskey= <span class="string">'確認したAccess Key'</span></span><br><span class="line">  secretkey = <span class="string">'確認したSecret Key'</span></span><br><span class="line">  endpoint = <span class="string">'確認したエンドポイント'</span></span><br><span class="line"></span><br><span class="line">  conn = boto.connect_s3(aws_access_key_id=accesskey,</span><br><span class="line">                       aws_secret_access_key=secretkey,</span><br><span class="line">                       host=endpoint)</span><br><span class="line"></span><br><span class="line">  bucket = argv[<span class="number">1</span>]</span><br><span class="line">  conn.create_bucket(bucket)</span><br><span class="line">  conn.get_bucket(bucket)</span><br><span class="line">  cs = conn.get_all_buckets()</span><br><span class="line">  <span class="keyword">for</span> b <span class="keyword">in</span> cs:</span><br><span class="line">      <span class="keyword">print</span> b.name</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">  sys.exit(main(sys.argv))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><figcaption><span>~/idcf_storage.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> boto</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">argv</span>):</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> <span class="built_in">len</span>(argv) &lt; <span class="number">2</span>:</span><br><span class="line">    print(<span class="string">&quot;Usage: %s &lt;bucket&gt;&quot;</span> % (argv[<span class="number">0</span>],))</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  accesskey= <span class="string">&#x27;確認したAccess Key&#x27;</span></span><br><span class="line">  secretkey = <span class="string">&#x27;確認したSecret Key&#x27;</span></span><br><span class="line">  endpoint = <span class="string">&#x27;確認したエンドポイント&#x27;</span></span><br><span class="line"></span><br><span class="line">  conn = boto.connect_s3(aws_access_key_id=accesskey,</span><br><span class="line">                       aws_secret_access_key=secretkey,</span><br><span class="line">                       host=endpoint)</span><br><span class="line"></span><br><span class="line">  bucket = argv[<span class="number">1</span>]</span><br><span class="line">  conn.create_bucket(bucket)</span><br><span class="line">  conn.get_bucket(bucket)</span><br><span class="line">  cs = conn.get_all_buckets()</span><br><span class="line">  <span class="keyword">for</span> b <span class="keyword">in</span> cs:</span><br><span class="line">      <span class="built_in">print</span> b.name</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">  sys.exit(main(sys.argv))</span><br></pre></td></tr></table></figure>
 
 <p>バケット名を指定して実行します。<code>curly brace</code>は実際には含みません。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># python ~/idcf_storage.py &#123;グローバルで一意になるバケット名&#125;</span></span><br></pre></td></tr></table></figure>
@@ -284,8 +251,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/docker-registry/" rel="tag"># docker-registry</a>
-              <a href="/tags/IDCF%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" rel="tag"># IDCFオブジェクトストレージ</a>
               <a href="/tags/s3cmd/" rel="tag"># s3cmd</a>
+              <a href="/tags/IDCF%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/" rel="tag"># IDCFオブジェクトストレージ</a>
               <a href="/tags/boto/" rel="tag"># boto</a>
               <a href="/tags/RiakCS/" rel="tag"># RiakCS</a>
           </div>
@@ -311,7 +278,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -362,7 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#s3cmdのインストール"><span class="nav-number">1.</span> <span class="nav-text">s3cmdのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#botoのインストール"><span class="nav-number">2.</span> <span class="nav-text">botoのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">3.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#s3cmd%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">s3cmdのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boto%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">2.</span> <span class="nav-text">botoのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">3.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -394,10 +360,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -422,9 +391,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -464,13 +433,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

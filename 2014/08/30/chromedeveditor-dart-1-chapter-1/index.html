@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="なかなかHP Chromebook 11で遊ぶ時間がなかったのですが、Google IO 2014で公開されたChrome Dev Editor (CDE)(aka Spark)をようやく試してみます。CDEはDartで書かれたChromeアプリです。エディターとWebサーバーが内蔵されているので、CDEだけでコードを書いて実行することができます。DartやJavaScript、Polymerを使">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Chrome Dev Editor で Dart 1 for Everyone - Part1: Chapter 1">
 <meta property="og:url" content="https://masato.github.io/2014/08/30/chromedeveditor-dart-1-chapter-1/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="なかなかHP Chromebook 11で遊ぶ時間がなかったのですが、Google IO 2014で公開されたChrome Dev Editor (CDE)(aka Spark)をようやく試してみます。CDEはDartで書かれたChromeアプリです。エディターとWebサーバーが内蔵されているので、CDEだけでコードを書いて実行することができます。DartやJavaScript、Polymerを使">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2014/08/30/chromedeveditor-dart-1-chapter-1/helloworld.png">
 <meta property="og:image" content="https://masato.github.io/2014/08/30/chromedeveditor-dart-1-chapter-1/dartcomics.png">
 <meta property="article:published_time" content="2014-08-29T17:26:02.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.562Z">
+<meta property="article:modified_time" content="2014-08-29T17:26:02.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Chromebook">
 <meta property="article:tag" content="ChromeDevEditor">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Chrome Dev Editor で Dart 1 for Everyone - Part1: Chapter 1 | masato's blog</title>
+  <title>Chrome Dev Editor で Dart 1 for Everyone - Part1: Chapter 1 | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Aug 30 2014 02:26:02" itemprop="dateCreated datePublished" datetime="2014-08-30T02:26:02+09:00">Aug 30 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">なかなかHP Chromebook 11で遊ぶ時間がなかったのですが、Google IO 2014で公開されたChrome Dev Editor (CDE)(aka Spark)をようやく試してみます。CDEはDartで書かれたChromeアプリです。エディターとWebサーバーが内蔵されているので、CDEだけでコードを書いて実行することができます。DartやJavaScript、Polymerを使ってChromeアプリやWebアプリの学習環境に使えそうです。タイミングよくPragmatic Bookshelfから、Dart 1 for EveryoneのBeta eBookがリリースされたのでさっそく写経します。Chromebookでの開発はNitrous.IOが日本語も使えてかなり便利なので、ほとんどcroutonは使わなくなりました。CDEを使うと気軽にDartやPolymerアプリを書けるので、Chromebookがもっと遊べそうです。</div>
@@ -246,9 +213,9 @@
       
         <p>なかなか<code>HP Chromebook 11</code>で遊ぶ時間がなかったのですが、<code>Google IO 2014</code>で公開された<code>Chrome Dev Editor (CDE)</code>(aka Spark)をようやく試してみます。</p>
 <p>CDEはDartで書かれたChromeアプリです。エディターとWebサーバーが内蔵されているので、CDEだけでコードを書いて実行することができます。DartやJavaScript、Polymerを使ってChromeアプリやWebアプリの学習環境に使えそうです。</p>
-<p>タイミングよく<code>Pragmatic Bookshelf</code>から、<a href="https://www.pragprog.com/book/csdart1/dart-1-for-hipsters" target="_blank" rel="noopener">Dart 1 for Everyone</a>の<code>Beta eBook</code>がリリースされたのでさっそく写経します。</p>
+<p>タイミングよく<code>Pragmatic Bookshelf</code>から、<a target="_blank" rel="noopener" href="https://www.pragprog.com/book/csdart1/dart-1-for-hipsters">Dart 1 for Everyone</a>の<code>Beta eBook</code>がリリースされたのでさっそく写経します。</p>
 <p>Chromebookでの開発はNitrous.IOが日本語も使えてかなり便利なので、ほとんどcroutonは使わなくなりました。<br>CDEを使うと気軽にDartやPolymerアプリを書けるので、Chromebookがもっと遊べそうです。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="Chrome-Dev-Editorのインストール"><a href="#Chrome-Dev-Editorのインストール" class="headerlink" title="Chrome Dev Editorのインストール"></a>Chrome Dev Editorのインストール</h3><p>Chromeウェブストアから<code>Chrome Dev Editor</code>をインストールするとアプリランチャーから起動できるようになります。</p>
 <h3 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h3><p><code>New Project</code>メニューからダイアログで必要な情報を入れてCREATEボタンを押します。</p>
@@ -266,16 +233,16 @@
 <h3 id="Chapter-1"><a href="#Chapter-1" class="headerlink" title="Chapter 1"></a>Chapter 1</h3><p><code>Dart 1 for Everyone</code>のChapter 1を<code>Chrome Dev Editor</code>で写経していくのですが、このままでは動きませんでした。Beta版なので動くコードになっていないようです。これも勉強なので修正していきます。</p>
 <h3 id="完成したプロジェクト"><a href="#完成したプロジェクト" class="headerlink" title="完成したプロジェクト"></a>完成したプロジェクト</h3><p><code>your_first_dart_app</code>プロジェクトのwebフォルダー配下にコードを書きます。</p>
 <p>ひな形のindex.htmlに、ラベルとJSONファイルをレンダリングするCSSセレクターを配置します。<br>Dartファイルと、<code>dart.js</code>のブートストラップをロードします。</p>
-<figure class="highlight html"><figcaption><span>web/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Dart Comics<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"styles.css"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Dart Comics<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Welcome to Dart Comics<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"comics-list"</span>&gt;</span><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"application/dart"</span> <span class="attr">src</span>=<span class="string">"main.dart"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"packages/browser/dart.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><figcaption><span>web/index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Dart Comics<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;styles.css&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Dart Comics<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>Welcome to Dart Comics<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">&quot;comics-list&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;application/dart&quot;</span> <span class="attr">src</span>=<span class="string">&quot;main.dart&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;packages/browser/dart.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>Dartのメインスクリプトです。<code>res.open()</code>でGETするURLを相対パスのcomics.jsonに変更します。<br>ローカルのJSONを<code>#comics-list</code>のul要素にレンダリングします。</p>
-<figure class="highlight dart"><figcaption><span>web/main.dart</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'dart:html'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'dart:convert'</span>;</span><br><span class="line"></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="keyword">var</span> list_el = <span class="built_in">document</span>.query(<span class="string">'#comics-list'</span>);</span><br><span class="line">  <span class="keyword">var</span> req = <span class="keyword">new</span> HttpRequest();</span><br><span class="line">  req.open(<span class="string">'get'</span>, <span class="string">'comics.json'</span>);</span><br><span class="line">  req.onLoad.listen((req) &#123;</span><br><span class="line">    <span class="keyword">var</span> list = JSON.decode(req.target.responseText);</span><br><span class="line">    list_el.innerHtml = graphic_novels_template(list);</span><br><span class="line">  &#125;);</span><br><span class="line">  req.send();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">graphic_novels_template(list) &#123;</span><br><span class="line">  <span class="keyword">var</span> html = <span class="string">''</span>;</span><br><span class="line">  list.forEach((graphic_novel) &#123;</span><br><span class="line">    html += graphic_novel_template(graphic_novel);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">graphic_novel_template(graphic_novel) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'''</span></span><br><span class="line"><span class="string">  &lt;li id="<span class="subst">$&#123;graphic_novel[<span class="string">'id'</span>]&#125;</span>"&gt;</span></span><br><span class="line"><span class="string">    <span class="subst">$&#123;graphic_novel[<span class="string">'title'</span>]&#125;</span></span></span><br><span class="line"><span class="string">    &lt;a href="#" class="delete"&gt;[delete]&lt;/a&gt;</span></span><br><span class="line"><span class="string">  &lt;/li&gt;'''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><figcaption><span>web/main.dart</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:html&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:convert&#x27;</span>;</span><br><span class="line"></span><br><span class="line">main() &#123;</span><br><span class="line">  <span class="keyword">var</span> list_el = <span class="built_in">document</span>.query(<span class="string">&#x27;#comics-list&#x27;</span>);</span><br><span class="line">  <span class="keyword">var</span> req = <span class="keyword">new</span> HttpRequest();</span><br><span class="line">  req.open(<span class="string">&#x27;get&#x27;</span>, <span class="string">&#x27;comics.json&#x27;</span>);</span><br><span class="line">  req.onLoad.listen((req) &#123;</span><br><span class="line">    <span class="keyword">var</span> list = JSON.decode(req.target.responseText);</span><br><span class="line">    list_el.innerHtml = graphic_novels_template(list);</span><br><span class="line">  &#125;);</span><br><span class="line">  req.send();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">graphic_novels_template(list) &#123;</span><br><span class="line">  <span class="keyword">var</span> html = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  list.forEach((graphic_novel) &#123;</span><br><span class="line">    html += graphic_novel_template(graphic_novel);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">graphic_novel_template(graphic_novel) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">  &lt;li id=&quot;<span class="subst">$&#123;graphic_novel[<span class="string">&#x27;id&#x27;</span>]&#125;</span>&quot;&gt;</span></span><br><span class="line"><span class="string">    <span class="subst">$&#123;graphic_novel[<span class="string">&#x27;title&#x27;</span>]&#125;</span></span></span><br><span class="line"><span class="string">    &lt;a href=&quot;#&quot; class=&quot;delete&quot;&gt;[delete]&lt;/a&gt;</span></span><br><span class="line"><span class="string">  &lt;/li&gt;&#x27;&#x27;&#x27;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>テスト用にロードするJSONデータはせっかくなので日本語で書きました。<br>原作のコミックはウォッチメンしか読んだことがないです。</p>
-<figure class="highlight json"><figcaption><span>web/comics.json</span></figcaption><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;<span class="attr">"title"</span>:<span class="string">"ウォッチメン"</span>,</span><br><span class="line">  <span class="attr">"author"</span>:<span class="string">"アラン・ムーア"</span>,</span><br><span class="line">  <span class="attr">"id"</span>:<span class="number">1</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">"title"</span>:<span class="string">"Vフォー・ヴェンデッタ"</span>,</span><br><span class="line">  <span class="attr">"author"</span>:<span class="string">"アラン・ムーア"</span>,</span><br><span class="line">  <span class="attr">"id"</span>:<span class="number">2</span>&#125;, </span><br><span class="line">  &#123;<span class="attr">"title"</span>:<span class="string">"サンドマン"</span>,</span><br><span class="line">  <span class="attr">"author"</span>:<span class="string">"ニール・ゲイマン"</span>,</span><br><span class="line">  <span class="attr">"id"</span>:<span class="number">3</span>&#125; </span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>web/comics.json</span></figcaption><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;<span class="attr">&quot;title&quot;</span>:<span class="string">&quot;ウォッチメン&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>:<span class="string">&quot;アラン・ムーア&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;id&quot;</span>:<span class="number">1</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">&quot;title&quot;</span>:<span class="string">&quot;Vフォー・ヴェンデッタ&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>:<span class="string">&quot;アラン・ムーア&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;id&quot;</span>:<span class="number">2</span>&#125;, </span><br><span class="line">  &#123;<span class="attr">&quot;title&quot;</span>:<span class="string">&quot;サンドマン&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>:<span class="string">&quot;ニール・ゲイマン&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;id&quot;</span>:<span class="number">3</span>&#125; </span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
 <p>スタイルシートはCDEのひな形をそのまま使います。</p>
-<figure class="highlight css"><figcaption><span>web/styles.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#F8F8F8</span>;</span><br><span class="line">  <span class="attribute">font-family</span>: <span class="string">'Open Sans'</span>, sans-serif;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">18px</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">15px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><figcaption><span>web/styles.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#F8F8F8</span>;</span><br><span class="line">  <span class="attribute">font-family</span>: <span class="string">&#x27;Open Sans&#x27;</span>, sans-serif;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">18px</span>;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">15px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="実行"><a href="#実行" class="headerlink" title="実行"></a>実行</h3><p>非力な<code>HP Chromebook 11</code>で作業しているので、DartのJavaScriptコンパイルに数分かかります。<br>コードを書いてすぐブラウザで確認という用途には難しいです。</p>
 <img src="/2014/08/30/chromedeveditor-dart-1-chapter-1/dartcomics.png" class="center">
@@ -319,7 +286,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -370,7 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome-Dev-Editorのインストール"><span class="nav-number">1.</span> <span class="nav-text">Chrome Dev Editorのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">2.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Chapter-1"><span class="nav-number">3.</span> <span class="nav-text">Chapter 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完成したプロジェクト"><span class="nav-number">4.</span> <span class="nav-text">完成したプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#実行"><span class="nav-number">5.</span> <span class="nav-text">実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nitrous-IOと比べて"><span class="nav-number">6.</span> <span class="nav-text">Nitrous.IOと比べて</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome-Dev-Editor%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">Chrome Dev Editorのインストール</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Chapter-1"><span class="nav-number">3.</span> <span class="nav-text">Chapter 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E3%81%97%E3%81%9F%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">4.</span> <span class="nav-text">完成したプロジェクト</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9F%E8%A1%8C"><span class="nav-number">5.</span> <span class="nav-text">実行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nitrous-IO%E3%81%A8%E6%AF%94%E3%81%B9%E3%81%A6"><span class="nav-number">6.</span> <span class="nav-text">Nitrous.IOと比べて</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -402,10 +368,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -430,9 +399,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -472,13 +441,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

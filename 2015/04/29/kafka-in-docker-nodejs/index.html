@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,27 +13,27 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回作成したKafkaクラスタをテストするために、簡単なNode.jsのproducerとconsumer用のコンテナを作成します。追加コンテナもKafkaとZooKeeperと同じdocker-compose.ymlに含めたかったのですが、うまく動かせませんでした。producerとconsumerのコンテナは通常のdocker runコマンドで起動することにします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka in DockerにNode.jsのproducerとconsumerコンテナから接続する">
 <meta property="og:url" content="https://masato.github.io/2015/04/29/kafka-in-docker-nodejs/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回作成したKafkaクラスタをテストするために、簡単なNode.jsのproducerとconsumer用のコンテナを作成します。追加コンテナもKafkaとZooKeeperと同じdocker-compose.ymlに含めたかったのですが、うまく動かせませんでした。producerとconsumerのコンテナは通常のdocker runコマンドで起動することにします。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-04-29T13:37:45.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.722Z">
+<meta property="article:modified_time" content="2015-04-29T13:37:45.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Nodejs">
 <meta property="article:tag" content="Kafka">
-<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="ZooKeeper">
 <meta name="twitter:card" content="summary">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Kafka in DockerにNode.jsのproducerとconsumerコンテナから接続する | masato's blog</title>
+  <title>Kafka in DockerにNode.jsのproducerとconsumerコンテナから接続する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 29 2015 22:37:45" itemprop="dateCreated datePublished" datetime="2015-04-29T22:37:45+09:00">Apr 29 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回作成したKafkaクラスタをテストするために、簡単なNode.jsのproducerとconsumer用のコンテナを作成します。追加コンテナもKafkaとZooKeeperと同じdocker-compose.ymlに含めたかったのですが、うまく動かせませんでした。producerとconsumerのコンテナは通常のdocker runコマンドで起動することにします。</div>
@@ -242,34 +209,34 @@
 
       
         <p><a href="2015/04/28/kafka-in-docker-getting-started/">前回</a>作成したKafkaクラスタをテストするために、簡単なNode.jsのproducerとconsumer用のコンテナを作成します。追加コンテナもKafkaとZooKeeperと同じdocker-compose.ymlに含めたかったのですが、うまく動かせませんでした。producerとconsumerのコンテナは通常の<code>docker run</code>コマンドで起動することにします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="kafka-node"><a href="#kafka-node" class="headerlink" title="kafka-node"></a>kafka-node</h2><p>Node.jsのKafkaクライアントはいくつかGitHubにあがっています。</p>
 <ul>
-<li><a href="https://github.com/SOHU-Co/kafka-node" target="_blank" rel="noopener">kafka-node</a></li>
-<li><a href="https://github.com/cainus/Prozess" target="_blank" rel="noopener">Prozess</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/SOHU-Co/kafka-node">kafka-node</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/cainus/Prozess">Prozess</a></li>
 </ul>
 <p>今回のKafkaのバージョンは0.8.2.1です。Prozessは0.6のままので、0.8に対応しているkafka-nodを使うことにします。</p>
 <h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>最初に作成したファイルのディレクトリ構造です。適当なディレクトリを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps</span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── kafka_consumer</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   ├── app.js</span><br><span class="line">│   └── package.json</span><br><span class="line">├── kafka_docker</span><br><span class="line">│   ├── Dockerfile</span><br><span class="line">│   ├── LICENSE</span><br><span class="line">│   ├── README.md</span><br><span class="line">│   ├── broker-list.sh</span><br><span class="line">│   ├── docker-compose-single-broker.yml</span><br><span class="line">│   ├── docker-compose.yml</span><br><span class="line">│   ├── download-kafka.sh</span><br><span class="line">│   ├── start-kafka-shell.sh</span><br><span class="line">│   └── start-kafka.sh</span><br><span class="line">└── kafka_producer</span><br><span class="line">    ├── Dockerfile</span><br><span class="line">    ├── app.js</span><br><span class="line">    └── package.json</span><br></pre></td></tr></table></figure>
 
 <p>kafka_dockerは<code>git clone</code>します。</p>
-<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">$ cd ~/docker_apps</span><br><span class="line">$ git <span class="keyword">clone</span> <span class="title">https</span>://github.com/SOHU-Co/kafka-<span class="keyword">node</span>.<span class="title">git</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ cd ~/docker_apps</span><br><span class="line">$ git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/SOHU-Co/</span>kafka-node.git</span><br></pre></td></tr></table></figure>
 
 <h2 id="プログラム"><a href="#プログラム" class="headerlink" title="プログラム"></a>プログラム</h2><p>docker-compose.ymlは前回と変わりません。ここにproducerとconsumerのコンテナも追加したいのですが、起動の順番が制御できず動作できませんでした。</p>
-<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><figure class="highlight yaml"><figcaption><span>~/docker_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">zookeeper:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">wurstmeister/zookeeper</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"2181"</span></span><br><span class="line"><span class="attr">kafka:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">./kafka_docker</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9092"</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zookeeper:zk</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.165</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br></pre></td></tr></table></figure>
+<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><figure class="highlight yaml"><figcaption><span>~/docker_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">zookeeper:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">wurstmeister/zookeeper</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;2181&quot;</span></span><br><span class="line"><span class="attr">kafka:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">./kafka_docker</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;9092&quot;</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zookeeper:zk</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.165</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="Dockerfileとpackage-json"><a href="#Dockerfileとpackage-json" class="headerlink" title="Dockerfileとpackage.json"></a>Dockerfileとpackage.json</h3><p>producerとconsumerのDockerfile、package.jsonは同じです。</p>
 <figure class="highlight bash"><figcaption><span>~/docker_apps/kafka_producer/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM node:0.12-onbuild</span><br></pre></td></tr></table></figure>
 
 <p>package.jsonはnameとdescriptionを変更します。</p>
-<figure class="highlight json"><figcaption><span>~/docker_apps/kafka_producer/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"kafka-node-producer-app"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"kafka-node-producer app"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"kafka-node"</span>: <span class="string">"0.2.26"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;<span class="attr">"start"</span>: <span class="string">"node app.js"</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><figcaption><span>~/docker_apps/kafka_producer/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;kafka-node-producer-app&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;kafka-node-producer app&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.0.1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;private&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;kafka-node&quot;</span>: <span class="string">&quot;0.2.26&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;<span class="attr">&quot;start&quot;</span>: <span class="string">&quot;node app.js&quot;</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="kafka-producer-app-js"><a href="#kafka-producer-app-js" class="headerlink" title="kafka_producer/app.js"></a>kafka_producer/app.js</h3><p>High Levelのproducerのサンプルは<a href="https://github.com/SOHU-Co/kafka-node/blob/master/example/high-level-producer.js" target="_blank" rel="noopener">high-level-producer.js</a>にあります。ZooKeeperのホストとポート番号は環境変数より取得します。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/kafka_producer/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">var</span> kafka = <span class="built_in">require</span>(<span class="string">'kafka-node'</span>),</span><br><span class="line">    HighLevelProducer = kafka.HighLevelProducer,</span><br><span class="line">    Client = kafka.Client,</span><br><span class="line">    host = [process.env.ZK_PORT_2181_TCP_ADDR,<span class="string">':'</span>,</span><br><span class="line">            process.env.ZK_PORT_2181_TCP_PORT],</span><br><span class="line">    client = <span class="keyword">new</span> Client(host.join(<span class="string">''</span>)),</span><br><span class="line">    producer = <span class="keyword">new</span> HighLevelProducer(client),</span><br><span class="line">    count = <span class="number">10</span>, rets = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">producer.on(<span class="string">'ready'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    setInterval(send, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">producer.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'error'</span>, err)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">send</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> payloads = [</span><br><span class="line">        &#123;<span class="attr">topic</span>: <span class="string">'topic1'</span>, <span class="attr">messages</span>: [<span class="string">'hello'</span>,<span class="string">'world'</span>]&#125;</span><br><span class="line">    ];</span><br><span class="line">    producer.send(payloads, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) <span class="built_in">console</span>.log(err);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">console</span>.log(<span class="string">'send %d messages'</span>, ++rets);</span><br><span class="line">        <span class="keyword">if</span> (rets === count) process.exit();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="kafka-producer-app-js"><a href="#kafka-producer-app-js" class="headerlink" title="kafka_producer/app.js"></a>kafka_producer/app.js</h3><p>High Levelのproducerのサンプルは<a target="_blank" rel="noopener" href="https://github.com/SOHU-Co/kafka-node/blob/master/example/high-level-producer.js">high-level-producer.js</a>にあります。ZooKeeperのホストとポート番号は環境変数より取得します。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/kafka_producer/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> kafka = <span class="built_in">require</span>(<span class="string">&#x27;kafka-node&#x27;</span>),</span><br><span class="line">    HighLevelProducer = kafka.HighLevelProducer,</span><br><span class="line">    Client = kafka.Client,</span><br><span class="line">    host = [process.env.ZK_PORT_2181_TCP_ADDR,<span class="string">&#x27;:&#x27;</span>,</span><br><span class="line">            process.env.ZK_PORT_2181_TCP_PORT],</span><br><span class="line">    client = <span class="keyword">new</span> Client(host.join(<span class="string">&#x27;&#x27;</span>)),</span><br><span class="line">    producer = <span class="keyword">new</span> HighLevelProducer(client),</span><br><span class="line">    count = <span class="number">10</span>, rets = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">producer.on(<span class="string">&#x27;ready&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">setInterval</span>(send, <span class="number">1000</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">producer.on(<span class="string">&#x27;error&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;error&#x27;</span>, err)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">send</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> payloads = [</span><br><span class="line">        &#123;<span class="attr">topic</span>: <span class="string">&#x27;topic1&#x27;</span>, <span class="attr">messages</span>: [<span class="string">&#x27;hello&#x27;</span>,<span class="string">&#x27;world&#x27;</span>]&#125;</span><br><span class="line">    ];</span><br><span class="line">    producer.send(payloads, <span class="function"><span class="keyword">function</span> (<span class="params">err, data</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (err) <span class="built_in">console</span>.log(err);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">console</span>.log(<span class="string">&#x27;send %d messages&#x27;</span>, ++rets);</span><br><span class="line">        <span class="keyword">if</span> (rets === count) process.exit();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="kafka-consumer"><a href="#kafka-consumer" class="headerlink" title="kafka_consumer"></a>kafka_consumer</h4><p>High Levelのconsumerのサンプルも<a href="https://github.com/SOHU-Co/kafka-node/blob/master/example/high-level-consumer.js" target="_blank" rel="noopener">high-level-consumer.js</a>にあります。ZooKeeperの情報やオリジナルからtopic名を固定にするなど少し変更しています。</p>
-<figure class="highlight js"><figcaption><span>~/docker_apps/kafka_consumer/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">var</span> kafka = <span class="built_in">require</span>(<span class="string">'kafka-node'</span>),</span><br><span class="line">    HighLevelConsumer = kafka.HighLevelConsumer,</span><br><span class="line">    Client = kafka.Client,</span><br><span class="line">    host = [process.env.ZK_PORT_2181_TCP_ADDR,<span class="string">':'</span>,</span><br><span class="line">            process.env.ZK_PORT_2181_TCP_PORT],</span><br><span class="line">    client = <span class="keyword">new</span> Client(host.join(<span class="string">''</span>)),</span><br><span class="line">    topics = [ &#123; <span class="attr">topic</span>: <span class="string">'topic1'</span> &#125;],</span><br><span class="line">    options = &#123; <span class="attr">autoCommit</span>: <span class="literal">true</span>, <span class="attr">fetchMaxWaitMs</span>: <span class="number">1000</span>, <span class="attr">fetchMaxBytes</span>: <span class="number">1024</span>*<span class="number">1024</span> &#125;,</span><br><span class="line">    consumer = <span class="keyword">new</span> HighLevelConsumer(client, topics, options);</span><br><span class="line"></span><br><span class="line">consumer.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(message);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">consumer.on(<span class="string">'error'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'error'</span>, err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="kafka-consumer"><a href="#kafka-consumer" class="headerlink" title="kafka_consumer"></a>kafka_consumer</h4><p>High Levelのconsumerのサンプルも<a target="_blank" rel="noopener" href="https://github.com/SOHU-Co/kafka-node/blob/master/example/high-level-consumer.js">high-level-consumer.js</a>にあります。ZooKeeperの情報やオリジナルからtopic名を固定にするなど少し変更しています。</p>
+<figure class="highlight js"><figcaption><span>~/docker_apps/kafka_consumer/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"><span class="keyword">var</span> kafka = <span class="built_in">require</span>(<span class="string">&#x27;kafka-node&#x27;</span>),</span><br><span class="line">    HighLevelConsumer = kafka.HighLevelConsumer,</span><br><span class="line">    Client = kafka.Client,</span><br><span class="line">    host = [process.env.ZK_PORT_2181_TCP_ADDR,<span class="string">&#x27;:&#x27;</span>,</span><br><span class="line">            process.env.ZK_PORT_2181_TCP_PORT],</span><br><span class="line">    client = <span class="keyword">new</span> Client(host.join(<span class="string">&#x27;&#x27;</span>)),</span><br><span class="line">    topics = [ &#123; <span class="attr">topic</span>: <span class="string">&#x27;topic1&#x27;</span> &#125;],</span><br><span class="line">    options = &#123; <span class="attr">autoCommit</span>: <span class="literal">true</span>, <span class="attr">fetchMaxWaitMs</span>: <span class="number">1000</span>, <span class="attr">fetchMaxBytes</span>: <span class="number">1024</span>*<span class="number">1024</span> &#125;,</span><br><span class="line">    consumer = <span class="keyword">new</span> HighLevelConsumer(client, topics, options);</span><br><span class="line"></span><br><span class="line">consumer.on(<span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(message);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">consumer.on(<span class="string">&#x27;error&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;error&#x27;</span>, err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="Dockerコンテナの起動"><a href="#Dockerコンテナの起動" class="headerlink" title="Dockerコンテナの起動"></a>Dockerコンテナの起動</h2><p>Docker ComposeからKafkaとZooKeeperのコンテナを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps</span><br><span class="line">$ docker-compose up</span><br></pre></td></tr></table></figure>
@@ -278,7 +245,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/kafka_producer</span><br><span class="line">$ docker build -t kafka_producer .</span><br><span class="line">$ docker run --rm --link dockerapps_zookeeper_1:zk kafka_producer</span><br><span class="line">...</span><br><span class="line">send 9 messages</span><br><span class="line">send 10 messages</span><br></pre></td></tr></table></figure>
 
 <p>consumerのDockerイメージをビルドしてコンテナを起動します。producerは毎回メッセージを2つ送信しているのでconsumerには20個のメッセージが届きます。</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">cd</span> <span class="string">~/docker_apps/kafka_consumer</span></span><br><span class="line"><span class="string">$</span> <span class="string">docker</span> <span class="string">build</span> <span class="string">-t</span> <span class="string">kafka_consumer</span> <span class="string">.</span></span><br><span class="line"><span class="string">$</span> <span class="string">docker</span> <span class="string">run</span> <span class="string">--rm</span> <span class="string">--link</span> <span class="string">dockerapps_zookeeper_1:zk</span> <span class="string">kafka_consumer</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">&#123;</span> <span class="attr">topic:</span> <span class="string">'topic1'</span><span class="string">,</span></span><br><span class="line">  <span class="attr">value:</span> <span class="string">'hello'</span><span class="string">,</span></span><br><span class="line">  <span class="attr">offset:</span> <span class="number">18</span><span class="string">,</span></span><br><span class="line">  <span class="attr">partition:</span> <span class="number">0</span><span class="string">,</span></span><br><span class="line">  <span class="attr">key:</span> <span class="string">&lt;Buffer</span> <span class="string">&gt;</span> <span class="string">&#125;</span></span><br><span class="line"><span class="string">&#123;</span> <span class="attr">topic:</span> <span class="string">'topic1'</span><span class="string">,</span></span><br><span class="line">  <span class="attr">value:</span> <span class="string">'world'</span><span class="string">,</span></span><br><span class="line">  <span class="attr">offset:</span> <span class="number">19</span><span class="string">,</span></span><br><span class="line">  <span class="attr">partition:</span> <span class="number">0</span><span class="string">,</span></span><br><span class="line">  <span class="attr">key:</span> <span class="string">&lt;Buffer</span> <span class="string">&gt;</span> <span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">$ cd ~/docker_apps/kafka_consumer</span><br><span class="line">$ docker <span class="keyword">build</span> -t kafka_consumer .</span><br><span class="line">$ docker run --rm --link dockerapps_zookeeper_1:zk kafka_consumer</span><br><span class="line">...</span><br><span class="line">&#123; topic: <span class="string">&#x27;topic1&#x27;</span>,</span><br><span class="line">  <span class="keyword">value</span>: <span class="string">&#x27;hello&#x27;</span>,</span><br><span class="line">  <span class="keyword">offset</span>: <span class="number">18</span>,</span><br><span class="line">  <span class="keyword">partition</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="keyword">key</span>: &lt;Buffer &gt; &#125;</span><br><span class="line">&#123; topic: <span class="string">&#x27;topic1&#x27;</span>,</span><br><span class="line">  <span class="keyword">value</span>: <span class="string">&#x27;world&#x27;</span>,</span><br><span class="line">  <span class="keyword">offset</span>: <span class="number">19</span>,</span><br><span class="line">  <span class="keyword">partition</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="keyword">key</span>: &lt;Buffer &gt; &#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -290,8 +257,8 @@
           <div class="post-tags">
               <a href="/tags/Nodejs/" rel="tag"># Nodejs</a>
               <a href="/tags/Kafka/" rel="tag"># Kafka</a>
-              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/ZooKeeper/" rel="tag"># ZooKeeper</a>
           </div>
 
@@ -316,7 +283,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -367,7 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka-node"><span class="nav-number">1.</span> <span class="nav-text">kafka-node</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プログラム"><span class="nav-number">3.</span> <span class="nav-text">プログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfileとpackage-json"><span class="nav-number">3.2.</span> <span class="nav-text">Dockerfileとpackage.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-producer-app-js"><span class="nav-number">3.3.</span> <span class="nav-text">kafka_producer&#x2F;app.js</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kafka-consumer"><span class="nav-number">3.3.1.</span> <span class="nav-text">kafka_consumer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerコンテナの起動"><span class="nav-number">4.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka-node"><span class="nav-number">1.</span> <span class="nav-text">kafka-node</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0"><span class="nav-number">3.</span> <span class="nav-text">プログラム</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile%E3%81%A8package-json"><span class="nav-number">3.2.</span> <span class="nav-text">Dockerfileとpackage.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-producer-app-js"><span class="nav-number">3.3.</span> <span class="nav-text">kafka_producer&#x2F;app.js</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kafka-consumer"><span class="nav-number">3.3.1.</span> <span class="nav-text">kafka_consumer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95"><span class="nav-number">4.</span> <span class="nav-text">Dockerコンテナの起動</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,10 +365,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -427,9 +396,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -469,13 +438,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

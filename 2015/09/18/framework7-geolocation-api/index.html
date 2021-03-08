@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,28 +13,28 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Framework7でモバイルWebを開発するとHTML5&#x2F;JavaScript&#x2F;CSSを使ってiOSやMaterialデザインのネイティブに近いUIを作ることができます。またW3Cが策定しているHTML5のデバイスAPIを活用すればネイティブのAPIをコールしなくてもHTML5経由でハードウェアの制御を行うこともできます。簡単なところからGeolocation APIで緯度経度情報を取得して遊ん">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Framework7でHTML5モバイルアプリをつくる - Part4: Geolocation APIを使って国コードと通貨コードを逆ジオコーディングする">
 <meta property="og:url" content="https://masato.github.io/2015/09/18/framework7-geolocation-api/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Framework7でモバイルWebを開発するとHTML5&#x2F;JavaScript&#x2F;CSSを使ってiOSやMaterialデザインのネイティブに近いUIを作ることができます。またW3Cが策定しているHTML5のデバイスAPIを活用すればネイティブのAPIをコールしなくてもHTML5経由でハードウェアの制御を行うこともできます。簡単なところからGeolocation APIで緯度経度情報を取得して遊ん">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/09/18/framework7-geolocation-api/html5mobile-index.png">
 <meta property="og:image" content="https://masato.github.io/2015/09/18/framework7-geolocation-api/html5mobile-input.png">
 <meta property="og:image" content="https://masato.github.io/2015/09/18/framework7-geolocation-api/html5mobile-currency.png">
 <meta property="article:published_time" content="2015-09-17T22:59:46.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.658Z">
+<meta property="article:modified_time" content="2015-09-17T22:59:46.000Z">
 <meta property="article:author" content="Masato Shimizu">
-<meta property="article:tag" content="Framework7">
 <meta property="article:tag" content="HTML5">
+<meta property="article:tag" content="Framework7">
 <meta property="article:tag" content="Geolocation">
 <meta property="article:tag" content="ジオコーディング">
 <meta property="article:tag" content="YQL">
@@ -56,7 +56,7 @@
   };
 </script>
 
-  <title>Framework7でHTML5モバイルアプリをつくる - Part4: Geolocation APIを使って国コードと通貨コードを逆ジオコーディングする | masato's blog</title>
+  <title>Framework7でHTML5モバイルアプリをつくる - Part4: Geolocation APIを使って国コードと通貨コードを逆ジオコーディングする | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -96,7 +96,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -117,14 +117,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -133,51 +132,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -194,11 +169,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -211,7 +185,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -221,19 +195,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 18 2015 07:59:46" itemprop="dateCreated datePublished" datetime="2015-09-18T07:59:46+09:00">Sep 18 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Framework7でモバイルWebを開発するとHTML5/JavaScript/CSSを使ってiOSやMaterialデザインのネイティブに近いUIを作ることができます。またW3Cが策定しているHTML5のデバイスAPIを活用すればネイティブのAPIをコールしなくてもHTML5経由でハードウェアの制御を行うこともできます。簡単なところからGeolocation APIで緯度経度情報を取得して遊んでみようと思います。</div>
@@ -247,16 +214,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://www.idangero.us/framework7/" target="_blank" rel="noopener">Framework7</a>でモバイルWebを開発するとHTML5/JavaScript/CSSを使ってiOSやMaterialデザインのネイティブに近いUIを作ることができます。またW3Cが策定しているHTML5のデバイスAPIを活用すれば、ネイティブのAPIをコールしなくてもHTML5経由でハードウェアの制御を行うこともできます。簡単なところから<a href="http://dev.w3.org/geo/api/spec-source.html" target="_blank" rel="noopener">Geolocation API</a>で緯度経度情報を取得して遊んでみようと思います。</p>
+        <p><a target="_blank" rel="noopener" href="http://www.idangero.us/framework7/">Framework7</a>でモバイルWebを開発するとHTML5/JavaScript/CSSを使ってiOSやMaterialデザインのネイティブに近いUIを作ることができます。またW3Cが策定しているHTML5のデバイスAPIを活用すれば、ネイティブのAPIをコールしなくてもHTML5経由でハードウェアの制御を行うこともできます。簡単なところから<a target="_blank" rel="noopener" href="http://dev.w3.org/geo/api/spec-source.html">Geolocation API</a>で緯度経度情報を取得して遊んでみようと思います。</p>
 <p>参考</p>
 <ul>
-<li><a href="http://mobilehtml5.org/" target="_blank" rel="noopener">HTML5 compatibility on mobile and tablet browsers with testing on real devices</a></li>
-<li><a href="http://www.girliemac.com/presentation-slides/html5-mobile-approach/deviceAPIs.html" target="_blank" rel="noopener">Mobile ♥ JavaScript Hardware Access &amp; Device APIs</a></li>
-<li><a href="https://codeiq.jp/magazine/2014/12/20086/" target="_blank" rel="noopener">デバイスAPIはどこまで使える？最新事情を紹介</a></li>
+<li><a target="_blank" rel="noopener" href="http://mobilehtml5.org/">HTML5 compatibility on mobile and tablet browsers with testing on real devices</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.girliemac.com/presentation-slides/html5-mobile-approach/deviceAPIs.html">Mobile ♥ JavaScript Hardware Access &amp; Device APIs</a></li>
+<li><a target="_blank" rel="noopener" href="https://codeiq.jp/magazine/2014/12/20086/">デバイスAPIはどこまで使える？最新事情を紹介</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="デモアプリ"><a href="#デモアプリ" class="headerlink" title="デモアプリ"></a>デモアプリ</h2><p>リポジトリは<a href="https://github.com/masato/docker-framework7" target="_blank" rel="noopener">こちら</a>です。デモは<a href="https://html5mobile.space/" target="_blank" rel="noopener">こちら</a>から実行できます。日本国内だと現在位置の緯度経度から計算できる国コードはJP、通貨コードはJPYだけなのであまりおもしい結果が出ませんが、任意の緯度・経度を手動で入力すれば逆ジオコーディングで位置情報から国コードや通貨コードを取得することができます。</p>
+<h2 id="デモアプリ"><a href="#デモアプリ" class="headerlink" title="デモアプリ"></a>デモアプリ</h2><p>リポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7">こちら</a>です。デモは<a target="_blank" rel="noopener" href="https://html5mobile.space/">こちら</a>から実行できます。日本国内だと現在位置の緯度経度から計算できる国コードはJP、通貨コードはJPYだけなのであまりおもしい結果が出ませんが、任意の緯度・経度を手動で入力すれば逆ジオコーディングで位置情報から国コードや通貨コードを取得することができます。</p>
 <p><img src="/2015/09/18/framework7-geolocation-api/html5mobile-index.png" alt="html5mobile-index.png"></p>
 <h3 id="緯度・経度を入力する"><a href="#緯度・経度を入力する" class="headerlink" title="緯度・経度を入力する"></a>緯度・経度を入力する</h3><p>緯度経度をGeolocation APIを使わずにフォームへ手動入力してみます。「位置を入力する」タブからテスト用にアゼルバイジャンの緯度・経度を設定します。</p>
 <ul>
@@ -264,21 +231,21 @@
 <li>経度: 49.804306</li>
 </ul>
 <p><img src="/2015/09/18/framework7-geolocation-api/html5mobile-input.png" alt="html5mobile-input.png"></p>
-<p>フォームに入力したデータは<a href="http://www.idangero.us/framework7/docs/form-data.html" target="_blank" rel="noopener">Form Data</a>にあるようにJSON形式で取得することができます。</p>
-<figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"my-form"</span> <span class="attr">class</span>=<span class="string">"list-block"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-content"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-media"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon icon-form-settings"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-inner"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-title label"</span>&gt;</span>緯度<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"item-input"</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">"latitude"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">placeholder</span>=<span class="string">"緯度を入力"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>フォームに入力したデータは<a target="_blank" rel="noopener" href="http://www.idangero.us/framework7/docs/form-data.html">Form Data</a>にあるようにJSON形式で取得することができます。</p>
+<figure class="highlight html"><figcaption><span>index.html</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">&quot;my-form&quot;</span> <span class="attr">class</span>=<span class="string">&quot;list-block&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item-content&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item-media&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;icon icon-form-settings&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item-inner&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item-title label&quot;</span>&gt;</span>緯度<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;item-input&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;latitude&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;緯度を入力&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>「入力値を使う」ボタンをタップすると<code>app.formToJSON</code>からJSON形式でフォームの値を取得できます。</p>
-<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line">$$(<span class="string">'.form-to-json'</span>).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> formData = app.formToJSON(<span class="string">'#my-form'</span>);</span><br><span class="line">    <span class="keyword">if</span> (!isNumber(formData.latitude) ||</span><br><span class="line">        !isNumber(formData.longitude)) &#123;</span><br><span class="line">        <span class="keyword">return</span> app.alert(<span class="string">'数値を入力してください。'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    latLng = <span class="keyword">new</span> google.maps.LatLng(formData.latitude,</span><br><span class="line">                                    formData.longitude);</span><br><span class="line">    geocodeAction(latLng);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line">$$(<span class="string">&#x27;.form-to-json&#x27;</span>).on(<span class="string">&#x27;click&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> formData = app.formToJSON(<span class="string">&#x27;#my-form&#x27;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!isNumber(formData.latitude) ||</span><br><span class="line">        !isNumber(formData.longitude)) &#123;</span><br><span class="line">        <span class="keyword">return</span> app.alert(<span class="string">&#x27;数値を入力してください。&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    latLng = <span class="keyword">new</span> google.maps.LatLng(formData.latitude,</span><br><span class="line">                                    formData.longitude);</span><br><span class="line">    geocodeAction(latLng);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="緯度・経度の現在位置を取得"><a href="#緯度・経度の現在位置を取得" class="headerlink" title="緯度・経度の現在位置を取得"></a>緯度・経度の現在位置を取得</h3><p>W3Cの<a href="http://dev.w3.org/geo/api/spec-source.html" target="_blank" rel="noopener">Geolocation API</a>を使います。<a href="https://developer.mozilla.org/ja/docs/Web/API/Geolocation/watchPosition" target="_blank" rel="noopener">navigator.geolocation.watchPosition</a>の場合はデバイスの位置が変わる度に位置情報を取得しているため、電池の消耗が激しそうです。</p>
-<p>画面のボタンを押したときだけ<a href="https://developer.mozilla.org/ja/docs/Web/API/Geolocation/getCurrentPosition" target="_blank" rel="noopener">navigator.geolocation.getCurrentPosition</a>を使い現在の位置情報を取得するようにします。</p>
-<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line">$$(<span class="string">'#location_btn'</span>).on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (navigator.geolocation) &#123;</span><br><span class="line">        app.showIndicator();</span><br><span class="line">        navigator.geolocation.getCurrentPosition(</span><br><span class="line">            <span class="function"><span class="keyword">function</span>(<span class="params">position</span>) </span>&#123;</span><br><span class="line">                latLng = <span class="keyword">new</span> google.maps.LatLng(position.coords.latitude,</span><br><span class="line">                                   position.coords.longitude);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="緯度・経度の現在位置を取得"><a href="#緯度・経度の現在位置を取得" class="headerlink" title="緯度・経度の現在位置を取得"></a>緯度・経度の現在位置を取得</h3><p>W3Cの<a target="_blank" rel="noopener" href="http://dev.w3.org/geo/api/spec-source.html">Geolocation API</a>を使います。<a target="_blank" rel="noopener" href="https://developer.mozilla.org/ja/docs/Web/API/Geolocation/watchPosition">navigator.geolocation.watchPosition</a>の場合はデバイスの位置が変わる度に位置情報を取得しているため、電池の消耗が激しそうです。</p>
+<p>画面のボタンを押したときだけ<a target="_blank" rel="noopener" href="https://developer.mozilla.org/ja/docs/Web/API/Geolocation/getCurrentPosition">navigator.geolocation.getCurrentPosition</a>を使い現在の位置情報を取得するようにします。</p>
+<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line">$$(<span class="string">&#x27;#location_btn&#x27;</span>).on(<span class="string">&#x27;click&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (navigator.geolocation) &#123;</span><br><span class="line">        app.showIndicator();</span><br><span class="line">        navigator.geolocation.getCurrentPosition(</span><br><span class="line">            <span class="function"><span class="keyword">function</span>(<span class="params">position</span>) </span>&#123;</span><br><span class="line">                latLng = <span class="keyword">new</span> google.maps.LatLng(position.coords.latitude,</span><br><span class="line">                                   position.coords.longitude);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
-<h2 id="逆ジオコーディング"><a href="#逆ジオコーディング" class="headerlink" title="逆ジオコーディング"></a>逆ジオコーディング</h2><p>「現在位置を使う」または「位置を入力する」のタブから取得した緯度・経度情報を使って逆<a href="https://ja.wikipedia.org/wiki/%E3%82%B8%E3%82%AA%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0" target="_blank" rel="noopener">ジーコーディング</a>をします。</p>
-<h3 id="国コードの取得"><a href="#国コードの取得" class="headerlink" title="国コードの取得"></a>国コードの取得</h3><p><a href="https://developers.google.com/maps/documentation/javascript/" target="_blank" rel="noopener">Google Maps Javascript API Google Maps Javascript API
-</a>の<a href="https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse" target="_blank" rel="noopener">逆ジオコーディング</a>を使います。</p>
-<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCountryNameCode</span>(<span class="params">latLng, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> geocoder = <span class="keyword">new</span> google.maps.Geocoder();</span><br><span class="line">    <span class="keyword">var</span> retval = &#123;&#125;;</span><br><span class="line">    <span class="keyword">var</span> location =  &#123;<span class="attr">lat</span>: latLng.lat(), <span class="attr">lng</span>: latLng.lng()&#125;;</span><br><span class="line"></span><br><span class="line">    geocoder.geocode(&#123;<span class="string">'location'</span>: location&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">results, status</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (status !== google.maps.GeocoderStatus.OK)</span><br><span class="line">            <span class="keyword">return</span> callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"can't get goecoder"</span>));</span><br><span class="line">        _.forEach(results[<span class="number">0</span>].address_components, <span class="function"><span class="keyword">function</span> (<span class="params">comp</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (comp.types[<span class="number">0</span>] == <span class="string">"country"</span>) &#123;</span><br><span class="line">                retval[<span class="string">'short'</span>] = comp.short_name;</span><br><span class="line">                retval[<span class="string">'long'</span>] = comp.long_name;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">if</span> (!retval)</span><br><span class="line">            <span class="keyword">return</span> callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"can't get country code"</span>));</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> callback(<span class="literal">null</span>, retval);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="逆ジオコーディング"><a href="#逆ジオコーディング" class="headerlink" title="逆ジオコーディング"></a>逆ジオコーディング</h2><p>「現在位置を使う」または「位置を入力する」のタブから取得した緯度・経度情報を使って逆<a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/%E3%82%B8%E3%82%AA%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0">ジーコーディング</a>をします。</p>
+<h3 id="国コードの取得"><a href="#国コードの取得" class="headerlink" title="国コードの取得"></a>国コードの取得</h3><p><a target="_blank" rel="noopener" href="https://developers.google.com/maps/documentation/javascript/">Google Maps Javascript API Google Maps Javascript API
+</a>の<a target="_blank" rel="noopener" href="https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse">逆ジオコーディング</a>を使います。</p>
+<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getCountryNameCode</span>(<span class="params">latLng, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> geocoder = <span class="keyword">new</span> google.maps.Geocoder();</span><br><span class="line">    <span class="keyword">var</span> retval = &#123;&#125;;</span><br><span class="line">    <span class="keyword">var</span> location =  &#123;<span class="attr">lat</span>: latLng.lat(), <span class="attr">lng</span>: latLng.lng()&#125;;</span><br><span class="line"></span><br><span class="line">    geocoder.geocode(&#123;<span class="string">&#x27;location&#x27;</span>: location&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">results, status</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (status !== google.maps.GeocoderStatus.OK)</span><br><span class="line">            <span class="keyword">return</span> callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;can&#x27;t get goecoder&quot;</span>));</span><br><span class="line">        _.forEach(results[<span class="number">0</span>].address_components, <span class="function"><span class="keyword">function</span> (<span class="params">comp</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (comp.types[<span class="number">0</span>] == <span class="string">&quot;country&quot;</span>) &#123;</span><br><span class="line">                retval[<span class="string">&#x27;short&#x27;</span>] = comp.short_name;</span><br><span class="line">                retval[<span class="string">&#x27;long&#x27;</span>] = comp.long_name;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">if</span> (!retval)</span><br><span class="line">            <span class="keyword">return</span> callback(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;can&#x27;t get country code&quot;</span>));</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> callback(<span class="literal">null</span>, retval);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><code>address_component.types[0] == &quot;country&quot;</code>のときに、<code>address_component.short_name</code>に国コードが入っています。</p>
 <ul>
@@ -287,28 +254,28 @@
 </ul>
 <p>参考</p>
 <ul>
-<li><a href="http://stackoverflow.com/questions/18173242/getting-street-city-and-country-by-reverse-geocoding-using-google" target="_blank" rel="noopener">Getting street,city and country by reverse geocoding using google</a></li>
-<li><a href="http://stackoverflow.com/questions/22185725/parse-json-from-google-maps-reverse-geocode" target="_blank" rel="noopener">Parse json from google maps reverse geocode?</a></li>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/18173242/getting-street-city-and-country-by-reverse-geocoding-using-google">Getting street,city and country by reverse geocoding using google</a></li>
+<li><a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/22185725/parse-json-from-google-maps-reverse-geocode">Parse json from google maps reverse geocode?</a></li>
 </ul>
-<h3 id="通貨コードの取得"><a href="#通貨コードの取得" class="headerlink" title="通貨コードの取得"></a>通貨コードの取得</h3><p>通貨コードはGoogle Maps APIの逆ジオコーディングでも取得できなかったので、Open Knowledgeの<a href="http://data.okfn.org" target="_blank" rel="noopener">Frictionless Open Data</a>から<a href="http://data.okfn.org/data/core/country-codes" target="_blank" rel="noopener">Comprehensive country codes: ISO 3166, ITU, ISO 4217 currency codes and many more</a>の変換表を使うことにします。データをJSON形式で<a href="https://github.com/masato/docker-framework7/blob/master/src/server/country-codes.json" target="_blank" rel="noopener">ダウンロード</a>します。</p>
+<h3 id="通貨コードの取得"><a href="#通貨コードの取得" class="headerlink" title="通貨コードの取得"></a>通貨コードの取得</h3><p>通貨コードはGoogle Maps APIの逆ジオコーディングでも取得できなかったので、Open Knowledgeの<a target="_blank" rel="noopener" href="http://data.okfn.org/">Frictionless Open Data</a>から<a target="_blank" rel="noopener" href="http://data.okfn.org/data/core/country-codes">Comprehensive country codes: ISO 3166, ITU, ISO 4217 currency codes and many more</a>の変換表を使うことにします。データをJSON形式で<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/master/src/server/country-codes.json">ダウンロード</a>します。</p>
 <p>日本を例にすると国コードや通貨コードの他にもFIFAやIOCなど様々な日本のコードが定義されています。</p>
-<figure class="highlight"><figcaption><span>country-codes.json</span></figcaption><table><tr><td class="code"><pre><span class="line">"name":"Japan","name_fr":"Japon","ISO3166-1-Alpha-2":"JP","ISO3166-1-Alpha-3":"JPN","ISO3166-1-numeric":"392","ITU":"J","MARC":"ja","WMO":"JP","DS":"J","Dial":"81","FIFA":"JPN","FIPS":"JA","GAUL":"126","IOC":"JPN","currency_alphabetic_code":"JPY","currency_country_name":"JAPAN","currency_minor_unit":"0","currency_name":"Yen","currency_numeric_code":"392","is_independent":"Yes"&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><figcaption><span>country-codes.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&quot;name&quot;:&quot;Japan&quot;,&quot;name_fr&quot;:&quot;Japon&quot;,&quot;ISO3166-1-Alpha-2&quot;:&quot;JP&quot;,&quot;ISO3166-1-Alpha-3&quot;:&quot;JPN&quot;,&quot;ISO3166-1-numeric&quot;:&quot;392&quot;,&quot;ITU&quot;:&quot;J&quot;,&quot;MARC&quot;:&quot;ja&quot;,&quot;WMO&quot;:&quot;JP&quot;,&quot;DS&quot;:&quot;J&quot;,&quot;Dial&quot;:&quot;81&quot;,&quot;FIFA&quot;:&quot;JPN&quot;,&quot;FIPS&quot;:&quot;JA&quot;,&quot;GAUL&quot;:&quot;126&quot;,&quot;IOC&quot;:&quot;JPN&quot;,&quot;currency_alphabetic_code&quot;:&quot;JPY&quot;,&quot;currency_country_name&quot;:&quot;JAPAN&quot;,&quot;currency_minor_unit&quot;:&quot;0&quot;,&quot;currency_name&quot;:&quot;Yen&quot;,&quot;currency_numeric_code&quot;:&quot;392&quot;,&quot;is_independent&quot;:&quot;Yes&quot;&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>ISO3166-1-Alpha-2: JP</li>
 <li>currency_alphabetic_code: JPY</li>
 </ul>
-<p>Expressで簡単なAPIサーバーを用意して、ここからダウンロードした<a href="https://github.com/masato/docker-framework7/blob/master/src/server/country-codes.json" target="_blank" rel="noopener">JSONデータ</a>をクエリするようにしました。</p>
+<p>Expressで簡単なAPIサーバーを用意して、ここからダウンロードした<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/master/src/server/country-codes.json">JSONデータ</a>をクエリするようにしました。</p>
 <p>クライアントサイドからはGoecoderから取得したshort_name(JP)を条件にしてサーバーサイドのAPIを実行します。</p>
-<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> q = <span class="string">'/api/currency/'</span> + countryShortName;</span><br><span class="line">app.showIndicator();</span><br><span class="line">$$.<span class="keyword">get</span>(q, function(data) &#123;</span><br><span class="line">    app.hideIndicator();</span><br><span class="line">    data = <span class="built_in">JSON</span>.parse(data);</span><br><span class="line">    currencyCode = data.currency_code;</span><br><span class="line">    $$(<span class="string">'#currency_code'</span>).text(currencyCode);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>src/client/js/index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> q = <span class="string">&#x27;/api/currency/&#x27;</span> + countryShortName;</span><br><span class="line">app.showIndicator();</span><br><span class="line">$$.get(q, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    app.hideIndicator();</span><br><span class="line">    data = <span class="built_in">JSON</span>.parse(data);</span><br><span class="line">    currencyCode = data.currency_code;</span><br><span class="line">    $$(<span class="string">&#x27;#currency_code&#x27;</span>).text(currencyCode);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<p>サーバーサイドの<a href="https://github.com/masato/docker-framework7/blob/master/src/server/app.js" target="_blank" rel="noopener">app.js</a>では引数のISO3166-1-Alpha-2(JP)からcurrency_alphabetic_code(JPY)を<a href="https://lodash.com/" target="_blank" rel="noopener">lodash</a>の<a href="https://lodash.com/docs#find" target="_blank" rel="noopener">_.find</a>を使ってクエリします。</p>
-<figure class="highlight js"><figcaption><span>src/server/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">"use strict"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>),</span><br><span class="line">    path = <span class="built_in">require</span>(<span class="string">'path'</span>),</span><br><span class="line">    bodyParser = <span class="built_in">require</span>(<span class="string">'body-parser'</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">'lodash'</span>),</span><br><span class="line">    countryCodes = <span class="built_in">require</span>(<span class="string">'./country-codes.json'</span>),</span><br><span class="line">    router = express.Router(),</span><br><span class="line">    app = express();</span><br><span class="line"></span><br><span class="line">app.use(express.static(path.join(__dirname,<span class="string">'..'</span>,<span class="string">'..'</span>,<span class="string">'dist'</span>)));</span><br><span class="line">app.use(bodyParser.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.use(bodyParser.json());</span><br><span class="line"></span><br><span class="line">router.get(<span class="string">'/currency/:country'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> currency_code = _.result(_.find(countryCodes,</span><br><span class="line">                                   <span class="string">'ISO3166-1-Alpha-2'</span>, req.params.country),</span><br><span class="line">                                   <span class="string">'currency_alphabetic_code'</span>);</span><br><span class="line">    res.json(&#123; <span class="attr">currency_code</span>: currency_code&#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">'/api'</span>, router);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(<span class="number">3000</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> host = server.address().address,</span><br><span class="line">      port = server.address().port;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'Example app listening at http://%s:%s'</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>サーバーサイドの<a target="_blank" rel="noopener" href="https://github.com/masato/docker-framework7/blob/master/src/server/app.js">app.js</a>では引数のISO3166-1-Alpha-2(JP)からcurrency_alphabetic_code(JPY)を<a target="_blank" rel="noopener" href="https://lodash.com/">lodash</a>の<a target="_blank" rel="noopener" href="https://lodash.com/docs#find">_.find</a>を使ってクエリします。</p>
+<figure class="highlight js"><figcaption><span>src/server/app.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>),</span><br><span class="line">    path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>),</span><br><span class="line">    bodyParser = <span class="built_in">require</span>(<span class="string">&#x27;body-parser&#x27;</span>),</span><br><span class="line">    _ = <span class="built_in">require</span>(<span class="string">&#x27;lodash&#x27;</span>),</span><br><span class="line">    countryCodes = <span class="built_in">require</span>(<span class="string">&#x27;./country-codes.json&#x27;</span>),</span><br><span class="line">    router = express.Router(),</span><br><span class="line">    app = express();</span><br><span class="line"></span><br><span class="line">app.use(express.static(path.join(__dirname,<span class="string">&#x27;..&#x27;</span>,<span class="string">&#x27;..&#x27;</span>,<span class="string">&#x27;dist&#x27;</span>)));</span><br><span class="line">app.use(bodyParser.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">true</span> &#125;));</span><br><span class="line">app.use(bodyParser.json());</span><br><span class="line"></span><br><span class="line">router.get(<span class="string">&#x27;/currency/:country&#x27;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> currency_code = _.result(_.find(countryCodes,</span><br><span class="line">                                   <span class="string">&#x27;ISO3166-1-Alpha-2&#x27;</span>, req.params.country),</span><br><span class="line">                                   <span class="string">&#x27;currency_alphabetic_code&#x27;</span>);</span><br><span class="line">    res.json(&#123; <span class="attr">currency_code</span>: currency_code&#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">&#x27;/api&#x27;</span>, router);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> server = app.listen(<span class="number">3000</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> host = server.address().address,</span><br><span class="line">      port = server.address().port;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;Example app listening at http://%s:%s&#x27;</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-<h3 id="為替レート"><a href="#為替レート" class="headerlink" title="為替レート"></a>為替レート</h3><p>メニューの「為替レート」をタップします。取得した通貨コードを使って<a href="/2015/09/14/yql-currency/">YQLから為替レートを</a>を取得してみます。この例では<a href="https://ja.wikipedia.org/wiki/%E3%82%A2%E3%82%BC%E3%83%AB%E3%83%90%E3%82%A4%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%BB%E3%83%9E%E3%83%8A%E3%83%88" target="_blank" rel="noopener">アゼルバイジャン・マナト</a>の為替レートです。</p>
+<h3 id="為替レート"><a href="#為替レート" class="headerlink" title="為替レート"></a>為替レート</h3><p>メニューの「為替レート」をタップします。取得した通貨コードを使って<a href="/2015/09/14/yql-currency/">YQLから為替レートを</a>を取得してみます。この例では<a target="_blank" rel="noopener" href="https://ja.wikipedia.org/wiki/%E3%82%A2%E3%82%BC%E3%83%AB%E3%83%90%E3%82%A4%E3%82%B8%E3%83%A3%E3%83%B3%E3%83%BB%E3%83%9E%E3%83%8A%E3%83%88">アゼルバイジャン・マナト</a>の為替レートです。</p>
 <p><img src="/2015/09/18/framework7-geolocation-api/html5mobile-currency.png" alt="html5mobile-currency.png"></p>
-<p>1ドル、1ユーロ、1円の現地通貨のレートを<a href="https://developer.yahoo.com/yql" target="_blank" rel="noopener">YQL</a>の<code>yahoo.finance.xchange</code>からクエリします。</p>
-<figure class="highlight js"><figcaption><span>index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">currencyRate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> base_url = <span class="string">'https://query.yahooapis.com/v1/public/yql'</span>;</span><br><span class="line">    <span class="keyword">var</span> query = <span class="string">'select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20("'</span>+<span class="string">'USD'</span>+currencyCode+<span class="string">','</span>+<span class="string">'EUR'</span>+currencyCode+<span class="string">','</span>+<span class="string">'JPY'</span>+currencyCode+<span class="string">'")'</span>;</span><br><span class="line">    <span class="keyword">var</span> q = base_url + <span class="string">'?q='</span> + query + <span class="string">'&amp;format=json&amp;env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys'</span>;</span><br><span class="line">    app.showIndicator();</span><br><span class="line">    $$.<span class="keyword">get</span>(q, function(data) &#123;</span><br><span class="line">        app.hideIndicator();</span><br><span class="line">        data = <span class="built_in">JSON</span>.parse(data);</span><br><span class="line">        <span class="keyword">if</span> (!data.query || !data.query.results) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">var</span> rate = data.query.results.rate;</span><br><span class="line">        <span class="built_in">console</span>.log(rate);</span><br><span class="line">        rate.forEach(buildRate);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>1ドル、1ユーロ、1円の現地通貨のレートを<a target="_blank" rel="noopener" href="https://developer.yahoo.com/yql">YQL</a>の<code>yahoo.finance.xchange</code>からクエリします。</p>
+<figure class="highlight js"><figcaption><span>index.js</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">currencyRate</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> base_url = <span class="string">&#x27;https://query.yahooapis.com/v1/public/yql&#x27;</span>;</span><br><span class="line">    <span class="keyword">var</span> query = <span class="string">&#x27;select%20*%20from%20yahoo.finance.xchange%20where%20pair%20in%20(&quot;&#x27;</span>+<span class="string">&#x27;USD&#x27;</span>+currencyCode+<span class="string">&#x27;,&#x27;</span>+<span class="string">&#x27;EUR&#x27;</span>+currencyCode+<span class="string">&#x27;,&#x27;</span>+<span class="string">&#x27;JPY&#x27;</span>+currencyCode+<span class="string">&#x27;&quot;)&#x27;</span>;</span><br><span class="line">    <span class="keyword">var</span> q = base_url + <span class="string">&#x27;?q=&#x27;</span> + query + <span class="string">&#x27;&amp;format=json&amp;env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&#x27;</span>;</span><br><span class="line">    app.showIndicator();</span><br><span class="line">    $$.get(q, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">        app.hideIndicator();</span><br><span class="line">        data = <span class="built_in">JSON</span>.parse(data);</span><br><span class="line">        <span class="keyword">if</span> (!data.query || !data.query.results) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">var</span> rate = data.query.results.rate;</span><br><span class="line">        <span class="built_in">console</span>.log(rate);</span><br><span class="line">        rate.forEach(buildRate);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -318,8 +285,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Framework7/" rel="tag"># Framework7</a>
               <a href="/tags/HTML5/" rel="tag"># HTML5</a>
+              <a href="/tags/Framework7/" rel="tag"># Framework7</a>
               <a href="/tags/Geolocation/" rel="tag"># Geolocation</a>
               <a href="/tags/%E3%82%B8%E3%82%AA%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0/" rel="tag"># ジオコーディング</a>
               <a href="/tags/YQL/" rel="tag"># YQL</a>
@@ -348,7 +315,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -399,7 +365,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#デモアプリ"><span class="nav-number">1.</span> <span class="nav-text">デモアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#緯度・経度を入力する"><span class="nav-number">1.1.</span> <span class="nav-text">緯度・経度を入力する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#緯度・経度の現在位置を取得"><span class="nav-number">1.2.</span> <span class="nav-text">緯度・経度の現在位置を取得</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逆ジオコーディング"><span class="nav-number">2.</span> <span class="nav-text">逆ジオコーディング</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#国コードの取得"><span class="nav-number">2.1.</span> <span class="nav-text">国コードの取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通貨コードの取得"><span class="nav-number">2.2.</span> <span class="nav-text">通貨コードの取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#為替レート"><span class="nav-number">2.3.</span> <span class="nav-text">為替レート</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%87%E3%83%A2%E3%82%A2%E3%83%97%E3%83%AA"><span class="nav-number">1.</span> <span class="nav-text">デモアプリ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B7%AF%E5%BA%A6%E3%83%BB%E7%B5%8C%E5%BA%A6%E3%82%92%E5%85%A5%E5%8A%9B%E3%81%99%E3%82%8B"><span class="nav-number">1.1.</span> <span class="nav-text">緯度・経度を入力する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B7%AF%E5%BA%A6%E3%83%BB%E7%B5%8C%E5%BA%A6%E3%81%AE%E7%8F%BE%E5%9C%A8%E4%BD%8D%E7%BD%AE%E3%82%92%E5%8F%96%E5%BE%97"><span class="nav-number">1.2.</span> <span class="nav-text">緯度・経度の現在位置を取得</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E3%82%B8%E3%82%AA%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0"><span class="nav-number">2.</span> <span class="nav-text">逆ジオコーディング</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BD%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E5%8F%96%E5%BE%97"><span class="nav-number">2.1.</span> <span class="nav-text">国コードの取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%B2%A8%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E5%8F%96%E5%BE%97"><span class="nav-number">2.2.</span> <span class="nav-text">通貨コードの取得</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%BA%E6%9B%BF%E3%83%AC%E3%83%BC%E3%83%88"><span class="nav-number">2.3.</span> <span class="nav-text">為替レート</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -431,10 +397,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -459,9 +428,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -501,13 +470,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

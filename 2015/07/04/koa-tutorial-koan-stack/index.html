@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="KoaをES6で書くサンプルを探していたら、KOANというBoilerplateを見つけました。Koa、AngularJS、Node.jsのacronymのようです。個人的にAngularJSは苦手なのでKoaとNodeだけでも良かったのにと思いました。スウェーデンのTeoman Soygul氏が開発しています。禅の公案から来ているみたいです。KOANとKATAとかは西洋から見るとマトリックスの世">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Koa入門 - Part5: 禅で公案なKOAN Stack">
 <meta property="og:url" content="https://masato.github.io/2015/07/04/koa-tutorial-koan-stack/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="KoaをES6で書くサンプルを探していたら、KOANというBoilerplateを見つけました。Koa、AngularJS、Node.jsのacronymのようです。個人的にAngularJSは苦手なのでKoaとNodeだけでも良かったのにと思いました。スウェーデンのTeoman Soygul氏が開発しています。禅の公案から来ているみたいです。KOANとKATAとかは西洋から見るとマトリックスの世">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/04/koa-tutorial-koan-stack/koan.png">
 <meta property="article:published_time" content="2015-07-04T10:43:00.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.723Z">
+<meta property="article:modified_time" content="2015-07-04T10:43:00.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="iojs">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Koa入門 - Part5: 禅で公案なKOAN Stack | masato's blog</title>
+  <title>Koa入門 - Part5: 禅で公案なKOAN Stack | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 4 2015 19:43:00" itemprop="dateCreated datePublished" datetime="2015-07-04T19:43:00+09:00">Jul 4 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">KoaをES6で書くサンプルを探していたら、KOANというBoilerplateを見つけました。Koa、AngularJS、Node.jsのacronymのようです。個人的にAngularJSは苦手なのでKoaとNodeだけでも良かったのにと思いました。スウェーデンのTeoman Soygul氏が開発しています。禅の公案から来ているみたいです。KOANとKATAとかは西洋から見るとマトリックスの世界でしょうか。</div>
@@ -244,30 +211,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://koajs.com/" target="_blank" rel="noopener">Koa</a>をES6で書くサンプルを探していたら、<a href="https://github.com/soygul/koan" target="_blank" rel="noopener">KOAN</a>というBoilerplateを見つけました。Koa、AngularJS、Node.jsのacronymのようです。個人的にAngularJSは苦手なのでKoaとNodeだけでも良かったのにと思いました。スウェーデンのTeoman Soygul氏が開発しています。禅の公案から来ているみたいです。KOANとKATAとかは西洋から見るとマトリックスの世界でしょうか。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="http://koajs.com/">Koa</a>をES6で書くサンプルを探していたら、<a target="_blank" rel="noopener" href="https://github.com/soygul/koan">KOAN</a>というBoilerplateを見つけました。Koa、AngularJS、Node.jsのacronymのようです。個人的にAngularJSは苦手なのでKoaとNodeだけでも良かったのにと思いました。スウェーデンのTeoman Soygul氏が開発しています。禅の公案から来ているみたいです。KOANとKATAとかは西洋から見るとマトリックスの世界でしょうか。</p>
+<span id="more"></span>
 
 
-<h2 id="KOANの特徴"><a href="#KOANの特徴" class="headerlink" title="KOANの特徴"></a>KOANの特徴</h2><p><a href="https://github.com/soygul/koan" target="_blank" rel="noopener">リポジトリ</a>のREADMEには、MongoDBとWebSocketを含んだJavaScriptのフルスタックであると書いてあります。AngularJSとBootstrapを使いサーバーサイドレンダリングはありません。<a href="https://koan.herokuapp.com/signin.html" target="_blank" rel="noopener">デモアプリ</a>にはFacabookとGoogleのOAuthの認証が実装されています。<a href="http://jwt.io/" target="_blank" rel="noopener">JWT</a>を使っているようなのでよく理解したいです。</p>
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>KoaはES6のジェネレータを使っています。KOANのKoaでは他のES6の機能は使っていないようです。io.jsまたはNode.jsの0.12と<code>--harmony</code>フラグが必要です。io.jsの2.3のDockerイメージを使います。今回作業をしたリポジトリは<a href="https://github.com/masato/koan" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="KOANの特徴"><a href="#KOANの特徴" class="headerlink" title="KOANの特徴"></a>KOANの特徴</h2><p><a target="_blank" rel="noopener" href="https://github.com/soygul/koan">リポジトリ</a>のREADMEには、MongoDBとWebSocketを含んだJavaScriptのフルスタックであると書いてあります。AngularJSとBootstrapを使いサーバーサイドレンダリングはありません。<a target="_blank" rel="noopener" href="https://koan.herokuapp.com/signin.html">デモアプリ</a>にはFacabookとGoogleのOAuthの認証が実装されています。<a target="_blank" rel="noopener" href="http://jwt.io/">JWT</a>を使っているようなのでよく理解したいです。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>KoaはES6のジェネレータを使っています。KOANのKoaでは他のES6の機能は使っていないようです。io.jsまたはNode.jsの0.12と<code>--harmony</code>フラグが必要です。io.jsの2.3のDockerイメージを使います。今回作業をしたリポジトリは<a target="_blank" rel="noopener" href="https://github.com/masato/koan">こちら</a>です。</p>
 <h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><p>Blueprintなので基本的にはgit cloneしてからプロジェクトのビジネスロジックを実装していくことになります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps</span><br><span class="line">$ git <span class="built_in">clone</span> --depth 1 https://github.com/soygul/koan.git</span><br></pre></td></tr></table></figure>
 
 <h3 id="package-json"><a href="#package-json" class="headerlink" title="package.json"></a>package.json</h3><p>package.jsonのscriptsディレクティブは以下のようになっています。<code>npm start</code>でgruntが起動します。bowerはコンテナのrootが実行するので<code>--allow-root</code>を追加しておきます。</p>
-<figure class="highlight"><figcaption><span>~/node_apps/koan/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">  "scripts": &#123;</span><br><span class="line">    "start": "grunt",</span><br><span class="line">    "test": "node --debug --harmony node_modules/grunt-cli/bin/grunt test",</span><br><span class="line">    "postinstall": "bower install --allow-root",</span><br><span class="line">    "postupdate": "bower update --allow-root"</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><figcaption><span>~/node_apps/koan/package.json</span></figcaption><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;grunt&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;node --debug --harmony node_modules/grunt-cli/bin/grunt test&quot;,</span><br><span class="line">    &quot;postinstall&quot;: &quot;bower install --allow-root&quot;,</span><br><span class="line">    &quot;postupdate&quot;: &quot;bower update --allow-root&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <h3 id="gruntfile-js"><a href="#gruntfile-js" class="headerlink" title="gruntfile.js"></a>gruntfile.js</h3><p>gruntfile.jsのデフォルトでは、<code>nodemon</code>タスクでapp.jsの実行と<code>watch</code>タスクでライブリロードが動作する開発環境のサーバーが起動します。とても良いBlueprintなので参考になります。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/koan/gruntfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">watch: &#123;</span><br><span class="line">  client: &#123;</span><br><span class="line">    files: [<span class="string">'client/**'</span>, <span class="string">'!client/bower_components/**'</span>],</span><br><span class="line">    options: &#123;</span><br><span class="line">      livereload: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  server: &#123;</span><br><span class="line">    files: [<span class="string">'.nodemon'</span>],</span><br><span class="line">    options: &#123;</span><br><span class="line">      livereload: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">nodemon: &#123;</span><br><span class="line">  dev: &#123;</span><br><span class="line">    script: <span class="string">'app.js'</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      nodeArgs: [<span class="string">'--debug'</span>, <span class="string">'--harmony'</span>],</span><br><span class="line">      ignore: [<span class="string">'node_modules/**'</span>, <span class="string">'client/**'</span>],</span><br><span class="line">      callback: <span class="function"><span class="keyword">function</span> (<span class="params">nodemon</span>) </span>&#123;</span><br><span class="line">        fs.writeFileSync(<span class="string">'.nodemon'</span>, <span class="string">'started'</span>);</span><br><span class="line">        nodemon.on(<span class="string">'log'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(event.colour);</span><br><span class="line">        &#125;);</span><br><span class="line">        nodemon.on(<span class="string">'restart'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">          setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            fs.writeFileSync(<span class="string">'.nodemon'</span>, <span class="string">'restarted'</span>);</span><br><span class="line">          &#125;, <span class="number">250</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/koan/gruntfile.js</span></figcaption><table><tr><td class="code"><pre><span class="line">watch: &#123;</span><br><span class="line">  client: &#123;</span><br><span class="line">    files: [<span class="string">&#x27;client/**&#x27;</span>, <span class="string">&#x27;!client/bower_components/**&#x27;</span>],</span><br><span class="line">    options: &#123;</span><br><span class="line">      livereload: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  server: &#123;</span><br><span class="line">    files: [<span class="string">&#x27;.nodemon&#x27;</span>],</span><br><span class="line">    options: &#123;</span><br><span class="line">      livereload: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">nodemon: &#123;</span><br><span class="line">  dev: &#123;</span><br><span class="line">    script: <span class="string">&#x27;app.js&#x27;</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      nodeArgs: [<span class="string">&#x27;--debug&#x27;</span>, <span class="string">&#x27;--harmony&#x27;</span>],</span><br><span class="line">      ignore: [<span class="string">&#x27;node_modules/**&#x27;</span>, <span class="string">&#x27;client/**&#x27;</span>],</span><br><span class="line">      callback: <span class="function"><span class="keyword">function</span> (<span class="params">nodemon</span>) </span>&#123;</span><br><span class="line">        fs.writeFileSync(<span class="string">&#x27;.nodemon&#x27;</span>, <span class="string">&#x27;started&#x27;</span>);</span><br><span class="line">        nodemon.on(<span class="string">&#x27;log&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">          <span class="built_in">console</span>.log(event.colour);</span><br><span class="line">        &#125;);</span><br><span class="line">        nodemon.on(<span class="string">&#x27;restart&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="built_in">setTimeout</span>(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            fs.writeFileSync(<span class="string">&#x27;.nodemon&#x27;</span>, <span class="string">&#x27;restarted&#x27;</span>);</span><br><span class="line">          &#125;, <span class="number">250</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 
 <h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>cloneしたディレクトリでDockerイメージを作成します。コンテナにディレクトリごとアタッチします。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/koan/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    npm install</span><br><span class="line"></span><br><span class="line">EXPOSE 3000</span><br><span class="line">COPY . /app</span><br><span class="line">CMD [<span class="string">"npm"</span>,<span class="string">"start"</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/node_apps/koan/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY package.json /app/</span><br><span class="line">RUN mkdir -p /dist/node_modules &amp;&amp; \</span><br><span class="line">    ln -s /dist/node_modules /app/node_modules &amp;&amp; \</span><br><span class="line">    npm install</span><br><span class="line"></span><br><span class="line">EXPOSE 3000</span><br><span class="line">COPY . /app</span><br><span class="line">CMD [<span class="string">&quot;npm&quot;</span>,<span class="string">&quot;start&quot;</span>]</span><br></pre></td></tr></table></figure>
 
-<p>MongoDB用のライブラリは<a href="https://github.com/thomseddon/co-mongo" target="_blank" rel="noopener">co-mongo</a>です。MongoDBの2.x系に依存しているため<a href="https://registry.hub.docker.com/u/library/mongo/" target="_blank" rel="noopener">オフィシャルイメージ</a>は2.6を指定します。</p>
+<p>MongoDB用のライブラリは<a target="_blank" rel="noopener" href="https://github.com/thomseddon/co-mongo">co-mongo</a>です。MongoDBの2.x系に依存しているため<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/library/mongo/">オフィシャルイメージ</a>は2.6を指定します。</p>
 <h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p>docker-compose.ymlではデフォルトのkoanサービスとnpm-run-script用のnpmサービスを用意しました。マップはデフォルトの3000をホストが他で使っているため3030にマップします。35729はGruntのlivereloadで使用します。</p>
-<figure class="highlight yml"><figcaption><span>~/node_apps/koan/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">koan:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">35729</span><span class="string">:35729</span></span><br><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> <span class="string">["npm"]</span></span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo:2.6</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./mongo:/data/db</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>~/node_apps/koan/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">koan:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mongo</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">3030</span><span class="string">:3000</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">35729</span><span class="string">:35729</span></span><br><span class="line"><span class="attr">npm:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">entrypoint:</span> [<span class="string">&quot;npm&quot;</span>]</span><br><span class="line"><span class="attr">mongo:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">mongo:2.6</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./mongo:/data/db</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/etc/localtime:/etc/localtime:ro</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="server-config-config-js"><a href="#server-config-config-js" class="headerlink" title="server/config/config.js"></a>server/config/config.js</h3><p>Docker Composeがサービス間の構成管理してくれるため、links経由で名前解決が簡単になります。MongoDBのURLはデフォルトではlocalhostです。ホスト名を<code>mongo</code>に変更します。</p>
-<figure class="highlight js"><figcaption><span>~/node_apps/koan/server/config/config.js</span></figcaption><table><tr><td class="code"><pre><span class="line">development: &#123;</span><br><span class="line">  app: &#123;</span><br><span class="line">    port: <span class="number">3000</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mongo: &#123;</span><br><span class="line">    url: <span class="string">'mongodb://mongo:27017/koan-dev'</span></span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><figcaption><span>~/node_apps/koan/server/config/config.js</span></figcaption><table><tr><td class="code"><pre><span class="line">development: &#123;</span><br><span class="line">  app: &#123;</span><br><span class="line">    port: <span class="number">3000</span></span><br><span class="line">  &#125;,</span><br><span class="line">  mongo: &#123;</span><br><span class="line">    url: <span class="string">&#x27;mongodb://mongo:27017/koan-dev&#x27;</span></span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
 
 <h2 id="ビルドとコンテナ起動"><a href="#ビルドとコンテナ起動" class="headerlink" title="ビルドとコンテナ起動"></a>ビルドとコンテナ起動</h2><h3 id="Dockerイメージ"><a href="#Dockerイメージ" class="headerlink" title="Dockerイメージ"></a>Dockerイメージ</h3><p>Docker Composeを使ってkoanサービス用のDockerイメージのビルドします。.dockerignoreを用意してmongのデータベースディレクトリを無視しておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/koan</span><br><span class="line">$ <span class="built_in">echo</span> mongo &gt; .dockerignore</span><br><span class="line">$ docker-compose build koan</span><br></pre></td></tr></table></figure>
@@ -276,10 +243,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm npm run postinstall</span><br><span class="line">npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">npm info using npm@2.11.1</span><br><span class="line">npm info using node@v2.3.0</span><br><span class="line">npm info postinstall koan@1.0.0</span><br><span class="line"></span><br><span class="line">&gt; koan@1.0.0 postinstall /app</span><br><span class="line">&gt; bower install --allow-root</span><br><span class="line"></span><br><span class="line">? May bower anonymously report usage statistics to improve the tool over time? (Y/n)Y</span><br><span class="line">...</span><br><span class="line">jquery<span class="comment">#2.1.4 client/bower_components/jquery</span></span><br><span class="line"></span><br><span class="line">bootstrap<span class="comment">#3.3.4 client/bower_components/bootstrap</span></span><br><span class="line">└── jquery<span class="comment">#2.1.4</span></span><br><span class="line"></span><br><span class="line">font-awesome<span class="comment">#4.3.0 client/bower_components/font-awesome</span></span><br><span class="line">npm info ok</span><br></pre></td></tr></table></figure>
 
 <p><code>.bowerrc</code>に定義したディレクトリにbower_componentsが作成されてクライアントのライブラリがインストールされました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat .bowerrc</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">"directory"</span>: <span class="string">"client/bower_components"</span></span><br><span class="line">&#125;</span><br><span class="line">$ ls client/bower_components/</span><br><span class="line">angular          angular-elastic      angular-mocks  bootstrap         font-awesome  lodash</span><br><span class="line">angular-animate  angular-loading-bar  angular-route  bootstrap-social  jquery</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat .bowerrc</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;directory&quot;</span>: <span class="string">&quot;client/bower_components&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">$ ls client/bower_components/</span><br><span class="line">angular          angular-elastic      angular-mocks  bootstrap         font-awesome  lodash</span><br><span class="line">angular-animate  angular-loading-bar  angular-route  bootstrap-social  jquery</span><br></pre></td></tr></table></figure>
 
 <h3 id="起動"><a href="#起動" class="headerlink" title="起動"></a>起動</h3><p>カレントディレクトリにコンテナ内の<code>/dist/node_modules</code>ディレクトリへのシムリンクを作成します。docker-compose.ymlにサービスは2つ定義しているため<code>koan</code>サービスを明示的にupします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ln -s /dist/node_modules .</span><br><span class="line">$ docker-compose up koan</span><br><span class="line">Recreating koan_mongo_1...</span><br><span class="line">Creating koan_koan_1...</span><br><span class="line">Attaching to koan_koan_1</span><br><span class="line">koan_1 | npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">koan_1 | npm info using npm@2.11.1</span><br><span class="line">koan_1 | npm info using node@v2.3.0</span><br><span class="line">koan_1 | npm info prestart koan@1.0.0</span><br><span class="line">koan_1 | npm info start koan@1.0.0</span><br><span class="line">koan_1 |</span><br><span class="line">koan_1 | &gt; koan@1.0.0 start /app</span><br><span class="line">koan_1 | &gt; grunt</span><br><span class="line">koan_1 |</span><br><span class="line">koan_1 | Running <span class="string">"concurrent:tasks"</span> (concurrent) task</span><br><span class="line">koan_1 | Running <span class="string">"watch"</span> task</span><br><span class="line">koan_1 | Running <span class="string">"nodemon:dev"</span> (nodemon) task</span><br><span class="line">koan_1 | Waiting...</span><br><span class="line">koan_1 | [nodemon] v1.3.7</span><br><span class="line">koan_1 | [nodemon] to restart at any time, enter `rs`</span><br><span class="line">koan_1 | [nodemon] watching: *.*</span><br><span class="line">koan_1 | [nodemon] starting `node --debug --harmony app.js`</span><br><span class="line">koan_1 | Debugger listening on port 5858</span><br><span class="line">koan_1 | Failed to load c++ bson extension, using pure JS version</span><br><span class="line">koan_1 | KOAN listening on port 3000</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ln -s /dist/node_modules .</span><br><span class="line">$ docker-compose up koan</span><br><span class="line">Recreating koan_mongo_1...</span><br><span class="line">Creating koan_koan_1...</span><br><span class="line">Attaching to koan_koan_1</span><br><span class="line">koan_1 | npm info it worked <span class="keyword">if</span> it ends with ok</span><br><span class="line">koan_1 | npm info using npm@2.11.1</span><br><span class="line">koan_1 | npm info using node@v2.3.0</span><br><span class="line">koan_1 | npm info prestart koan@1.0.0</span><br><span class="line">koan_1 | npm info start koan@1.0.0</span><br><span class="line">koan_1 |</span><br><span class="line">koan_1 | &gt; koan@1.0.0 start /app</span><br><span class="line">koan_1 | &gt; grunt</span><br><span class="line">koan_1 |</span><br><span class="line">koan_1 | Running <span class="string">&quot;concurrent:tasks&quot;</span> (concurrent) task</span><br><span class="line">koan_1 | Running <span class="string">&quot;watch&quot;</span> task</span><br><span class="line">koan_1 | Running <span class="string">&quot;nodemon:dev&quot;</span> (nodemon) task</span><br><span class="line">koan_1 | Waiting...</span><br><span class="line">koan_1 | [nodemon] v1.3.7</span><br><span class="line">koan_1 | [nodemon] to restart at any time, enter `rs`</span><br><span class="line">koan_1 | [nodemon] watching: *.*</span><br><span class="line">koan_1 | [nodemon] starting `node --debug --harmony app.js`</span><br><span class="line">koan_1 | Debugger listening on port 5858</span><br><span class="line">koan_1 | Failed to load c++ bson extension, using pure JS version</span><br><span class="line">koan_1 | KOAN listening on port 3000</span><br></pre></td></tr></table></figure>
 
 <p>ブラウザからDockerホストに接続します。Herokuにデプロイされている<a href="(https://koan.herokuapp.com/signin.html)">デモアプリ</a>と同じ画面が開きました。</p>
 <p><img src="/2015/07/04/koa-tutorial-koan-stack/koan.png" alt="koan.png"></p>
@@ -321,7 +288,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -372,7 +338,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#KOANの特徴"><span class="nav-number">1.</span> <span class="nav-text">KOANの特徴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-clone"><span class="nav-number">2.1.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package-json"><span class="nav-number">2.2.</span> <span class="nav-text">package.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gruntfile-js"><span class="nav-number">2.3.</span> <span class="nav-text">gruntfile.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.4.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.5.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server-config-config-js"><span class="nav-number">2.6.</span> <span class="nav-text">server&#x2F;config&#x2F;config.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ビルドとコンテナ起動"><span class="nav-number">3.</span> <span class="nav-text">ビルドとコンテナ起動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerイメージ"><span class="nav-number">3.1.</span> <span class="nav-text">Dockerイメージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#起動"><span class="nav-number">3.2.</span> <span class="nav-text">起動</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#KOAN%E3%81%AE%E7%89%B9%E5%BE%B4"><span class="nav-number">1.</span> <span class="nav-text">KOANの特徴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-clone"><span class="nav-number">2.1.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#package-json"><span class="nav-number">2.2.</span> <span class="nav-text">package.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gruntfile-js"><span class="nav-number">2.3.</span> <span class="nav-text">gruntfile.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.4.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">2.5.</span> <span class="nav-text">docker-compose.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server-config-config-js"><span class="nav-number">2.6.</span> <span class="nav-text">server&#x2F;config&#x2F;config.js</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%93%E3%83%AB%E3%83%89%E3%81%A8%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E8%B5%B7%E5%8B%95"><span class="nav-number">3.</span> <span class="nav-text">ビルドとコンテナ起動</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8"><span class="nav-number">3.1.</span> <span class="nav-text">Dockerイメージ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%B7%E5%8B%95"><span class="nav-number">3.2.</span> <span class="nav-text">起動</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -404,10 +370,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -432,9 +401,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -474,13 +443,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

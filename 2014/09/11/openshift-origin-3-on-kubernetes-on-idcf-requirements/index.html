@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="CloudFoundryに押され気味だったのですが、DockerやKubernetesへの対応が速いOpenShiftが最近おもしろそうです。Red Hatが持つ知識と経験のおかげで、Kubernetesは企業向けとして実用可能になったとか。Kubernetesとの統合を試すためにOpenShiftのドキュメントを読み始めたのですが、バージョンの違いがよくわかりません。OpenShift Orig">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenShift Origin v3 on Kubernetes - Part1: Requirements ">
 <meta property="og:url" content="https://masato.github.io/2014/09/11/openshift-origin-3-on-kubernetes-on-idcf-requirements/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="CloudFoundryに押され気味だったのですが、DockerやKubernetesへの対応が速いOpenShiftが最近おもしろそうです。Red Hatが持つ知識と経験のおかげで、Kubernetesは企業向けとして実用可能になったとか。Kubernetesとの統合を試すためにOpenShiftのドキュメントを読み始めたのですが、バージョンの違いがよくわかりません。OpenShift Orig">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-09-10T18:22:56.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.821Z">
+<meta property="article:modified_time" content="2014-09-10T18:22:56.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="CloudFoundry">
 <meta property="article:tag" content="IDCFクラウド">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>OpenShift Origin v3 on Kubernetes - Part1: Requirements  | masato's blog</title>
+  <title>OpenShift Origin v3 on Kubernetes - Part1: Requirements  | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -92,7 +92,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -113,14 +113,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -129,51 +128,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -190,11 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -207,7 +181,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -217,19 +191,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Sep 11 2014 03:22:56" itemprop="dateCreated datePublished" datetime="2014-09-11T03:22:56+09:00">Sep 11 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">CloudFoundryに押され気味だったのですが、DockerやKubernetesへの対応が速いOpenShiftが最近おもしろそうです。Red Hatが持つ知識と経験のおかげで、Kubernetesは企業向けとして実用可能になったとか。Kubernetesとの統合を試すためにOpenShiftのドキュメントを読み始めたのですが、バージョンの違いがよくわかりません。OpenShift Orignは現在3と4があります。</div>
@@ -246,27 +213,27 @@
         <ul>
 <li><code>Update 2014-09-13</code>: <a href="/2014/09/13/openshift-origin-3-on-kubernetes-on-ubuntu/">OpenShift Origin v3 on Kubernetes - Part2: Ubuntuにインストール</a></li>
 </ul>
-<p>CloudFoundryに押され気味だったのですが、DockerやKubernetesへの対応が速いOpenShiftが最近おもしろそうです。<br><a href="http://readwrite.jp/archives/12468" target="_blank" rel="noopener">Red Hatが持つ知識と経験のおかげで、Kubernetesは企業向けとして実用可能になった</a>とか。<br>Kubernetesとの統合を試すためにOpenShiftのドキュメントを読み始めたのですが、バージョンの違いがよくわかりません。<code>OpenShift Orign</code>は現在3と4があります。</p>
-<a id="more"></a>
+<p>CloudFoundryに押され気味だったのですが、DockerやKubernetesへの対応が速いOpenShiftが最近おもしろそうです。<br><a target="_blank" rel="noopener" href="http://readwrite.jp/archives/12468">Red Hatが持つ知識と経験のおかげで、Kubernetesは企業向けとして実用可能になった</a>とか。<br>Kubernetesとの統合を試すためにOpenShiftのドキュメントを読み始めたのですが、バージョンの違いがよくわかりません。<code>OpenShift Orign</code>は現在3と4があります。</p>
+<span id="more"></span>
 
-<h3 id="OpenShift-Origin-v3と-OpenShift-Origin-V4"><a href="#OpenShift-Origin-v3と-OpenShift-Origin-V4" class="headerlink" title="OpenShift Origin v3と OpenShift Origin V4"></a>OpenShift Origin v3と OpenShift Origin V4</h3><p>08-14に公開された<a href="https://github.com/openshift/origin" target="_blank" rel="noopener">origin</a>のリポジトリは<code>OpenShift v3</code>用です。</p>
-<p>一方の<code>OpenShift V4</code>は、07-20に<a href="https://www.openshift.com/blogs/announcing-the-release-of-openshift-origin-v4" target="_blank" rel="noopener">Announcing the Release of OpenShift Origin V4</a>リリースされています。<br>リポジトリは以前からある<a href="https://github.com/openshift/origin-server" target="_blank" rel="noopener">origin-server</a>です。</p>
+<h3 id="OpenShift-Origin-v3と-OpenShift-Origin-V4"><a href="#OpenShift-Origin-v3と-OpenShift-Origin-V4" class="headerlink" title="OpenShift Origin v3と OpenShift Origin V4"></a>OpenShift Origin v3と OpenShift Origin V4</h3><p>08-14に公開された<a target="_blank" rel="noopener" href="https://github.com/openshift/origin">origin</a>のリポジトリは<code>OpenShift v3</code>用です。</p>
+<p>一方の<code>OpenShift V4</code>は、07-20に<a target="_blank" rel="noopener" href="https://www.openshift.com/blogs/announcing-the-release-of-openshift-origin-v4">Announcing the Release of OpenShift Origin V4</a>リリースされています。<br>リポジトリは以前からある<a target="_blank" rel="noopener" href="https://github.com/openshift/origin-server">origin-server</a>です。</p>
 <p><code>OpenShift v3</code>がDockerとKubernetesを基盤にした<code>third generation</code>の<code>v3</code>なので、<code>V4</code>の前の<code>V3</code>と明確な違いがある気がするのですが。</p>
-<p>さらに、<a href="http://openshift.github.io/documentation/oo_install_users_guide.html" target="_blank" rel="noopener">oo-install User’s Guide</a>を読むと次のように書いてあります。</p>
+<p>さらに、<a target="_blank" rel="noopener" href="http://openshift.github.io/documentation/oo_install_users_guide.html">oo-install User’s Guide</a>を読むと次のように書いてあります。</p>
 <blockquote>
 <p>OpenShift Origin version 4 is supported on Red Hat Enterprise Linux (RHEL) 6.4 or higher and CentOS 6.4 or higher, 64 bit architecture only. This version is not supported on Fedora, RHEL 7.x or CentOS 7.x.</p>
 </blockquote>
 <p><code>V4</code>はRHEL7.xでは動作しないようです。<code>6.4 or higher</code>ですが、<code>7.x</code>はサポートされないです。RHEL7からDockerが採用されたのでV4が動作しないのか、ドキュメントが適当な気がします。</p>
-<h3 id="Kubernetesと統合する場合はOpenShift-Origin-v3を使う"><a href="#Kubernetesと統合する場合はOpenShift-Origin-v3を使う" class="headerlink" title="Kubernetesと統合する場合はOpenShift Origin v3を使う"></a>Kubernetesと統合する場合はOpenShift Origin v3を使う</h3><p>今回の目的はKubernetesと統合して使うことなので、<code>OpenShift Origin v3</code>を使います。<br>従って、以下の<a href="https://install.openshift.com/" target="_blank" rel="noopener">ワンライナー</a>でインストールしません。</p>
+<h3 id="Kubernetesと統合する場合はOpenShift-Origin-v3を使う"><a href="#Kubernetesと統合する場合はOpenShift-Origin-v3を使う" class="headerlink" title="Kubernetesと統合する場合はOpenShift Origin v3を使う"></a>Kubernetesと統合する場合はOpenShift Origin v3を使う</h3><p>今回の目的はKubernetesと統合して使うことなので、<code>OpenShift Origin v3</code>を使います。<br>従って、以下の<a target="_blank" rel="noopener" href="https://install.openshift.com/">ワンライナー</a>でインストールしません。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sh &lt;(curl -s https://install.openshift.com/)</span><br></pre></td></tr></table></figure>
 
 <h3 id="KubernetesのpluginとしてのOpenShift"><a href="#KubernetesのpluginとしてのOpenShift" class="headerlink" title="KubernetesのpluginとしてのOpenShift"></a>KubernetesのpluginとしてのOpenShift</h3><p>Kubernetesのプラグインとして、<code>OpenShift Origin v3</code>はGoで書かれています。<br>これだけでは<code>OpenShift Origin v3</code>がどんな役割を果たすのかよくわかりません。<br><code>Docker Hub</code>からイメージをpullするだけなら、普通のKubernetesと変わらないです。</p>
-<p><a href="https://github.com/openshift/openshift-pep/blob/master/openshift-pep-013-openshift-3.md" target="_blank" rel="noopener">OpenShift 3.x System Design</a>を読むと、ユーザーが<code>git push</code>するとイメージをビルドして<code>Docker Registry</code>にpushしてくれるところが、OpenShiftの提供する<code>application centric</code>な役割のようです。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/openshift/openshift-pep/blob/master/openshift-pep-013-openshift-3.md">OpenShift 3.x System Design</a>を読むと、ユーザーが<code>git push</code>するとイメージをビルドして<code>Docker Registry</code>にpushしてくれるところが、OpenShiftの提供する<code>application centric</code>な役割のようです。</p>
 <p>従って、Deisなど他の<code>PaaS</code>と同様な位置づけになります。Deisはfleetでスケジュールして、OpenShiftの場合はPodでスケジュールするところが違います。粒度の細かいコンテナのスケジュール管理にはPodが向いていますが、Heroku的な<code>git push</code>によるデプロイの概念とPodのグループをどうつながるのか気になります。</p>
 <h3 id="まとめ"><a href="#まとめ" class="headerlink" title="まとめ"></a>まとめ</h3><p>一応今日の理解をまとめます。ちゃんと理解できたら書き直します。</p>
 <ul>
-<li><code>OpenShift Origin v3</code> : DockerとKubernetesベース: <a href="https://github.com/openshift/origin" target="_blank" rel="noopener">origin</a></li>
-<li><code>OpenShift Origin V4</code>: 従来のGearベース: <a href="https://github.com/openshift/origin-server" target="_blank" rel="noopener">origin-server</a></li>
+<li><code>OpenShift Origin v3</code> : DockerとKubernetesベース: <a target="_blank" rel="noopener" href="https://github.com/openshift/origin">origin</a></li>
+<li><code>OpenShift Origin V4</code>: 従来のGearベース: <a target="_blank" rel="noopener" href="https://github.com/openshift/origin-server">origin-server</a></li>
 </ul>
 
     </div>
@@ -307,7 +274,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -358,7 +324,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenShift-Origin-v3と-OpenShift-Origin-V4"><span class="nav-number">1.</span> <span class="nav-text">OpenShift Origin v3と OpenShift Origin V4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetesと統合する場合はOpenShift-Origin-v3を使う"><span class="nav-number">2.</span> <span class="nav-text">Kubernetesと統合する場合はOpenShift Origin v3を使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KubernetesのpluginとしてのOpenShift"><span class="nav-number">3.</span> <span class="nav-text">KubernetesのpluginとしてのOpenShift</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#まとめ"><span class="nav-number">4.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenShift-Origin-v3%E3%81%A8-OpenShift-Origin-V4"><span class="nav-number">1.</span> <span class="nav-text">OpenShift Origin v3と OpenShift Origin V4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes%E3%81%A8%E7%B5%B1%E5%90%88%E3%81%99%E3%82%8B%E5%A0%B4%E5%90%88%E3%81%AFOpenShift-Origin-v3%E3%82%92%E4%BD%BF%E3%81%86"><span class="nav-number">2.</span> <span class="nav-text">Kubernetesと統合する場合はOpenShift Origin v3を使う</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubernetes%E3%81%AEplugin%E3%81%A8%E3%81%97%E3%81%A6%E3%81%AEOpenShift"><span class="nav-number">3.</span> <span class="nav-text">KubernetesのpluginとしてのOpenShift</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%81%BE%E3%81%A8%E3%82%81"><span class="nav-number">4.</span> <span class="nav-text">まとめ</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -390,10 +356,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -418,9 +387,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -460,13 +429,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

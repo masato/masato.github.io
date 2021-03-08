@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Rancher.ioというオープンソースのDockerコンテナ管理ツールがあります。開発元のRancher Labsのホームページによると、特定のインフラやIaaSに依存しない、Dockerコンテナ管理とSoftware Defined Infrastructureを組み合わせたプラットフォームを構築するソフトウェアを目指すようです。At Rancher, we’re developing sof">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Rancher.ioでDockerコンテナを管理する - Part1: はじめに">
 <meta property="og:url" content="https://masato.github.io/2014/12/14/rancherio-docker-for-container-service/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Rancher.ioというオープンソースのDockerコンテナ管理ツールがあります。開発元のRancher Labsのホームページによると、特定のインフラやIaaSに依存しない、Dockerコンテナ管理とSoftware Defined Infrastructureを組み合わせたプラットフォームを構築するソフトウェアを目指すようです。At Rancher, we’re developing sof">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-12-14T06:57:44.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.830Z">
+<meta property="article:modified_time" content="2014-12-14T06:57:44.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Docker管理">
 <meta property="article:tag" content="Rancherio">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>Rancher.ioでDockerコンテナを管理する - Part1: はじめに | masato's blog</title>
+  <title>Rancher.ioでDockerコンテナを管理する - Part1: はじめに | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -89,7 +89,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -110,14 +110,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -126,51 +125,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -187,11 +162,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -204,7 +178,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -214,19 +188,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Dec 14 2014 15:57:44" itemprop="dateCreated datePublished" datetime="2014-12-14T15:57:44+09:00">Dec 14 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Rancher.ioというオープンソースのDockerコンテナ管理ツールがあります。開発元のRancher Labsのホームページによると、特定のインフラやIaaSに依存しない、Dockerコンテナ管理とSoftware Defined Infrastructureを組み合わせたプラットフォームを構築するソフトウェアを目指すようです。At Rancher, we’re developing software that will allow anyone to build their own Docker container service on any infrastructure or cloud. You can follow our open source project at Rancher.io.</div>
@@ -240,23 +207,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="https://github.com/rancherio/rancher" target="_blank" rel="noopener">Rancher.io</a>というオープンソースのDockerコンテナ管理ツールがあります。開発元の<a href="http://www.rancher.com/" target="_blank" rel="noopener">Rancher Labs</a>のホームページによると、特定のインフラやIaaSに依存しない、Dockerコンテナ管理とSoftware Defined Infrastructureを組み合わせたプラットフォームを構築するソフトウェアを目指すようです。</p>
+        <p><a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher">Rancher.io</a>というオープンソースのDockerコンテナ管理ツールがあります。開発元の<a target="_blank" rel="noopener" href="http://www.rancher.com/">Rancher Labs</a>のホームページによると、特定のインフラやIaaSに依存しない、Dockerコンテナ管理とSoftware Defined Infrastructureを組み合わせたプラットフォームを構築するソフトウェアを目指すようです。</p>
 <blockquote>
 <p>At Rancher, we’re developing software that will allow anyone to build their own Docker container service on any infrastructure or cloud. You can follow our open source project at Rancher.io.</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
-<h3 id="Stampede-io"><a href="#Stampede-io" class="headerlink" title="Stampede.io"></a>Stampede.io</h3><p>2014年8月にCitrixに在籍していたDarren Shepherdが<a href="http://www.ibuildthecloud.com/blog/2014/08/21/announcing-stampede-dot-io-a-hybrid-iaas-slash-docker-orchestation-platform-running-on-coreos/" target="_blank" rel="noopener">Announcing Stampede.io: A Hybrid IaaS/Docker Orchestation Platform Running on CoreOS</a>というブログで、<a href="https://github.com/cattleio/stampede" target="_blank" rel="noopener">Stampede.io</a>を公開しました。Digital Ocean上のCoreOSに12万コンテナを作成したプレゼン資料が<a href="http://www.slideshare.net/DarrenShepherd1/stampedeio-coreos-digital-ocean-meetup" target="_blank" rel="noopener">SlideShare</a>にあります。</p>
-<h3 id="Rancher-Labs"><a href="#Rancher-Labs" class="headerlink" title="Rancher Labs"></a>Rancher Labs</h3><p>その後Stampede.ioは<a href="https://github.com/rancherio/rancher" target="_blank" rel="noopener">Rancher.io</a>となり、元Citrixのメンバーが起業した<a href="http://www.rancher.io/" target="_blank" rel="noopener">Rancher Labs</a>に開発が移行しました。Citrixに買収される前のCloud.comを起業したSheng LiangがCEOを勤め、Shannon Williams、Darren Shepherdと、CloudStackを開発していたメンバーが<a href="http://www.rancher.com/our-team/" target="_blank" rel="noopener">共同創設者</a>になっています。チーフアーキテクトのDarren ShepherdはCloudStackとGoddayのアーキテクトを勤めていました。</p>
-<h3 id="Rancher-io"><a href="#Rancher-io" class="headerlink" title="Rancher.io"></a>Rancher.io</h3><p>Stampede.ioはCoreOSとfleetによるアークテクチャでしたが、Rancher.ioではDockerホストにUbuntu14.04も使えるようになっています。Rancher.ioはどのIaaSでも同じようにDockerを動かせるインフラを実現するために、Docker管理ツールの提供とSoftware Definedなストレージとネットワークの<a href="https://github.com/rancherio/rancher" target="_blank" rel="noopener">実装を計画</a>しています。CloudStackがハイパーバイザーを抽象化したように、Rancher.ioはIaaSを抽象化してくれるようです。</p>
-<h3 id="Cattle"><a href="#Cattle" class="headerlink" title="Cattle"></a>Cattle</h3><p>Stampede.ioと同様にRancher.ioもIaaSのオーケストレーションプラットフォームとして、JavaとSpringで書かれた<a href="https://github.com/rancherio/cattle" target="_blank" rel="noopener">Cattle</a>を使っています。実際にRancher.ioのソースコードを読み、手を動かしながらアーキテクチャを理解していこうと思います。インストールの手順を読むと、Management ServerとDocker Nodesによって構成されるようです。絶賛開発中のため今後大きな変更もありそうですが現状の理解からはじめます。</p>
-<h3 id="Management-Server-Cattle"><a href="#Management-Server-Cattle" class="headerlink" title="Management Server (Cattle)"></a>Management Server (Cattle)</h3><p>Management Serverの<a href="https://github.com/rancherio/rancher/blob/master/server/Dockerfile" target="_blank" rel="noopener">Dockerfile</a>を読むと、ビルドした<a href="https://github.com/rancherio/cattle" target="_blank" rel="noopener">Cattle</a>のJARファイルをデプロイしています。<a href="https://github.com/rancherio/rancher/blob/master/server/artifacts/cattle.sh" target="_blank" rel="noopener">起動スクリプト</a>によると、MySQLやZooKeeperのセットアップも読めますが今のところ使っていません。Cattleのデータベースは<code>/var/lib/cattle/database</code>にあるH2のようです。</p>
-<h3 id="Docker-Nodes-python-agent"><a href="#Docker-Nodes-python-agent" class="headerlink" title="Docker Nodes (python-agent)"></a>Docker Nodes (python-agent)</h3><p>Docker Nodesの方は、もちろんDockerと、docker-py、<a href="https://github.com/rancherio/python-agent" target="_blank" rel="noopener">python-agent</a>をインストールします。pyagentはcAdvisorやコンソールのためのWebSocketサーバーの役割もします。Agentは今のところRancher.ioの管理画面を開くブラウザから、WebSocketで接続可能なIPアドレスを指定する必要があります。</p>
+<h3 id="Stampede-io"><a href="#Stampede-io" class="headerlink" title="Stampede.io"></a>Stampede.io</h3><p>2014年8月にCitrixに在籍していたDarren Shepherdが<a target="_blank" rel="noopener" href="http://www.ibuildthecloud.com/blog/2014/08/21/announcing-stampede-dot-io-a-hybrid-iaas-slash-docker-orchestation-platform-running-on-coreos/">Announcing Stampede.io: A Hybrid IaaS/Docker Orchestation Platform Running on CoreOS</a>というブログで、<a target="_blank" rel="noopener" href="https://github.com/cattleio/stampede">Stampede.io</a>を公開しました。Digital Ocean上のCoreOSに12万コンテナを作成したプレゼン資料が<a target="_blank" rel="noopener" href="http://www.slideshare.net/DarrenShepherd1/stampedeio-coreos-digital-ocean-meetup">SlideShare</a>にあります。</p>
+<h3 id="Rancher-Labs"><a href="#Rancher-Labs" class="headerlink" title="Rancher Labs"></a>Rancher Labs</h3><p>その後Stampede.ioは<a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher">Rancher.io</a>となり、元Citrixのメンバーが起業した<a target="_blank" rel="noopener" href="http://www.rancher.io/">Rancher Labs</a>に開発が移行しました。Citrixに買収される前のCloud.comを起業したSheng LiangがCEOを勤め、Shannon Williams、Darren Shepherdと、CloudStackを開発していたメンバーが<a target="_blank" rel="noopener" href="http://www.rancher.com/our-team/">共同創設者</a>になっています。チーフアーキテクトのDarren ShepherdはCloudStackとGoddayのアーキテクトを勤めていました。</p>
+<h3 id="Rancher-io"><a href="#Rancher-io" class="headerlink" title="Rancher.io"></a>Rancher.io</h3><p>Stampede.ioはCoreOSとfleetによるアークテクチャでしたが、Rancher.ioではDockerホストにUbuntu14.04も使えるようになっています。Rancher.ioはどのIaaSでも同じようにDockerを動かせるインフラを実現するために、Docker管理ツールの提供とSoftware Definedなストレージとネットワークの<a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher">実装を計画</a>しています。CloudStackがハイパーバイザーを抽象化したように、Rancher.ioはIaaSを抽象化してくれるようです。</p>
+<h3 id="Cattle"><a href="#Cattle" class="headerlink" title="Cattle"></a>Cattle</h3><p>Stampede.ioと同様にRancher.ioもIaaSのオーケストレーションプラットフォームとして、JavaとSpringで書かれた<a target="_blank" rel="noopener" href="https://github.com/rancherio/cattle">Cattle</a>を使っています。実際にRancher.ioのソースコードを読み、手を動かしながらアーキテクチャを理解していこうと思います。インストールの手順を読むと、Management ServerとDocker Nodesによって構成されるようです。絶賛開発中のため今後大きな変更もありそうですが現状の理解からはじめます。</p>
+<h3 id="Management-Server-Cattle"><a href="#Management-Server-Cattle" class="headerlink" title="Management Server (Cattle)"></a>Management Server (Cattle)</h3><p>Management Serverの<a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher/blob/master/server/Dockerfile">Dockerfile</a>を読むと、ビルドした<a target="_blank" rel="noopener" href="https://github.com/rancherio/cattle">Cattle</a>のJARファイルをデプロイしています。<a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher/blob/master/server/artifacts/cattle.sh">起動スクリプト</a>によると、MySQLやZooKeeperのセットアップも読めますが今のところ使っていません。Cattleのデータベースは<code>/var/lib/cattle/database</code>にあるH2のようです。</p>
+<h3 id="Docker-Nodes-python-agent"><a href="#Docker-Nodes-python-agent" class="headerlink" title="Docker Nodes (python-agent)"></a>Docker Nodes (python-agent)</h3><p>Docker Nodesの方は、もちろんDockerと、docker-py、<a target="_blank" rel="noopener" href="https://github.com/rancherio/python-agent">python-agent</a>をインストールします。pyagentはcAdvisorやコンソールのためのWebSocketサーバーの役割もします。Agentは今のところRancher.ioの管理画面を開くブラウザから、WebSocketで接続可能なIPアドレスを指定する必要があります。</p>
 <h3 id="Rancher-ioのインストール方法"><a href="#Rancher-ioのインストール方法" class="headerlink" title="Rancher.ioのインストール方法"></a>Rancher.ioのインストール方法</h3><p>Rancher.ioのインストール方法は3つあります。</p>
 <ul>
 <li>インストールはDockerホストを数台作成し、手動で管理用のDockerコンテナを作成する方法</li>
-<li><a href="https://github.com/rancherio/rancher/blob/master/Vagrantfile" target="_blank" rel="noopener">Vagrant</a>を使う方法</li>
-<li><a href="https://github.com/nickschuch/puppet-rancher" target="_blank" rel="noopener">Puppet</a>を使う方法</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rancherio/rancher/blob/master/Vagrantfile">Vagrant</a>を使う方法</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/nickschuch/puppet-rancher">Puppet</a>を使う方法</li>
 </ul>
 <p>全体を理解するために手動でDockerコンテナを起動して確認してみます。</p>
 
@@ -295,7 +262,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -346,7 +312,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stampede-io"><span class="nav-number">1.</span> <span class="nav-text">Stampede.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-Labs"><span class="nav-number">2.</span> <span class="nav-text">Rancher Labs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-io"><span class="nav-number">3.</span> <span class="nav-text">Rancher.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cattle"><span class="nav-number">4.</span> <span class="nav-text">Cattle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Management-Server-Cattle"><span class="nav-number">5.</span> <span class="nav-text">Management Server (Cattle)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Nodes-python-agent"><span class="nav-number">6.</span> <span class="nav-text">Docker Nodes (python-agent)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-ioのインストール方法"><span class="nav-number">7.</span> <span class="nav-text">Rancher.ioのインストール方法</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stampede-io"><span class="nav-number">1.</span> <span class="nav-text">Stampede.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-Labs"><span class="nav-number">2.</span> <span class="nav-text">Rancher Labs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-io"><span class="nav-number">3.</span> <span class="nav-text">Rancher.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cattle"><span class="nav-number">4.</span> <span class="nav-text">Cattle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Management-Server-Cattle"><span class="nav-number">5.</span> <span class="nav-text">Management Server (Cattle)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Nodes-python-agent"><span class="nav-number">6.</span> <span class="nav-text">Docker Nodes (python-agent)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rancher-io%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">Rancher.ioのインストール方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -378,10 +344,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -406,9 +375,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -448,13 +417,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

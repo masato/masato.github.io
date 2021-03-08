@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="I&#39;ve finally gotten used to creating CoreOS cluster with fleet. After successfully multi-cloud deployment across IDCF Cloud and DigitalOcean, this time I want to let a Vultr instance join to my CoreOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MoinMoin in Production on CoreOS - Part9: Booting with iPXE on Vultr">
 <meta property="og:url" content="https://masato.github.io/2014/10/26/docker-moinmoin-coreos-vultr/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="I&#39;ve finally gotten used to creating CoreOS cluster with fleet. After successfully multi-cloud deployment across IDCF Cloud and DigitalOcean, this time I want to let a Vultr instance join to my CoreOS">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-10-26T08:46:17.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.596Z">
+<meta property="article:modified_time" content="2014-10-26T08:46:17.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="CoreOS">
 <meta property="article:tag" content="MoinMoin">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>MoinMoin in Production on CoreOS - Part9: Booting with iPXE on Vultr | masato's blog</title>
+  <title>MoinMoin in Production on CoreOS - Part9: Booting with iPXE on Vultr | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,19 +193,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Oct 26 2014 17:46:17" itemprop="dateCreated datePublished" datetime="2014-10-26T17:46:17+09:00">Oct 26 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">I've finally gotten used to creating CoreOS cluster with fleet. After successfully multi-cloud deployment across IDCF Cloud and DigitalOcean, this time I want to let a Vultr instance join to my CoreOS cluster and run a MoinMoin fleet unit service. It should be possible to be cloud provider agnostic using CoreOS as a platform of infrastructure.</div>
@@ -246,15 +213,15 @@
 
       
         <p>I’ve finally gotten used to creating CoreOS cluster with fleet. After successfully multi-cloud deployment across IDCF Cloud and DigitalOcean, this time I want to let a Vultr instance join to my CoreOS cluster and run a MoinMoin fleet unit service. It should be possible to be cloud provider agnostic using CoreOS as a platform of infrastructure.</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="Serve-a-iPXE-ChainURL"><a href="#Serve-a-iPXE-ChainURL" class="headerlink" title="Serve a iPXE ChainURL"></a>Serve a iPXE ChainURL</h3><p>To run a CoreOS instance on Vultr via iPXE I refer to following official tutorials.</p>
 <ul>
-<li><a href="https://coreos.com/docs/running-coreos/bare-metal/booting-with-ipxe/" target="_blank" rel="noopener">Booting CoreOS via iPXE</a></li>
-<li><a href="https://coreos.com/docs/running-coreos/cloud-providers/vultr/" target="_blank" rel="noopener">Running CoreOS on a Vultr VPS</a></li>
+<li><a target="_blank" rel="noopener" href="https://coreos.com/docs/running-coreos/bare-metal/booting-with-ipxe/">Booting CoreOS via iPXE</a></li>
+<li><a target="_blank" rel="noopener" href="https://coreos.com/docs/running-coreos/cloud-providers/vultr/">Running CoreOS on a Vultr VPS</a></li>
 </ul>
 <p>First of all I create a script with iPXE command lines. </p>
-<figure class="highlight plain"><figcaption><span>~/vultr/script.txt</span></figcaption><table><tr><td class="code"><pre><span class="line">#!ipxe</span><br><span class="line"></span><br><span class="line">set base-url http:&#x2F;&#x2F;stable.release.core-os.net&#x2F;amd64-usr&#x2F;current</span><br><span class="line">kernel $&#123;base-url&#125;&#x2F;coreos_production_pxe.vmlinuz sshkey&#x3D;&quot;ssh-rsa AAAA...&quot;</span><br><span class="line">initrd $&#123;base-url&#125;&#x2F;coreos_production_pxe_image.cpio.gz</span><br><span class="line">boot</span><br></pre></td></tr></table></figure>
+<figure class="highlight txt"><figcaption><span>~/vultr/script.txt</span></figcaption><table><tr><td class="code"><pre><span class="line">#!ipxe</span><br><span class="line"></span><br><span class="line">set base-url http://stable.release.core-os.net/amd64-usr/current</span><br><span class="line">kernel $&#123;base-url&#125;/coreos_production_pxe.vmlinuz sshkey=&quot;ssh-rsa AAAA...&quot;</span><br><span class="line">initrd $&#123;base-url&#125;/coreos_production_pxe_image.cpio.gz</span><br><span class="line">boot</span><br></pre></td></tr></table></figure>
 
 <p>The iPXE script file is served by a Python SimpleHTTPServer.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/vultr</span><br><span class="line">$ python -m SimpleHTTPServer 3000</span><br><span class="line">Serving HTTP on 0.0.0.0 port 3000 ...</span><br></pre></td></tr></table></figure>
@@ -263,7 +230,7 @@
 <li>Server Type: PERFORMANCE SERIES</li>
 <li>Location: Asia Tokyo </li>
 <li>Operating System: Custom</li>
-<li>iPXE ChainURL:  <a href="http://210.xxx.xxx.xxx:3000/script.txt" target="_blank" rel="noopener">http://210.xxx.xxx.xxx:3000/script.txt</a></li>
+<li>iPXE ChainURL:  <a target="_blank" rel="noopener" href="http://210.xxx.xxx.xxx:3000/script.txt">http://210.xxx.xxx.xxx:3000/script.txt</a></li>
 <li>Server Size: 1 CPU 768MB MEMORY</li>
 </ul>
 <p>It takes about one minute to run a CoreOS instance.</p>
@@ -271,13 +238,13 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -A core@108.61.162.139</span><br></pre></td></tr></table></figure>
 
 <p>I create cloud-config.yml file pointing to dedicated etcd endpoint. As with the DigitalOCean instance I edit iptables rules in write_files directive.</p>
-<figure class="highlight yml"><figcaption><span>~/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">fleet:</span></span><br><span class="line">    <span class="attr">etcd_servers:</span> <span class="string">http://210.xxx.xxx.xxx:4001</span></span><br><span class="line">    <span class="attr">metadata:</span> <span class="string">role=moin</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">mask:</span> <span class="literal">true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">timezone.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">Description=Set</span> <span class="string">the</span> <span class="string">timezone</span></span><br><span class="line"></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">ExecStart=/usr/bin/timedatectl</span> <span class="string">set-timezone</span> <span class="string">Asia/Tokyo</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">iptables.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        <span class="string">[Unit]</span></span><br><span class="line">        <span class="string">Description=Packet</span> <span class="string">Filtering</span> <span class="string">Framework</span></span><br><span class="line">        <span class="string">DefaultDependencies=no</span></span><br><span class="line">        <span class="string">After=systemd-sysctl.service</span></span><br><span class="line">        <span class="string">Before=sysinit.target</span></span><br><span class="line">        <span class="string">[Service]</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">        <span class="string">ExecStart=/usr/sbin/iptables-restore</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">        <span class="string">ExecReload=/usr/sbin/iptables-restore</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">        <span class="string">ExecStop=/usr/sbin/iptables</span> <span class="string">--flush</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">[Install]</span></span><br><span class="line">        <span class="string">WantedBy=multi-user.target</span></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">COREOS_PUBLIC_IPV4=$public_ipv4</span></span><br><span class="line">      <span class="string">COREOS_PRIVATE_IPV4=$private_ipv4</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/opt/bin/nse</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0755</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="comment">#!/bin/sh</span></span><br><span class="line">      </span><br><span class="line">      <span class="string">sudo</span> <span class="string">nsenter</span> <span class="string">--pid</span> <span class="string">--uts</span> <span class="string">--mount</span> <span class="string">--ipc</span> <span class="string">--net</span> <span class="string">--target</span> <span class="string">$(docker</span> <span class="string">inspect</span> <span class="string">--format="&amp;#123;&amp;#123;</span> <span class="string">.State.Pid</span> <span class="string">&#125;&#125;"</span> <span class="string">$1)</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/opt/bin/docker-enter</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0755</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="comment">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">      <span class="string">if</span> <span class="string">[</span> <span class="string">-e</span> <span class="string">$(dirname</span> <span class="string">"$0"</span><span class="string">)/nsenter</span> <span class="string">];</span> <span class="string">then</span></span><br><span class="line">          <span class="comment"># with boot2docker, nsenter is not in the PATH but it is in the same folder</span></span><br><span class="line">          <span class="string">NSENTER=$(dirname</span> <span class="string">"$0"</span><span class="string">)/nsenter</span></span><br><span class="line">      <span class="string">else</span></span><br><span class="line">          <span class="string">NSENTER=nsenter</span></span><br><span class="line">      <span class="string">fi</span></span><br><span class="line"></span><br><span class="line">      <span class="string">if</span> <span class="string">[</span> <span class="string">-z</span> <span class="string">"$1"</span> <span class="string">];</span> <span class="string">then</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">"Usage: `basename "</span><span class="string">$0"`</span> <span class="string">CONTAINER</span> <span class="string">[COMMAND</span> <span class="string">[ARG]...]"</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">""</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">"Enters the Docker CONTAINER and executes the specified COMMAND."</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">"If COMMAND is not specified, runs an interactive shell in CONTAINER."</span></span><br><span class="line">      <span class="string">else</span></span><br><span class="line">          <span class="string">PID=$(docker</span> <span class="string">inspect</span> <span class="string">--format</span> <span class="string">"&amp;#123;&amp;#123;.State.Pid&#125;&#125;"</span> <span class="string">"$1"</span><span class="string">)</span></span><br><span class="line">          <span class="string">[</span> <span class="string">-z</span> <span class="string">"$PID"</span> <span class="string">]</span> <span class="string">&amp;&amp;</span> <span class="string">exit</span> <span class="number">1</span></span><br><span class="line">          <span class="string">shift</span></span><br><span class="line"></span><br><span class="line">          <span class="string">if</span> <span class="string">[</span> <span class="string">"$(id -u)"</span> <span class="string">-ne</span> <span class="string">"0"</span> <span class="string">];</span> <span class="string">then</span></span><br><span class="line">              <span class="string">which</span> <span class="string">sudo</span> <span class="string">&gt;</span> <span class="string">/dev/null</span></span><br><span class="line">              <span class="string">if</span> <span class="string">[</span> <span class="string">"$?"</span> <span class="string">-eq</span> <span class="string">"0"</span> <span class="string">];</span> <span class="string">then</span></span><br><span class="line">                <span class="string">LAZY_SUDO="sudo</span> <span class="string">"</span></span><br><span class="line"><span class="string">              else</span></span><br><span class="line"><span class="string">                echo "</span><span class="attr">Warning:</span> <span class="string">Cannot</span> <span class="string">find</span> <span class="string">sudo;</span> <span class="string">Invoking</span> <span class="string">nsenter</span> <span class="string">as</span> <span class="string">the</span> <span class="string">user</span> <span class="string">$USER."</span> <span class="string">&gt;&amp;2</span></span><br><span class="line">              <span class="string">fi</span></span><br><span class="line">          <span class="string">fi</span></span><br><span class="line">          </span><br><span class="line">          <span class="comment"># Get environment variables from the container's root process</span></span><br><span class="line"></span><br><span class="line">          <span class="string">ENV=$($LAZY_SUDO</span> <span class="string">cat</span> <span class="string">/proc/$PID/environ</span> <span class="string">|</span> <span class="string">xargs</span> <span class="number">-0</span><span class="string">)</span></span><br><span class="line"></span><br><span class="line">          <span class="comment"># Prepare nsenter flags</span></span><br><span class="line">          <span class="string">OPTS="--target</span> <span class="string">$PID</span> <span class="string">--mount</span> <span class="string">--uts</span> <span class="string">--ipc</span> <span class="string">--net</span> <span class="string">--pid</span> <span class="string">--"</span></span><br><span class="line"></span><br><span class="line">          <span class="comment"># env is to clear all host environment variables and set then anew</span></span><br><span class="line">          <span class="string">if</span> <span class="string">[</span> <span class="string">$#</span> <span class="string">-lt</span> <span class="number">1</span> <span class="string">];</span> <span class="string">then</span></span><br><span class="line">              <span class="comment"># No arguments, default to `su` which executes the default login shell</span></span><br><span class="line">              <span class="string">$LAZY_SUDO</span> <span class="string">"$NSENTER"</span> <span class="string">$OPTS</span> <span class="string">env</span> <span class="string">-i</span> <span class="bullet">-</span> <span class="string">$ENV</span> <span class="string">su</span> <span class="string">-m</span> <span class="string">root</span></span><br><span class="line">          <span class="string">else</span></span><br><span class="line">              <span class="comment"># Has command</span></span><br><span class="line">              <span class="comment"># "$@" is magic in bash, and needs to be in the invocation</span></span><br><span class="line">              <span class="string">$LAZY_SUDO</span> <span class="string">"$NSENTER"</span> <span class="string">$OPTS</span> <span class="string">env</span> <span class="string">-i</span> <span class="bullet">-</span> <span class="string">$ENV</span> <span class="string">"$@"</span></span><br><span class="line">          <span class="string">fi</span></span><br><span class="line">      <span class="string">fi</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0600</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="meta">*filter</span></span><br><span class="line">      <span class="string">:INPUT</span> <span class="string">DROP</span> <span class="string">[0:0]</span></span><br><span class="line">      <span class="string">:FORWARD</span> <span class="string">ACCEPT</span> <span class="string">[0:0]</span></span><br><span class="line">      <span class="string">:OUTPUT</span> <span class="string">ACCEPT</span> <span class="string">[0:0]</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-i</span> <span class="string">lo</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-m</span> <span class="string">conntrack</span> <span class="string">--ctstate</span> <span class="string">RELATED,ESTABLISHED</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-i</span> <span class="string">eth0</span> <span class="string">-p</span> <span class="string">tcp</span> <span class="string">-m</span> <span class="string">conntrack</span> <span class="string">--ctstate</span> <span class="string">NEW</span> <span class="string">-m</span> <span class="string">multiport</span> <span class="string">--dports</span> <span class="number">22</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-m</span> <span class="string">limit</span> <span class="string">--limit</span> <span class="number">5</span><span class="string">/min</span> <span class="string">-j</span> <span class="string">LOG</span> <span class="string">--log-prefix</span> <span class="string">"iptables denied: "</span> <span class="string">--log-level</span> <span class="number">7</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-j</span> <span class="string">DROP</span></span><br><span class="line">      <span class="string">COMMIT</span></span><br><span class="line">      <span class="comment"># end of file</span></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAA...</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>~/cloud-config.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment">#cloud-config</span></span><br><span class="line"><span class="attr">coreos:</span></span><br><span class="line">  <span class="attr">fleet:</span></span><br><span class="line">    <span class="attr">etcd_servers:</span> <span class="string">http://210.xxx.xxx.xxx:4001</span></span><br><span class="line">    <span class="attr">metadata:</span> <span class="string">role=moin</span></span><br><span class="line">  <span class="attr">units:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">etcd.service</span></span><br><span class="line">      <span class="attr">mask:</span> <span class="literal">true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">fleet.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">timezone.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        [<span class="string">Unit</span>]</span><br><span class="line">        <span class="string">Description=Set</span> <span class="string">the</span> <span class="string">timezone</span></span><br><span class="line"></span><br><span class="line">        [<span class="string">Service</span>]</span><br><span class="line">        <span class="string">ExecStart=/usr/bin/timedatectl</span> <span class="string">set-timezone</span> <span class="string">Asia/Tokyo</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">iptables.service</span></span><br><span class="line">      <span class="attr">command:</span> <span class="string">start</span></span><br><span class="line">      <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">        [<span class="string">Unit</span>]</span><br><span class="line">        <span class="string">Description=Packet</span> <span class="string">Filtering</span> <span class="string">Framework</span></span><br><span class="line">        <span class="string">DefaultDependencies=no</span></span><br><span class="line">        <span class="string">After=systemd-sysctl.service</span></span><br><span class="line">        <span class="string">Before=sysinit.target</span></span><br><span class="line">        [<span class="string">Service</span>]</span><br><span class="line">        <span class="string">Type=oneshot</span></span><br><span class="line">        <span class="string">ExecStart=/usr/sbin/iptables-restore</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">        <span class="string">ExecReload=/usr/sbin/iptables-restore</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">        <span class="string">ExecStop=/usr/sbin/iptables</span> <span class="string">--flush</span></span><br><span class="line">        <span class="string">RemainAfterExit=yes</span></span><br><span class="line">        [<span class="string">Install</span>]</span><br><span class="line">        <span class="string">WantedBy=multi-user.target</span></span><br><span class="line"><span class="attr">write_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/environment</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="string">COREOS_PUBLIC_IPV4=$public_ipv4</span></span><br><span class="line">      <span class="string">COREOS_PRIVATE_IPV4=$private_ipv4</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/opt/bin/nse</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0755</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="comment">#!/bin/sh</span></span><br><span class="line">      </span><br><span class="line">      <span class="string">sudo</span> <span class="string">nsenter</span> <span class="string">--pid</span> <span class="string">--uts</span> <span class="string">--mount</span> <span class="string">--ipc</span> <span class="string">--net</span> <span class="string">--target</span> <span class="string">$(docker</span> <span class="string">inspect</span> <span class="string">--format=&quot;&amp;#123;&amp;#123;</span> <span class="string">.State.Pid</span> <span class="string">&#125;&#125;&quot;</span> <span class="string">$1)</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/opt/bin/docker-enter</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0755</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="comment">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">      <span class="string">if</span> [ <span class="string">-e</span> <span class="string">$(dirname</span> <span class="string">&quot;$0&quot;</span><span class="string">)/nsenter</span> ]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">          <span class="comment"># with boot2docker, nsenter is not in the PATH but it is in the same folder</span></span><br><span class="line">          <span class="string">NSENTER=$(dirname</span> <span class="string">&quot;$0&quot;</span><span class="string">)/nsenter</span></span><br><span class="line">      <span class="string">else</span></span><br><span class="line">          <span class="string">NSENTER=nsenter</span></span><br><span class="line">      <span class="string">fi</span></span><br><span class="line"></span><br><span class="line">      <span class="string">if</span> [ <span class="string">-z</span> <span class="string">&quot;$1&quot;</span> ]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;Usage: `basename &quot;</span><span class="string">$0&quot;`</span> <span class="string">CONTAINER</span> [<span class="string">COMMAND</span> [<span class="string">ARG</span>]<span class="string">...</span>]<span class="string">&quot;</span></span><br><span class="line"><span class="string">          echo &quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">          echo &quot;</span><span class="string">Enters</span> <span class="string">the</span> <span class="string">Docker</span> <span class="string">CONTAINER</span> <span class="string">and</span> <span class="string">executes</span> <span class="string">the</span> <span class="string">specified</span> <span class="string">COMMAND.&quot;</span></span><br><span class="line">          <span class="string">echo</span> <span class="string">&quot;If COMMAND is not specified, runs an interactive shell in CONTAINER.&quot;</span></span><br><span class="line">      <span class="string">else</span></span><br><span class="line">          <span class="string">PID=$(docker</span> <span class="string">inspect</span> <span class="string">--format</span> <span class="string">&quot;&amp;#123;&amp;#123;.State.Pid&#125;&#125;&quot;</span> <span class="string">&quot;$1&quot;</span><span class="string">)</span></span><br><span class="line">          [ <span class="string">-z</span> <span class="string">&quot;$PID&quot;</span> ] <span class="string">&amp;&amp;</span> <span class="string">exit</span> <span class="number">1</span></span><br><span class="line">          <span class="string">shift</span></span><br><span class="line"></span><br><span class="line">          <span class="string">if</span> [ <span class="string">&quot;$(id -u)&quot;</span> <span class="string">-ne</span> <span class="string">&quot;0&quot;</span> ]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">              <span class="string">which</span> <span class="string">sudo</span> <span class="string">&gt;</span> <span class="string">/dev/null</span></span><br><span class="line">              <span class="string">if</span> [ <span class="string">&quot;$?&quot;</span> <span class="string">-eq</span> <span class="string">&quot;0&quot;</span> ]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">                <span class="string">LAZY_SUDO=&quot;sudo</span> <span class="string">&quot;</span></span><br><span class="line"><span class="string">              else</span></span><br><span class="line"><span class="string">                echo &quot;</span><span class="attr">Warning:</span> <span class="string">Cannot</span> <span class="string">find</span> <span class="string">sudo;</span> <span class="string">Invoking</span> <span class="string">nsenter</span> <span class="string">as</span> <span class="string">the</span> <span class="string">user</span> <span class="string">$USER.&quot;</span> <span class="string">&gt;&amp;2</span></span><br><span class="line">              <span class="string">fi</span></span><br><span class="line">          <span class="string">fi</span></span><br><span class="line">          </span><br><span class="line">          <span class="comment"># Get environment variables from the container&#x27;s root process</span></span><br><span class="line"></span><br><span class="line">          <span class="string">ENV=$($LAZY_SUDO</span> <span class="string">cat</span> <span class="string">/proc/$PID/environ</span> <span class="string">|</span> <span class="string">xargs</span> <span class="number">-0</span><span class="string">)</span></span><br><span class="line"></span><br><span class="line">          <span class="comment"># Prepare nsenter flags</span></span><br><span class="line">          <span class="string">OPTS=&quot;--target</span> <span class="string">$PID</span> <span class="string">--mount</span> <span class="string">--uts</span> <span class="string">--ipc</span> <span class="string">--net</span> <span class="string">--pid</span> <span class="string">--&quot;</span></span><br><span class="line"></span><br><span class="line">          <span class="comment"># env is to clear all host environment variables and set then anew</span></span><br><span class="line">          <span class="string">if</span> [ <span class="string">$#</span> <span class="string">-lt</span> <span class="number">1</span> ]<span class="string">;</span> <span class="string">then</span></span><br><span class="line">              <span class="comment"># No arguments, default to `su` which executes the default login shell</span></span><br><span class="line">              <span class="string">$LAZY_SUDO</span> <span class="string">&quot;$NSENTER&quot;</span> <span class="string">$OPTS</span> <span class="string">env</span> <span class="string">-i</span> <span class="bullet">-</span> <span class="string">$ENV</span> <span class="string">su</span> <span class="string">-m</span> <span class="string">root</span></span><br><span class="line">          <span class="string">else</span></span><br><span class="line">              <span class="comment"># Has command</span></span><br><span class="line">              <span class="comment"># &quot;$@&quot; is magic in bash, and needs to be in the invocation</span></span><br><span class="line">              <span class="string">$LAZY_SUDO</span> <span class="string">&quot;$NSENTER&quot;</span> <span class="string">$OPTS</span> <span class="string">env</span> <span class="string">-i</span> <span class="bullet">-</span> <span class="string">$ENV</span> <span class="string">&quot;$@&quot;</span></span><br><span class="line">          <span class="string">fi</span></span><br><span class="line">      <span class="string">fi</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/etc/iptables.rules</span></span><br><span class="line">    <span class="attr">permissions:</span> <span class="number">0600</span></span><br><span class="line">    <span class="attr">content:</span> <span class="string">|</span></span><br><span class="line">      <span class="meta">*filter</span></span><br><span class="line">      <span class="string">:INPUT</span> <span class="string">DROP</span> [<span class="number">0</span><span class="string">:0</span>]</span><br><span class="line">      <span class="string">:FORWARD</span> <span class="string">ACCEPT</span> [<span class="number">0</span><span class="string">:0</span>]</span><br><span class="line">      <span class="string">:OUTPUT</span> <span class="string">ACCEPT</span> [<span class="number">0</span><span class="string">:0</span>]</span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-i</span> <span class="string">lo</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-m</span> <span class="string">conntrack</span> <span class="string">--ctstate</span> <span class="string">RELATED,ESTABLISHED</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-i</span> <span class="string">eth0</span> <span class="string">-p</span> <span class="string">tcp</span> <span class="string">-m</span> <span class="string">conntrack</span> <span class="string">--ctstate</span> <span class="string">NEW</span> <span class="string">-m</span> <span class="string">multiport</span> <span class="string">--dports</span> <span class="number">22</span> <span class="string">-j</span> <span class="string">ACCEPT</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-m</span> <span class="string">limit</span> <span class="string">--limit</span> <span class="number">5</span><span class="string">/min</span> <span class="string">-j</span> <span class="string">LOG</span> <span class="string">--log-prefix</span> <span class="string">&quot;iptables denied: &quot;</span> <span class="string">--log-level</span> <span class="number">7</span></span><br><span class="line">      <span class="string">-A</span> <span class="string">INPUT</span> <span class="string">-j</span> <span class="string">DROP</span></span><br><span class="line">      <span class="string">COMMIT</span></span><br><span class="line">      <span class="comment"># end of file</span></span><br><span class="line"><span class="attr">ssh_authorized_keys:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">ssh-rsa</span> <span class="string">AAA...</span></span><br></pre></td></tr></table></figure>
 
 <p>I install a CoreOS to disk with cloud-config.yml file.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo coreos-install -d /dev/vda -C stable -c ~/cloud-config.yml</span><br><span class="line">$ sudo reboot</span><br></pre></td></tr></table></figure>
 
 <h3 id="fleet-unit-file"><a href="#fleet-unit-file" class="headerlink" title="fleet unit file"></a>fleet unit file</h3><p>I revise a changed ngrok url in fleet unit file of MoinMoin service.</p>
-<figure class="highlight bash"><figcaption><span>~/docker_apps/moin/moin@.service</span></figcaption><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=MoinMoin Service</span><br><span class="line">After=docker.service</span><br><span class="line">[Service]</span><br><span class="line">TimeoutStartSec=0</span><br><span class="line">ExecStartPre=-/usr/bin/docker <span class="built_in">kill</span> %p%i</span><br><span class="line">ExecStartPre=-/usr/bin/docker rm %p%i</span><br><span class="line">ExecStartPre=/bin/bash -c <span class="string">'/usr/bin/docker start || /usr/bin/docker run -v /usr/local/share/moin/data/pages --name moin-vol xxx.ngrok.com/moin-data true &amp;&amp; true'</span></span><br><span class="line">ExecStartPre=/usr/bin/docker pull xxx.ngrok.com/moin</span><br><span class="line">ExecStart=/usr/bin/docker run --name %p%i --volumes-from moin-vol -p 80:80 xxx.ngrok.com/moin</span><br><span class="line">ExecStop=/usr/bin/docker stop %p%i</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">[X-Fleet]</span><br><span class="line">X-Conflicts=%p@*.service</span><br><span class="line">MachineMetadata=role=moin</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/docker_apps/moin/moin@.service</span></figcaption><table><tr><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=MoinMoin Service</span><br><span class="line">After=docker.service</span><br><span class="line">[Service]</span><br><span class="line">TimeoutStartSec=0</span><br><span class="line">ExecStartPre=-/usr/bin/docker <span class="built_in">kill</span> %p%i</span><br><span class="line">ExecStartPre=-/usr/bin/docker rm %p%i</span><br><span class="line">ExecStartPre=/bin/bash -c <span class="string">&#x27;/usr/bin/docker start || /usr/bin/docker run -v /usr/local/share/moin/data/pages --name moin-vol xxx.ngrok.com/moin-data true &amp;&amp; true&#x27;</span></span><br><span class="line">ExecStartPre=/usr/bin/docker pull xxx.ngrok.com/moin</span><br><span class="line">ExecStart=/usr/bin/docker run --name %p%i --volumes-from moin-vol -p 80:80 xxx.ngrok.com/moin</span><br><span class="line">ExecStop=/usr/bin/docker stop %p%i</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">[X-Fleet]</span><br><span class="line">X-Conflicts=%p@*.service</span><br><span class="line">MachineMetadata=role=moin</span><br></pre></td></tr></table></figure>
 
 <p>Then I run ngrok container to tunnel my private docker-registry.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker run -it --rm wizardapps/ngrok:latest ngrok 10.1.1.32:5000</span><br></pre></td></tr></table></figure>
@@ -286,7 +253,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps/moin</span><br><span class="line">$ fleetctl destroy moin@.service</span><br><span class="line">Destroyed moin@.service</span><br><span class="line">$ fleetctl submit moin@.service</span><br><span class="line">$ fleetctl load moin@80.service</span><br><span class="line">Unit moin@80.service loaded on 6ad10563.../108.61.162.139</span><br><span class="line">$ fleetctl start moin@80.service</span><br><span class="line">Unit moin@80.service launched on 6ad10563.../108.61.162.139</span><br></pre></td></tr></table></figure>
 
 <p>It takes about 6 minutes for downloading images from docker-registry and finish running process.</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ fleetctl journal -f <span class="symbol">moin@</span><span class="number">80.</span>service</span><br><span class="line">-- Logs begin at Sun <span class="number">2014</span><span class="number">-10</span><span class="number">-26</span> <span class="number">08</span>:<span class="number">06</span>:<span class="number">34</span> UTC. --</span><br><span class="line">...</span><br><span class="line">Oct <span class="number">26</span> <span class="number">08</span>:<span class="number">16</span>:<span class="number">45</span> localhost systemd[<span class="number">1</span>]: Started MoinMoin Service.</span><br></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>fleetctl journal -f moin<span class="variable">@80</span>.service</span><br><span class="line">-- Logs <span class="keyword">begin</span> at Sun <span class="number">2014</span><span class="number">-10</span><span class="number">-26</span> 08<span class="symbol">:</span>06<span class="symbol">:</span><span class="number">34</span> UTC. --</span><br><span class="line">...</span><br><span class="line">Oct <span class="number">26</span> 08<span class="symbol">:</span><span class="number">16</span><span class="symbol">:</span><span class="number">45</span> localhost systemd[<span class="number">1</span>]: Started MoinMoin Service.</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -328,7 +295,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -411,10 +377,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -439,9 +408,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -481,13 +450,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

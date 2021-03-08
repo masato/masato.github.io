@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,23 +13,23 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ArduinoのEthernetライブラリを使ってモバイルルーター経由でHTTPクライアントの実装を確認しました。またDHT11のデジタル温度センサーからAdafruitのライブラリを使い温度と湿度を計測できるようになりました。ようやく準備が整ったのでMeshbluブローカーにMQTT通信でセンシングデータを送信してみます。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ArduinoからDHT11の温度と湿度データをMQTTを使ってMeshbluに送信する">
 <meta property="og:url" content="https://masato.github.io/2015/04/20/arduino-dht11-mqtt-wr702n-meshblu/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="ArduinoのEthernetライブラリを使ってモバイルルーター経由でHTTPクライアントの実装を確認しました。またDHT11のデジタル温度センサーからAdafruitのライブラリを使い温度と湿度を計測できるようになりました。ようやく準備が整ったのでMeshbluブローカーにMQTT通信でセンシングデータを送信してみます。">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/04/20/arduino-dht11-mqtt-wr702n-meshblu/dht11-mqtt.png">
 <meta property="article:published_time" content="2015-04-20T04:33:04.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.538Z">
+<meta property="article:modified_time" content="2015-04-20T04:33:04.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Arduino">
 <meta property="article:tag" content="MQTT">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>ArduinoからDHT11の温度と湿度データをMQTTを使ってMeshbluに送信する | masato's blog</title>
+  <title>ArduinoからDHT11の温度と湿度データをMQTTを使ってMeshbluに送信する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,22 +192,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 20 2015 13:33:04" itemprop="dateCreated datePublished" datetime="2015-04-20T13:33:04+09:00">Apr 20 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -254,28 +221,28 @@
 
       
         <p>ArduinoのEthernetライブラリを使ってモバイルルーター経由で<a href="/2015/04/18/ardiono-restclient-ethernet-wifi/">HTTPクライアント</a>の実装を確認しました。またDHT11のデジタル温度センサーからAdafruitのライブラリを使い<a href="/2015/04/19/arduino-adafruit-dht-sensor-library/">温度と湿度を計測</a>できるようになりました。ようやく準備が整ったのでMeshbluブローカーにMQTT通信でセンシングデータを送信してみます。</p>
-<a id="more"></a>
+<span id="more"></span>
 
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>ArduinoのMQTTライブラリはNick O’Leary氏の<a href="http://knolleary.net/arduino-client-for-mqtt/" target="_blank" rel="noopener">Arduino Client for MQTT</a>を使います。またArduinoからMQTTを使うコードは以下の記事を参考にしました。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>ArduinoのMQTTライブラリはNick O’Leary氏の<a target="_blank" rel="noopener" href="http://knolleary.net/arduino-client-for-mqtt/">Arduino Client for MQTT</a>を使います。またArduinoからMQTTを使うコードは以下の記事を参考にしました。</p>
 <ul>
-<li><a href="http://www.ibm.com/developerworks/jp/cloud/library/cl-bluemix-arduino-iot2/index.html" target="_blank" rel="noopener">Arduino Uno と IBM IoT Foundation を利用してクラウド対応の温度センサーを作成する: 第 2 回 スケッチを作成して IBM IoT Foundation Quickstart に接続する</a></li>
-<li><a href="http://chrislarson.me/blog/using-mqtt-connect-arduino-internet-things.html" target="_blank" rel="noopener">Using MQTT to connect Arduino to the Internet of Things</a></li>
-<li><a href="http://e.verything.co/post/61576413925/publishing-arduino-sensor-data-through-mqtt-over" target="_blank" rel="noopener">Publishing Arduino Sensor Data through MQTT over Ethernet</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ibm.com/developerworks/jp/cloud/library/cl-bluemix-arduino-iot2/index.html">Arduino Uno と IBM IoT Foundation を利用してクラウド対応の温度センサーを作成する: 第 2 回 スケッチを作成して IBM IoT Foundation Quickstart に接続する</a></li>
+<li><a target="_blank" rel="noopener" href="http://chrislarson.me/blog/using-mqtt-connect-arduino-internet-things.html">Using MQTT to connect Arduino to the Internet of Things</a></li>
+<li><a target="_blank" rel="noopener" href="http://e.verything.co/post/61576413925/publishing-arduino-sensor-data-through-mqtt-over">Publishing Arduino Sensor Data through MQTT over Ethernet</a></li>
 </ul>
 <h2 id="Mesubluサーバーでデバイスの登録"><a href="#Mesubluサーバーでデバイスの登録" class="headerlink" title="Mesubluサーバーでデバイスの登録"></a>Mesubluサーバーでデバイスの登録</h2><p>Mesubluのコンテナを起動しているDockerホストにログインして作業をします。デバイスのトークンはPythonでランダムな文字列を作成します。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> random</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>num = <span class="number">8</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arr = list(<span class="string">'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(<span class="string">""</span>.join([random.choice(arr) <span class="keyword">for</span> i <span class="keyword">in</span> range(num)]))</span><br><span class="line">FwsFjZy4</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> random</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>num = <span class="number">8</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>arr = <span class="built_in">list</span>(<span class="string">&#x27;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(<span class="string">&quot;&quot;</span>.join([random.choice(arr) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num)]))</span><br><span class="line">FwsFjZy4</span><br></pre></td></tr></table></figure>
 
 <p>ArduinoからDHT11のセンシングデータを送受信するためのデバイスを登録します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  localhost \</span><br><span class="line">  -d <span class="string">"name=freeboard&amp;uuid=freeboard&amp;token=FwsFjZy4"</span></span><br><span class="line">  &#123;<span class="string">"geo"</span>:null,<span class="string">"ipAddress"</span>:<span class="string">"172.17.42.1"</span>,<span class="string">"name"</span>:<span class="string">"freeboard"</span>,<span class="string">"online"</span>:<span class="literal">false</span>,<span class="string">"timestamp"</span>:<span class="string">"2015-04-20T02:51:31.841Z"</span>,<span class="string">"uuid"</span>:<span class="string">"freeboard"</span>,<span class="string">"token"</span>:<span class="string">"FwsFjZy4"</span>&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X POST \</span><br><span class="line">  localhost \</span><br><span class="line">  -d <span class="string">&quot;name=freeboard&amp;uuid=freeboard&amp;token=FwsFjZy4&quot;</span></span><br><span class="line">  &#123;<span class="string">&quot;geo&quot;</span>:null,<span class="string">&quot;ipAddress&quot;</span>:<span class="string">&quot;172.17.42.1&quot;</span>,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;freeboard&quot;</span>,<span class="string">&quot;online&quot;</span>:<span class="literal">false</span>,<span class="string">&quot;timestamp&quot;</span>:<span class="string">&quot;2015-04-20T02:51:31.841Z&quot;</span>,<span class="string">&quot;uuid&quot;</span>:<span class="string">&quot;freeboard&quot;</span>,<span class="string">&quot;token&quot;</span>:<span class="string">&quot;FwsFjZy4&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
 
 <p>Mosquittoのクライアントを使いArduinoからpublishされたデータを受信できるようにします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ mosquitto_sub \</span><br><span class="line">  -h localhost \</span><br><span class="line">  -p 1883 \</span><br><span class="line">  -t freeboard \</span><br><span class="line">  -u freeboard \</span><br><span class="line">  -P FwsFjZy4 \</span><br><span class="line">  -d</span><br></pre></td></tr></table></figure>
 
 <h2 id="Arduino-IDE"><a href="#Arduino-IDE" class="headerlink" title="Arduino IDE"></a>Arduino IDE</h2><p>Arduino IDEのホストマシンはOSXを使います。</p>
-<h3 id="ライブラリのダウンロード"><a href="#ライブラリのダウンロード" class="headerlink" title="ライブラリのダウンロード"></a>ライブラリのダウンロード</h3><p>Arduino IDEのlibrariesディレクトリにライブラリをインストールします。<br>DHT11のライブラリはAdafruitの<a href="https://github.com/adafruit/DHT-sensor-library" target="_blank" rel="noopener">DHT-sensor-library</a>リポジトリから<code>git clone</code>します。</p>
+<h3 id="ライブラリのダウンロード"><a href="#ライブラリのダウンロード" class="headerlink" title="ライブラリのダウンロード"></a>ライブラリのダウンロード</h3><p>Arduino IDEのlibrariesディレクトリにライブラリをインストールします。<br>DHT11のライブラリはAdafruitの<a target="_blank" rel="noopener" href="https://github.com/adafruit/DHT-sensor-library">DHT-sensor-library</a>リポジトリから<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Documents/Arduino/libraries</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/adafruit/DHT-sensor-library.git DHTxx</span><br></pre></td></tr></table></figure>
 
-<p>MQTTクライアントはリポジトリの<a href="https://github.com/knolleary/pubsubclient/archive" target="_blank" rel="noopener">アーカイブページ</a>から最新版をダウンロードして解凍します。</p>
+<p>MQTTクライアントはリポジトリの<a target="_blank" rel="noopener" href="https://github.com/knolleary/pubsubclient/archive">アーカイブページ</a>から最新版をダウンロードして解凍します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/Documents/Arduino/libraries</span><br><span class="line">$ wget https://github.com/knolleary/pubsubclient/archive/v1.9.1.tar.gz</span><br><span class="line">$ tar zxvf v1.9.1.tar.gz</span><br><span class="line">$ rm v1.9.1.tar.gz</span><br></pre></td></tr></table></figure>
 
 <p>メニューから、開く &gt; libraries &gt; pubsubclient-1.9.1 &gt; PubSubClientにサンプルを選べるようになります。</p>
@@ -287,16 +254,16 @@
 <p>mqtt_authを例にしてスケッチを書いていきます。</p>
 <h3 id="スケッチの作成"><a href="#スケッチの作成" class="headerlink" title="スケッチの作成"></a>スケッチの作成</h3><p>Arduino IDEを使いスケッチを作成してArduino Unoに書き込みます。<code>buildJson()</code>関数でMQTT通信するメッセージをJSON形式で作成しています。MesubluブローカーにMQTT通信でメッセージを送信する場合、トピック名は<code>message</code>が固定になります。<code>devices</code>キーに送信先デバイスのUUID(freeboard)を指定して、<code>payload</code>キーにメッセージ本文を人にのJSON形式で記述します。</p>
 <p>実際に送信するデータは文字列です。JSONを文字列にエスケープすると以下のようになります。</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="string">"&#123;\"devices\": \"freeboard\", \"payload\": &#123;\"humidity\":42,\"temperature\":26&#125;&#125;"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&#123;\&quot;devices\&quot;: \&quot;freeboard\&quot;, \&quot;payload\&quot;: &#123;\&quot;humidity\&quot;:42,\&quot;temperature\&quot;:26&#125;&#125;&quot;</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight cpp"><figcaption><span>~/Documents/Arduino/mqtt_auth/mqtt_auth.ino</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;SPI.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Ethernet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;PubSubClient.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;DHT.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DHTPIN 2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DHTTYPE DHT11</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_SERVER     <span class="meta-string">"&#123;MESUBLU_BROKER&#125;"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_UUID     <span class="meta-string">"freeboard"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_PASSWORD <span class="meta-string">"FwsFjZy4"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAC_ADDRESS_STR  <span class="meta-string">"90A2DA89C850"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">DHT <span class="title">dht</span><span class="params">(DHTPIN, DHTTYPE)</span></span>;</span><br><span class="line"></span><br><span class="line">byte MAC_ADDRESS[] = &#123; <span class="number">0x90</span>, <span class="number">0xA2</span>, <span class="number">0xDA</span>, <span class="number">0x89</span>, <span class="number">0xC8</span>, <span class="number">0x50</span> &#125;;</span><br><span class="line"><span class="keyword">float</span> humidity = <span class="number">0.0</span>;</span><br><span class="line"><span class="keyword">float</span> tempC = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">EthernetClient ethClient;</span><br><span class="line"><span class="function">PubSubClient <span class="title">client</span><span class="params">(MQTT_SERVER, <span class="number">1883</span>, callback, ethClient)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Serial.begin(<span class="number">9600</span>); </span><br><span class="line">  Serial.println(<span class="string">"DHT11 and MQTT test"</span>);</span><br><span class="line">  </span><br><span class="line">  dht.begin();</span><br><span class="line">  Ethernet.begin(MAC_ADDRESS);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  humidity = dht.readHumidity();</span><br><span class="line">  tempC = dht.readTemperature();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">buildJson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  String json = <span class="string">"&#123;"</span>;</span><br><span class="line">    json +=  <span class="string">"\"devices\": \"freeboard\""</span>;</span><br><span class="line">    json += <span class="string">","</span>;</span><br><span class="line">    json += <span class="string">"\"payload\":"</span>;</span><br><span class="line">    json += <span class="string">"&#123;"</span>;</span><br><span class="line">    json += <span class="string">"\"humidity\":"</span>;</span><br><span class="line">    json += humidity;</span><br><span class="line">    json += <span class="string">","</span>;</span><br><span class="line">    json += <span class="string">"\"temperature\":"</span>;</span><br><span class="line">    json += tempC;</span><br><span class="line">    json += <span class="string">"&#125;"</span>;</span><br><span class="line">    json += <span class="string">"&#125;"</span>;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> json;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">char</span> clientStr[<span class="number">36</span>];</span><br><span class="line">  <span class="built_in">sprintf</span>(clientStr,<span class="string">"%s/%s"</span>,DEVICE_UUID,MAC_ADDRESS_STR);</span><br><span class="line">  </span><br><span class="line">  getData();</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (isnan(humidity) || isnan(tempC)) &#123;</span><br><span class="line">    Serial.println(<span class="string">"Failed to read from DHT sensor!"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (!client.connected()) &#123;</span><br><span class="line">    client.connect(clientStr,DEVICE_UUID,DEVICE_PASSWORD);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (client.connected() ) &#123;</span><br><span class="line">    String json = buildJson();</span><br><span class="line">    <span class="keyword">char</span> jsonStr[<span class="number">200</span>];</span><br><span class="line">    json.toCharArray(jsonStr,<span class="number">200</span>);</span><br><span class="line">    </span><br><span class="line">    boolean pubresult = client.publish(<span class="string">"message"</span>,jsonStr);</span><br><span class="line">    <span class="comment">//boolean pubresult = client.publish("message","&#123;\"devices\": \"freeboard\", \"payload\": &#123;\"humidity\":42,\"temperature\":26&#125;&#125;");</span></span><br><span class="line">    <span class="keyword">if</span> (pubresult)</span><br><span class="line">      Serial.println(<span class="string">"successfully sent"</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      Serial.println(<span class="string">"unsuccessfully sent"</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    Serial.println(<span class="string">"not connected"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  delay(<span class="number">5000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Handles messages arrived on subscribed topic(s)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">callback</span><span class="params">(<span class="keyword">char</span>* topic, byte* payload, <span class="keyword">unsigned</span> <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><figcaption><span>~/Documents/Arduino/mqtt_auth/mqtt_auth.ino</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;SPI.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Ethernet.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;PubSubClient.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;DHT.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DHTPIN 2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DHTTYPE DHT11</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MQTT_SERVER     <span class="meta-string">&quot;&#123;MESUBLU_BROKER&#125;&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_UUID     <span class="meta-string">&quot;freeboard&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEVICE_PASSWORD <span class="meta-string">&quot;FwsFjZy4&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAC_ADDRESS_STR  <span class="meta-string">&quot;90A2DA89C850&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">DHT <span class="title">dht</span><span class="params">(DHTPIN, DHTTYPE)</span></span>;</span><br><span class="line"></span><br><span class="line">byte MAC_ADDRESS[] = &#123; <span class="number">0x90</span>, <span class="number">0xA2</span>, <span class="number">0xDA</span>, <span class="number">0x89</span>, <span class="number">0xC8</span>, <span class="number">0x50</span> &#125;;</span><br><span class="line"><span class="keyword">float</span> humidity = <span class="number">0.0</span>;</span><br><span class="line"><span class="keyword">float</span> tempC = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">EthernetClient ethClient;</span><br><span class="line"><span class="function">PubSubClient <span class="title">client</span><span class="params">(MQTT_SERVER, <span class="number">1883</span>, callback, ethClient)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Serial.begin(<span class="number">9600</span>); </span><br><span class="line">  Serial.println(<span class="string">&quot;DHT11 and MQTT test&quot;</span>);</span><br><span class="line">  </span><br><span class="line">  dht.begin();</span><br><span class="line">  Ethernet.begin(MAC_ADDRESS);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  humidity = dht.readHumidity();</span><br><span class="line">  tempC = dht.readTemperature();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">buildJson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  String json = <span class="string">&quot;&#123;&quot;</span>;</span><br><span class="line">    json +=  <span class="string">&quot;\&quot;devices\&quot;: \&quot;freeboard\&quot;&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;,&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;\&quot;payload\&quot;:&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;&#123;&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;\&quot;humidity\&quot;:&quot;</span>;</span><br><span class="line">    json += humidity;</span><br><span class="line">    json += <span class="string">&quot;,&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;\&quot;temperature\&quot;:&quot;</span>;</span><br><span class="line">    json += tempC;</span><br><span class="line">    json += <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line">    json += <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">return</span> json;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">char</span> clientStr[<span class="number">36</span>];</span><br><span class="line">  <span class="built_in">sprintf</span>(clientStr,<span class="string">&quot;%s/%s&quot;</span>,DEVICE_UUID,MAC_ADDRESS_STR);</span><br><span class="line">  </span><br><span class="line">  getData();</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (isnan(humidity) || isnan(tempC)) &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;Failed to read from DHT sensor!&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (!client.connected()) &#123;</span><br><span class="line">    client.connect(clientStr,DEVICE_UUID,DEVICE_PASSWORD);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (client.connected() ) &#123;</span><br><span class="line">    String json = buildJson();</span><br><span class="line">    <span class="keyword">char</span> jsonStr[<span class="number">200</span>];</span><br><span class="line">    json.toCharArray(jsonStr,<span class="number">200</span>);</span><br><span class="line">    </span><br><span class="line">    boolean pubresult = client.publish(<span class="string">&quot;message&quot;</span>,jsonStr);</span><br><span class="line">    <span class="comment">//boolean pubresult = client.publish(&quot;message&quot;,&quot;&#123;\&quot;devices\&quot;: \&quot;freeboard\&quot;, \&quot;payload\&quot;: &#123;\&quot;humidity\&quot;:42,\&quot;temperature\&quot;:26&#125;&#125;&quot;);</span></span><br><span class="line">    <span class="keyword">if</span> (pubresult)</span><br><span class="line">      Serial.println(<span class="string">&quot;successfully sent&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      Serial.println(<span class="string">&quot;unsuccessfully sent&quot;</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    Serial.println(<span class="string">&quot;not connected&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  delay(<span class="number">5000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Handles messages arrived on subscribed topic(s)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">callback</span><span class="params">(<span class="keyword">char</span>* topic, byte* payload, <span class="keyword">unsigned</span> <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>シリアルモニタを開くと5秒間隔でDHT11から温度と湿度を計測して、MeshbluのMQTTブローカーにpublishします。</p>
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">DHT11</span> <span class="string">and MQTT test</span></span><br><span class="line"><span class="attr">successfully</span> <span class="string">sent</span></span><br><span class="line"><span class="attr">successfully</span> <span class="string">sent</span></span><br><span class="line"><span class="attr">successfully</span> <span class="string">sent</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line"><span class="symbol">DHT11</span> <span class="keyword">and</span> MQTT test</span><br><span class="line"><span class="symbol">successfully</span> sent</span><br><span class="line"><span class="symbol">successfully</span> sent</span><br><span class="line"><span class="symbol">successfully</span> sent</span><br></pre></td></tr></table></figure>
 
 <p><img src="/2015/04/20/arduino-dht11-mqtt-wr702n-meshblu/dht11-mqtt.png" alt="dht11-mqtt.png"></p>
 <h2 id="Mesubluサーバーでsubscribeの確認"><a href="#Mesubluサーバーでsubscribeの確認" class="headerlink" title="Mesubluサーバーでsubscribeの確認"></a>Mesubluサーバーでsubscribeの確認</h2><p>さきほど<code>mosquitto_sub</code>コマンドでsubscribeしたシェルをみるとデータの受信が確認できます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">&#123;<span class="string">"topic"</span>:<span class="string">"message"</span>,<span class="string">"data"</span>:&#123;<span class="string">"devices"</span>:<span class="string">"freeboard"</span>,<span class="string">"payload"</span>:&#123;<span class="string">"humidity"</span>:40,<span class="string">"temperature"</span>:26&#125;,<span class="string">"fromUuid"</span>:<span class="string">"freeboard"</span>&#125;&#125;</span><br><span class="line">Client mosqsub/2903-minion1.cs received PUBLISH (d0, q0, r0, m0, <span class="string">'freeboard'</span>, ... (116 bytes))</span><br><span class="line">&#123;<span class="string">"topic"</span>:<span class="string">"message"</span>,<span class="string">"data"</span>:&#123;<span class="string">"devices"</span>:<span class="string">"freeboard"</span>,<span class="string">"payload"</span>:&#123;<span class="string">"humidity"</span>:40,<span class="string">"temperature"</span>:26&#125;,<span class="string">"fromUuid"</span>:<span class="string">"freeboard"</span>&#125;&#125;</span><br><span class="line">Client mosqsub/2903-minion1.cs received PUBLISH (d0, q0, r0, m0, <span class="string">'freeboard'</span>, ... (116 bytes))</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">&#123;<span class="string">&quot;topic&quot;</span>:<span class="string">&quot;message&quot;</span>,<span class="string">&quot;data&quot;</span>:&#123;<span class="string">&quot;devices&quot;</span>:<span class="string">&quot;freeboard&quot;</span>,<span class="string">&quot;payload&quot;</span>:&#123;<span class="string">&quot;humidity&quot;</span>:40,<span class="string">&quot;temperature&quot;</span>:26&#125;,<span class="string">&quot;fromUuid&quot;</span>:<span class="string">&quot;freeboard&quot;</span>&#125;&#125;</span><br><span class="line">Client mosqsub/2903-minion1.cs received PUBLISH (d0, q0, r0, m0, <span class="string">&#x27;freeboard&#x27;</span>, ... (116 bytes))</span><br><span class="line">&#123;<span class="string">&quot;topic&quot;</span>:<span class="string">&quot;message&quot;</span>,<span class="string">&quot;data&quot;</span>:&#123;<span class="string">&quot;devices&quot;</span>:<span class="string">&quot;freeboard&quot;</span>,<span class="string">&quot;payload&quot;</span>:&#123;<span class="string">&quot;humidity&quot;</span>:40,<span class="string">&quot;temperature&quot;</span>:26&#125;,<span class="string">&quot;fromUuid&quot;</span>:<span class="string">&quot;freeboard&quot;</span>&#125;&#125;</span><br><span class="line">Client mosqsub/2903-minion1.cs received PUBLISH (d0, q0, r0, m0, <span class="string">&#x27;freeboard&#x27;</span>, ... (116 bytes))</span><br></pre></td></tr></table></figure>
 
 
     </div>
@@ -336,7 +303,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -387,7 +353,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesubluサーバーでデバイスの登録"><span class="nav-number">2.</span> <span class="nav-text">Mesubluサーバーでデバイスの登録</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arduino-IDE"><span class="nav-number">3.</span> <span class="nav-text">Arduino IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ライブラリのダウンロード"><span class="nav-number">3.1.</span> <span class="nav-text">ライブラリのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#スケッチの作成"><span class="nav-number">3.2.</span> <span class="nav-text">スケッチの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesubluサーバーでsubscribeの確認"><span class="nav-number">4.</span> <span class="nav-text">Mesubluサーバーでsubscribeの確認</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesublu%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A7%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AE%E7%99%BB%E9%8C%B2"><span class="nav-number">2.</span> <span class="nav-text">Mesubluサーバーでデバイスの登録</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arduino-IDE"><span class="nav-number">3.</span> <span class="nav-text">Arduino IDE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89"><span class="nav-number">3.1.</span> <span class="nav-text">ライブラリのダウンロード</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%82%B9%E3%82%B1%E3%83%83%E3%83%81%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">3.2.</span> <span class="nav-text">スケッチの作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mesublu%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A7subscribe%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="nav-number">4.</span> <span class="nav-text">Mesubluサーバーでsubscribeの確認</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -419,10 +385,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -447,9 +416,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -489,13 +458,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

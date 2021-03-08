@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Saltで使われる用語は非英語圏だと直感的にわかりづらいものが多いですが、Salt StatesやSalt State Systemは、Saltの構成管理ツールとしての中心的な仕組みです。Salt Stateはサーバーの構成管理に伴う、パッケージのインストール、設定ファイルの作成、サービスの起動、ユーザー管理などを行います。Puppet の manifests や Chef の recipes に">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Salt on IDCF クラウド - Part2: Salt Formula">
 <meta property="og:url" content="https://masato.github.io/2014/11/18/salt-on-idcf-cloud-salt-formula/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Saltで使われる用語は非英語圏だと直感的にわかりづらいものが多いですが、Salt StatesやSalt State Systemは、Saltの構成管理ツールとしての中心的な仕組みです。Salt Stateはサーバーの構成管理に伴う、パッケージのインストール、設定ファイルの作成、サービスの起動、ユーザー管理などを行います。Puppet の manifests や Chef の recipes に">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2014-11-18T14:53:20.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.894Z">
+<meta property="article:modified_time" content="2014-11-18T14:53:20.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="IDCFCloud">
 <meta property="article:tag" content="Salt">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Salt on IDCF クラウド - Part2: Salt Formula | masato's blog</title>
+  <title>Salt on IDCF クラウド - Part2: Salt Formula | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Nov 18 2014 23:53:20" itemprop="dateCreated datePublished" datetime="2014-11-18T23:53:20+09:00">Nov 18 2014</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
 
@@ -241,7 +208,7 @@
 
       
         <p>Saltで使われる用語は非英語圏だと直感的にわかりづらいものが多いですが、<code>Salt States</code>や<code>Salt State System</code>は、Saltの構成管理ツールとしての中心的な仕組みです。<code>Salt State</code>はサーバーの構成管理に伴う、パッケージのインストール、設定ファイルの作成、サービスの起動、ユーザー管理などを行います。Puppet の manifests や Chef の recipes に相当します。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h3 id="SLSファイル"><a href="#SLSファイル" class="headerlink" title="SLSファイル"></a>SLSファイル</h3><p><code>Salt Formula</code>の<code>SLS(SaLt State)</code>ファイルは拡張子が<code>.sls</code>のファイルにYAML形式です。SLSファイルには<code>Salt States</code>を記述して、masterノードのファイルシステムに配置します。SLSファイルにIDと一緒に定義したstatesは順番通り実行できますが、依存関係を宣言的に定義することもできます。</p>
 <h3 id="Salt-Formula"><a href="#Salt-Formula" class="headerlink" title="Salt Formula"></a>Salt Formula</h3><p><code>Salt Formula</code>はmasterの<code>/srv/salt/</code>ディレクトリに配置します。saltコマンドから<code>state</code>モジュールを使い個別にSLSファイルを実行したり、SLSファイル全体を実行することができます。また、SLSファイル内の特定のIDをもったstateだけ実行することもできます。</p>
@@ -252,7 +219,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree /srv/salt/</span><br><span class="line">/srv/salt/</span><br><span class="line">├── base.sls</span><br><span class="line">├── emacs</span><br><span class="line">│   └── init.sls</span><br><span class="line">└── top.sls</span><br></pre></td></tr></table></figure>
 
 <h3 id="top-sls"><a href="#top-sls" class="headerlink" title="top.sls"></a>top.sls</h3><p>top.slsは、<code>Salt States</code>のトップファイルです。このファイルが最初に実行されます。<code>&#39;*&#39;</code>に定義されたSLSファイルはすべてのminionで実行されます。この例ではGrainsのrolesの定義に従って適用するminionを決定します。<code>roles:dev</code>をGrainsで指定しているminion1とminion2にはemacsのstateが適用されます。</p>
-<figure class="highlight yml"><figcaption><span>/srv/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">'*'</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">  <span class="attr">'roles:salt-master':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">  <span class="attr">'roles:dev':</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yml"><figcaption><span>/srv/salt/top.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">base:</span></span><br><span class="line">  <span class="string">&#x27;*&#x27;</span><span class="string">:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">base</span></span><br><span class="line">  <span class="attr">&#x27;roles:salt-master&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">  <span class="attr">&#x27;roles:dev&#x27;:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">match:</span> <span class="string">grain</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">emacs</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="base-sls"><a href="#base-sls" class="headerlink" title="base.sls"></a>base.sls</h3><p>base.slsは<code>/srv/salt/</code>直下に配置します。共通の日本語環境を設定するため、<code>locale</code>と<code>timezone</code>stateの<code>system</code>functionを使いました。</p>
 <figure class="highlight yml"><figcaption><span>/srv/salt/base.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">ja_JP.UTF-8:</span></span><br><span class="line">  <span class="string">locale.system</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Asia/Tokyo:</span></span><br><span class="line">  <span class="string">timezone.system</span></span><br></pre></td></tr></table></figure>
@@ -261,13 +228,13 @@
 <figure class="highlight yml"><figcaption><span>/srv/salt/emacs/init.sls</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">emacs:</span></span><br><span class="line">  <span class="attr">pkg.installed:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">names:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">emacs24-nox</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">emacs24-el</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="statesモジュールで個別のFormulaを適用する"><a href="#statesモジュールで個別のFormulaを適用する" class="headerlink" title="statesモジュールで個別のFormulaを適用する"></a>statesモジュールで個別のFormulaを適用する</h3><p><code>states</code>モジュールで個別のFormulaをminionに適用することができます。以下ではGrailsに定義したrolesを参照してminionを指定します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt -G <span class="string">'roles:dev'</span> state.sls emacs</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt -G <span class="string">&#x27;roles:dev&#x27;</span> state.sls emacs</span><br></pre></td></tr></table></figure>
 
 <p>minionにインストールしたEmacsのバージョンを確認してみます。IDCFクラウドの場合はすでにemacs24-noxはインストール済みなので、emacs24-elパッケージのみインストールされました。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'minion1*'</span> cmd.run <span class="string">'emacs --version'</span></span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    GNU Emacs 24.3.1</span><br><span class="line">    Copyright (C) 2013 Free Software Foundation, Inc.</span><br><span class="line">    GNU Emacs comes with ABSOLUTELY NO WARRANTY.</span><br><span class="line">    You may redistribute copies of Emacs</span><br><span class="line">    under the terms of the GNU General Public License.</span><br><span class="line">    For more information about these matters, see the file named COPYING.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;minion1*&#x27;</span> cmd.run <span class="string">&#x27;emacs --version&#x27;</span></span><br><span class="line">minion1.cs74idcfcloud.internal:</span><br><span class="line">    GNU Emacs 24.3.1</span><br><span class="line">    Copyright (C) 2013 Free Software Foundation, Inc.</span><br><span class="line">    GNU Emacs comes with ABSOLUTELY NO WARRANTY.</span><br><span class="line">    You may redistribute copies of Emacs</span><br><span class="line">    under the terms of the GNU General Public License.</span><br><span class="line">    For more information about these matters, see the file named COPYING.</span><br></pre></td></tr></table></figure>
 
 <h3 id="stateモジュールで全てのFormulaを適用する"><a href="#stateモジュールで全てのFormulaを適用する" class="headerlink" title="stateモジュールで全てのFormulaを適用する"></a>stateモジュールで全てのFormulaを適用する</h3><p><code>highstate</code>functionを使い、<code>Salt Formula</code>のすべてのSLSファイルをminionに適用します。<code>&#39;*&#39;</code>のワイルドカードを指定して、すべてのminionを対象にします。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">'*'</span> state.highstate</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ salt <span class="string">&#x27;*&#x27;</span> state.highstate</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -304,7 +271,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -355,7 +321,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLSファイル"><span class="nav-number">1.</span> <span class="nav-text">SLSファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Salt-Formula"><span class="nav-number">2.</span> <span class="nav-text">Salt Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#masterのディレクトリ構成"><span class="nav-number">3.</span> <span class="nav-text">masterのディレクトリ構成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top-sls"><span class="nav-number">4.</span> <span class="nav-text">top.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#base-sls"><span class="nav-number">5.</span> <span class="nav-text">base.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emacs-Formula"><span class="nav-number">6.</span> <span class="nav-text">emacs Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#statesモジュールで個別のFormulaを適用する"><span class="nav-number">7.</span> <span class="nav-text">statesモジュールで個別のFormulaを適用する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stateモジュールで全てのFormulaを適用する"><span class="nav-number">8.</span> <span class="nav-text">stateモジュールで全てのFormulaを適用する</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLS%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">SLSファイル</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Salt-Formula"><span class="nav-number">2.</span> <span class="nav-text">Salt Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#master%E3%81%AE%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E6%88%90"><span class="nav-number">3.</span> <span class="nav-text">masterのディレクトリ構成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#top-sls"><span class="nav-number">4.</span> <span class="nav-text">top.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#base-sls"><span class="nav-number">5.</span> <span class="nav-text">base.sls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emacs-Formula"><span class="nav-number">6.</span> <span class="nav-text">emacs Formula</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#states%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%A7%E5%80%8B%E5%88%A5%E3%81%AEFormula%E3%82%92%E9%81%A9%E7%94%A8%E3%81%99%E3%82%8B"><span class="nav-number">7.</span> <span class="nav-text">statesモジュールで個別のFormulaを適用する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#state%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%A7%E5%85%A8%E3%81%A6%E3%81%AEFormula%E3%82%92%E9%81%A9%E7%94%A8%E3%81%99%E3%82%8B"><span class="nav-number">8.</span> <span class="nav-text">stateモジュールで全てのFormulaを適用する</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -387,10 +353,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -415,9 +384,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -457,13 +426,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

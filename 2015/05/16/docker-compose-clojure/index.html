@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,26 +13,26 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="前回Docker ComposeでSailsの開発環境を用意しました。Clojureの勉強用環境もDocker Composeで作ってみます。開発用のJavaはDockerコンテナを使いながら、ホストマシンのEmacsを使ってコードを編集できるようにします。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker Composeを使ってClojure開発環境を作る">
 <meta property="og:url" content="https://masato.github.io/2015/05/16/docker-compose-clojure/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="前回Docker ComposeでSailsの開発環境を用意しました。Clojureの勉強用環境もDocker Composeで作ってみます。開発用のJavaはDockerコンテナを使いながら、ホストマシンのEmacsを使ってコードを編集できるようにします。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-05-16T08:16:17.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.586Z">
+<meta property="article:modified_time" content="2015-05-16T08:16:17.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Clojure">
-<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="ClojureScript">
 <meta property="article:tag" content="Compojure">
 <meta name="twitter:card" content="summary">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Docker Composeを使ってClojure開発環境を作る | masato's blog</title>
+  <title>Docker Composeを使ってClojure開発環境を作る | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: May 16 2015 17:16:17" itemprop="dateCreated datePublished" datetime="2015-05-16T17:16:17+09:00">May 16 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">前回Docker ComposeでSailsの開発環境を用意しました。Clojureの勉強用環境もDocker Composeで作ってみます。開発用のJavaはDockerコンテナを使いながら、ホストマシンのEmacsを使ってコードを編集できるようにします。</div>
@@ -242,7 +209,7 @@
 
       
         <p>前回Docker Composeで<a href="/2015/04/30/sails-pm2-docker-compose/">Sailsの開発環境</a>を用意しました。Clojureの勉強用環境もDocker Composeで作ってみます。開発用のJavaはDockerコンテナを使いながら、ホストマシンのEmacsを使ってコードを編集できるようにします。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>プロジェクトのディレクトリを作成します。Dockerfile、docker-compose.yml、m2ディレクトリを作成します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ tree .</span><br><span class="line">.</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">└── m2</span><br></pre></td></tr></table></figure>
@@ -250,8 +217,8 @@
 <p>DockerとDocker Composeのバージョンを確認しておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker version</span><br><span class="line">...</span><br><span class="line">Server version: 1.6.0</span><br><span class="line">$ docker-compose --version</span><br><span class="line">docker-compose 1.2.0</span><br></pre></td></tr></table></figure>
 
-<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>ベースイメージはオフィシャルの<a href="https://registry.hub.docker.com/_/clojure/" target="_blank" rel="noopener">clojure</a>を使います。Dockerホストの作業ユーザーと同じuidでユーザーを作成して、ボリューム内に作成されたファイルを編集できるようにします。</p>
-<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">'docker ALL=(ALL) NOPASSWD:ALL'</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">"lein"</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>ベースイメージはオフィシャルの<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/_/clojure/">clojure</a>を使います。Dockerホストの作業ユーザーと同じuidでユーザーを作成して、ボリューム内に作成されたファイルを編集できるようにします。</p>
+<figure class="highlight bash"><figcaption><span>~/clojure_apps/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM clojure</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">WORKDIR /usr/src/app</span><br><span class="line"></span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install sudo net-tools &amp;&amp; \</span><br><span class="line">  rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">  adduser docker sudo &amp;&amp; \</span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&#x27;docker ALL=(ALL) NOPASSWD:ALL&#x27;</span> &gt;&gt; /etc/sudoers &amp;&amp; \</span><br><span class="line">  mkdir /home/docker/.m2 &amp;&amp; \</span><br><span class="line">  chown -R docker:docker /usr/src/app /home/docker/.m2</span><br><span class="line"></span><br><span class="line">VOLUME /home/docker/.m2</span><br><span class="line">USER docker</span><br><span class="line">RUN lein</span><br><span class="line"></span><br><span class="line">ENTRYPOINT [<span class="string">&quot;lein&quot;</span>]</span><br></pre></td></tr></table></figure>
 
 <p>Dockerイメージは開発中も変更がないのでローカルにビルドしておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker build -t clojure .</span><br></pre></td></tr></table></figure>
@@ -260,34 +227,34 @@
 <figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br></pre></td></tr></table></figure>
 
 <p>Docker Composeのleinサービスをワンショットで実行します。初回実行時に<code>/home/docker/.m2</code>にMavenよりjarファイルがダウンロードされます。<code>.m2</code>ディレクトリはDockerホストにマップしているので2回目以降からはダウンロード済みのjarファイルを使います。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker-compose run --rm lein repl</span><br><span class="line">...</span><br><span class="line">nREPL server started on port 54118 on host 127.0.0.1 - nrepl://127.0.0.1:54118</span><br><span class="line">REPL-y 0.3.5, nREPL 0.2.6</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_79-b14</span><br><span class="line">    Docs: (doc <span class="keyword">function</span>-name-here)</span><br><span class="line">          (find-doc <span class="string">"part-of-name-here"</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> <span class="keyword">function</span>-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker-compose run --rm lein repl</span><br><span class="line">...</span><br><span class="line">nREPL server started on port 54118 on host 127.0.0.1 - nrepl://127.0.0.1:54118</span><br><span class="line">REPL-y 0.3.5, nREPL 0.2.6</span><br><span class="line">Clojure 1.6.0</span><br><span class="line">OpenJDK 64-Bit Server VM 1.7.0_79-b14</span><br><span class="line">    Docs: (doc function-name-here)</span><br><span class="line">          (find-doc <span class="string">&quot;part-of-name-here&quot;</span>)</span><br><span class="line">  Source: (<span class="built_in">source</span> function-name-here)</span><br><span class="line"> Javadoc: (javadoc java-object-or-class-here)</span><br><span class="line">    Exit: Control+D or (<span class="built_in">exit</span>) or (quit)</span><br><span class="line"> Results: Stored <span class="keyword">in</span> vars *1, *2, *3, an exception <span class="keyword">in</span> *e</span><br><span class="line"></span><br><span class="line">user=&gt;</span><br></pre></td></tr></table></figure>
 
-<h2 id="Compojure"><a href="#Compojure" class="headerlink" title="Compojure"></a>Compojure</h2><p>Webフレームワークの<a href="https://github.com/weavejester/compojure" target="_blank" rel="noopener">Compojure</a>を使ったプロジェクトを作成してみます。</p>
+<h2 id="Compojure"><a href="#Compojure" class="headerlink" title="Compojure"></a>Compojure</h2><p>Webフレームワークの<a target="_blank" rel="noopener" href="https://github.com/weavejester/compojure">Compojure</a>を使ったプロジェクトを作成してみます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/clojure_apps</span><br><span class="line">$ docker-compose run --rm lein new compojure hello-world</span><br><span class="line">Retrieving compojure/lein-template/0.4.2/lein-template-0.4.2.pom from clojars</span><br><span class="line">Retrieving compojure/lein-template/0.4.2/lein-template-0.4.2.jar from clojars</span><br><span class="line">Removing clojureapps_lein_run_1...</span><br></pre></td></tr></table></figure>
 
 <p>カレントディレクトリにCompojureのプロジェクトが作成されました。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree hello-world/</span><br><span class="line">hello-world/</span><br><span class="line">├── README.md</span><br><span class="line">├── project.clj</span><br><span class="line">├── resources</span><br><span class="line">│   └── public</span><br><span class="line">├── src</span><br><span class="line">│   └── hello_world</span><br><span class="line">│       └── handler.clj</span><br><span class="line">└── <span class="built_in">test</span></span><br><span class="line">    └── hello_world</span><br><span class="line">        └── handler_test.clj</span><br></pre></td></tr></table></figure>
 
 <p>Docker ComposeからCompojureを起動するためにdocker-compose.ymlを編集します。<code>working_dir</code>にComposeプロジェクトのディレクトリを指定します。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p><a href="https://github.com/ring-clojure/ring" target="_blank" rel="noopener">Ring</a>サーバーを起動します。<code>lein ring server</code>で起動すると<code>No X11 DISPLAY variable was set</code>とエラーがでてしまいます。ヘッドレスなDockerなので<code>lein ring server-headless</code>で起動します。また<code>--service-ports</code>フラグを指定してDockerホストにポートをマップします。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ring-clojure/ring">Ring</a>サーバーを起動します。<code>lein ring server</code>で起動すると<code>No X11 DISPLAY variable was set</code>とエラーがでてしまいます。ヘッドレスなDockerなので<code>lein ring server-headless</code>で起動します。また<code>--service-ports</code>フラグを指定してDockerホストにポートをマップします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports lein ring server-headless</span><br><span class="line">...</span><br><span class="line">2015-05-16 09:42:00.573:INFO:oejs.Server:jetty-7.6.8.v20121106</span><br><span class="line">2015-05-16 09:42:00.608:INFO:oejs.AbstractConnector:Started SelectChannelConnector@0.0.0.0:3000</span><br><span class="line">Started server on port 3000</span><br></pre></td></tr></table></figure>
 
 <p>初回起動時にはjarファイルをダウンロードするためすこし時間がかかります。Dockerホストで別のシェルを起動してサーバーの起動を確認します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -s localhost:3000</span><br><span class="line">Hello World</span><br></pre></td></tr></table></figure>
 
 <h2 id="Clojure-Script-REPL"><a href="#Clojure-Script-REPL" class="headerlink" title="Clojure Script REPL"></a>Clojure Script REPL</h2><p>CompojureプロジェクトでClojure Script REPLを使ってみます。<code>project.clj</code>に<code>:plugin</code>と<code>:cljsbuild</code>ディレクティブを追加します。Clojureは1.6を使っているのでClojure Scriptは1.6系の<code>0.0-3126</code>を指定します。</p>
-<figure class="highlight"><figcaption><span>~/clojure_apps/hello-world/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> hello-world <span class="string">"0.1.0-SNAPSHOT"</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">"FIXME: write description"</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">"http://example.com/FIXME"</span></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">"2.0.0"</span></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">"1.6.0"</span>]</span><br><span class="line">                 [compojure <span class="string">"1.3.1"</span>]</span><br><span class="line">                 [ring/ring-defaults <span class="string">"0.1.2"</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">"0.0-3126"</span>]]</span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-ring <span class="string">"0.8.13"</span>]</span><br><span class="line">            [lein-cljsbuild <span class="string">"1.0.6"</span>]]</span><br><span class="line">  <span class="symbol">:ring</span> &#123;<span class="symbol">:handler</span> hello-world.handler/app&#125;</span><br><span class="line">  <span class="symbol">:profiles</span></span><br><span class="line">  &#123;<span class="symbol">:dev</span> &#123;<span class="symbol">:dependencies</span> [[javax.servlet/servlet-api <span class="string">"2.5"</span>]</span><br><span class="line">                        [ring-mock <span class="string">"0.1.5"</span>]]&#125;&#125;</span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;</span><br><span class="line">              <span class="symbol">:builds</span> [&#123;</span><br><span class="line">                        <span class="symbol">:source-paths</span> [<span class="string">"src-cljs"</span>]</span><br><span class="line">                        <span class="symbol">:compiler</span> &#123;</span><br><span class="line">                                   <span class="symbol">:output-to</span> <span class="string">"resources/public/main.js"</span></span><br><span class="line">                                   <span class="symbol">:optimizations</span> <span class="symbol">:whitespace</span></span><br><span class="line">                                   :pretty-print true&#125;&#125;]&#125;))</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><figcaption><span>~/clojure_apps/hello-world/project.clj</span></figcaption><table><tr><td class="code"><pre><span class="line">(<span class="name">defproject</span> hello-world <span class="string">&quot;0.1.0-SNAPSHOT&quot;</span></span><br><span class="line">  <span class="symbol">:description</span> <span class="string">&quot;FIXME: write description&quot;</span></span><br><span class="line">  <span class="symbol">:url</span> <span class="string">&quot;http://example.com/FIXME&quot;</span></span><br><span class="line">  <span class="symbol">:min-lein-version</span> <span class="string">&quot;2.0.0&quot;</span></span><br><span class="line">  <span class="symbol">:dependencies</span> [[org.clojure/clojure <span class="string">&quot;1.6.0&quot;</span>]</span><br><span class="line">                 [compojure <span class="string">&quot;1.3.1&quot;</span>]</span><br><span class="line">                 [ring/ring-defaults <span class="string">&quot;0.1.2&quot;</span>]</span><br><span class="line">                 [org.clojure/clojurescript <span class="string">&quot;0.0-3126&quot;</span>]]</span><br><span class="line">  <span class="symbol">:plugins</span> [[lein-ring <span class="string">&quot;0.8.13&quot;</span>]</span><br><span class="line">            [lein-cljsbuild <span class="string">&quot;1.0.6&quot;</span>]]</span><br><span class="line">  <span class="symbol">:ring</span> &#123;<span class="symbol">:handler</span> hello-world.handler/app&#125;</span><br><span class="line">  <span class="symbol">:profiles</span></span><br><span class="line">  &#123;<span class="symbol">:dev</span> &#123;<span class="symbol">:dependencies</span> [[javax.servlet/servlet-api <span class="string">&quot;2.5&quot;</span>]</span><br><span class="line">                        [ring-mock <span class="string">&quot;0.1.5&quot;</span>]]&#125;&#125;</span><br><span class="line">  <span class="symbol">:cljsbuild</span> &#123;</span><br><span class="line">              <span class="symbol">:builds</span> [&#123;</span><br><span class="line">                        <span class="symbol">:source-paths</span> [<span class="string">&quot;src-cljs&quot;</span>]</span><br><span class="line">                        <span class="symbol">:compiler</span> &#123;</span><br><span class="line">                                   <span class="symbol">:output-to</span> <span class="string">&quot;resources/public/main.js&quot;</span></span><br><span class="line">                                   <span class="symbol">:optimizations</span> <span class="symbol">:whitespace</span></span><br><span class="line">                                   :pretty-print true&#125;&#125;]&#125;))</span><br></pre></td></tr></table></figure>
 
 <p>docker-compose.ymlはClojure Script用のサービスを<code>cljslein</code>として<code>lein</code>サービスをマージして用意します。</p>
-<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9000:9000"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>~/clojure_apps/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">lein:</span> <span class="meta">&amp;defaults</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">clojure</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/usr/src/app</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">./m2:/home/docker/.m2</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/usr/src/app/hello-world</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;3000:3000&quot;</span></span><br><span class="line"><span class="attr">cljslein:</span></span><br><span class="line">  <span class="string">&lt;&lt;:</span> <span class="meta">*defaults</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;9000:9000&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>Docker Composeからcljsleinサービスを実行します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose run --rm --service-ports cljslein trampoline cljsbuild repl-rhino</span><br><span class="line">Running Rhino-based ClojureScript REPL.</span><br><span class="line">...</span><br><span class="line">Retrieving org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar from central</span><br><span class="line">Retrieving org/clojure/tools.reader/0.8.16/tools.reader-0.8.16.jar from central</span><br><span class="line">To quit, <span class="built_in">type</span>: :cljs/quit</span><br><span class="line">ClojureScript:cljs.user&gt;</span><br></pre></td></tr></table></figure>
 
 <p>Clojure Script REPLからJavaScriptのDate関数を呼んでみます。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ClojureScript:cljs.user&gt; (js/Date)</span><br><span class="line"><span class="comment">#inst "2015-05-16T10:17:55.200-00:00"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ClojureScript:cljs.user&gt; (js/Date)</span><br><span class="line"><span class="comment">#inst &quot;2015-05-16T10:17:55.200-00:00&quot;</span></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -297,8 +264,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Clojure/" rel="tag"># Clojure</a>
-              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/ClojureScript/" rel="tag"># ClojureScript</a>
               <a href="/tags/Compojure/" rel="tag"># Compojure</a>
           </div>
@@ -324,7 +291,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -375,7 +341,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.1.</span> <span class="nav-text">Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REPL"><span class="nav-number">2.</span> <span class="nav-text">REPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compojure"><span class="nav-number">3.</span> <span class="nav-text">Compojure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clojure-Script-REPL"><span class="nav-number">4.</span> <span class="nav-text">Clojure Script REPL</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">1.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">1.1.</span> <span class="nav-text">Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#REPL"><span class="nav-number">2.</span> <span class="nav-text">REPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Compojure"><span class="nav-number">3.</span> <span class="nav-text">Compojure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clojure-Script-REPL"><span class="nav-number">4.</span> <span class="nav-text">Clojure Script REPL</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -407,10 +373,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -435,9 +404,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -477,13 +446,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

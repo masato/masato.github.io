@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,22 +13,22 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="PyCUDAとTheanoでGPU計算をするのが目的です。どう考えてもWindowsで64bitのPythonの開発はすべきではないのですが、手持ちのノートPCに開発環境を構築してみました。中古で古いGeForceのグラフィックボードを搭載したノートPCを購入してUbuntuをインストールした方が幸せになれます。主に以下のサイトを参考にして作業します。Installing Theano with">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows7にTDM-GCCとMinGW-w64で64bitのPython2.7環境を構築する">
 <meta property="og:url" content="https://masato.github.io/2015/02/24/tdm-gcc-mingw-w64-python27-windows7/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="PyCUDAとTheanoでGPU計算をするのが目的です。どう考えてもWindowsで64bitのPythonの開発はすべきではないのですが、手持ちのノートPCに開発環境を構築してみました。中古で古いGeForceのグラフィックボードを搭載したノートPCを購入してUbuntuをインストールした方が幸せになれます。主に以下のサイトを参考にして作業します。Installing Theano with">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-02-24T11:11:22.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.909Z">
+<meta property="article:modified_time" content="2015-02-24T11:11:22.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Windows7">
 <meta property="article:tag" content="Python">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>Windows7にTDM-GCCとMinGW-w64で64bitのPython2.7環境を構築する | masato's blog</title>
+  <title>Windows7にTDM-GCCとMinGW-w64で64bitのPython2.7環境を構築する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -93,7 +93,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -114,14 +114,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -130,51 +129,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -191,11 +166,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -208,7 +182,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -218,19 +192,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Feb 24 2015 20:11:22" itemprop="dateCreated datePublished" datetime="2015-02-24T20:11:22+09:00">Feb 24 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">PyCUDAとTheanoでGPU計算をするのが目的です。どう考えてもWindowsで64bitのPythonの開発はすべきではないのですが、手持ちのノートPCに開発環境を構築してみました。中古で古いGeForceのグラフィックボードを搭載したノートPCを購入してUbuntuをインストールした方が幸せになれます。主に以下のサイトを参考にして作業します。Installing Theano with GPU on Windows 64-bit Setting up a MinGW-w64 build environment</div>
@@ -246,31 +213,31 @@
       
         <p>PyCUDAとTheanoでGPU計算をするのが目的です。どう考えてもWindowsで64bitのPythonの開発はすべきではないのですが、手持ちのノートPCに開発環境を構築してみました。中古で古いGeForceのグラフィックボードを搭載したノートPCを購入してUbuntuをインストールした方が幸せになれます。主に以下のサイトを参考にして作業します。</p>
 <ul>
-<li><a href="http://pavel.surmenok.com/2014/05/31/installing-theano-with-gpu-on-windows-64-bit/" target="_blank" rel="noopener">Installing Theano with GPU on Windows 64-bit</a></li>
-<li><a href="http://ascend4.org/Setting_up_a_MinGW-w64_build_environment" target="_blank" rel="noopener">Setting up a MinGW-w64 build environment</a></li>
+<li><a target="_blank" rel="noopener" href="http://pavel.surmenok.com/2014/05/31/installing-theano-with-gpu-on-windows-64-bit/">Installing Theano with GPU on Windows 64-bit</a></li>
+<li><a target="_blank" rel="noopener" href="http://ascend4.org/Setting_up_a_MinGW-w64_build_environment">Setting up a MinGW-w64 build environment</a></li>
 </ul>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="WindowsのGCC環境"><a href="#WindowsのGCC環境" class="headerlink" title="WindowsのGCC環境"></a>WindowsのGCC環境</h2><p>WindowsでGCCを使う場合はいろいろな方法がありますが今回は以下の組み合わせにしました。</p>
 <ul>
-<li><a href="http://www.mingw.org/" target="_blank" rel="noopener">MinGW</a>: Windows用のミニマルなGNU/GCC環境</li>
-<li><a href="http://mingw-w64.sourceforge.net/" target="_blank" rel="noopener">MinGW-w64</a>: MinGWからフォークした64bit環境</li>
-<li><a href="http://tdm-gcc.tdragon.net/" target="_blank" rel="noopener">TDM-GCC</a>: 最新のGCCに対応、MinGWとMinGW-w64をオプションで指定可能</li>
-<li><a href="http://www.mingw.org/wiki/msys" target="_blank" rel="noopener">MSYS</a>: コマンドライン環境</li>
+<li><a target="_blank" rel="noopener" href="http://www.mingw.org/">MinGW</a>: Windows用のミニマルなGNU/GCC環境</li>
+<li><a target="_blank" rel="noopener" href="http://mingw-w64.sourceforge.net/">MinGW-w64</a>: MinGWからフォークした64bit環境</li>
+<li><a target="_blank" rel="noopener" href="http://tdm-gcc.tdragon.net/">TDM-GCC</a>: 最新のGCCに対応、MinGWとMinGW-w64をオプションで指定可能</li>
+<li><a target="_blank" rel="noopener" href="http://www.mingw.org/wiki/msys">MSYS</a>: コマンドライン環境</li>
 </ul>
-<h2 id="Python-2-7"><a href="#Python-2-7" class="headerlink" title="Python 2.7"></a>Python 2.7</h2><p><a href="https://www.python.org/download/releases/2.7/" target="_blank" rel="noopener">Python 2.7 Release</a>から<a href="https://www.python.org/ftp/python/2.7/python-2.7.amd64.msi" target="_blank" rel="noopener">python-2.7.amd64.msi</a>のインストーラーをダウンロードして実行します。環境変数PATHにフォルダを追加します。</p>
+<h2 id="Python-2-7"><a href="#Python-2-7" class="headerlink" title="Python 2.7"></a>Python 2.7</h2><p><a target="_blank" rel="noopener" href="https://www.python.org/download/releases/2.7/">Python 2.7 Release</a>から<a target="_blank" rel="noopener" href="https://www.python.org/ftp/python/2.7/python-2.7.amd64.msi">python-2.7.amd64.msi</a>のインストーラーをダウンロードして実行します。環境変数PATHにフォルダを追加します。</p>
 <ul>
 <li>コンピューター右クリック &gt; プロパティ &gt; システムの詳細設定 &gt; 詳細設定 &gt; 環境変数 &gt; システム環境変数 &gt; PATHの最後に追加</li>
 </ul>
 <figure class="highlight dos"><table><tr><td class="code"><pre><span class="line"><span class="function">C:\<span class="title">Python27</span>;<span class="title">C</span>:\<span class="title">Python27</span>\<span class="title">Scripts</span></span></span><br></pre></td></tr></table></figure>
 
-<h2 id="MinGWとMSYS"><a href="#MinGWとMSYS" class="headerlink" title="MinGWとMSYS"></a>MinGWとMSYS</h2><p><a href="http://www.mingw.org/" target="_blank" rel="noopener">MinGW</a>から<a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download" target="_blank" rel="noopener">mingw-get-setup.exe</a>のインストーラーをダウンロードして実行します。32bitと64bitのGCC環境を用意するためフォルダを分けてインストールします。</p>
+<h2 id="MinGWとMSYS"><a href="#MinGWとMSYS" class="headerlink" title="MinGWとMSYS"></a>MinGWとMSYS</h2><p><a target="_blank" rel="noopener" href="http://www.mingw.org/">MinGW</a>から<a target="_blank" rel="noopener" href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download">mingw-get-setup.exe</a>のインストーラーをダウンロードして実行します。32bitと64bitのGCC環境を用意するためフォルダを分けてインストールします。</p>
 <ul>
 <li>インストール先: <code>c:\MinGW\32</code></li>
 <li>graphical user interfceのチェックを外す</li>
 </ul>
 <p>インストールが終了したらprofile.xmlを編集してフォルダ構成を変更します。</p>
-<figure class="highlight xml"><figcaption><span>c:\mingw\32\var\lib\mingw-get\data\profile.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">profile</span> <span class="attr">project</span>=<span class="string">"MinGW"</span> <span class="attr">application</span>=<span class="string">"mingw-get"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">repository</span> <span class="attr">uri</span>=<span class="string">"http://prdownloads.sourceforge.net/mingw/%F.xml.lzma?download"</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">system-map</span> <span class="attr">id</span>=<span class="string">"default"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">"mingw32"</span> <span class="attr">path</span>=<span class="string">"%R"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">"MSYS"</span> <span class="attr">path</span>=<span class="string">"%R/../msys"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">system-map</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><figcaption><span>c:\mingw\32\var\lib\mingw-get\data\profile.xml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">profile</span> <span class="attr">project</span>=<span class="string">&quot;MinGW&quot;</span> <span class="attr">application</span>=<span class="string">&quot;mingw-get&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">repository</span> <span class="attr">uri</span>=<span class="string">&quot;http://prdownloads.sourceforge.net/mingw/%F.xml.lzma?download&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">system-map</span> <span class="attr">id</span>=<span class="string">&quot;default&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">&quot;mingw32&quot;</span> <span class="attr">path</span>=<span class="string">&quot;%R&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">sysroot</span> <span class="attr">subsystem</span>=<span class="string">&quot;MSYS&quot;</span> <span class="attr">path</span>=<span class="string">&quot;%R/../msys&quot;</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">system-map</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">profile</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="mingw-getコマンドで32bit環境構築"><a href="#mingw-getコマンドで32bit環境構築" class="headerlink" title="mingw-getコマンドで32bit環境構築"></a>mingw-getコマンドで32bit環境構築</h3><p>fstabを編集して32bit環境に切り換えます。</p>
 <figure class="highlight bash"><figcaption><span>c:\mingw\msys\etc\fstab</span></figcaption><table><tr><td class="code"><pre><span class="line">c:/mingw/32   /mingw</span><br></pre></td></tr></table></figure>
@@ -294,7 +261,7 @@
 <li>デスクトップのmsys.bat右クリック &gt; アイコンの変更</li>
 <li>アイコンの場所: <code>c:\mingw\msys\msys.ico</code></li>
 </ul>
-<h2 id="TDM-GCC-と-MinGW-w64"><a href="#TDM-GCC-と-MinGW-w64" class="headerlink" title="TDM-GCC と MinGW-w64"></a>TDM-GCC と MinGW-w64</h2><p><a href="http://tdm-gcc.tdragon.net/" target="_blank" rel="noopener">TDM-GCC</a>の<a href="http://tdm-gcc.tdragon.net/download" target="_blank" rel="noopener">ダウンロードページ</a>からTDM64 MinGW-w64 editionの<a href="http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-4.9.2.exe/download" target="_blank" rel="noopener">tdm-gcc-4.9.2.exe</a>をダウンロードします。</p>
+<h2 id="TDM-GCC-と-MinGW-w64"><a href="#TDM-GCC-と-MinGW-w64" class="headerlink" title="TDM-GCC と MinGW-w64"></a>TDM-GCC と MinGW-w64</h2><p><a target="_blank" rel="noopener" href="http://tdm-gcc.tdragon.net/">TDM-GCC</a>の<a target="_blank" rel="noopener" href="http://tdm-gcc.tdragon.net/download">ダウンロードページ</a>からTDM64 MinGW-w64 editionの<a target="_blank" rel="noopener" href="http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-4.9.2.exe/download">tdm-gcc-4.9.2.exe</a>をダウンロードします。</p>
 <ul>
 <li>インストール先: <code>c:\mingw\64</code></li>
 <li>全てのcomponentsをインストール、Add to PATHはチェックを外す</li>
@@ -307,31 +274,31 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gcc --version</span><br><span class="line">gcc.exe (tdm64-1) 4.9.2</span><br><span class="line">Copyright (C) 2014 Free Software Foundation, Inc.</span><br><span class="line">This is free software; see the <span class="built_in">source</span> <span class="keyword">for</span> copying conditions.  There is NO</span><br><span class="line">warranty; not even <span class="keyword">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span><br></pre></td></tr></table></figure>
 
 <p>TDM-GCCは32bitと64bitをオプションを指定してターゲットを変更することができます。MSYSホームディレクトリの<code>c:\mingw\msys\home\masato\.profile</code>を編集してMSYSの起動時にビルド環境を表示するようにします。</p>
-<figure class="highlight bash"><figcaption><span>~/.profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># we use the reported architecture of the 'gcc' in our path to </span></span><br><span class="line"><span class="comment"># determine which Python and other utilities we will be using.</span></span><br><span class="line">_arch=`gcc -dumpmachine`</span><br><span class="line"><span class="comment">#echo "ARCH=$_arch"</span></span><br><span class="line"><span class="keyword">if</span> grep <span class="string">"^x86_64-"</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$_arch</span>"</span> &gt;/dev/null ; <span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">"MINGW 64 BIT BUILD ENVIRONMENT"</span></span><br><span class="line">	_pydir=<span class="string">"/c/Python27"</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">"MINGW 32 BIT BUILD ENVIRONMENT"</span></span><br><span class="line">	_pydir=<span class="string">"/c/Python27_32"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$_pydir</span>:<span class="variable">$_pydir</span>/Scripts</span><br><span class="line"></span><br><span class="line"><span class="comment"># note that mingw-get will still install all its stuff to c:\mingw\32,</span></span><br><span class="line"><span class="comment"># because of the contents of its profile.xml file.</span></span><br><span class="line"><span class="built_in">alias</span> mingw-get=<span class="string">"/c/mingw/32/bin/mingw-get"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/.profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># we use the reported architecture of the &#x27;gcc&#x27; in our path to </span></span><br><span class="line"><span class="comment"># determine which Python and other utilities we will be using.</span></span><br><span class="line">_arch=`gcc -dumpmachine`</span><br><span class="line"><span class="comment">#echo &quot;ARCH=$_arch&quot;</span></span><br><span class="line"><span class="keyword">if</span> grep <span class="string">&quot;^x86_64-&quot;</span> &lt;&lt;&lt; <span class="string">&quot;<span class="variable">$_arch</span>&quot;</span> &gt;/dev/null ; <span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;MINGW 64 BIT BUILD ENVIRONMENT&quot;</span></span><br><span class="line">	_pydir=<span class="string">&quot;/c/Python27&quot;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;MINGW 32 BIT BUILD ENVIRONMENT&quot;</span></span><br><span class="line">	_pydir=<span class="string">&quot;/c/Python27_32&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$_pydir</span>:<span class="variable">$_pydir</span>/Scripts</span><br><span class="line"></span><br><span class="line"><span class="comment"># note that mingw-get will still install all its stuff to c:\mingw\32,</span></span><br><span class="line"><span class="comment"># because of the contents of its profile.xml file.</span></span><br><span class="line"><span class="built_in">alias</span> mingw-get=<span class="string">&quot;/c/mingw/32/bin/mingw-get&quot;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="Fortran"><a href="#Fortran" class="headerlink" title="Fortran"></a>Fortran</h3><p><a href="http://www.scipy.org/" target="_blank" rel="noopener">SciPy</a>のビルドに必要なようなのでインストールしました。実際にはカスタムのインストラーを使うことにしたので不要かも知れません。TDM-GCCではデフォルトでFortranがインストールされません。</p>
-<p><a href="http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-webdl.exe/download" target="_blank" rel="noopener">tdm-gcc-webdl.exe</a>をダウンロードします。<code>Manage</code>ボタンを押してインストールされた環境の構成変更をします。</p>
+<h3 id="Fortran"><a href="#Fortran" class="headerlink" title="Fortran"></a>Fortran</h3><p><a target="_blank" rel="noopener" href="http://www.scipy.org/">SciPy</a>のビルドに必要なようなのでインストールしました。実際にはカスタムのインストラーを使うことにしたので不要かも知れません。TDM-GCCではデフォルトでFortranがインストールされません。</p>
+<p><a target="_blank" rel="noopener" href="http://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/tdm-gcc-webdl.exe/download">tdm-gcc-webdl.exe</a>をダウンロードします。<code>Manage</code>ボタンを押してインストールされた環境の構成変更をします。</p>
 <ul>
 <li>インストール先: <code>c:\mingw\64</code></li>
 <li>全てのcomponentsをインストール、Add to PATHはチェックを外す</li>
 </ul>
-<h2 id="SCons"><a href="#SCons" class="headerlink" title="SCons"></a>SCons</h2><p><a href="http://www.scons.org/" target="_blank" rel="noopener">SCons</a>のビルドツールをインストールします。デスクトップに作成したmysy.batを起動します。</p>
+<h2 id="SCons"><a href="#SCons" class="headerlink" title="SCons"></a>SCons</h2><p><a target="_blank" rel="noopener" href="http://www.scons.org/">SCons</a>のビルドツールをインストールします。デスクトップに作成したmysy.batを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~</span><br><span class="line">$ wget http://prdownloads.sourceforge.net/scons/scons-2.3.4.tar.gz</span><br><span class="line">$ tar zxf scons-2.3.4.tar.gz</span><br><span class="line">$ <span class="built_in">cd</span> scons-2.3.4</span><br><span class="line">$ python setup.py bdist_wininst</span><br></pre></td></tr></table></figure>
 
 <p>GUIインストーラーを起動します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ start dist/scons-2.3.4.win-amd64.exe</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ start dist/scons-2.3.4.win-amd64.exe </span><br></pre></td></tr></table></figure>
 
 <p>Scriptsフォルダにコピーします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cp /c/Python27/Scripts/scons.py /c/Python27/Scripts/scons</span><br></pre></td></tr></table></figure>
 
 <p>バージョンを確認します。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ scons --version</span><br><span class="line">SCons by Steven Knight et al.:</span><br><span class="line">        script: v2.3.4, 2014/09/27 12:51:43, by garyo on lubuntu</span><br><span class="line">        engine: v2.3.4, 2014/09/27 12:51:43, by garyo on lubuntu</span><br><span class="line">        engine path: [<span class="string">'c:\\Python27\\Lib\\site-packages\\scons-2.3.4\\SCons'</span>]</span><br><span class="line">Copyright (c) 2001 - 2014 The SCons Foundation</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ scons --version</span><br><span class="line">SCons by Steven Knight et al.:</span><br><span class="line">        script: v2.3.4, 2014/09/27 12:51:43, by garyo on lubuntu</span><br><span class="line">        engine: v2.3.4, 2014/09/27 12:51:43, by garyo on lubuntu</span><br><span class="line">        engine path: [<span class="string">&#x27;c:\\Python27\\Lib\\site-packages\\scons-2.3.4\\SCons&#x27;</span>]</span><br><span class="line">Copyright (c) 2001 - 2014 The SCons Foundation</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="Dependency-Walker"><a href="#Dependency-Walker" class="headerlink" title="Dependency Walker"></a>Dependency Walker</h2><p><a href="http://www.dependencywalker.com/" target="_blank" rel="noopener">Dependency Walker</a>をインストールします。Dependency WalkerはWindowsモジュールの依存関係を調べることができます。zipをダウンロードして<code>/c/mingw/64/bin</code>に解凍します。</p>
+<h2 id="Dependency-Walker"><a href="#Dependency-Walker" class="headerlink" title="Dependency Walker"></a>Dependency Walker</h2><p><a target="_blank" rel="noopener" href="http://www.dependencywalker.com/">Dependency Walker</a>をインストールします。Dependency WalkerはWindowsモジュールの依存関係を調べることができます。zipをダウンロードして<code>/c/mingw/64/bin</code>に解凍します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget http://www.dependencywalker.com/depends22_x64.zip</span><br><span class="line">$ unzip depends22_x64.zip -d /c/mingw/64/bin</span><br><span class="line">Archive:  depends22_x64.zip</span><br><span class="line">  inflating: /c/mingw/64/bin/depends.chm</span><br><span class="line">  inflating: /c/mingw/64/bin/depends.dll</span><br><span class="line">  inflating: /c/mingw/64/bin/depends.exe</span><br></pre></td></tr></table></figure>
 
-<h2 id="SWIG"><a href="#SWIG" class="headerlink" title="SWIG"></a>SWIG</h2><p><a href="http://www.swig.org/" target="_blank" rel="noopener">SWIG</a>はC/C++のライブラリをいろいろ言語から呼び出すためのツールです。zipをダウンロードして<code>/c/mingw/msys/opt</code>にインストールします。</p>
+<h2 id="SWIG"><a href="#SWIG" class="headerlink" title="SWIG"></a>SWIG</h2><p><a target="_blank" rel="noopener" href="http://www.swig.org/">SWIG</a>はC/C++のライブラリをいろいろ言語から呼び出すためのツールです。zipをダウンロードして<code>/c/mingw/msys/opt</code>にインストールします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget http://prdownloads.sourceforge.net/swig/swigwin-3.0.5.zip</span><br><span class="line">$ mkdir -p /c/mingw/msys/opt</span><br><span class="line">$ unzip swigwin-3.0.5.zip -d /c/mingw/msys/opt</span><br></pre></td></tr></table></figure>
 
 <p><code>~/.profile</code>を編集しPATHに追加します。</p>
@@ -341,7 +308,7 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ swig -version</span><br><span class="line"></span><br><span class="line">SWIG Version 3.0.5</span><br><span class="line"></span><br><span class="line">Compiled with i586-mingw32msvc-g++ [i586-pc-mingw32msvc]</span><br><span class="line"></span><br><span class="line">Configured options: +pcre</span><br><span class="line"></span><br><span class="line">Please see http://www.swig.org <span class="keyword">for</span> reporting bugs and further information</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="GTK"><a href="#GTK" class="headerlink" title="GTK+"></a>GTK+</h2><p><a href="http://www.gtk.org/" target="_blank" rel="noopener">GTK+</a>のGUIツールキットをインストールします。インストーラーをダウンロードして実行します。</p>
+<h2 id="GTK"><a href="#GTK" class="headerlink" title="GTK+"></a>GTK+</h2><p><a target="_blank" rel="noopener" href="http://www.gtk.org/">GTK+</a>のGUIツールキットをインストールします。インストーラーをダウンロードして実行します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ wget http://sourceforge.net/projects/ascend-sim/files/thirdparty/gtk%2B-2.22.1-20101229-x64-a4.exe/download</span><br><span class="line">$ start gtk+-2.22.1-20101229-x64-a4.exe</span><br></pre></td></tr></table></figure>
 
 <p><code>~/.profile</code>を編集しPATHに追加します。</p>
@@ -350,14 +317,14 @@
 <p>msys.batを再起動してインストールの確認をします。gtk-domoを実行するとGUIが起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ gtk-demo</span><br></pre></td></tr></table></figure>
 
-<h2 id="Subversion"><a href="#Subversion" class="headerlink" title="Subversion"></a>Subversion</h2><p>Subversionは<a href="http://www.sliksvn.com/en/download" target="_blank" rel="noopener">SlikSVN</a>から<a href="https://sliksvn.com/pub/Slik-Subversion-1.8.11-x64.msi" target="_blank" rel="noopener">Slik-Subversion-1.8.11-x64.msi</a>ダウンロードしてインストールします。</p>
+<h2 id="Subversion"><a href="#Subversion" class="headerlink" title="Subversion"></a>Subversion</h2><p>Subversionは<a target="_blank" rel="noopener" href="http://www.sliksvn.com/en/download">SlikSVN</a>から<a target="_blank" rel="noopener" href="https://sliksvn.com/pub/Slik-Subversion-1.8.11-x64.msi">Slik-Subversion-1.8.11-x64.msi</a>ダウンロードしてインストールします。</p>
 <p><code>~/.profile</code>を編集しPATHに追加します。</p>
 <figure class="highlight bash"><figcaption><span>~/.profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files/SlikSvn/bin</span><br></pre></td></tr></table></figure>
 
 <p>msys.batを再起動してバージョンの確認をします。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$  svn --version</span><br><span class="line">svn, version 1.8.11-SlikSvn-1.8.11-X64 (SlikSvn/1.8.11) X64</span><br><span class="line">   compiled Dec  9 2014, 13:44:31 on x86_64-microsoft-windows6.2.9200</span><br><span class="line"></span><br><span class="line">Copyright (C) 2014 The Apache Software Foundation.</span><br></pre></td></tr></table></figure>
 
-<h2 id="python27-libの再ビルド"><a href="#python27-libの再ビルド" class="headerlink" title="python27.libの再ビルド"></a>python27.libの再ビルド</h2><p>64bit環境のPython extensionsをビルドする場合に必要な準備をします。python27.libがMinGW-w64だと動作しないため、<a href="http://sourceforge.net/p/mingw-w64/wiki2/gendef/" target="_blank" rel="noopener">gendef</a>を使ってビルドし直します。</p>
+<h2 id="python27-libの再ビルド"><a href="#python27-libの再ビルド" class="headerlink" title="python27.libの再ビルド"></a>python27.libの再ビルド</h2><p>64bit環境のPython extensionsをビルドする場合に必要な準備をします。python27.libがMinGW-w64だと動作しないため、<a target="_blank" rel="noopener" href="http://sourceforge.net/p/mingw-w64/wiki2/gendef/">gendef</a>を使ってビルドし直します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ svn co  svn://svn.code.sf.net/p/mingw-w64/code/trunk/mingw-w64-tools/gendef -r5774 ~/gendef</span><br><span class="line">$ <span class="built_in">cd</span> ~/gendef </span><br><span class="line">$ ./configure --prefix=/mingw</span><br><span class="line">$ make -j4 &amp;&amp; make install</span><br><span class="line">$ <span class="built_in">cd</span></span><br><span class="line">$ gendef --<span class="built_in">help</span></span><br><span class="line">Usage: gendef [OPTION]... [DLL]...</span><br><span class="line">Dumps DLL exports information from PE32/PE32+ executables</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p>エクスプローラーを開きpython27.dllをコピーします。</p>
@@ -365,7 +332,7 @@
 <li>コピー元: <code>c:\windows\system32\python27.dll</code></li>
 <li>コピー先: <code>c:\Python27\libs\python27.dll</code></li>
 </ul>
-<p><a href="https://github.com/kivy/kivy/wiki/Creating-a-64-bit-development-environment-with-MinGW-on-Windows" target="_blank" rel="noopener">Creating a 64 bit development environment with MinGW on Windows</a>を参考にしてpython27.libをビルドします。デスクトップのmysy.batショートカットを起動します。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/kivy/kivy/wiki/Creating-a-64-bit-development-environment-with-MinGW-on-Windows">Creating a 64 bit development environment with MinGW on Windows</a>を参考にしてpython27.libをビルドします。デスクトップのmysy.batショートカットを起動します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /c/Python27/libs</span><br><span class="line">$ mv python27.lib old_python27.lib</span><br><span class="line">$ gendef python27.dll</span><br><span class="line"> * [python27.dll] Found PE+ image</span><br><span class="line">$ dlltool --dllname python27.dll --def python27.def --output-lib python27.lib</span><br></pre></td></tr></table></figure>
 
 <p><code>c:\Python27\include\pyconfig.h</code>を開き、141行目から以下3行をカットします。</p>
@@ -375,7 +342,7 @@
 <figure class="highlight c"><figcaption><span>c:\Python27\include\pyconfig.h</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _WIN64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MS_WIN64</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _MSC_VER</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="profile"><a href="#profile" class="headerlink" title="~/.profile"></a>~/.profile</h2><p>最終的に以下のような<code>~/.profile</code>をMSYSのホームディレクトリ(<code>c:\mingw\msys\home\masato</code>)に配置します。</p>
-<figure class="highlight bash"><figcaption><span>~/.profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># we use the reported architecture of the 'gcc' in our path to</span></span><br><span class="line"><span class="comment"># determine which Python and other utilities we will be using.</span></span><br><span class="line">_arch=`gcc -dumpmachine`</span><br><span class="line"><span class="comment">#echo "ARCH=$_arch"</span></span><br><span class="line"><span class="keyword">if</span> grep <span class="string">"^x86_64-"</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$_arch</span>"</span> &gt;/dev/null ; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"MINGW 64 BIT BUILD ENVIRONMENT"</span></span><br><span class="line">        _pydir=<span class="string">"/c/Python27"</span></span><br><span class="line">        <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files/GTK+-2.22/bin/</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"MINGW 32 BIT BUILD ENVIRONMENT"</span></span><br><span class="line">        _pydir=<span class="string">"/c/Python27_32"</span></span><br><span class="line">        <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files\ \(x86\)/GTK+-2.22/bin/</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$_pydir</span>:<span class="variable">$_pydir</span>/Scripts</span><br><span class="line"></span><br><span class="line"><span class="comment"># note that mingw-get will still install all its stuff to c:\mingw\32 and c:\min</span></span><br><span class="line">gw\msys.</span><br><span class="line"><span class="comment"># because of the contents of its profile.xml file. it is not affected by the con</span></span><br><span class="line">tent of /etc/fstab.</span><br><span class="line"><span class="built_in">alias</span> mingw-get=<span class="string">"/c/mingw/32/bin/mingw-get"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/opt/swigwin-3.0.5</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files/SlikSvn/bin</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><figcaption><span>~/.profile</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># we use the reported architecture of the &#x27;gcc&#x27; in our path to</span></span><br><span class="line"><span class="comment"># determine which Python and other utilities we will be using.</span></span><br><span class="line">_arch=`gcc -dumpmachine`</span><br><span class="line"><span class="comment">#echo &quot;ARCH=$_arch&quot;</span></span><br><span class="line"><span class="keyword">if</span> grep <span class="string">&quot;^x86_64-&quot;</span> &lt;&lt;&lt; <span class="string">&quot;<span class="variable">$_arch</span>&quot;</span> &gt;/dev/null ; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;MINGW 64 BIT BUILD ENVIRONMENT&quot;</span></span><br><span class="line">        _pydir=<span class="string">&quot;/c/Python27&quot;</span></span><br><span class="line">        <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files/GTK+-2.22/bin/</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;MINGW 32 BIT BUILD ENVIRONMENT&quot;</span></span><br><span class="line">        _pydir=<span class="string">&quot;/c/Python27_32&quot;</span></span><br><span class="line">        <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files\ \(x86\)/GTK+-2.22/bin/</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$_pydir</span>:<span class="variable">$_pydir</span>/Scripts</span><br><span class="line"></span><br><span class="line"><span class="comment"># note that mingw-get will still install all its stuff to c:\mingw\32 and c:\min</span></span><br><span class="line">gw\msys.</span><br><span class="line"><span class="comment"># because of the contents of its profile.xml file. it is not affected by the con</span></span><br><span class="line">tent of /etc/fstab.</span><br><span class="line"><span class="built_in">alias</span> mingw-get=<span class="string">&quot;/c/mingw/32/bin/mingw-get&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/opt/swigwin-3.0.5</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/c/Program\ Files/SlikSvn/bin</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -415,7 +382,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -466,7 +432,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#WindowsのGCC環境"><span class="nav-number">1.</span> <span class="nav-text">WindowsのGCC環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-2-7"><span class="nav-number">2.</span> <span class="nav-text">Python 2.7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MinGWとMSYS"><span class="nav-number">3.</span> <span class="nav-text">MinGWとMSYS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mingw-getコマンドで32bit環境構築"><span class="nav-number">3.1.</span> <span class="nav-text">mingw-getコマンドで32bit環境構築</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msys-batのショートカット作成"><span class="nav-number">3.2.</span> <span class="nav-text">msys.batのショートカット作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TDM-GCC-と-MinGW-w64"><span class="nav-number">4.</span> <span class="nav-text">TDM-GCC と MinGW-w64</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fortran"><span class="nav-number">4.1.</span> <span class="nav-text">Fortran</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SCons"><span class="nav-number">5.</span> <span class="nav-text">SCons</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dependency-Walker"><span class="nav-number">6.</span> <span class="nav-text">Dependency Walker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SWIG"><span class="nav-number">7.</span> <span class="nav-text">SWIG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GTK"><span class="nav-number">8.</span> <span class="nav-text">GTK+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subversion"><span class="nav-number">9.</span> <span class="nav-text">Subversion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python27-libの再ビルド"><span class="nav-number">10.</span> <span class="nav-text">python27.libの再ビルド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#profile"><span class="nav-number">11.</span> <span class="nav-text">~&#x2F;.profile</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows%E3%81%AEGCC%E7%92%B0%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">WindowsのGCC環境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-2-7"><span class="nav-number">2.</span> <span class="nav-text">Python 2.7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MinGW%E3%81%A8MSYS"><span class="nav-number">3.</span> <span class="nav-text">MinGWとMSYS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mingw-get%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A732bit%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89"><span class="nav-number">3.1.</span> <span class="nav-text">mingw-getコマンドで32bit環境構築</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#msys-bat%E3%81%AE%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%82%AB%E3%83%83%E3%83%88%E4%BD%9C%E6%88%90"><span class="nav-number">3.2.</span> <span class="nav-text">msys.batのショートカット作成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TDM-GCC-%E3%81%A8-MinGW-w64"><span class="nav-number">4.</span> <span class="nav-text">TDM-GCC と MinGW-w64</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fortran"><span class="nav-number">4.1.</span> <span class="nav-text">Fortran</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SCons"><span class="nav-number">5.</span> <span class="nav-text">SCons</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dependency-Walker"><span class="nav-number">6.</span> <span class="nav-text">Dependency Walker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SWIG"><span class="nav-number">7.</span> <span class="nav-text">SWIG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GTK"><span class="nav-number">8.</span> <span class="nav-text">GTK+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Subversion"><span class="nav-number">9.</span> <span class="nav-text">Subversion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python27-lib%E3%81%AE%E5%86%8D%E3%83%93%E3%83%AB%E3%83%89"><span class="nav-number">10.</span> <span class="nav-text">python27.libの再ビルド</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#profile"><span class="nav-number">11.</span> <span class="nav-text">~&#x2F;.profile</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -498,10 +464,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -526,9 +495,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -568,13 +537,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

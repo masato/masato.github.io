@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,27 +13,27 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Apach KafkaはLinkedInで開発された分散メッセージングシステムです。ArduinoからMQTTブローカーにpublishしたセンシングデータをKafkaでconsumeしてからRiemann、Spark Streaming、Stormなどのリアルタイムストリーミング処理が目的です。まずはDockerでKafkaクラスタを構築します。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka in Dockerで分散メッセージングシステムを構築する">
 <meta property="og:url" content="https://masato.github.io/2015/04/28/kafka-in-docker-getting-started/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="Apach KafkaはLinkedInで開発された分散メッセージングシステムです。ArduinoからMQTTブローカーにpublishしたセンシングデータをKafkaでconsumeしてからRiemann、Spark Streaming、Stormなどのリアルタイムストリーミング処理が目的です。まずはDockerでKafkaクラスタを構築します。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-04-28T02:24:13.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.722Z">
+<meta property="article:modified_time" content="2015-04-28T02:24:13.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="Arduino">
 <meta property="article:tag" content="Kafka">
-<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="Docker">
+<meta property="article:tag" content="DockerCompose">
 <meta property="article:tag" content="ZooKeeper">
 <meta name="twitter:card" content="summary">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Kafka in Dockerで分散メッセージングシステムを構築する | masato's blog</title>
+  <title>Kafka in Dockerで分散メッセージングシステムを構築する | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -111,14 +111,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -127,51 +126,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -188,11 +163,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -205,7 +179,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -215,19 +189,12 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Apr 28 2015 11:24:13" itemprop="dateCreated datePublished" datetime="2015-04-28T11:24:13+09:00">Apr 28 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
 
           
             <div class="post-description">Apach KafkaはLinkedInで開発された分散メッセージングシステムです。ArduinoからMQTTブローカーにpublishしたセンシングデータをKafkaでconsumeしてからRiemann、Spark Streaming、Stormなどのリアルタイムストリーミング処理が目的です。まずはDockerでKafkaクラスタを構築します。</div>
@@ -241,18 +208,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a href="http://kafka.apache.org/" target="_blank" rel="noopener">Apach Kafka</a>は<a href="http://data.linkedin.com/opensource/kafka" target="_blank" rel="noopener">LinkedIn</a>で開発された分散メッセージングシステムです。ArduinoからMQTTブローカーにpublishしたセンシングデータをKafkaでconsumeしてから<a href="http://riemann.io/index.html" target="_blank" rel="noopener">Riemann</a>、<a href="https://spark.apache.org/streaming/" target="_blank" rel="noopener">Spark Streaming</a>、<a href="https://storm.apache.org/" target="_blank" rel="noopener">Storm</a>などのリアルタイムストリーミング処理が目的です。</p>
-<a id="more"></a>
+        <p><a target="_blank" rel="noopener" href="http://kafka.apache.org/">Apach Kafka</a>は<a target="_blank" rel="noopener" href="http://data.linkedin.com/opensource/kafka">LinkedIn</a>で開発された分散メッセージングシステムです。ArduinoからMQTTブローカーにpublishしたセンシングデータをKafkaでconsumeしてから<a target="_blank" rel="noopener" href="http://riemann.io/index.html">Riemann</a>、<a target="_blank" rel="noopener" href="https://spark.apache.org/streaming/">Spark Streaming</a>、<a target="_blank" rel="noopener" href="https://storm.apache.org/">Storm</a>などのリアルタイムストリーミング処理が目的です。</p>
+<span id="more"></span>
 
-<h2 id="Docker-Composeのインストール"><a href="#Docker-Composeのインストール" class="headerlink" title="Docker Composeのインストール"></a>Docker Composeのインストール</h2><p>KafkaのDockerイメージは<a href="https://registry.hub.docker.com/u/wurstmeister/kafka/" target="_blank" rel="noopener">wurstmeister/kafka-docker</a>を使います。Kafkaクラスタの構成管理にZookeeperが必要になります。このイメージはDocker Composeを使っているのでちょうど良い勉強になります。事前にインストールしておきます。</p>
+<h2 id="Docker-Composeのインストール"><a href="#Docker-Composeのインストール" class="headerlink" title="Docker Composeのインストール"></a>Docker Composeのインストール</h2><p>KafkaのDockerイメージは<a target="_blank" rel="noopener" href="https://registry.hub.docker.com/u/wurstmeister/kafka/">wurstmeister/kafka-docker</a>を使います。Kafkaクラスタの構成管理にZookeeperが必要になります。このイメージはDocker Composeを使っているのでちょうど良い勉強になります。事前にインストールしておきます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -L https://github.com/docker/compose/releases/download/1.2.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/<span class="built_in">local</span>/bin/docker-compose; chmod +x /usr/<span class="built_in">local</span>/bin/docker-compose</span><br></pre></td></tr></table></figure>
 
-<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>適当なディレクトリを作成して、<a href="https://github.com/wurstmeister/kafka-docker" target="_blank" rel="noopener">リポジトリ</a>から<code>git clone</code>します。</p>
+<h2 id="プロジェクトの作成"><a href="#プロジェクトの作成" class="headerlink" title="プロジェクトの作成"></a>プロジェクトの作成</h2><p>適当なディレクトリを作成して、<a target="_blank" rel="noopener" href="https://github.com/wurstmeister/kafka-docker">リポジトリ</a>から<code>git clone</code>します。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/docker_apps</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/wurstmeister/kafka-docker.git</span><br><span class="line">$ <span class="built_in">cd</span> kafka-docker</span><br></pre></td></tr></table></figure>
 
-<h2 id="クラスタを起動する"><a href="#クラスタを起動する" class="headerlink" title="クラスタを起動する"></a>クラスタを起動する</h2><p><a href="http://wurstmeister.github.io/kafka-docker/" target="_blank" rel="noopener">Kafka Docker</a>の手順を読みながらクラスタの構築と簡単なテストまで行います。</p>
-<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p><a href="https://github.com/wurstmeister/kafka-docker" target="_blank" rel="noopener">リポジトリ</a>にはクラスタ用と1台構成用のdocker-compose.ymlが用意されています。今回はブローカーを2台起動したいのでクラスタ用のdocker-compose.ymlを使います。YAMLの<code>KAFKA_ADVERTISED_HOST_NAME</code>の値をDockerホストのIPアドレスに書き換えて実行します。</p>
-<figure class="highlight yaml"><figcaption><span>~/docker_apps/kafka-docker/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">zookeeper:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">wurstmeister/zookeeper</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"2181"</span></span><br><span class="line"><span class="attr">kafka:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"9092"</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zookeeper:zk</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.165</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br></pre></td></tr></table></figure>
+<h2 id="クラスタを起動する"><a href="#クラスタを起動する" class="headerlink" title="クラスタを起動する"></a>クラスタを起動する</h2><p><a target="_blank" rel="noopener" href="http://wurstmeister.github.io/kafka-docker/">Kafka Docker</a>の手順を読みながらクラスタの構築と簡単なテストまで行います。</p>
+<h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><p><a target="_blank" rel="noopener" href="https://github.com/wurstmeister/kafka-docker">リポジトリ</a>にはクラスタ用と1台構成用のdocker-compose.ymlが用意されています。今回はブローカーを2台起動したいのでクラスタ用のdocker-compose.ymlを使います。YAMLの<code>KAFKA_ADVERTISED_HOST_NAME</code>の値をDockerホストのIPアドレスに書き換えて実行します。</p>
+<figure class="highlight yaml"><figcaption><span>~/docker_apps/kafka-docker/docker-compose.yml</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="attr">zookeeper:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">wurstmeister/zookeeper</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;2181&quot;</span></span><br><span class="line"><span class="attr">kafka:</span></span><br><span class="line">  <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&quot;9092&quot;</span></span><br><span class="line">  <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">zookeeper:zk</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">KAFKA_ADVERTISED_HOST_NAME:</span> <span class="number">10.3</span><span class="number">.0</span><span class="number">.165</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br></pre></td></tr></table></figure>
 
 <p>最初に<code>docker-compose up</code>するとkafkaのDockerイメージのビルドが始まります。必要なコンテナがすべて起動するまでしばらく待ちます。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ docker-compose up</span><br></pre></td></tr></table></figure>
@@ -274,10 +241,10 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="variable">$KAFKA_HOME</span></span><br><span class="line">/opt/kafka_2.10-0.8.2.0</span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$ZK</span></span><br><span class="line">10.3.0.165:32788</span><br></pre></td></tr></table></figure>
 
 <h3 id="topicの作成"><a href="#topicの作成" class="headerlink" title="topicの作成"></a>topicの作成</h3><p>Kafka Shellを使いtopicを作成します。Kafkaのtopicはメッセージのカテゴリになります。このtopicはパーティションは4つ、メッセージのレプリカは2個の設定です。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="variable">$KAFKA_HOME</span>/bin/kafka-topics.sh --create --topic topic \</span><br><span class="line">--partitions 4 --zookeeper <span class="variable">$ZK</span> --replication-factor 2</span><br><span class="line">Created topic <span class="string">"topic"</span>.</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="variable">$KAFKA_HOME</span>/bin/kafka-topics.sh --create --topic topic \</span><br><span class="line">--partitions 4 --zookeeper <span class="variable">$ZK</span> --replication-factor 2</span><br><span class="line">Created topic <span class="string">&quot;topic&quot;</span>.</span><br></pre></td></tr></table></figure>
 
 <p>作成したtopicを確認します。</p>
-<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line">$ $KAFKA_HOME/bin/kafka-topics.sh --describe --topic topic --zookeeper $ZK</span><br><span class="line">Topic:topic     PartitionCount:<span class="number">4</span>        ReplicationFactor:<span class="number">2</span>     Configs:</span><br><span class="line">        Topic: topic    Partition: <span class="number">0</span>    Leader: <span class="number">1</span>       Replicas: <span class="number">1</span>,<span class="number">2</span>   Isr: <span class="number">1</span>,<span class="number">2</span></span><br><span class="line">        Topic: topic    Partition: <span class="number">1</span>    Leader: <span class="number">2</span>       Replicas: <span class="number">2</span>,<span class="number">1</span>   Isr: <span class="number">2</span>,<span class="number">1</span></span><br><span class="line">        Topic: topic    Partition: <span class="number">2</span>    Leader: <span class="number">1</span>       Replicas: <span class="number">1</span>,<span class="number">2</span>   Isr: <span class="number">1</span>,<span class="number">2</span></span><br><span class="line">        Topic: topic    Partition: <span class="number">3</span>    Leader: <span class="number">2</span>       Replicas: <span class="number">2</span>,<span class="number">1</span>   Isr: <span class="number">2</span>,<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">$</span> <span class="string">$KAFKA_HOME/bin/kafka-topics.sh</span> <span class="string">--describe</span> <span class="string">--topic</span> <span class="string">topic</span> <span class="string">--zookeeper</span> <span class="string">$ZK</span></span><br><span class="line"><span class="attr">Topic:topic     PartitionCount:4        ReplicationFactor:2     Configs:</span></span><br><span class="line">        <span class="attr">Topic: topic    Partition: 0    Leader: 1       Replicas:</span> <span class="number">1</span><span class="string">,2</span>   <span class="attr">Isr:</span> <span class="number">1</span><span class="string">,2</span></span><br><span class="line">        <span class="attr">Topic: topic    Partition: 1    Leader: 2       Replicas:</span> <span class="number">2</span><span class="string">,1</span>   <span class="attr">Isr:</span> <span class="number">2</span><span class="string">,1</span></span><br><span class="line">        <span class="attr">Topic: topic    Partition: 2    Leader: 1       Replicas:</span> <span class="number">1</span><span class="string">,2</span>   <span class="attr">Isr:</span> <span class="number">1</span><span class="string">,2</span></span><br><span class="line">        <span class="attr">Topic: topic    Partition: 3    Leader: 2       Replicas:</span> <span class="number">2</span><span class="string">,1</span>   <span class="attr">Isr:</span> <span class="number">2</span><span class="string">,1</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="producerの送信"><a href="#producerの送信" class="headerlink" title="producerの送信"></a>producerの送信</h3><p>Kafka Shellの一つからproducerを実行します。コンソールは文字列の入力待ちになります。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="variable">$KAFKA_HOME</span>/bin/kafka-console-producer.sh --topic=topic \</span><br><span class="line">--broker-list=`broker-list.sh`</span><br></pre></td></tr></table></figure>
@@ -297,8 +264,8 @@
           <div class="post-tags">
               <a href="/tags/Arduino/" rel="tag"># Arduino</a>
               <a href="/tags/Kafka/" rel="tag"># Kafka</a>
-              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/DockerCompose/" rel="tag"># DockerCompose</a>
               <a href="/tags/ZooKeeper/" rel="tag"># ZooKeeper</a>
           </div>
 
@@ -323,7 +290,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -374,7 +340,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Composeのインストール"><span class="nav-number">1.</span> <span class="nav-text">Docker Composeのインストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクトの作成"><span class="nav-number">2.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#クラスタを起動する"><span class="nav-number">3.</span> <span class="nav-text">クラスタを起動する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-Shell"><span class="nav-number">4.</span> <span class="nav-text">Kafka Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#topicの作成"><span class="nav-number">4.1.</span> <span class="nav-text">topicの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#producerの送信"><span class="nav-number">4.2.</span> <span class="nav-text">producerの送信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consumerの受信"><span class="nav-number">4.3.</span> <span class="nav-text">consumerの受信</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"><span class="nav-number">1.</span> <span class="nav-text">Docker Composeのインストール</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">プロジェクトの作成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B"><span class="nav-number">3.</span> <span class="nav-text">クラスタを起動する</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-compose-yml"><span class="nav-number">3.1.</span> <span class="nav-text">docker-compose.yml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka-Shell"><span class="nav-number">4.</span> <span class="nav-text">Kafka Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#topic%E3%81%AE%E4%BD%9C%E6%88%90"><span class="nav-number">4.1.</span> <span class="nav-text">topicの作成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#producer%E3%81%AE%E9%80%81%E4%BF%A1"><span class="nav-number">4.2.</span> <span class="nav-text">producerの送信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consumer%E3%81%AE%E5%8F%97%E4%BF%A1"><span class="nav-number">4.3.</span> <span class="nav-text">consumerの受信</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -406,10 +372,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -434,9 +403,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -476,13 +445,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 

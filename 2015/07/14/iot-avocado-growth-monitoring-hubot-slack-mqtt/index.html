@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 5.4.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -13,24 +13,24 @@
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"UUTBN653E1","apiKey":"4604ee38232a3d6b0390e8096361ad7e","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"masato.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"4I3PCHZTBH","apiKey":"1fa32a4d0aab855faab443dd3150228d","indexName":"Hexo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="HubotとSlackのDockerイメージを使ってMQTTのPublishとSubscribeを実装してみます。Hubotのスクリプトはnpmパッケージをrequireしてプログラムを書くことができます。再利用性を考えるとコマンドは外部パッケージにした方がよいですが、カジュアルにscriptsディレクトリにデプロイして使うこともできます。MQTTブローカーに環境データをpublishするRasp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IoTでアボカドの発芽促進とカビを防止する - Part3: HubotがMQTTで気温を表示したりLEDライトをつける">
 <meta property="og:url" content="https://masato.github.io/2015/07/14/iot-avocado-growth-monitoring-hubot-slack-mqtt/index.html">
-<meta property="og:site_name" content="masato&#39;s blog">
+<meta property="og:site_name" content="masato&#39;s web site">
 <meta property="og:description" content="HubotとSlackのDockerイメージを使ってMQTTのPublishとSubscribeを実装してみます。Hubotのスクリプトはnpmパッケージをrequireしてプログラムを書くことができます。再利用性を考えるとコマンドは外部パッケージにした方がよいですが、カジュアルにscriptsディレクトリにデプロイして使うこともできます。MQTTブローカーに環境データをpublishするRasp">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://masato.github.io/2015/07/14/iot-avocado-growth-monitoring-hubot-slack-mqtt/avocado-temperature.png">
 <meta property="og:image" content="https://masato.github.io/2015/07/14/iot-avocado-growth-monitoring-hubot-slack-mqtt/avocado-led.png">
 <meta property="article:published_time" content="2015-07-14T12:46:47.000Z">
-<meta property="article:modified_time" content="2020-03-27T22:24:20.718Z">
+<meta property="article:modified_time" content="2015-07-14T12:46:47.000Z">
 <meta property="article:author" content="Masato Shimizu">
 <meta property="article:tag" content="MQTT">
 <meta property="article:tag" content="IoT">
@@ -54,7 +54,7 @@
   };
 </script>
 
-  <title>IoTでアボカドの発芽促進とカビを防止する - Part3: HubotがMQTTで気温を表示したりLEDライトをつける | masato's blog</title>
+  <title>IoTでアボカドの発芽促進とカビを防止する - Part3: HubotがMQTTで気温を表示したりLEDライトをつける | masato's web site</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51028199-1"></script>
     <script>
@@ -94,7 +94,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/rss2.xml" title="masato's blog" type="application/rss+xml">
+<link rel="alternate" href="/rss2.xml" title="masato's web site" type="application/rss+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -115,14 +115,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">masato's blog</h1>
+      <h1 class="site-title">masato's web site</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -131,51 +130,27 @@
 
 
 <nav class="site-nav">
-  <ul id="menu" class="menu">
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container"></div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
-</div>
-
-      
-    </div>
-  </div>
 
 </div>
     </header>
@@ -192,11 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content post">
+          <div class="content post posts-expand">
             
 
-  <div class="posts-expand">
-      
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -209,7 +183,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="masato's blog">
+      <meta itemprop="name" content="masato's web site">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -219,22 +193,15 @@
         <div class="post-meta">
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
               <time title="Created: Jul 14 2015 21:46:47" itemprop="dateCreated datePublished" datetime="2015-07-14T21:46:47+09:00">Jul 14 2015</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: Mar 28 2020 07:24:20" itemprop="dateModified" datetime="2020-03-28T07:24:20+09:00">Mar 28 2020</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
+                <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -255,18 +222,18 @@
 
       
         <p><a href="/2015/07/13/meshblu-compose-hubot-slack/">HubotとSlackのDockerイメージ</a>を使ってMQTTのPublishとSubscribeを実装してみます。Hubotのスクリプトはnpmパッケージをrequireしてプログラムを書くことができます。再利用性を考えるとコマンドは外部パッケージにした方がよいですが、カジュアルにscriptsディレクトリにデプロイして使うこともできます。MQTTブローカーに環境データをpublishするRaspberry Pi 2や、MQTTブローカーからメッセージをsubscribeしてLEDライトの電源を制御するBeagleBone Blackについては次回まとめようと思います。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="ユースケース"><a href="#ユースケース" class="headerlink" title="ユースケース"></a>ユースケース</h2><h3 id="今の気温が知りたい-Subscribe"><a href="#今の気温が知りたい-Subscribe" class="headerlink" title="今の気温が知りたい (Subscribe)"></a>今の気温が知りたい (Subscribe)</h3><p>Slackからbotに「今の気温は?」や「今の気温は？」に質問すると、MQTTブローカーからsubscribeしている環境データの最新の値を教えてくれます。</p>
 <h3 id="LEDライトをon-offしたい-Publish"><a href="#LEDライトをon-offしたい-Publish" class="headerlink" title="LEDライトをon/offしたい (Publish)"></a>LEDライトをon/offしたい (Publish)</h3><p>Slackからbotに「ライト付けて」や「ライト消して」と指示すると、MQTTブローカーにpublishして植物育成LEDライトを付けたり消したりしてくれます。</p>
-<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>前回作ったプロジェクトにいくつか設定を追加しました。リポジトリは<a href="https://github.com/IDCFChannel/docker-hubot-slack" target="_blank" rel="noopener">こちら</a>です。</p>
+<h2 id="プロジェクト"><a href="#プロジェクト" class="headerlink" title="プロジェクト"></a>プロジェクト</h2><p>前回作ったプロジェクトにいくつか設定を追加しました。リポジトリは<a target="_blank" rel="noopener" href="https://github.com/IDCFChannel/docker-hubot-slack">こちら</a>です。</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/node_apps/docker-hubot-slack</span><br><span class="line">$ tree</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── README.md</span><br><span class="line">├── docker-compose.yml</span><br><span class="line">├── docker-compose.yml.default</span><br><span class="line">├── redis</span><br><span class="line">└── scripts</span><br><span class="line">    ├── hello.coffee</span><br><span class="line">    └── mqtt_meshblu.coffee</span><br></pre></td></tr></table></figure>
 
-<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>DockerfileではDockerイメージのグローバルにhubotのパッケージをインストールしてあります。<a href="http://yeoman.io/" target="_blank" rel="noopener">Yeoman</a>を使って<code>/app</code>ディレクトリにHubotプロジェクトを作成します。Dockerホストの作業ユーザーと同じuidの<code>docker</code>ユーザーにスイッチします。Yeomanのジェネレーターが作成した<code>/app/package.json</code>に、今回使用する<a href="https://github.com/slackhq/hubot-slack" target="_blank" rel="noopener">hubot-slack</a>と<a href="https://github.com/mqttjs/MQTT.js" target="_blank" rel="noopener">mqtt</a>のパッケージを追加してインストールします。</p>
-<figure class="highlight bash"><figcaption><span>~/node_apps/docker-hubot-slack/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">''</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">    chown -R docker:docker /app</span><br><span class="line"></span><br><span class="line">RUN npm install -g hubot coffee-script yo generator-hubot</span><br><span class="line"></span><br><span class="line">USER docker</span><br><span class="line">RUN yes | yo hubot --defaults &amp;&amp; \</span><br><span class="line">    npm install --save hubot-slack mqtt</span><br></pre></td></tr></table></figure>
+<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><p>DockerfileではDockerイメージのグローバルにhubotのパッケージをインストールしてあります。<a target="_blank" rel="noopener" href="http://yeoman.io/">Yeoman</a>を使って<code>/app</code>ディレクトリにHubotプロジェクトを作成します。Dockerホストの作業ユーザーと同じuidの<code>docker</code>ユーザーにスイッチします。Yeomanのジェネレーターが作成した<code>/app/package.json</code>に、今回使用する<a target="_blank" rel="noopener" href="https://github.com/slackhq/hubot-slack">hubot-slack</a>と<a target="_blank" rel="noopener" href="https://github.com/mqttjs/MQTT.js">mqtt</a>のパッケージを追加してインストールします。</p>
+<figure class="highlight bash"><figcaption><span>~/node_apps/docker-hubot-slack/Dockerfile</span></figcaption><table><tr><td class="code"><pre><span class="line">FROM iojs:2.3</span><br><span class="line">MAINTAINER Masato Shimizu &lt;ma6ato@gmail.com&gt;</span><br><span class="line"></span><br><span class="line">RUN mkdir -p /app</span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">RUN adduser --disabled-password --gecos <span class="string">&#x27;&#x27;</span> --uid 1000 docker &amp;&amp; \</span><br><span class="line">    chown -R docker:docker /app</span><br><span class="line"></span><br><span class="line">RUN npm install -g hubot coffee-script yo generator-hubot</span><br><span class="line"></span><br><span class="line">USER docker</span><br><span class="line">RUN yes | yo hubot --defaults &amp;&amp; \</span><br><span class="line">    npm install --save hubot-slack mqtt</span><br></pre></td></tr></table></figure>
 
-<h2 id="scripts-mqtt-meshblu-coffee"><a href="#scripts-mqtt-meshblu-coffee" class="headerlink" title="scripts/mqtt_meshblu.coffee"></a>scripts/mqtt_meshblu.coffee</h2><p>MQTTクライアントは<a href="https://github.com/mqttjs/MQTT.js" target="_blank" rel="noopener">MQTT.js</a>を使います。今回書いた<code>robot.respond</code>の正規表現では、botは最低限のコマンドしか理解できません。<a href="https://github.com/rakuten-nlp/rakutenma" target="_blank" rel="noopener">Rakuten MA</a>の形態素解析を使ってもうちょっと賢く応答できるようにしたいです。</p>
-<figure class="highlight coffeescript"><figcaption><span>~/node_apps/docker-hubot-slack/scripts/mqtt_meshblu.coffee</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line">mqtt = <span class="built_in">require</span> <span class="string">'mqtt'</span></span><br><span class="line"></span><br><span class="line">opts =</span><br><span class="line">    host: process.env.MQTT_HOST</span><br><span class="line">    username: process.env.ACTION_1_UUID</span><br><span class="line">    password: process.env.ACTION_1_TOKEN</span><br><span class="line">    protocolId: <span class="string">'MQIsdp'</span></span><br><span class="line">    protocolVersion: <span class="number">3</span></span><br><span class="line"></span><br><span class="line">client = mqtt.connect opts</span><br><span class="line">client.subscribe process.env.ACTION_1_UUID</span><br><span class="line"></span><br><span class="line">sensor_data = <span class="string">''</span></span><br><span class="line"></span><br><span class="line">client.<span class="literal">on</span> <span class="string">'message'</span>, <span class="function"><span class="params">(topic, message)</span> -&gt;</span></span><br><span class="line">    payload = JSON.parse message</span><br><span class="line">    sensor_data = payload.data</span><br><span class="line"></span><br><span class="line">commands =</span><br><span class="line">    <span class="string">'気温'</span>: <span class="string">'temperature'</span></span><br><span class="line">    <span class="string">'湿度'</span>: <span class="string">'humidity'</span></span><br><span class="line">    <span class="string">'気圧'</span>: <span class="string">'pressure'</span></span><br><span class="line"></span><br><span class="line">units =</span><br><span class="line">    <span class="string">'気温'</span>: <span class="string">'℃'</span></span><br><span class="line">    <span class="string">'湿度'</span>: <span class="string">'%'</span></span><br><span class="line">    <span class="string">'気圧'</span>: <span class="string">'hPa'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">(robot)</span> -&gt;</span></span><br><span class="line">    robot.respond  <span class="regexp">/(気温|湿度|気圧)を(おしえて|教えて)$/i</span>, <span class="function"><span class="params">(res)</span> -&gt;</span></span><br><span class="line">        sensor = res.match[<span class="number">1</span>]</span><br><span class="line">        answer = <span class="keyword">if</span> sensor_data</span><br><span class="line">            retval = sensor_data[commands[sensor]] + <span class="string">' '</span> + units[sensor]</span><br><span class="line">            sensor + <span class="string">'は '</span> + retval + <span class="string">' です。'</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="string">'データが取れません。:imp:'</span></span><br><span class="line">        res.send answer</span><br><span class="line"></span><br><span class="line">    robot.respond <span class="regexp">/ライトを(つけて|付けて|けして|消して)$/i</span>, <span class="function"><span class="params">(res)</span> -&gt;</span></span><br><span class="line">        on_off = <span class="keyword">switch</span> res.match[<span class="number">1</span>]</span><br><span class="line">            <span class="keyword">when</span> <span class="string">'つけて'</span>, <span class="string">'付けて'</span> <span class="keyword">then</span> <span class="string">'led-on'</span></span><br><span class="line">            <span class="keyword">when</span> <span class="string">'けして'</span>, <span class="string">'消して'</span> <span class="keyword">then</span> <span class="string">'led-off'</span></span><br><span class="line">            <span class="keyword">else</span> <span class="string">'led-on'</span></span><br><span class="line">        answer = <span class="keyword">if</span> on_off == <span class="string">'led-on'</span> <span class="keyword">then</span> <span class="string">'ピカッ。'</span> <span class="keyword">else</span> <span class="string">'カチッ。'</span></span><br><span class="line"></span><br><span class="line">        message =</span><br><span class="line">            devices: process.env.ACTION_3_UUID</span><br><span class="line">            payload: on_off</span><br><span class="line">        client.publish <span class="string">'message'</span>, JSON.stringify(message)</span><br><span class="line"></span><br><span class="line">        res.send answer + <span class="string">':flashlight:'</span></span><br></pre></td></tr></table></figure>
+<h2 id="scripts-mqtt-meshblu-coffee"><a href="#scripts-mqtt-meshblu-coffee" class="headerlink" title="scripts/mqtt_meshblu.coffee"></a>scripts/mqtt_meshblu.coffee</h2><p>MQTTクライアントは<a target="_blank" rel="noopener" href="https://github.com/mqttjs/MQTT.js">MQTT.js</a>を使います。今回書いた<code>robot.respond</code>の正規表現では、botは最低限のコマンドしか理解できません。<a target="_blank" rel="noopener" href="https://github.com/rakuten-nlp/rakutenma">Rakuten MA</a>の形態素解析を使ってもうちょっと賢く応答できるようにしたいです。</p>
+<figure class="highlight coffeescript"><figcaption><span>~/node_apps/docker-hubot-slack/scripts/mqtt_meshblu.coffee</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line">mqtt = <span class="built_in">require</span> <span class="string">&#x27;mqtt&#x27;</span></span><br><span class="line"></span><br><span class="line">opts =</span><br><span class="line">    host: process.env.MQTT_HOST</span><br><span class="line">    username: process.env.ACTION_1_UUID</span><br><span class="line">    password: process.env.ACTION_1_TOKEN</span><br><span class="line">    protocolId: <span class="string">&#x27;MQIsdp&#x27;</span></span><br><span class="line">    protocolVersion: <span class="number">3</span></span><br><span class="line"></span><br><span class="line">client = mqtt.connect opts</span><br><span class="line">client.subscribe process.env.ACTION_1_UUID</span><br><span class="line"></span><br><span class="line">sensor_data = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">client.<span class="literal">on</span> <span class="string">&#x27;message&#x27;</span>, <span class="function"><span class="params">(topic, message)</span> -&gt;</span></span><br><span class="line">    payload = <span class="built_in">JSON</span>.parse message</span><br><span class="line">    sensor_data = payload.data</span><br><span class="line"></span><br><span class="line">commands =</span><br><span class="line">    <span class="string">&#x27;気温&#x27;</span>: <span class="string">&#x27;temperature&#x27;</span></span><br><span class="line">    <span class="string">&#x27;湿度&#x27;</span>: <span class="string">&#x27;humidity&#x27;</span></span><br><span class="line">    <span class="string">&#x27;気圧&#x27;</span>: <span class="string">&#x27;pressure&#x27;</span></span><br><span class="line"></span><br><span class="line">units =</span><br><span class="line">    <span class="string">&#x27;気温&#x27;</span>: <span class="string">&#x27;℃&#x27;</span></span><br><span class="line">    <span class="string">&#x27;湿度&#x27;</span>: <span class="string">&#x27;%&#x27;</span></span><br><span class="line">    <span class="string">&#x27;気圧&#x27;</span>: <span class="string">&#x27;hPa&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.<span class="built_in">exports</span> = <span class="function"><span class="params">(robot)</span> -&gt;</span></span><br><span class="line">    robot.respond  <span class="regexp">/(気温|湿度|気圧)を(おしえて|教えて)$/i</span>, <span class="function"><span class="params">(res)</span> -&gt;</span></span><br><span class="line">        sensor = res.match[<span class="number">1</span>]</span><br><span class="line">        answer = <span class="keyword">if</span> sensor_data</span><br><span class="line">            retval = sensor_data[commands[sensor]] + <span class="string">&#x27; &#x27;</span> + units[sensor]</span><br><span class="line">            sensor + <span class="string">&#x27;は &#x27;</span> + retval + <span class="string">&#x27; です。&#x27;</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="string">&#x27;データが取れません。:imp:&#x27;</span></span><br><span class="line">        res.send answer</span><br><span class="line"></span><br><span class="line">    robot.respond <span class="regexp">/ライトを(つけて|付けて|けして|消して)$/i</span>, <span class="function"><span class="params">(res)</span> -&gt;</span></span><br><span class="line">        on_off = <span class="keyword">switch</span> res.match[<span class="number">1</span>]</span><br><span class="line">            <span class="keyword">when</span> <span class="string">&#x27;つけて&#x27;</span>, <span class="string">&#x27;付けて&#x27;</span> <span class="keyword">then</span> <span class="string">&#x27;led-on&#x27;</span></span><br><span class="line">            <span class="keyword">when</span> <span class="string">&#x27;けして&#x27;</span>, <span class="string">&#x27;消して&#x27;</span> <span class="keyword">then</span> <span class="string">&#x27;led-off&#x27;</span></span><br><span class="line">            <span class="keyword">else</span> <span class="string">&#x27;led-on&#x27;</span></span><br><span class="line">        answer = <span class="keyword">if</span> on_off == <span class="string">&#x27;led-on&#x27;</span> <span class="keyword">then</span> <span class="string">&#x27;ピカッ。&#x27;</span> <span class="keyword">else</span> <span class="string">&#x27;カチッ。&#x27;</span></span><br><span class="line"></span><br><span class="line">        message =</span><br><span class="line">            devices: process.env.ACTION_3_UUID</span><br><span class="line">            payload: on_off</span><br><span class="line">        client.publish <span class="string">&#x27;message&#x27;</span>, <span class="built_in">JSON</span>.stringify(message)</span><br><span class="line"></span><br><span class="line">        res.send answer + <span class="string">&#x27;:flashlight:&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="Subscribeした環境データを表示する"><a href="#Subscribeした環境データを表示する" class="headerlink" title="Subscribeした環境データを表示する"></a>Subscribeした環境データを表示する</h3><figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line">robot.respond <span class="regexp">/ライトを(つけて|付けて|けして|消して)$/i</span>, <span class="function"><span class="params">(res)</span> -&gt;</span></span><br></pre></td></tr></table></figure>
 
@@ -314,7 +281,6 @@
   
   
 
-  </div>
 
 
           </div>
@@ -365,7 +331,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ユースケース"><span class="nav-number">1.</span> <span class="nav-text">ユースケース</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#今の気温が知りたい-Subscribe"><span class="nav-number">1.1.</span> <span class="nav-text">今の気温が知りたい (Subscribe)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LEDライトをon-offしたい-Publish"><span class="nav-number">1.2.</span> <span class="nav-text">LEDライトをon&#x2F;offしたい (Publish)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#プロジェクト"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scripts-mqtt-meshblu-coffee"><span class="nav-number">3.</span> <span class="nav-text">scripts&#x2F;mqtt_meshblu.coffee</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscribeした環境データを表示する"><span class="nav-number">3.1.</span> <span class="nav-text">Subscribeした環境データを表示する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PublishしてLEDライトのオンオフの指示を出す"><span class="nav-number">3.2.</span> <span class="nav-text">PublishしてLEDライトのオンオフの指示を出す</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%A6%E3%83%BC%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%B9"><span class="nav-number">1.</span> <span class="nav-text">ユースケース</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8A%E3%81%AE%E6%B0%97%E6%B8%A9%E3%81%8C%E7%9F%A5%E3%82%8A%E3%81%9F%E3%81%84-Subscribe"><span class="nav-number">1.1.</span> <span class="nav-text">今の気温が知りたい (Subscribe)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LED%E3%83%A9%E3%82%A4%E3%83%88%E3%82%92on-off%E3%81%97%E3%81%9F%E3%81%84-Publish"><span class="nav-number">1.2.</span> <span class="nav-text">LEDライトをon&#x2F;offしたい (Publish)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88"><span class="nav-number">2.</span> <span class="nav-text">プロジェクト</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scripts-mqtt-meshblu-coffee"><span class="nav-number">3.</span> <span class="nav-text">scripts&#x2F;mqtt_meshblu.coffee</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Subscribe%E3%81%97%E3%81%9F%E7%92%B0%E5%A2%83%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B"><span class="nav-number">3.1.</span> <span class="nav-text">Subscribeした環境データを表示する</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Publish%E3%81%97%E3%81%A6LED%E3%83%A9%E3%82%A4%E3%83%88%E3%81%AE%E3%82%AA%E3%83%B3%E3%82%AA%E3%83%95%E3%81%AE%E6%8C%87%E7%A4%BA%E3%82%92%E5%87%BA%E3%81%99"><span class="nav-number">3.2.</span> <span class="nav-text">PublishしてLEDライトのオンオフの指示を出す</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -397,10 +363,13 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+        <a href="https://github.com/masato" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;masato" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+        <a href="mailto:ma6ato@gmail.com" title="E-Mail → mailto:ma6ato@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/ma6ato" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;ma6ato" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
       </span>
   </div>
 
@@ -425,9 +394,9 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
-    <i class="fa fa-user"></i>
+    <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Masato Shimizu</span>
 </div>
@@ -467,13 +436,6 @@
 
   
 
-
-
-
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
 
 
 
